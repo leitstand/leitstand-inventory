@@ -1,0 +1,45 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="platforms.html">Platforms</ui-breadcrumb>
+		<ui-breadcrumb>{{vendor_name}} {{model_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Platform Settings</ui-title>
+	<ui-subtitle>Manage settings of platform {{vendor_name}} {{model_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>General Settings</ui-label>
+		<ui-input name="vendor_name">
+			<ui-label>Vendor Name</ui-label>
+			<ui-note>The name of the platform vendor</ui-note>
+		</ui-input>
+		<ui-input name="model_name">
+			<ui-label>Model Name</ui-label>
+			<ui-note>The platform model name</ui-note>
+		</ui-input>	
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>A brief platform description.</ui-note>
+		</ui-textarea>	
+	</ui-group>
+	<ui-group>
+		<ui-label>Dimensions</ui-label>
+		<ui-select name="rack_unit">
+			<ui-label>Rack Units</ui-label>
+			<ui-note>The chassis height in rack units</ui-note>
+			<ui-option value="1">1 RU</ui-option>
+			<ui-option value="2">2 RU</ui-option>
+			<ui-option value="3">3 RU</ui-option>
+			<ui-option value="4">4 RU</ui-option>
+			<ui-option value="5">5 RU</ui-option>
+		</ui-select>
+		<ui-checkbox name="half_rack" value="true">
+			<ui-label>Half-rack size</ui-label>
+			<ui-note>Select this checkbox when the device width is only half the total rack width.</ui-note>
+		</ui-checkbox>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save" primary>Save settings</ui-button>
+		<ui-button href="confirm-remove.html?platform={{platform_id}}" danger>Remove</ui-button>
+	</ui-actions>
+</ui-form>

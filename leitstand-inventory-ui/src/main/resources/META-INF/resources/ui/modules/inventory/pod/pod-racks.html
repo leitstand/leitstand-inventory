@@ -1,0 +1,35 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="link-state.html?group={{group_id}}">Link-State Graph</ui-breadcrumb>
+		<ui-breadcrumb>Racks</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Racks</ui-title>
+	<ui-subtitle>List of racks that contain elements of pod {{group_name}}</ui-subtitle>
+</ui-view-header>
+<!-- {{#racks.length}} -->
+<ui-form rolesAllowed="Operator">
+<ui-group>
+<ui-label>Racks</ui-label>
+<table class="list">
+	<thead>
+		<tr><th>Rack</th><th>Location</th><th>Description</th></tr>
+	</thead>
+	<tbody>
+		<!--{{#racks}}-->
+		<tr><td><a href="rack.html?group={{group_id}}&rack={{rack_name}}">{{rack_name}}</a></td><td>{{location}}</td><td>{{description}}</td></tr>
+		<!--{{/racks}}-->
+	</tbody>
+</table>
+</ui-group>
+<!-- {{/racks.length}} -->
+<!-- {{^racks.length}} -->
+<ui-blankslate>
+	<ui-title>No racks found</ui-title>
+	<ui-note>No rack information available for this pod.</ui-note>
+</ui-blankslate>
+<!-- {{/racks.length}} -->
+<ui-actions>
+	<ui-button name="add-rack" primary>Add rack</ui-button>
+</ui-actions>
+</ui-form>

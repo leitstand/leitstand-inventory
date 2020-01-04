@@ -1,0 +1,44 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pod-elements.html?group={{group_id}}">Elements</ui-breadcrumb>
+		<ui-breadcrumb>New Element</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>New Element</ui-title>
+	<ui-subtitle>Add a new element to {{group_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Element Settings</ui-label>
+		<ui-input name="element_name" bind="element.element_name">
+			<ui-label>Element Name</ui-label>
+			<ui-note>The unique name of the element</ui-note>
+		</ui-input>
+		<ui-input name="element_alias" bind="element.element_alias">
+			<ui-label>Element Alias</ui-label>
+			<ui-note>An optional unique element alias</ui-note>
+		</ui-input>
+		<ui-select name="element_role" bind="element.element_role" options="roles">
+			<ui-label>Element Role</ui-label>
+			<ui-note>Select the role of the element</ui-note>
+		</ui-select>
+		<element-platform name="platform" bind="element.platform" options="platforms">
+			<ui-label>Hardware Platform</ui-label>
+			<ui-note>Select the hardware platform of the element</ui-note>
+		</element-platform>
+		<ui-input name="serial_number" bind="element.serial_number">
+			<ui-label>Serial Number</ui-label>
+			<ui-note>The serial number of the element</ui-note>
+		</ui-input>
+		<ui-textarea name="description" bind="element.description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional description of the element</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="add-element" primary>Add element</ui-button>
+		<ui-button href="pod-elements.html?group={{group_id}}">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

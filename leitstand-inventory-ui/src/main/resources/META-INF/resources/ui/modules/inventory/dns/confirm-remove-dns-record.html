@@ -1,0 +1,12 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove DNS record</ui-title>
+	<ui-message>
+		<ui-note>
+			Confirm to remove DNS record {{dns_recordset.dns_name}} of element {{element_name}}.
+			Removing a DNS record <strong>cannot be undone!</strong>
+			A removed record has to be restored manually.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="confirm-remove">Confirm</ui-approve>
+	<ui-decline href="element-dns-record.html?group={{group_id}}&element={{element_id}}&record={{dns_recordset.dns_recordset_id}}">Cancel</ui-decline>
+</ui-confirm>

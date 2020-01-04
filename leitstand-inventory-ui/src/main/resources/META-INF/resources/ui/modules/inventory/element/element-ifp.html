@@ -1,0 +1,60 @@
+<!--  {{#physical_interface}} -->
+<ui-view-header>
+	<ui-breadcrumbs href="element-ifps.html?group={{group_id}}&element={{element_id}}">Physical Interfaces</ui-breadcrumbs>
+	<ui-breadcrumbs>{{&ifp_name}}</ui-breadcrumbs>
+	<ui-title>Physical Interface Details</ui-title>
+	<ui-subtitle>Settings of physical interface {{&ifp_name}}</ui-subtitle>
+</ui-view-header>
+<ui-details>
+		<ui-property>
+			<ui-label>Interface Name</ui-label>
+			<ui-value>{{&ifp_name}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Interface Alias</ui-label>
+			<ui-value>{{ifp_alias}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Interface Class</ui-label>
+			<ui-value>{{ifp_class}}</ui-value>
+		</ui-property>		
+		<ui-property>
+			<ui-label>MAC Address</ui-label>
+			<ui-value><code>{{mac_address}}</code></ui-value>
+		</ui-property>		
+		<ui-property>
+			<ui-label>Bandwidth</ui-label>
+			<ui-value>{{bandwidth}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Operational State</ui-label>
+			<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Administrative State</ui-label>
+			<ui-value><span class="{{administrative_state}}">{{administrative_state}}</span></ui-value>
+		</ui-property>
+		<!-- {{#neighbor}} -->	
+		<ui-property>
+			<ui-label>Neighbor Interface Name</ui-label>
+			<ui-value>
+		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show physical interfaces of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a>
+		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a>
+			</ui-value>
+		</ui-property>
+		<!-- {{/neighbor}}  -->
+		
+		<!-- {{#ifl_names.length}} -->
+		<ui-property>
+			<ui-label>Logical interfaces</ui-label>
+			<ui-value>
+				<ol>
+					<!-- {{#ifl_names}} -->
+					<li><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{.}}" title="Show details of {{.}}">{{.}}</a></li>			
+					<!-- {{/ifl_names}} -->
+				</ol>
+			</ui-value>
+		</ui-property>
+		<!-- {{/ifl_names.length}} -->
+</ui-details>
+<!-- {{/physical_interface}}  -->

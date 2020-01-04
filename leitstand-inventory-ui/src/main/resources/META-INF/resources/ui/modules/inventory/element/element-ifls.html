@@ -1,0 +1,30 @@
+<ui-view-header>
+	<ui-title>Logical Interfaces</ui-title>
+	<ui-subtitle>Logical interfaces of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<!-- {{#logical_interfaces.length}}  -->
+<table class="list">
+<thead>
+	<tr>
+		<th>Name</th>
+		<th>Administrative State</th>
+		<th>Link State</th>
+	</tr>
+</thead>
+<tbody>
+<!-- {{#logical_interfaces}} -->
+	<tr>
+		<td><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{&ifl_name}}" title="Show details of {{&ifl_name}}">{{&ifl_name}}</a></td>
+		<td>{{administrative_state}}</td>
+		<td>{{operational_state}}</td>
+	</tr>
+<!--  {{/logical_interfaces}} -->
+</tbody>
+</table>
+<!-- {{/logical_interfaces.length}}  -->
+<!-- {{^logical_interfaces}} -->
+<ui-blankslate>
+	<ui-title>No interfaces found</ui-title>
+	<ui-note>No logical interfaces have been registered for this element</ui-note>
+</ui-blankslate>
+<!-- {{/logical_interfaces}} -->

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  (c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="inventory" transaction-type="JTA">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>java:/jdbc/rbms</jta-data-source>
+		<class>io.leitstand.inventory.model.Application</class>
+		<class>io.leitstand.inventory.model.DnsZone</class>
+		<class>io.leitstand.inventory.model.Element</class>
+		<class>io.leitstand.inventory.model.ElementGroup</class>
+		<class>io.leitstand.inventory.model.Element_Config</class>
+		<class>io.leitstand.inventory.model.Element_ContainerInterface</class>
+		<class>io.leitstand.inventory.model.Element_DnsRecordSet</class>
+		<class>io.leitstand.inventory.model.Element_Environment</class>
+		<class>io.leitstand.inventory.model.Element_Image</class>
+		<class>io.leitstand.inventory.model.Element_LogicalInterface</class>
+		<class>io.leitstand.inventory.model.Element_LogicalInterface_Vlan</class>
+		<class>io.leitstand.inventory.model.Element_Metric</class>
+		<class>io.leitstand.inventory.model.Element_Module</class>
+		<class>io.leitstand.inventory.model.Element_PhysicalInterface</class>
+		<class>io.leitstand.inventory.model.Element_PhysicalInterface_Metric</class>
+		<class>io.leitstand.inventory.model.Element_Service</class>
+		<class>io.leitstand.inventory.model.Element_ServiceContext</class>
+		<class>io.leitstand.inventory.model.Element_Service_Metric</class>
+		<class>io.leitstand.inventory.model.ElementRole</class>
+		<class>io.leitstand.inventory.model.Image</class>
+		<class>io.leitstand.inventory.model.Metric</class>
+		<class>io.leitstand.inventory.model.Metric_Visualization</class>
+		<class>io.leitstand.inventory.model.Metric_AlertRule</class>
+		<class>io.leitstand.inventory.model.Metric_AlertRule_Definition</class>
+		<class>io.leitstand.inventory.model.Module</class>
+		<class>io.leitstand.inventory.model.ElementGroup_Rack</class>
+		<class>io.leitstand.inventory.model.ElementGroup_Rack_Element</class>
+		<class>io.leitstand.inventory.model.Package</class>
+		<class>io.leitstand.inventory.model.PackageVersion</class>
+		<class>io.leitstand.inventory.model.Platform</class>
+		<class>io.leitstand.inventory.model.Service</class>
+		<class>io.leitstand.inventory.service.AddressInterface</class>
+		<class>io.leitstand.inventory.service.Bandwidth</class>
+		<class>io.leitstand.inventory.service.ElementLocation</class>
+		<class>io.leitstand.inventory.service.ElementPort</class>
+		<class>io.leitstand.inventory.jpa.AlertRuleIdConverter</class>
+		<class>io.leitstand.inventory.jpa.AlertRuleNameConverter</class>
+		<class>io.leitstand.inventory.jpa.AdministrativeStateConverter</class>
+		<class>io.leitstand.inventory.jpa.ApplicationNameConverter</class>
+		<class>io.leitstand.inventory.jpa.DnsNameConverter</class>
+		<class>io.leitstand.inventory.jpa.DnsRecordSetIdConverter</class>
+		<class>io.leitstand.inventory.jpa.DnsRecordTypeConverter</class>
+		<class>io.leitstand.inventory.jpa.DnsZoneIdConverter</class>
+		<class>io.leitstand.inventory.jpa.DnsZoneNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementAliasConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementIdConverter</class>
+		<class>io.leitstand.inventory.jpa.EnvironmentIdConverter</class>
+		<class>io.leitstand.inventory.jpa.EnvironmentNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ImageIdConverter</class>
+		<class>io.leitstand.inventory.jpa.ImageNameConverter</class>
+		<class>io.leitstand.inventory.jpa.RackIdConverter</class>
+		<class>io.leitstand.inventory.jpa.RackNameConverter</class>
+		<class>io.leitstand.inventory.jpa.RoutingInstanceNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementConfigIdConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementConfigNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementRoleNameConverter</class>
+		<class>io.leitstand.inventory.jpa.IPv4PrefixConverter</class>
+		<class>io.leitstand.inventory.jpa.IPv6PrefixConverter</class>
+		<class>io.leitstand.inventory.jpa.IPvxPrefixConverter</class>
+		<class>io.leitstand.inventory.jpa.ImageStateConverter</class>
+		<class>io.leitstand.inventory.jpa.InterfaceNameConverter</class>
+		<class>io.leitstand.inventory.jpa.MACAddressConverter</class>
+		<class>io.leitstand.inventory.jpa.MetricNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ModuleNameConverter</class>
+		<class>io.leitstand.inventory.jpa.OperationalStateConverter</class>
+		<class>io.leitstand.inventory.jpa.PlaneConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementGroupIdConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementGroupNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ElementGroupTypeConverter</class>
+		<class>io.leitstand.inventory.jpa.ServiceContextStateConverter</class>
+		<class>io.leitstand.inventory.jpa.ServiceNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ServiceTypeConverter</class>
+		<class>io.leitstand.inventory.jpa.VlanIdConverter</class>
+		<class>io.leitstand.inventory.jpa.VisualizationConfigIdConverter</class>
+		<class>io.leitstand.inventory.jpa.VisualizationConfigNameConverter</class>
+		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
+		<class>io.leitstand.security.auth.jpa.UserIdConverter</class>
+		<class>io.leitstand.commons.jpa.BooleanConverter</class>
+		<class>io.leitstand.commons.jpa.SerializableJsonObjectConverter</class>
+		<class>io.leitstand.commons.jpa.URLConverter</class>
+		<class>io.leitstand.commons.model.AbstractEntity</class>
+		<class>io.leitstand.commons.model.VersionableEntity</class>
+		<shared-cache-mode>NONE</shared-cache-mode>
+		<properties>
+			<property name="eclipselink.logging.logger" value="JavaLogger"/>
+			<property name="eclipselink.logging.level" value="FINE"/>
+			<property name="eclipselink.logging.level.sql" value="ALL"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
+		</properties>
+	</persistence-unit>
+</persistence>

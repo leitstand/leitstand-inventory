@@ -1,0 +1,41 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="racks.html">Racks</ui-breadcrumb>
+		<ui-breadcrumb>New Rack</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>
+		New Rack
+	</ui-title>
+	<ui-subtitle>
+		Add a new rack
+	</ui-subtitle>
+</ui-view-header>
+
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Rack Settings</ui-label>
+		<ui-input name="rack_name">
+			<ui-label>Rack Name</ui-label>
+			<ui-note>The name of the rack</ui-note>
+		</ui-input>
+		<ui-input name="units">
+			<ui-label>Rack Units</ui-label>
+			<ui-note>The rack height expressed in rack units</ui-note>
+		</ui-input>
+		<ui-input name="location">
+			<ui-label>Location</ui-label>
+			<ui-note>The location of the rack in the operating room</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional rack description.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="add-rack" primary>Add rack</ui-button>
+		<ui-button href="racks.html">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

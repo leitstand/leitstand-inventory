@@ -1,0 +1,51 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-bread-crumbs>
+		<ui-breadcrumb href="element-configs.html?group={{group_id}}&element={{element_id}}" 
+					   title="Show list of all element configurations">Element Configurations</ui-breadcrumb>
+		<ui-breadcrumb href="element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}"
+					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
+		<ui-breadcrumb>{{config_state}} <ui-date readonly>{{date_modified}}</ui-date></ui-breadcrumb>
+	</ui-bread-crumbs>
+	<ui-title>Element Configuration History</ui-title>
+	<ui-subtitle>{{config_name}} configuration history of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<ui-form>
+<!--  {{#revisions.length}} -->
+	<ui-group>
+		<ui-label>Revisions</ui-label>
+		<table class="list">
+			<thead>
+				<tr>
+					<th colspan="2" class="tiny"><button name="compare" class="btn btn-sm btn-outline">Compare</button></th>
+					<th>State</th>
+					<th>Author</th>
+					<th class="text">Last Modified</th>
+					<th colspan="2" class="text">Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!--  {{#revisions}} -->
+				<tr>
+					<th><input type="radio" name="a" value="{{config_id}}" {{check-first}}></th>
+					<th><input type="radio" name="b" value="{{config_id}}" {{check-second}}></th>
+					<td class="tiny"><span class="config {{config_state}}">{{config_state}}</span>
+					<td class="tiny">{{creator}}</td>
+					<td class="text"><a href="/ui/views/inventory/config/element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Show config">{{#format-timestamp}}date_modified{{/format-timestamp}}</a></td>
+					<td class="text">{{comment}}</td>
+					<td><a class="btn btn-sm btn-outline" href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</a></td>
+				</tr>
+			<!-- {{/revisions}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!--  {{/revisions.length}} -->
+	<!--  {{^revisions}} -->
+	<ui-blankslate>
+		<ui-title>No configuration history found</ui-title>
+		<note>Requested configuration does not exists.</ui-note>
+	</ui-blankslate>
+	<!--  {{/revisions}} -->	
+</ui-form>

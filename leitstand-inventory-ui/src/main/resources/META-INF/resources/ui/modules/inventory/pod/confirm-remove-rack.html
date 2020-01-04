@@ -1,0 +1,11 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove rack {{rack_name}}</ui-title>
+	<ui-message>
+		<ui-note>
+		Removing a rack <strong>cannot be undone</strong>.
+		The rack must be created again in case a restore is necessary.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="confirm-remove">Confirm</ui-approve>
+	<ui-decline href="rack.html?group={{group_id}}&rack={{rack_name}}">Cancel</ui-decline>
+</ui-confirm>

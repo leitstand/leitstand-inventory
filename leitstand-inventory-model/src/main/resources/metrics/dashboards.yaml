@@ -1,0 +1,4 @@
+element: "?client_id=grafana&response_type=code&state=test&redirect_uri={{#encoded}}{{grafana.url}}/d-solo/{{id}}/{{name}}?panelId=1&orgId=1&var-element={{element_name}}&theme=light{{/encoded}}"
+ifp: "?client_id=grafana&response_type=code&redirect_uri={{#encoded}}{{grafana.url}}/d-solo/{{id}}/{{name}}?panelId=1&orgId=1&var-element={{element_name}}&var-ifp_name={{ifp_name}}&theme=light{{/encoded}}"
+
+custom: "?client_id=grafana&response_type=code&redirect_uri={{#encoded}}{{grafana.url}}{{&dashboard_path}}&theme=light{{/encoded}}"

@@ -1,0 +1,78 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element-modules.html?group={{group_id}}&element={{element_id}}">Element Modules</ui-breadcrumb>
+		<ui-breadcrumb>Module {{module.module_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Module Details</ui-title>
+	<ui-subtitle>Inspect details of module {{module.module_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Module Information</ui-label>
+		<ui-input name="module_name" bind="module.module_name" disabled readonly>
+			<ui-label>Module Name</ui-label>
+			<ui-note>The name of the hardware module</ui-note>
+		</ui-input>
+		<ui-checkbox name="fru" value="true" bind="module.module_fru" disabled readonly>
+			<ui-label>Field-replaceable Unit</ui-label>
+			<ui-note>Selected when the module can be replaced on-site by a field engineer.</ui-note>
+		</ui-checkbox>
+		<ui-input name="module_class" bind="module.module_class" disabled readonly>
+			<ui-label>Module Class</ui-label>
+			<ui-note>The module class of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="serial_number" bind="module.serial_number" disabled readonly>
+			<ui-label>Serial Number</ui-label>
+			<ui-note>The serial nubmer of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="software_rev" bind="module.software_rev" disabled readonly>
+			<ui-label>Software Revision</ui-label>
+			<ui-note>The software revision of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="hardware_rev" bind="module.hardware_rev" disabled readonly>
+			<ui-label>Hardware Revision</ui-label>
+			<ui-note>The hardware revision of this hardware module</ui-note>
+		</ui-input>
+		<ui-input name="firmware_rev" bind="module.firmware_rev" disabled readonly>
+			<ui-label>Firmware Revision</ui-label>
+			<ui-note>The firmware revision of this hardware module</ui-note>
+		</ui-input>
+		<ui-input name="manufacturer_name" bind="module.manufacturer_name" disabled readonly>
+			<ui-label>Manufacturer Name</ui-label>
+			<ui-note>The manufacturer of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="manufacturing_date" bind="module.manufacturing_date" disabled readonly>
+			<ui-label>Manufacturing Date</ui-label>
+			<ui-note>The manufacturing date of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="vendor_type" bind="module.vendor_type" disabled readonly>
+			<ui-label>Vendor Type</ui-label>
+			<ui-note>The vendor-specific type information of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="model_name" bind="module.model_name" disabled readonly>
+			<ui-label>Model Name</ui-label>
+			<ui-note>The model name of the hardware module</ui-note>
+		</ui-input>
+		<ui-input name="location" bind="module.location" disabled readonly>
+			<ui-label>Location</ui-label>
+			<ui-note>The location of the hardware module</ui-note>
+		</ui-input>
+		<ui-textarea name="description" bind="module.description">
+			<ui-label>Comments</ui-label>
+			<ui-note>Optional comments on the hardware module, for instance, when the hardware module has a defect and needs to be replaced.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-group>
+		<ui-label>Asset Accounting Information</ui-label>
+		<ui-input name="asset_id" bind="moduel.asset_id">
+			<ui-label>Asset ID</ui-label>
+			<ui-note>The assigned asset accounting identifier of the hardware module.</ui-note>
+		</ui-input>
+	</ui-group>	
+	<ui-actions>
+		<ui-button name="save" primary title="Save module settings">Save settings</ui-button>
+	</ui-actions>
+</ui-form>

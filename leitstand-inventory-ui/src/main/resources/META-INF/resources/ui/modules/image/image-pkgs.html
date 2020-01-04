@@ -1,0 +1,43 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+  <ui-breadcrumbs>
+  	<ui-breadcrumb href="images.html">Images</ui-breadcrumb>
+  	<ui-breadcrumb>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
+  </ui-breadcrumbs>
+  <ui-title>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
+  <ui-note>Image Packages</ui-note>
+</ui-view-header>
+<!--{{#packages}}-->
+<!-- TODO Implement custom package component? -->
+<div class="package">
+	<ol class="head">
+		<li><span>Organization</span><span>{{org}}</span></li>
+		<li><span>Name</span><span>{{name}}</span></li>
+		<li><span>Revision</span><span>{{revision}}</span></li>
+	</ol>
+	<ui-details>
+		<ui-property>
+			<ui-label>Build Date</ui-label>
+			<ui-date readonly>{{build_date}}</ui-date>
+		</ui-property>
+		<!-- {{#checksum_list}} -->
+		<ui-property>
+			<ui-label>{{algorithm}}</ui-label>
+			<ui-value>{{value}}</ui-value>
+		</ui-property>
+		<!-- {{/checksum_list}} -->
+		<ui-property>
+			<ui-label>Extension</ui-label>
+			<ui-value>{{ext}}</ui-value>
+		</ui-property>
+	</ui-details>
+</div>
+<!-- {{/packages}} -->
+<!-- {{^packages}} -->
+<ui-blankslate>
+  <ui-title>No package information available</ui-title>
+  <ui-note>This image does not reveal its internal structure.</ui-note>
+</ui-blankslate>
+<!-- {{/packages}} -->

@@ -1,0 +1,46 @@
+<ui-view-header>
+	<ui-title>Physical Interfaces</ui-title>
+	<ui-subtitle>Physical interfaces of element {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<!-- {{#physical_interfaces.length}} -->
+<table class="list">
+<thead>
+	<tr>
+		<th class="text">Interface</th>
+		<th class="text">Alias</th>
+		<th>Adm.-State</th>
+		<th>Link-State</th>
+		<th>Bandwidth</th>
+		<th>Data Rate In / Out</th>
+		<th class="text">Neighbor Interface</th>
+	</tr>
+</thead>
+<tbody>
+<!-- {{#physical_interfaces}} -->
+	<tr>
+		<td class="text"><a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a></td>
+		<td class="text">{{#ifp_alias}}{{.}}{{/ifp_alias}}{{^ifp_alias}}none{{/ifp_alias}}</td>
+		<td><span class="{{administrative_state}}">{{administrative_state}}</span></td>
+		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
+		<td>{{bandwidth}}</td>
+		<td><span id="{{&ifp_name}}"> - / - </span></td>
+		<!--  {{#neighbor}} -->
+		<td class="text">	
+		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show physical interfaces of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a>
+		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a>
+		</td>
+		<!--  {{/neighbor}} -->
+		<!--  {{^neighbor}} -->
+		<td class="text">none</td>
+		<!--  {{/neighbor}} -->
+	</tr>
+<!--  {{/physical_interfaces}} -->
+</tbody>
+</table>
+<!-- {{/physical_interfaces.length}} -->
+<!-- {{^physical_interfaces}} -->
+<ui-blankslate>
+<ui-title>No physical interfaces found</ui-title>
+<ui-note>No physical interfaces have been registered for this element.</ui-note> 
+</ui-blankslate>
+<!-- {{/physical_interfaces}} -->

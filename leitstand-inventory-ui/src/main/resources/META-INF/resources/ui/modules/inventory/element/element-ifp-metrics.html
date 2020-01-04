@@ -1,0 +1,32 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element-ifps.html?group={{group_id}}&element={{element_id}}">Physical Interfaces</ui-breadcrumb>
+		<ui-breadcrumb href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}">{{ifp_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Metrics</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Physical Interface Metrics</ui-title>
+	<ui-subtitle>Inspect metrics of physical interface {{&ifp_name}} of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+
+<!-- {{#metrics_list.length}} -->
+<table class="list">
+	<thead>
+		<tr><th class="text">Metric</th><th class="tiny">Unit</th><th class="text">Snapshot from {{#format-datetime}}metric_date{{/format-datetime}}</th></tr>
+	</thead>	
+	<tbody>
+	<!-- {{#metrics_list}}  -->
+	<tr>
+		<td class="text"><a href="element-ifp-metric.html?group={{group}}&element={{element}}&ifp_name={{&ifp_name}}&metric={{metric_name}}">{{metric_display_name}}</a></td>
+		<td>{{metric_unit}}</td>
+		<td><div id="{{metric_name}}.values"></div></td>
+	</tr>
+	<!--  {{/metrics_list}}  -->
+	</tbody>	
+</table>
+<!-- {{/metrics_list.length}} -->
+<!-- {{^metrics_list}} -->
+<ui-blankslate>
+	<ui-title>No metrics found.</ui-title>
+	<ui-note>No metrics have been registered for this physical interface.</ui-note>
+</ui-blankslate>
+<!-- {{^metrics_list}} -->

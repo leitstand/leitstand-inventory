@@ -1,0 +1,37 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pod-racks.html?group={{group_id}}">Racks</ui-breadcrumb>
+		<ui-breadcrumb>Rack Settings</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Rack Settings</ui-title>
+	<ui-subtitle>Manage settings of rack {{rack.rack_name}}</ui-subtitle>
+</ui-view-header>
+<div>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Rack Settings</ui-label>
+		<ui-input name="rack_name" bind="rack.rack_name">
+			<ui-label>Rack Name</ui-label>
+			<ui-note>The name of the rack</ui-note>
+		</ui-input>
+		<ui-input name="units" bind="rack.units">
+			<ui-label>Rack Units</ui-label>
+			<ui-note>The rack height expressed as total number of available rack units</ui-note>
+		</ui-input>
+		<ui-input name="location" bind="rack.location">
+			<ui-label>Location</ui-label>
+			<ui-note>The location of the rack in the operating room</ui-note>
+		</ui-input>
+		<ui-textarea name="description" bind="rack.description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional rack description or additional comments.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-rack" primary>Save settings</ui-button>
+		<ui-button href="remove-rack" danger>Remove rack</ui-button>
+	</ui-actions>
+</ui-form>

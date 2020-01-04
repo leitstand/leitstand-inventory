@@ -1,0 +1,25 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="zones.html">DNS Zones</ui-breadcrumb>
+		<ui-breadcrumb>{{dns_zone_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>DNS Zone Settings</ui-title>
+	<ui-subtitle>Manage DNS zone settings</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-group>
+		<ui-label>General Settings</ui-label>
+		<ui-input name="dns_zone_name">
+			<ui-label>Name</ui-label>
+			<ui-note>Canonical DNS zone name</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>A description of the DNS zone.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-settings" primary>Save settings</ui-button>
+		<ui-button href="confirm-remove-zone.html?zone={{dns_zone_id}}" danger>Remove zone</ui-button>
+	</ui-actions>
+</ui-form>

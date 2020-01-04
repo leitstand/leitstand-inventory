@@ -1,0 +1,42 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element.html?group={{group_id}}&element={{element_id}}">Element Settings</ui-breadcrumb>
+		<ui-breadcrumb>Pod</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Pod</ui-title>
+	<ui-subtitle>Manage to which pod element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}} belongs to.</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<!--  {{#pods.length}} -->
+	<ui-filter name="filter">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter pods by their name</ui-note>
+	</ui-filter>
+	<ui-group>
+		<ui-label>Pods</ui-label>
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text">Pod</th>
+					<th class="text">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!-- {{#pods}} -->
+				<tr>
+					<td class="text"><ui-radio name="group_id" value="{{group_id}}" {{checked}}><ui-label>&nbsp;&nbsp;{{group_name}}</ui-label></ui-radio></td>
+					<td class="text">{{description}}</td>
+				</tr>
+			<!-- {{/pods}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!--  {{/pods.length}} -->
+	<ui-actions>
+		<ui-button name="move-element" primary title="Move element to selected pod ">Move element</ui-button>
+		<ui-button href="element.html?group={{group_id}}&element={{element_id}}" class="btn btn-outline">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

@@ -1,0 +1,12 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove pod {{group_name}}</ui-title>
+	<ui-message>
+		<ui-note>
+		Removing a pod <strong>cannot be undone!</strong> 
+		A removed pod must be restored manually.
+		Only empty pods can be removed.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="remove-pod">Confirm</ui-approve>
+	<ui-decline href="pod.html?group={{group_id}}">Cancel</ui-decline>
+</ui-confirm>

@@ -1,0 +1,37 @@
+<ui-view-header>
+	<ui-title>Platforms</ui-title>
+	<ui-subtitle>Listing of known hardware platforms</ui-subtitle>
+</ui-view-header>
+<!--  {{#platforms.length}} -->
+<ui-form>
+	<ui-group>
+		<ui-label>Platforms Overview</ui-label>
+		<ui-note>Listing of all known hardware platforms.</ui-note>
+		<table class="list">
+			<thead>
+				<tr>
+				<th class="small text">Platform</th>
+				<th class="text">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- {{#platforms}} -->
+				<tr>
+					<td class="text"><a href="platform.html?platform={{platform_id}}">{{vendor_name}} {{model_name}}</a></td>
+					<td class="text">{{description}}</td>
+				</tr>
+				<!-- {{/platforms}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/platforms.length}} -->
+	<!-- {{^platforms}} -->
+	<ui-blankslate>
+		<ui-title>No platforms found.</ui-title>
+		<ui-note>No platforms found. Please <a href="new-platform.html" title="Add hardware platform">add a first platform</a>.</ui-note>
+	</ui-blankslate>
+	<!-- {{/platforms}} -->
+	<ui-actions>
+		<ui-button href="new-platform.html" class="btn btn-primary" title="Add new hardware platform" rolesAllowed="Operator">Add platform</ui-button>
+	</ui-actions>	
+</ui-form>

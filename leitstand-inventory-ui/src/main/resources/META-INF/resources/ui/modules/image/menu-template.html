@@ -1,0 +1,20 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+{{#menus}}
+{{#enabled}}
+<h2 class="hidden">Image Navigation</h2>
+<nav class="menu">
+	{{#label}}
+	<h3 class="menu-heading" title="{{title}}">{{.}}</h3>
+	{{/label}}
+	<ul>
+	{{#items}}
+	<li>	
+	<a class="{{selected}} menu-item" title="{{title}}" id="{{view}}" href="{{viewpath}}">{{label}}</a>
+	</li>
+	{{/items}}
+	</ul>
+</nav>
+{{/enabled}}
+{{/menus}}

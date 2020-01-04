@@ -1,0 +1,31 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-title>Element Hardware Modules</ui-title>
+	<ui-subtitle>Hardware modules of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<table class="list">
+<thead>
+	<tr>
+		<th class="text">Name</th>
+		<th>Serial Number</th>
+		<th>Asset ID</th>
+		<th>Administrative State</th>
+	</tr>
+</thead>
+<!--  {{#modules}} -->
+	<tr>
+		<td class="small text"><a href="element-module.html?group={{group_id}}&element={{element_id}}&module={{module_name}}">{{module_name}}</a></td>
+		<td class="small">{{serial_number}}</td>
+		<td>{{asset_id}}</td>
+		<td class="small"><span class="{{administrative_state}}">{{adm_state}}</span></td>
+	</tr>
+<!--   {{/modules}} -->
+</table>
+<!-- {{^modules}} -->
+<ui-blankslate>
+<ui-title>No modules found.</ui-title>
+<ui-note>No hardware modules have been registered for this element.</ui-note>
+</ui-blankslate>
+<!-- {{/modules}} -->

@@ -1,0 +1,25 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="zones.html">DNS Zones</ui-breadcrumb>
+		<ui-breadcrumb>New DNS Zone</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>New DNS Zone</ui-title>
+	<ui-subtitle>Create new DNS Zone</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-group>
+		<ui-label>General Settings</ui-label>
+		<ui-input name="dns_zone_name" bind="zone.dns_zone_name">
+			<ui-label>Name</ui-label>
+			<ui-note>Canonical DNS zone name</ui-note>
+		</ui-input>
+		<ui-textarea name="description" bind="zone.description">
+			<ui-label>Description</ui-label>
+			<ui-note>A description of the DNS zone.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="add-zone" primary>Add zone</ui-button>
+		<ui-button href="zones.html" danger>Cancel</ui-button>
+	</ui-actions>
+</ui-form>

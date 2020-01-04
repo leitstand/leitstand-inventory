@@ -1,0 +1,328 @@
+/*
+ * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ */
+package io.leitstand.inventory.service;
+
+import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
+import static java.util.ResourceBundle.getBundle;
+
+import java.util.ResourceBundle;
+
+import io.leitstand.commons.Reason;
+
+/**
+ * Enumeration of all inventory reason codes.
+ */
+public enum ReasonCode implements Reason{
+
+	/** The requested PoD does not exist.*/
+	IVT0100E_GROUP_NOT_FOUND,
+	
+	/** A new element group has been stored.*/
+	IVT0101I_GROUP_STORED,
+	
+	/** The specified element group has been removed from the inventory.*/
+	IVT0102I_GROUP_REMOVED,
+	
+	/** A group with that name already exist.*/
+	IVT0103E_GROUP_NAME_ALREADY_IN_USE,
+	
+	/** 
+	 * The specified element group cannot be removed from the inventory. 
+	 * Typically the element group contains some elements.
+	 */
+	IVT0103E_GROUP_NOT_REMOVABLE,
+	
+	/** The requested images does not exist. */
+	IVT0200E_IMAGE_NOT_FOUND,
+	
+	/** 
+	 * The lifecycle state of the image has been updated.
+	 * @see ImageState
+	 */
+	IVT0201I_IMAGE_STATE_UPDATED, 
+	
+	/** The image has been updated.*/
+	IVT0202I_IMAGE_STORED, 
+
+	/** The image has been removed.*/
+	IVT0203I_IMAGE_REMOVED, 
+	
+	/** The image cannot be removed.*/
+	IVT0204E_IMAGE_NOT_REMOVABLE, 
+
+	/** The requested element does not exist.*/
+	IVT0300E_ELEMENT_NOT_FOUND,
+	
+	/** A new element was added to the inventory.*/
+	IVT0301I_ELEMENT_STORED,
+	
+	/** An existing element has been deleted.*/
+	IVT0302I_ELEMENT_REMOVED,
+	
+	/** The specified element cannot be removed from the inventory.*/
+	IVT0303E_ELEMENT_NOT_REMOVABLE,
+	
+	/** The element has been activated.*/
+	IVT0304I_ELEMENT_ACTIVATED,
+	
+	/** The element has been retired.*/
+	IVT0305I_ELEMENT_RETIRED,
+	
+	/** The element has been cloned successfully.*/
+	IVT0306I_ELEMENT_CLONED,
+	
+	/** An element with the given name already exists.*/
+	IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
+	
+	/** The requested hardware module of an element does not exist.*/
+	IVT0310E_ELEMENT_MODULE_NOT_FOUND,
+
+	/** The  hardware module of an element has been stored.*/
+	IVT0311I_ELEMENT_MODULE_STORED,
+	
+	/** The  hardware module has been removed.*/
+	IVT0312I_ELEMENT_MODULE_REMOVED,
+	
+	/** A new element configuration revision was added to the inventory.*/
+	IVT0330I_ELEMENT_CONFIG_REVISION_STORED,
+	
+	/** An existing element configuration revision has been removed from the inventory.*/
+	IVT0331I_ELEMENT_CONFIG_REVISION_REMOVED,
+	
+	/** The requested element configuration revision does not exist!*/
+	IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,
+	
+	/** The requested element configuration does not exist.*/
+	IVT0333E_ELEMENT_CONFIG_NOT_FOUND,
+
+	/** No active configuration of the element configuration exists.*/
+	IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,
+	
+	/** Removed the config with all its revisions.*/
+	IVT0337I_ELEMENT_CONFIG_REMOVED,
+	
+	/** The service does not exist on the specified element.*/
+	IVT0320E_ELEMENT_SERVICE_NOT_FOUND,
+
+	/** Service stored for the specified element.*/
+	IVT0321I_ELEMENT_SERVICE_STORED,
+
+	/** Service stored for the specified element.*/
+	IVT0322I_ELEMENT_SERVICE_REMOVED,
+
+	/** The image is not available on the specified element.*/
+	IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
+	
+	/** The element metric is registered.*/
+	IVT0350I_ELEMENT_METRIC_STORED,
+
+	/** The element metric is removed.*/
+	IVT0350I_ELEMENT_METRIC_REMOVED,
+	
+	/** The rack mount point of the element has been stored.*/
+	IVT0380I_ELEMENT_RACK_LOCATION_STORED,
+	
+	/** The rack mount point of the element has been removed.*/
+	IVT0381I_ELEMENT_RACK_LOCATION_REMOVED,
+	
+	/** The element role does not exist.*/
+	IVT0400E_ELEMENT_ROLE_NOT_FOUND,
+	
+	/** The element role has been stored.*/
+	IVT0401I_ELEMENT_ROLE_STORED,
+
+	/** The element role has been removed.*/
+	IVT0402I_ELEMENT_ROLE_REMOVED,
+	
+	/** The element role cannot be removed because elements of that role exist*/
+	IVT0403E_ELEMENT_ROLE_NOT_REMOVABLE,
+	
+	/** A role with the given name already exist.*/
+	IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE,
+	
+	/** The package does not exist.*/
+	IVT0500E_PACKAGE_NOT_FOUND,
+	
+	/** The package revision does not exist.*/
+	IVT0510E_PACKAGE_VERSION_NOT_FOUND, 
+	
+	/** The physical interface does not exist on this element.*/
+	IVT0350E_ELEMENT_IFP_NOT_FOUND,
+	
+	/** Stored physical interface in the inventory.*/
+	IVT0351I_ELEMENT_IFP_STORED,
+	
+	/** Removed physical interface from the inventory.*/
+	IVT0352I_ELEMENT_IFP_REMOVED,
+	
+	/** The physical interface cannot be removed from the element.*/
+	IVT0353E_ELEMENT_IFP_NOT_REMOVABLE, 
+	
+	/** Stored physical interface neighbor information.*/
+	IVT0354I_ELEMENT_IFP_NEIGHBOR_STORED,
+
+	/** Neighbor element is unknown to the inventory.*/
+	IVT0355W_ELEMENT_IFP_NEIGHBOR_NOT_FOUND,
+	
+	/** Removed physical interface neighbor information.*/
+	IVT0356I_ELEMENT_IFP_NEIGHBOR_REMOVED,
+	
+	/** The logical interface does not exist on this element.*/
+	IVT0360E_ELEMENT_IFL_NOT_FOUND, 
+	
+	/** The logical interface has been stored in the inventory.*/
+	IVT0361I_ELEMENT_IFL_STORED, 
+
+	/** The logical interface has been removed from the inventory*/
+	IVT0362I_ELEMENT_IFL_REMOVED, 
+	
+	/** The logical interface has been removed from the inventory*/
+	IVT0370I_ELEMENT_IFC_STORED,
+
+	/** The image is currently active on the element and the requested action therefore cannot be executed.*/
+	IVT0341E_ELEMENT_IMAGE_ACTIVE, 
+	
+	/** The package revision does already exist.*/
+	IVT0511E_PACKAGE_VERSION_EXISTS, 
+	
+	/** The requested metric does not exist!.*/
+	IVT0600E_METRIC_NOT_FOUND, 
+	
+	/** Metric definition added to the inventory.*/
+	IVT0601I_METRIC_STORED,
+	
+	/** The specified image is not revoked.*/
+	IVT0700E_IMAGE_NOT_REVOKED, 
+	
+	/** The metric configuration has been removed.*/
+	IVT0602I_METRIC_REMOVED, 
+	
+	/** Cannot remove metric that is bound to elements.*/
+	IVT0603E_CANNOT_REMOVE_BOUND_METRIC,
+
+	/** The requested rack does not exist.*/
+	IVT0800E_RACK_NOT_FOUND,
+	
+	/** The rack has been stored.*/
+	IVT0801I_RACK_STORED,
+	
+	/** The rack has been removed.*/
+	IVT0802I_RACK_REMOVED,
+	
+	/** The platform does not exist.*/
+	IVT0900E_PLATFORM_NOT_FOUND,
+	
+	/** The platform has been stored.*/
+	IVT0901I_PLATFORM_STORED,
+	
+	/** The platform has been removed.*/
+	IVT0902I_PLATFORM_REMOVED, 
+	
+	/** Platform cannot be removed because of existing elements on that platform*/
+	IVT0903E_PLATFORM_NOT_REMOVABLE,
+	
+	/** The requested DNS zone does not exist.*/
+	IVT0950E_DNS_ZONE_NOT_FOUND,
+	
+	/** The requested DNS zone has been stored.*/
+	IVT0951I_DNS_ZONE_STORED,
+	
+	/** The requested DNS zone has been removed.*/
+	IVT0952I_DNS_ZONE_REMOVED,
+
+	/** The requested DNS zone cannot be removed.*/
+	IVT0953E_DNS_ZONE_NOT_REMOVABLE,
+	
+	/** An attempt to import data into the inventory failed.*/
+	IVT1000E_IMPORT_ERROR,
+	
+	/** The requested alert rule does not exist.*/
+	IVT2000E_ALERT_RULE_NOT_FOUND,
+	
+	/** The alert rule has been stored. */
+	IVT2001I_ALERT_RULE_STORED,
+	
+	/** The alert rule has been removed.*/
+	IVT2002I_ALERT_REMOVED,
+	
+	/** The alert rule does revision not exist.*/
+	IVT2003I_ALERT_RULE_REVISION_NOT_FOUND,
+	
+	/** The alert profile rule has been stored.*/
+	IVT2004I_ALERT_RULE_REVISION_STORED,
+	
+	/** The alert profile rule has been stored.*/
+	IVT2005I_ALERT_RULE_REVISION_REMOVED,
+	
+	/** The alert rule definition is required and must not be omitted.*/
+	IVT2006E_ALERT_RULE_DEFINITION_REQUIRED,
+	
+	/** The alert rule is immutable and must not be modified.*/
+	IVT2007E_ALERT_RULE_IMMUTABLE,
+
+	/** The alert rule state cannot be set to the specified value.*/
+	IVT2008E_ALERT_RULE_INVALID_STATE,
+	
+	/** The requested metric visualization does not exist.*/
+	IVT2100E_METRIC_VISUALIZATION_NOT_FOUND,
+	
+	/** The metric visualization has been stored. */
+	IVT2101I_METRIC_VISUALIZATION_STORED,
+	
+	/** The alert rule has been removed.*/
+	IVT2101I_METRIC_VISUALIZATION_REMOVED,
+	
+	/** The requested environment does not exist.*/
+	IVT0390E_ELEMENT_ENVIRONMENT_NOT_FOUND,
+	
+	/** The requested environment is not bound to the specified element.*/
+	IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT,
+	
+	/** The environment has been stored.*/
+	IVT0391I_ELEMENT_ENVIRONMENT_STORED,
+	
+	/** The environment has been removed.*/
+	IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
+	
+	/** The DNS record does not exist.*/
+	IVT3001E_ELEMENT_DNS_RECORD_NOT_FOUND,
+	
+	/** The DNS record has been stored.*/
+	IVT3002I_ELEMENT_DNS_RECORD_STORED,
+	
+	/** The DNS record has been removed.*/
+	IVT3003I_ELEMENT_DNS_RECORD_REMOVED,
+
+	/** The DNS record is owned by another element.*/
+	IVT3003I_ELEMENT_DNS_RECORD_OWNED_BY_OTHER_ELEMENT,
+
+	/** The DNS record cannot be assigned to this DNS zone.*/
+	IVT3004E_ELEMENT_DNS_RECORD_ZONE_MISMATCH,
+	
+	/** The heart beats watchdog has been started.*/
+	IVT8000I_HEARTBEAT_WATCHDOG_STARTED,
+	
+	/** The heart beats watchdog has been stopped.*/
+	IVT8001I_HEARTBEAT_WATCHDOG_STOPPED,
+	
+	/** The heart beats watchdog reported a problem.*/
+	IVT8002E_HEARTBEAT_WATCHDOG_FAILED;
+	
+
+	private static final ResourceBundle MESSAGES = getBundle("InventoryMessages");
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getMessage(Object... args){
+		try{
+			String pattern = MESSAGES.getString(name());
+			return format(pattern, args);
+		} catch(Exception e){
+			return name() + asList(args);
+		}
+	}
+	
+}

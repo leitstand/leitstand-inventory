@@ -1,0 +1,45 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-title>Physical Interfaces</ui-title>
+	<ui-subtitle>Search for physical interfaces</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-filter name="filter">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter physical interfaces by element name or description</ui-note>
+	</ui-filter>
+	<!-- {{#ifps.length}}  -->
+	<ui-group>
+		<ui-label>Elements</ui-label>
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text">Element</th>
+					<th class="text">Interface</th>
+					<th class="text">Description</th>
+					<th>Adm.-State</th>
+					<th>Op.-State</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!--  {{#ifps}} -->
+			<tr>
+				<td class="text"><a href="/ui/views/inventory/topology/link-state.html?group={{group_id}}&filter={{element_name}}&hops=1" title="Show element details">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a></td>
+				<td class="text"><a href="/ui/views/inventory/element/element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show interface details">{{&ifp_name}}</a></td>
+				<td class="text" ><code>{{ifp_alias}}</code></td>
+				<td><span class="{{adm_state}}">{{adm_state}}</span></td>
+				<td><span class="{{op_state}}">{{op_state}}</span></td>
+			</tr>
+			<!-- {{/ifps}} -->
+		</table>
+	</ui-group>
+	<!--  {{/ifps.length}} -->	
+	<!--  {{^ifps}} -->	
+	<ui-blankslate>
+		<ui-title>No interfaces found</ui-title>
+		<ui-note>Please amend the filter expression.</ui-note>
+	</ui-blankslate>
+	<!-- {{/ifps}}  -->
+</ui-form>

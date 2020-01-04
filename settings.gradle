@@ -1,0 +1,4 @@
+// Infrastructure libraries
+include 'leitstand-inventory-api'
+include 'leitstand-inventory-model'
+include 'leitstand-inventory-ui'

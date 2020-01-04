@@ -1,0 +1,37 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+  <ui-breadcrumbs>
+  	<ui-breadcrumb href="images.html">Images</ui-breadcrumb>
+  	<ui-breadcrumb>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
+  </ui-breadcrumbs>
+  <ui-title>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
+  <ui-note>Image Utilization</ui-note>
+</ui-view-header>
+<ui-note>
+This image is used by {{total_count}} element(s) in {{pod_count}} pod(s). See the table below for more information.
+</ui-note>
+<!-- {{images.length}} -->
+<table class="list">
+   <thead>	
+     <tr>
+     	<th class="text">Pod</th>
+     	<th class="small">Cached</th>
+     	<th class="small">Active</th>
+	 </tr>
+   </thead>
+   <tbody>
+   <!-- {{#images}} -->
+   	<tr><td class="text">{{group_name}}</td><td>{{cached_count}}</td><td>{{active_count}}</td></tr>
+   <!-- {{/images}} -->
+   	<tr><td class="right text"><strong>Total</strong></td><td>{{cached_count}}</td><td>{{active_count}}</td></tr>
+   </tbody>
+</table>
+<!-- {{/images.length}}  -->
+<!-- {{^images}}  -->
+<ui-blankslate>
+	<ui-title>Image not installed on any element</ui-title>
+	<ui-note>This image is neither installed nor cached on any element in the network.</ui-note>
+</ui-blankslate>
+<!-- {{/images}}  -->

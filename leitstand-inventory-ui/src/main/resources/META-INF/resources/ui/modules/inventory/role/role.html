@@ -1,0 +1,38 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="roles.html">Element Roles</ui-breadcrumb>
+		<ui-breadcrumb>{{role_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Element Role</ui-title>
+	<ui-subtitle>Manage element role settings</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Element Role</ui-label>
+		<ui-input name="role_name">
+			<ui-label>Role Name</ui-label>
+			<ui-note>The name of the element role</ui-note>
+		</ui-input>
+		<ui-input name="display_name">
+			<ui-label>Display Name</ui-label>
+			<ui-note>The display name of the element role</ui-note>
+		</ui-input>
+		<ui-select name="plane" options="planes">
+			<ui-label>Plane</ui-label>
+			<ui-note>Select the plane that contains elements of this role.</ui-note>
+		</ui-select>
+		<ui-checkbox name="manageable" value="true">
+			<ui-label>Managed element</ui-label>
+			<ui-note>Configuration, operational state and software version of managed elements are maintained by this management system 
+					 whereas unmanaged elements are immutable and stored for documentation purposes only.</ui-note>
+		</ui-checkbox>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional description of the element role providing details about what elements of this role are used for.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button primary name="save">Save settings</ui-button>
+		<ui-button href="confirm-remove.html?role={{role_id}}" danger>Remove role</ui-button>
+	</ui-actions>
+</ui-form>
