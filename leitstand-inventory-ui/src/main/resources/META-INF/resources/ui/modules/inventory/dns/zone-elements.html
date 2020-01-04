@@ -1,0 +1,43 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="zones.html">DNS Zones</ui-breadcrumb>
+		<ui-breadcrumb>{{dns_zone_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Elements of DNS Zone {{dns_zone_name}}</ui-title>
+	<ui-subtitle>View all elements bound to DNS zone {{dns_zone_name}}.</ui-subtitle>
+</ui-view-header>
+<!-- {{#dns_entries}} -->
+	<ui-group>
+	<ui-note>DNS records for {{element_role}} {{element_name}} in pod {{group_name}}.</ui-note>
+	<ui-label>{{element_role}} {{element_name}}</ui-label>
+	<table class="list">
+		<thead>
+			<th class="text">Name</th>
+			<th>Record Type</th>
+			<th>Value</th>
+			<th>Disabled</th>
+			<th>Set-PTR</th>
+		</thead>
+		<tbody>
+		<!-- {{#dns_record_sets}}  -->
+		<!-- {{#dns_records}} -->
+		<tr>
+			<td class="text"><a href="element-dns-record.html?group={{group_id}}&element={{element_id}}&record={{dns_recordset_id}}">{{dns_name}}</a></td>
+			<td>{{dns_type}}</td>
+			<td>{{dns_value}}</td>
+			<td>{{disabled}}</td>
+			<td>{{dns_setptr}}</td>
+		</tr>
+		<!-- {{/dns_records}} -->
+		<!-- {{/dns_record_sets}} -->
+		</tbody>		
+	</table>
+	</ui-group>
+<!-- {{/dns_entries}} -->
+<!-- {{^dns_entries}} -->
+<ui-blankslate>
+	<ui-title>No elements found.</ui-title>
+	<ui-note>No elements have been bound to this DNS zone.</ui-note>
+</ui-blankslate>
+<!-- {{/dns_entries}} -->
+	

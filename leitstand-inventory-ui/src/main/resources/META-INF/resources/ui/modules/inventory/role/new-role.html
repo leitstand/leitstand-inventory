@@ -1,0 +1,41 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="roles.html">Element Roles</ui-breadcrumb>
+		<ui-breadcrumb>New Element Role</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>New Element Role</ui-title>
+	<ui-subtitle>Add a new element role</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-group>
+		<ui-label>Role Settings</ui-label>
+		<ui-input name="role_name">
+			<ui-label>Role Name</ui-label>
+			<ui-note>The name of the element role</ui-note>
+		</ui-input>
+		<ui-input name="display_name">
+			<ui-label>Display Name</ui-label>
+			<ui-note>The display name of the element role</ui-note>
+		</ui-input>
+		<ui-select name="plane">
+			<ui-label>Plane</ui-label>
+			<ui-note>The plane this element role is installed at</ui-note>
+			<ui-option value="DATA">Data Plane</ui-option>
+			<ui-option value="MANAGEMENT">Management Plane</ui-option>
+			<ui-option value="CONTROL">Control Plane</ui-option>
+		</ui-select>		
+		<ui-checkbox name="manageable" value="true">
+			<ui-label>Managed element</ui-label>
+			<ui-note>Configuration, operational state and software version of managed elements are maintained by this management system 
+					 whereas unmanaged elements are immutable and stored for documentation purposes only.</ui-note>
+		</ui-checkbox>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional description of the element role providing details about what elements of this role are used for.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save" primary>Save role</ui-button>
+		<ui-button href="roles.html">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

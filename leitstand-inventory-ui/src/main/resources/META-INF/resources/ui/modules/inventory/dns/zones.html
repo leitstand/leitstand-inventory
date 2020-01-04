@@ -1,0 +1,41 @@
+<ui-view-header>
+	<ui-title>DNS Zones</ui-title>
+	<ui-subtitle>Manage DNS zones</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-filter name="filter" placeholder="Enter a regular expression">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter DNS zones by their name.</ui-note>
+	</ui-filter>
+	
+	<!-- {{#zones.length}}  -->
+	<ui-group>
+		<ui-label>DNS Zones</ui-label>	
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text">Zone</th>
+					<th class="text">Description</th>
+				</tr> 
+			</thead>
+			<tbody>
+			<!-- {{#zones}} -->
+				<tr>
+					<td class="text small"><a href="zone-settings.html?zone={{dns_zone_id}}" title="Show DNS zone details">{{dns_zone_name}}</a></td>
+					<td class="text">{{description}}</td>
+				</tr>
+			<!-- {{/zones}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/zones.length}} -->
+	<!-- {{^zones}} -->
+	<ui-blankslate>
+		<ui-title>No DNS zones found.</ui-title>
+		<ui-note>No matching DNS zones exist.</ui-note>
+	</ui-blankslate>
+	<!-- {{/zones}} -->
+	<ui-actions>
+		<ui-button href="add-zone.html" primary>Add DNS Zone</ui-button>
+	</ui-actions>
+</ui-form>

@@ -1,0 +1,234 @@
+module: inventory
+applications:
+ - application: pod
+ - application: element
+ - application: topology
+ - application: upgrade
+ - application: ztp
+navigation:
+  - menu: main
+    items:
+    - item: pods
+      label: Pods
+      title: Search all pods in the network
+      view: pods.html
+    - item: elements
+      label: Elements
+      title: Search all elements in the network
+      view: elements.html
+    - item: ifps
+      label: Interfaces
+      title: Search all physical interfaces in the network
+      view: ifps.html
+    - item: dns
+      label: DNS Zones
+      title: Manage DNS zones
+      view: dns/zones.html
+  - menu: pod
+    label: "{{group_name}}"
+    title: Explore the settings and elements of a certain PoD
+    requires:
+    - group_id
+    query:
+      group: "{{group_id}}"
+    items:
+    - item: pod-settings
+      label: Pod Settings
+      title: Manage the general settings of the PoD
+      view: pod/pod.html
+    - item: pod-location
+      label: Location
+      title: Manage the physical location of the PoD
+      view: pod/pod-location.html
+    - item: pod-elements
+      label: Elements
+      title: Lists all elements of the PoD
+      view: pod/pod-elements.html
+    - item: racks
+      label: Racks
+      title: Manage PoD racks
+      view: pod/pod-racks.html
+    - item: link-state
+      label: Link State Graph
+      title: Show and query the link state graph of the PoD
+      view: topology/link-state.html
+    - item: pod-alerts
+      label: Alerts
+      title: Show all pending alerts
+      view: pod/pod-alerts.html
+      query:
+        group: "{{group_name}}"
+        state: OPEN
+    - item: pod-events
+      label: Events
+      title: Show all events of the PoD
+      view: pod/pod-events.html
+      query:
+        group: "{{group_name}}"
+    - item: pod-jobs
+      label: Jobs
+      title: Show all active jobs
+      view: pod/pod-jobs.html
+  - menu: element
+    label: "{{element_name}}"
+    title: Manage an element in the network
+    requires:
+    - group_id
+    - element_id
+    query:
+      group: "{{group_id}}"
+      element: "{{element_id}}"
+    items:
+    - item: element-settings
+      label: Element Settings
+      title: Manage general settings of the element
+      view: element/element.html
+    - item: element-location
+      label: Location
+      title: Review the location of the element
+      view: element/element-rack.html
+    - item: configuration
+      label: Configuration
+      title: Manage the configuration of this element
+      view:  config/element-configs.html
+    - item: DNS
+      label: DNS
+      title: Manage DNS records
+      view: dns/element-dns-records.html
+    - item: element-modules
+      label: Modules
+      title: Review element hardware modules.
+      view: element/element-modules.html
+    - item: element-ifps
+      label: Physical Interfaces  
+      title: View all physical interfaces of the element
+      view: element/element-ifps.html
+#    - item: element-ifls
+#      label: Logical interfaces  
+#      title: View all logical interfaces of the element
+#      view: element/element-ifls.html
+    - item: element-images
+      label: Images
+      title: View all images available on the element
+      view: element/element-images.html
+    - item: element-serivces
+      label: Services
+      title: View all servces installed on the element
+      view: element/element-services.html
+    - item: bgp
+      label: BGP Peers
+      title: View existing BGP peers
+      view: bgp/peers.html
+    - item: element-alerts
+      label: Alerts  
+      title: View all alerts reported by the element
+      view: element/element-alerts.html
+      query:
+        state: OPEN
+        group: "{{group_name}}"
+        element: "{{element_name}}"
+    - item: element-events
+      label: Events  
+      title: View all events reported by the element
+      view: element/element-events.html
+      query:
+        group: "{{group_name}}"
+        element: "{{element_name}}"
+    - item: element-metrics
+      label: Metrics
+      title: See all metrics available for this element
+      view: element/element-metrics.html
+    - item: element-tools
+      label: Tools
+      title: See all available tools for this element
+      view: element/element-tools.html
+  - menu: services
+    label: "{{display_name}}"
+    title: View details of the selected service
+    requires:
+    - group_id
+    - element_id
+    - service_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      service_id: "{{service}}"   # FIXME Naming issue   
+    items:
+    - item: element-service
+      label: Overview
+      title: See the details of this service
+      view: element/element-service.html
+    - item: element-service_metrics
+      label: Metrics
+      title: See the available metrics for this service
+      view: element/element-service_metrics.html
+  - menu: ifp
+    # Use & to prevent / to be escaped.
+    label: "{{&ifp_name}}"
+    title: View details of the selected physical interface
+    requires:
+    - group_id
+    - element_id
+    - ifp_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      ifp_item: "{{&ifp_name}}"   
+    items:
+    - item: element-ifp
+      label: Settings
+      title: See the settings of this physical interface
+      view: element/element-ifp.html
+    - item: element-ifp-metrics
+      label: Metrics
+      title: See the availavble metrics for this physical interface
+      view: element/element-ifp-metrics.html      
+  - menu: ifl
+    label: "{{&logical_interface.ifl_name}}"
+    title: View details of the selected physical interface
+    requires:
+    - group_id
+    - element_id
+    - ifl_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      ifl_item: "{{&logical_interface.ifl_name}}"   
+    items:
+    - item: element-ifl
+      label: Settings
+      title: See the settings of this physical interface
+      view: element/element-ifl.html
+    - item: element-ifl-metrics
+      label: Metrics
+      title: See the availavble metrics for this physical interface
+      view: element/element-ifl-metrics.html
+  - menu: dns
+    label: DNS Zone
+    title: Manage a DNS Zone
+    requires:
+    - dns_zone_id
+    query:
+     zone: "{{dns_zone_id}}"
+    items:
+    - item: zone-settings
+      label: Settings
+      title: Manage DNS zone settings
+      view: dns/zone-settings.html
+    - item: zone-elements
+      label: Elements
+      title: View elements with DNS records bound to this zone
+      view: dns/zone-elements.html
+  - menu: meta
+    label: Administration
+    title: Maintain roles and platforms
+    items:
+    - item: roles
+      label: Roles
+      title: Maintain element roles
+      view: role/roles.html
+    - item: platforms
+      label: Platforms
+      title: Maintain hardware platforms
+      view: platform/platforms.html
+          

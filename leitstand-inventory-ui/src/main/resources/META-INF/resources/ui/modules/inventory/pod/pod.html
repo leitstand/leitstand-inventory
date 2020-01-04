@@ -1,0 +1,34 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb>{{pod_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Pod Settings</ui-title>
+	<ui-subtitle>Manage settings of pod {{pod_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-group>
+		<ui-label>Settings</ui-label>
+		<ui-input name="group_name">
+			<ui-label>Name</ui-label>
+			<ui-note>The name of the pod</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional description of the pod</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-group>
+		<ui-label>Tags</ui-label>
+		<ui-tags name="tags">
+			<ui-note>Optional tags to categorize the pod</ui-note>
+		</ui-tags>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-group" primary>Save settings</ui-button>
+		<ui-button href="confirm-remove-pod.html?group={{group_id}}" danger>Remove pod</ui-button>
+	</ui-actions>
+</ui-form>

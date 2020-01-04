@@ -1,0 +1,28 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb>New Pod</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>New Pod</ui-title>
+	<ui-subtitle>Add a new pod</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Settings</ui-label>
+		<ui-input name="group_name" autofocus>
+			<ui-label>Pod Name</ui-label>
+			<ui-note>The name of the pod</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>A brief description of this pod</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="create-group" primary title="Create a new pod">Create pod</ui-button>
+		<ui-button href="pods.html">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

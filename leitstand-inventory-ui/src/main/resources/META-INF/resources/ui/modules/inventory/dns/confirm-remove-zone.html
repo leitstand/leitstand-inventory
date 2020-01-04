@@ -1,0 +1,16 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove DNS zone {{dns_zone_name}}</ui-title>
+	<ui-message>
+		<ui-note>
+			Removing a DNS zone <strong>cannot be undone!</strong>
+			A removed zone has to be restored manually.
+		</ui-note>
+		<ui-checkbox name="force" value="true">
+			<ui-label>Remove DNS zone resource record sets</ui-label>
+			<ui-note>Remove all existing resource record sets. 
+					 Only empty DNS zones can be removed by default.</ui-note>
+		</ui-checkbox>
+	</ui-message>
+	<ui-approve name="confirm-remove">Confirm</ui-approve>
+	<ui-decline href="zone-settings.html?zone={{dns_zone_id}}">Cancel</ui-decline>
+</ui-confirm>

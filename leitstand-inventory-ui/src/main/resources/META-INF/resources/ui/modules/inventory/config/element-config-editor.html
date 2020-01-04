@@ -1,0 +1,34 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-bread-crumbs>
+		<ui-breadcrumb href="element-configs.html?group={{group_id}}&element={{element_id}}" 
+					   title="Show list of all element configurations">Element Configurations</ui-breadcrumb>
+		<ui-breadcrumb href="element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}"
+					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
+		<ui-breadcrumb>{{config_state}} <ui-date readonly>{{date_modified}}</ui-date></ui-breadcrumb>
+	</ui-bread-crumbs>
+	<ui-title>Element Configuration Editor</ui-title>
+	<ui-subtitle>{{config_name}} configuration of element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}} from <ui-date readonly>{{date_modified}}</ui-date></ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<config-editor type="json" style="height:50em;" bind="config">
+		<!--  Configuration editor to modify the current configuration -->
+	</config-editor>
+	<ui-group>
+		<ui-label>Configuration Metadata</ui-label>
+		<ui-input name="creator" disabled readonly>
+			<ui-label>Author</ui-label>
+			<ui-note>The user who created this configuraton</ui-note>
+		</ui-input>
+		<ui-input name="comment">
+			<ui-label>Comment</ui-label>
+			<ui-note>Comment on the applied configuration changes</ui-note>
+		</ui-input>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-config" primary title="Apply all configuration changes">Save configuration</ui-button>
+		<ui-button href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Drop all changes and restore original candidate config">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

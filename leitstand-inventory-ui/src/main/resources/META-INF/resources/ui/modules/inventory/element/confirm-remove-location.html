@@ -1,0 +1,11 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove rack mount point</ui-title>
+	<ui-message>
+		<ui-note>
+		Removing a rack mount point <strong>cannot be undone!</strong> 
+		The rack mount point for element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}} must be restored manually.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="remove-mountpoint">Confirm</ui-approve>
+	<ui-decline href="element-mountpoint.html?group={{group_id}}&element={{element_id}}&rack={{rack_name}}" >Cancel</ui-decline>
+</ui-confirm>

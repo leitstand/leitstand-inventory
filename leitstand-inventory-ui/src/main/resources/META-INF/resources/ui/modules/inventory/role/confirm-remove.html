@@ -1,0 +1,11 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove element role {{role_name}}</ui-title>
+	<ui-message>
+		<ui-note>
+		Removing a role <strong>cannot be undone!</strong> 
+		A role can only be removed if no elements of that role exists.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="remove-role">Confirm</ui-button>
+	<ui-decline href="role.html?role={{role_id}}">Cancel</ui-decline>
+</ui-confirm>

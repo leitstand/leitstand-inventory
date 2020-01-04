@@ -1,0 +1,40 @@
+<ui-view-header>
+	<ui-title>Element DNS Records</ui-title>
+	<ui-subtitle>Manage the DNS records for element {{element_name}}</ui-subtitle>
+</ui-view-header>
+<!-- {{#dns_recordsets.length}} -->
+<ui-group>
+<ui-label>DNS Records</ui-label>
+<table class="list">
+<thead>
+	<tr>
+	<th class="text">DNS Zone</th>
+	<th class="text">DNS Name</th>
+	<th>Record Type</th>
+	<th class="text">DNS Value</th>
+	</tr>
+</thead>
+<tbody>
+<!-- {{#dns_recordsets}} -->
+<!-- {{#dns_records}} -->
+	<tr>
+		<td class="text"><a href="/ui/views/inventory/dns/zone-elements.html?zone={{dns_zone_id}}">{{dns_zone_name}}</a></td>
+		<td class="text"><a href="/ui/views/inventory/dns/element-dns-record.html?group={{group_id}}&element={{element_id}}&record={{dns_recordset_id}}">{{dns_name}}</a></td>
+		<td>{{dns_type}}</td>
+		<td class="text">{{dns_value}}</td>
+	</tr>
+<!-- {{/dns_records}} -->
+<!-- {{/dns_recordsets}} -->
+</tbody>
+</table>
+</ui-group>
+<!-- {{/dns_recordsets.length}} -->
+<!-- {{^dns_recordsets}} -->
+<ui-blankslate>
+	<ui-title>No DNS records found.</ui-title>
+	<ui-note>No DNS records exist for the selected element.</ui-note>
+</ui-blankslate>
+<!-- {{/dns_recordsets}} -->
+<ui-actions>
+	<ui-button href="add-element-dns-record.html?group={{group_id}}&element={{element_id}}" primary>Add DNS record</ui-button>
+</ui-actions>

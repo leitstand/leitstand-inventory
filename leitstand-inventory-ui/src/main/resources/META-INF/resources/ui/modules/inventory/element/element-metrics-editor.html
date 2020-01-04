@@ -1,0 +1,36 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element-metrics.html?group={{group_id}}&element={{element_id}}">Element Metrics</ui-breadcrumb>
+		<ui-breadcrumb>Configure Element Metrics</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Configure Element Metrics</ui-title>
+	<ui-subtitle>Select all metrics available for element {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<!-- {{#metrics.length}}  -->
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Metrics</ui-label>
+		<ui-note>Select all metrics supplied by this element.</ui-note>
+		<!-- {{metrics}} -->
+		<ui-checkbox name="metric" value="{{metric_name}}">
+			<ui-label>{{visualization_config.title}}{{^visualization_config.title}}{{metric_name}}{{/visualization_config.title}} {{#metric_unit}}[{{.}}]{{/metric_unit}}</ui-label>
+			<ui-note>{{description}}</ui-note>
+		</ui-checkbox>
+		<!-- {{/metrics}}  -->
+		<ui-actions>
+			<ui-button small name="select-all" title="Select all metrics">Select all</ui-button>
+			<ui-button small name="deselect-all" title="Deselect all">Deselect all</ui-button>
+		</ui-actions>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save" primary title="Assign selected metrics to this element">Save settings</ui-button>
+		<ui-button href="element-metrics.html?group={{group_id}}&element={{element_id}}">Cancel</ui-button>
+	</ui-actions>
+</ui-form>
+<!-- {{/metrics.length}} -->
+<!-- {{^metrics}}  -->
+<ui-blankslate>
+	<ui-title>No metrics found!</ui-title>
+	<ui-note>No metric definitions exist yet. Please proceed to metrics management and configure available metrics.</ui-note>
+</ui-blankslate>
+<!-- {{/metrics}} -->

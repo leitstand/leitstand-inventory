@@ -1,0 +1,18 @@
+<ui-confirm>
+	<ui-title>Confirm to remove element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-title>
+	<ui-message>
+		<ui-note>
+		Removing an element <strong>cannot be undone!</strong> 
+		A removed element must be restored manually.
+		</ui-note>
+		<ui-checkbox name="force">
+			<ui-label>Force remove</ui-label>
+			<ui-note>
+				Remove the element and all sub-resources like physical interfaces, metric bindings, services and hardware modules. 
+				By default only elements with no sub-resources are removable.
+			</ui-note>
+		</ui-checkbox>
+	</ui-message>	
+	<ui-approve name="remove-element">Confirm</ui-approve>
+	<ui-decline href="element.html?group={{group_id}}&element={{element_id}}">Cancel</ui-decline>
+</ui-confirm>

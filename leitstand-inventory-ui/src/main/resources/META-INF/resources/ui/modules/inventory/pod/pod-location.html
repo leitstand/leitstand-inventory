@@ -1,0 +1,38 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="link-state.html?group={{group_id}}">Link-State Graph</ui-breadcrumb>
+		<ui-breadcrumb>Location</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Location</ui-title>
+	<ui-subtitle>Manage the location of {{group_type}} {{group_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-group>
+		<ui-label>Location</ui-label>
+		<ui-input name="location">
+			<ui-label>Location</ui-label>
+			<ui-note>The location of the central office.</ui-note>
+		</ui-input>
+		<pod-location id="map" bind="geolocation"></pod-location>
+		<div class="row">
+			<div class="one-half column">
+				<ui-input name="longitude" bind="geolocation.longitude">
+					<ui-label>Longitude</ui-label>
+				</ui-input>
+			</div>
+			<div class="one-half column" >
+				<ui-input name="latitude" bind="geolocation.latitude">
+					<ui-label>Latitude</ui-label>
+				</ui-input>
+			</div>
+		</div>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-location" primary>Save location</ui-button>
+	</ui-actions>
+</ui-form>
+	

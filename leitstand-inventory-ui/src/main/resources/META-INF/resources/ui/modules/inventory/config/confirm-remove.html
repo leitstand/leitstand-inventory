@@ -1,0 +1,11 @@
+<ui-confirm rolesAllowed="Operator">
+	<ui-title>Confirm to remove {{config_state}} {{config_name}} configuration</ui-title>
+	<ui-message>
+		<ui-note>
+			A removed configuration <strong>cannot be restored!</strong>. 
+			The configuration must be rebuilt manually, if removed accidentially.
+		</ui-note>
+	</ui-message>
+	<ui-approve name="confirm-remove" rolesAllowed="Operator">Confirm</ui-approve>
+	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" class="btn btn-outline">Dismiss</ui-decline>
+</ui-form>

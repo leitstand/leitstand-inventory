@@ -1,0 +1,66 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<style>
+	.updates {
+		list-style-type: none;
+		padding: 5px 0px;
+	}
+	
+	.update {
+		margin: 5px 10px;
+	}
+</style>
+<ui-view-header>
+	<ui-title>Installed Images</ui-title>
+	<ui-note>List of all images available on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-note>
+</ui-view-header>
+<ui-note>
+The active image is currently running on the element.
+An image in pull state is supposed to be pulled by the element into it's local image cache in order to become eligible for immediate activation.
+Cached images can be activated immediately from an element-local cache.
+</ui-note>
+<!-- {{#installed.length}} -->
+<table class="list">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th class="text">Name</th>
+			<th>Version</th>
+			<th class="tiny">State</th>
+			<th>Date Installed</th>
+			<th class="text">Available updates</th>
+		</tr>
+	</thead>
+<!-- {{#installed}} -->
+	<tr>
+		<td>{{image_type}}</td>
+		<td class="text">{{image_name}}</td>
+		<td><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a></td>
+		<td><span class="{{installation_state}}">{{installation_state}}</span></td>
+		<td><ui-date readonly>{{date_installed}}</ui-date></td>
+		<td class="text">{{#update-summary}}
+			{{#major}} 
+				{{.}} major update(s) available.
+			{{/major}} 
+			{{#minor}} 
+				{{.}} minor update(s) available.
+			{{/minor}} 
+			{{#patch}} 
+				{{.}} patch(es) available.
+			{{/patch}} 
+			{{^updates}}
+				No updates available.
+			{{/updates}}
+			{{/update-summary}}
+		</td>
+	</tr>
+<!--  {{/installed}}-->
+</table>
+<!-- {{/installed.length}} -->
+<!-- {{^installed.length}} -->
+<ui-blankslate>
+	<ui-title>No images found</ui-title>
+	<ui-note>This element has not reported which images are installed</ui-note>
+</ui-blankslate>
+<!-- {{/installed.length}} -->

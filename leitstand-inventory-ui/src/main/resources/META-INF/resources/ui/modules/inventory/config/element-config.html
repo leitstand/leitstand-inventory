@@ -1,0 +1,50 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-bread-crumbs>
+		<ui-breadcrumb href="element-configs.html?group={{group_id}}&element={{element_id}}" 
+					   title="Show list of all element configurations">Element Configurations</ui-breadcrumb>
+		<ui-breadcrumb href="element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}"
+					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
+		<ui-breadcrumb>{{config_state}} <ui-date readonly>{{date_modified}}</ui-date></ui-breadcrumb>
+	</ui-bread-crumbs>
+	<ui-title>Element Configuration Editor</ui-title>
+	<ui-subtitle>{{config_name}} configuration of element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}} from <ui-date readonly>{{date_created}}</ui-date></ui-subtitle>
+</ui-view-header>
+<ui-form rolesAllowed="Operator">
+	<ui-details>
+		<ui-property>
+			<ui-label>Name</ui-label>
+			<ui-value>{{config_name}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>State</ui-label>
+			<ui-value><span class="config {{config_state}}">{{config_state}}</span></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Author</ui-label>
+			<ui-value>{{creator}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Date Modified</ui-label>
+			<ui-value><ui-date readonly>{{date_modified}}</ui-date></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Comment</ui-label>
+			<ui-value>{{comment}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Content Type</ui-label>
+			<ui-value>{{content_type}}</ui-value>
+		</ui-property>
+	</ui-details>
+	<ui-code>{{content}}</ui-code>
+	<ui-actions>
+			<ui-button primary when="editable" title="Create a new candidate configuration from the active configuration" href="element-config-editor.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Edit configuration</ui-button>
+			<ui-button danger when="removable" title="Remove configuration" href="confirm-remove.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Remove configuration</ui-button>
+			<ui-button when="restorable" title="Create a new candidate configuration from this configuration" href="confirm-restore.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Restore configuration</ui-button>
+			<ui-button when="active" title="Create a new candidate configuration from the active configuration" href="confirm-edit.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Edit configuration</ui-button>
+			<ui-button href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</ui-button>
+	</ui-actions>
+</ui-form>

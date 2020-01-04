@@ -1,0 +1,47 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-title>Element Configurations</ui-title>
+	<ui-subtitle>List of all existing element configurations</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-filter name="filter">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter configurations by their name.</ui-note>
+	</ui-filter>
+	<!-- {{#configs.length}} -->
+	<ui-group>
+		<ui-label>Elements</ui-label>
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text">Config</th>
+					<th class="tiny" >State</th>
+					<th>Creator</th>
+					<th class="text">Date Modified</th>
+					<th colspan="2" class="text">Comment</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!--  {{#configs}} -->
+			<tr>
+				<td class="text"><a href="/ui/views/inventory/config/element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}" title="Show configuration history">{{config_name}}</a></td>
+				<td><span class="config {{config_state}}">{{config_state}}</span></td>
+				<td>{{creator}}</td>
+				<td class="text"><a href="/ui/views/inventory/config/element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Show config"><ui-date readonly>{{date_modified}}</ui-date></a></td>
+				<td class="text">{{comment}}</td>
+				<td><a class="btn btn-sm btn-outline" href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</a></td>
+			</tr>
+			<!-- {{/configs}} -->
+		</table>
+	</ui-group>
+	<!-- {{/configs.length}} -->
+	<!-- {{^configs}}        -->
+	<ui-blankslate>
+		<ui-title>No configurations found.</ui-title>
+		<ui-note>No configurations for the selected element found.</ui-note>
+	</ui-blankslate>
+	<!--  {{/configs}} -->
+</ui-form>
+		

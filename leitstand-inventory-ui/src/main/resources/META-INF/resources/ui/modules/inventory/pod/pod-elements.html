@@ -1,0 +1,53 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="link-state.html?group={{group_id}}">Link State Graph</ui-breadcrumb>
+		<ui-breadcrumb>Elements</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Elements</ui-title>
+	<ui-subtitle>Elements of {{group_type}} {{group_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<!-- {{#elements.length}}  -->
+	<ui-group>
+		<ui-label>Elements</ui-label>
+		<ui-note>Elements of pod {{group_name}}</ui-note>
+		<table id="elements" class="list">
+			<thead>
+				<tr>
+					<th class="extra-small text">Name</th>
+					<th class="extra-small text">Alias</th>
+					<th class="extra-small">Adm.-State</th>
+					<th class="extra-small">Op.-State</th>
+					<th class="text">Tags</th>
+					<th class="text">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- {{#elements}}  -->
+				<tr>
+					<td class="extra-small text wrap"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</a></td>
+					<td class="extra-small text wrap">{{element_alias}}</td>
+					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+					<td><a href="/ui/views/inventory/element/element-events.html?group={{group_id}}&element={{element_id}}" class="{{operational_state}}" title="Show element log events">{{operational_state}}</a></td>
+					<td class="text wrap"><ol class="tags">{{#tags}}<li>{{.}}</li>{{/tags}}</ol></td>
+					<td class="text"> {{description}}</td>					
+				</tr>
+				<!-- {{/elements}}  -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/elements.length}}  -->
+	<!-- {{^elements}}  -->
+	<ui-blankslate>
+		<ui-title>No elements found!</ui-title>
+		<ui-note>No elements registered for this pod</ui-note>
+	</ui-blankslate>
+	<!-- {{/elements}}  -->
+	<ui-actions>
+		<ui-button href="new-element.html?group={{group_id}}" primary rolesAllowed="Operator">Add element</ui-button>
+	</ui-actions>
+</ui-form>

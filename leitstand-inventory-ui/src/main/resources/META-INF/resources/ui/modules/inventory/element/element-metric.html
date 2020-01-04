@@ -1,0 +1,18 @@
+<!-- {{#metric}} -->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element-metrics.html?group={{group_id}}&element={{element_id}}">Element Metrics</ui-breadcrumb>
+		<ui-breadcrumb>{{metric_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>{{visualization_config.title}}</ui-title>
+	<ui-subtitle>{{visualization_config.title}} of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<!--  {{#metric_uri}} -->
+<iframe src="{{metric_uri}}%26panelId%3D1" width="{{visualization_config.width}}" height="{{visualization_config.height}}" frameborder="0"></iframe>
+<!-- {{/metric_uri}} -->
+<!-- {{^metric_uri}} -->
+<img src="/images/white-noise.gif" style="opacity:0.4; border: 1px solid black" alt="Chart not configured"></img>
+<ui-note>There is no data visualization available. Please proceed to the <a href="/ui/views/metric/visualization.html?metric={{metric_name}}">metric definition</a> to fix this issue.</ui-note>
+<!-- {{/metric_uri}} -->
+<!-- {{/metric}} -->
+

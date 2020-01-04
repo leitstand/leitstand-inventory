@@ -1,0 +1,46 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+  <ui-breadcrumbs>
+  	<ui-breadcrumb href="images.html">Images</ui-breadcrumb>
+  	<ui-breadcrumb>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
+  </ui-breadcrumbs>
+  <ui-title>{{#platform}}{{vendor_name}} {{model_name}}{{/platform}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
+  <ui-note>Image State</ui-note>
+</ui-view-header>
+<ui-form rolesAllowed="ReleaseManager">
+<ui-group>
+<ui-label>Image State</ui-label>
+<ui-note>The image lifecycle defines five different image states. 
+		 A <em>new</em> image is an image that has not yet been approved to be eligible for a deployment.
+		 The <em>release</em> image is deployed by default. 
+		 A <em>candidate</em> image is intended to become the new <em>default</em> image, once the candidate has passed all necessary tests. 
+		 The existing default image is <em>superseded</em> by the new default image. 
+		 A <em>revoked</em> image must not be used any longer because it contains severe errors. </ui-note>
+		<ui-radio name="image_state" value="NEW">
+			<ui-label>New</ui-label>
+			<ui-note>Newly registered image</ui-note>
+		</ui-radio>
+		<ui-radio name="image_state" value="CANDIDATE">
+			<ui-label>Candidate</ui-label>
+			<ui-note>Candidate for the next release image</ui-note>
+		</ui-radio>
+		<ui-radio name="image_state" value="RELEASE">
+			<ui-label>Release</ui-label>
+			<ui-note>The image to be installed by default</ui-note>
+		</ui-radio>
+		<ui-radio name="image_state" value="SUPERSEDED" disabled readonly>
+			<ui-label>Superseded</ui-label>
+			<ui-note>A former release image that has been superseded by a newer image version</ui-note>
+		</ui-radio>
+		<ui-radio name="image_state" value="REVOKED">
+			<ui-label>Revoked</ui-label>
+			<ui-note>The image must not be used anymore.</ui-note>
+		</ui-radio>
+</ui-group>
+<ui-actions>
+	<ui-button name="apply-state" primary>Save state</ui-button>
+	<ui-button name="purge" when="revoked" title="Remove image from all known image caches">Purge caches</ui-button>
+</ui-actions>
+</ui-form>

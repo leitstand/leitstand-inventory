@@ -1,0 +1,15 @@
+<ui-confirm>
+	<ui-title>Confirm to edit active {{config_name}} configuration</ui-title>
+	<ui-message>
+	<ui-note>
+	Editing an active configuration makes it the new candidate configuration.
+	An existing candidate configuration will be replaced.
+	</ui-note>
+	<ui-input name="comment">
+		<ui-label>Comment</ui-label>
+		<ui-note>Provide details why the configuration is modified</ui-note>
+	</ui-input>
+	</ui-message>
+	<ui-approve name="confirm-edit" rolesAllowed="Operator" danger>Confirm</ui-approve>
+	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Cancel</ui-decline>
+</ui-confirm>

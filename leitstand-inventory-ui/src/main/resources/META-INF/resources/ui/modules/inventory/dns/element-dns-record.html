@@ -1,0 +1,41 @@
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="element-dns-records.html?group={{group_id}}&element={{element_id}}">Element DNS records</ui-breadcrumb>
+		<ui-breadcrumb>{{dns_recordset.dns_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Manage DNS Record</ui-title>	
+	<ui-subtitle>Manage the DNS record {{dns_recordset.dns_name}} of element {{element_name}}.</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-group>
+		<ui-label>DNS Record</ui-label>
+		<ui-select name="dns_zone_name" bind="dns_recordset.dns_zone_name" options="zones">
+			<ui-label>DNS Zone</ui-label>
+			<ui-note>Select DNS zone.</ui-note>
+		</ui-select>
+		<ui-input name="dns_name" bind="dns_recordset.dns_name">
+			<ui-label>DNS Name</ui-label>
+			<ui-note>Set cannonical DNS name</ui-note>.		
+		</ui-input>
+		<ui-select name="dns_type" bind="dns_recordset.dns_type" options="dns_types">
+			<ui-label>DNS Record Type</ui-label>
+			<ui-note>Select record type</ui-note>.		
+		</ui-select>
+		<ui-input name="dns_value" bind="dns_recordset.dns_value">
+			<ui-label>DNS Value</ui-label>
+			<ui-note>Set the DNS record value</ui-note>.		
+		</ui-input>
+		<ui-checkbox name="disabled" bind="dns_recordset.disabled">
+			<ui-label>Disabled</ui-label>
+			<ui-note>Check this option to create a disabled the DNS record.</ui-note>
+		</ui-checkbox>
+		<ui-textarea name="description" bind="dns_recordset.description">
+			<ui-label>Description</ui-label>
+			<ui-note>Optional brief record description.</ui-note>.		
+		</ui-textarea>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-settings" primary>Save record</ui-button>
+		<ui-button href="confirm-remove-dns-record.html?group={{group_id}}&element={{element_id}}&record={{dns_recordset.dns_recordset_id}}" danger>Remove</ui-button>	
+	</ui-actions>
+</ui-form>

@@ -1,0 +1,37 @@
+<ui-view-header>
+	<ui-title>Element Roles</ui-title>
+	<ui-subtitle>List of existing element roles</ui-subtitle>
+</ui-view-header>
+<ui-form>
+<!--  {{#roles.length}} -->
+<ui-group>
+	<ui-label>Roles</ui-label>
+	<ui-note>Overview of all declared element roles.</ui-note>
+	<table class="list">
+		<thead>
+			<tr>
+			<th class="small text">Role</th>
+			<th class="text">Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- {{#roles}} -->
+			<tr>
+				<td class="text"><a href="role.html?role={{role_id}}">{{display_name}}</a></td>
+				<td class="text">{{description}}</td>
+			</tr>
+			<!-- {{/roles}} -->
+		</tbody>
+	</table>
+</ui-group>
+<!-- {{/roles.length}} -->
+<!-- {{^roles}} -->
+<ui-blankslate>
+	<ui-title>No role information available</ui-title>
+	<ui-note>No role information exist. Do You want to <a href="new-role.html">add a first role</a>?</ui-note>
+</ui-blankslate>
+<ui-actions>
+	<ui-button href="new-role.html" primary title="Add new element role" {{Role.Operator}}>Add role</ui-button>
+</ui-actions>	
+<!-- {{/roles}} -->
+</ui-form>
