@@ -5,7 +5,7 @@ The Leitstand Resource Inventory API is a _transactional_ to manage resource inv
 ![Overview](./assets/overview.png "Overview") 
 
 The [Leitstand Inventory Model](../leitstand-inventory-model/README.md) implements the Leitstand Resource Inventory API.
-Other Leistand modules can either use the REST API or compile against the Leistand Inventory API. 
+Other Leitstand modules can either use the REST API or compile against the Leitstand Inventory API. 
 In the latter case the Leitstand module either includes the leitstand inventory model library to access the resource inventory database 
 or uses an alternative API implementation that then again invokes the REST API. 
 This approach allows to decide at the moment of application assembly how a Leitstand module technically interfaces with the Leitstand inventory.
