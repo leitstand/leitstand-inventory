@@ -38,7 +38,6 @@ import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.db.DatabaseService;
-import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.AlertRule;
 import io.leitstand.inventory.service.AlertRuleId;

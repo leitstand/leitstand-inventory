@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import javax.enterprise.event.Event;
-import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.junit.After;

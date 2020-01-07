@@ -66,7 +66,6 @@ import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
-import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 @RunWith(MockitoJUnitRunner.class)

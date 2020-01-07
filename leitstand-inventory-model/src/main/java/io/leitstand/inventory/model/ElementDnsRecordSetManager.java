@@ -42,7 +42,6 @@ import io.leitstand.inventory.service.DnsRecordSetId;
 import io.leitstand.inventory.service.DnsRecordType;
 import io.leitstand.inventory.service.ElementDnsRecordSet;
 import io.leitstand.inventory.service.ElementDnsRecordSets;
-import io.leitstand.inventory.service.ReasonCode;
 
 @Dependent
 public class ElementDnsRecordSetManager {

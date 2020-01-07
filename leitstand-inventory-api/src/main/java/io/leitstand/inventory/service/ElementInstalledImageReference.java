@@ -5,12 +5,8 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
-import static io.leitstand.inventory.service.ElementImageState.CACHED;
-
-import javax.json.bind.annotation.JsonbTypeAdapter;
 
 import io.leitstand.commons.model.ValueObject;
-import io.leitstand.inventory.jsonb.VersionAdapter;
 
 /**
  * A reference to an installed image.

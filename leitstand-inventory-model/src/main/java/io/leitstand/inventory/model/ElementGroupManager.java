@@ -38,7 +38,6 @@ import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.commons.model.StringUtil;
 import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;

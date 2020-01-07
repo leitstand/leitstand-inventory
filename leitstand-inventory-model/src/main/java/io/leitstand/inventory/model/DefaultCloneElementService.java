@@ -12,34 +12,17 @@ import static io.leitstand.inventory.service.AdministrativeState.NEW;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.ReasonCode.IVT0306I_ELEMENT_CLONED;
 
-import java.util.Date;
-
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.TemporalType.TIMESTAMP;
-
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.Basic;
-import javax.persistence.Convert;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
 
 import io.leitstand.commons.db.DatabaseService;
-import io.leitstand.commons.jpa.SerializableJsonObjectConverter;
-import io.leitstand.commons.json.SerializableJsonObject;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.event.ElementEvent;
-import io.leitstand.inventory.jpa.EnvironmentIdConverter;
-import io.leitstand.inventory.jpa.EnvironmentNameConverter;
 import io.leitstand.inventory.service.CloneElementService;
 import io.leitstand.inventory.service.ElementCloneRequest;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.EnvironmentId;
-import io.leitstand.inventory.service.EnvironmentName;
 
 @Service
 public class DefaultCloneElementService implements CloneElementService{

@@ -35,14 +35,12 @@ import javax.inject.Inject;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.ObjectUtil;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.event.DnsZoneEvent;
 import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsZoneElement;
 import io.leitstand.inventory.service.DnsZoneElements;
 import io.leitstand.inventory.service.DnsZoneSettings;
-import io.leitstand.inventory.service.ReasonCode;
 
 @Dependent
 public class DnsZoneManager {

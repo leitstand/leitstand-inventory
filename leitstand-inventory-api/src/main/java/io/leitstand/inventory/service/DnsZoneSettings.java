@@ -7,7 +7,6 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.DnsZoneId.randomDnsZoneId;
 
 import javax.json.JsonObject;
-import javax.json.bind.annotation.JsonbProperty;
 
 import io.leitstand.commons.model.ValueObject;
 

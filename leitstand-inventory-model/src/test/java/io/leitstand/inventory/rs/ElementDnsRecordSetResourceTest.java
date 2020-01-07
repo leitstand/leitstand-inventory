@@ -4,7 +4,6 @@
 package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
-import static io.leitstand.inventory.service.DnsName.dnsName;
 import static io.leitstand.inventory.service.DnsRecordSetId.randomDnsRecordSetId;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
@@ -27,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.inventory.service.DnsName;
 import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsRecordSetId;
 import io.leitstand.inventory.service.ElementDnsRecordSet;

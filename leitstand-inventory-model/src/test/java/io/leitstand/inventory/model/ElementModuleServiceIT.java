@@ -47,7 +47,6 @@ import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementModuleService;
 import io.leitstand.inventory.service.ElementModules;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
 
