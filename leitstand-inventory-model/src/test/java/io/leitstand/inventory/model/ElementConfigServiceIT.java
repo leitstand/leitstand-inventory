@@ -10,6 +10,7 @@ import static io.leitstand.inventory.service.ConfigurationState.ACTIVE;
 import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
 import static io.leitstand.inventory.service.ConfigurationState.SUPERSEDED;
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
+import static io.leitstand.inventory.service.ElementConfigName.elementConfigName;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -19,6 +20,7 @@ import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
+import static io.leitstand.security.auth.UserName.userName;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -52,7 +54,6 @@ import io.leitstand.inventory.service.ElementConfigService;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.StoreElementConfigResult;
-import io.leitstand.security.auth.UserId;
 
 public class ElementConfigServiceIT extends InventoryIT {
 	
@@ -73,7 +74,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		ElementConfigManager configs = new ElementConfigManager(repository,
 																db,
-																UserId.valueOf("unittest"),
+																userName("unittest"),
 																event,
 																mock(Messages.class));
 		service = new DefaultElementConfigService(elements,configs);
@@ -115,7 +116,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	public void raise_exception_if_active_config_does_not_exist() {
 		transaction(()->{
 			try {
-				service.getActiveElementConfig(ELEMENT_NAME, ElementConfigName.valueOf("non-existent"));
+				service.getActiveElementConfig(ELEMENT_NAME, elementConfigName("non-existent"));
 				fail("Exception expected!");
 			} catch (EntityNotFoundException e) {
 				assertEquals(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,e.getReason());
@@ -124,7 +125,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			try {
-				service.getActiveElementConfig(ELEMENT_ID, ElementConfigName.valueOf("non-existent"));
+				service.getActiveElementConfig(ELEMENT_ID, elementConfigName("non-existent"));
 				fail("Exception expected!");
 			} catch (EntityNotFoundException e) {
 				assertEquals(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,e.getReason());
@@ -135,7 +136,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void add_new_active_configuration() {
-		ElementConfigName configName = ElementConfigName.valueOf("new_configuration");
+		ElementConfigName configName = elementConfigName("new_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -147,7 +148,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, 
-									 							  ElementConfigName.valueOf("new_configuration"));
+									 							  elementConfigName("new_configuration"));
 			assertNotNull(config);
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
@@ -158,7 +159,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void add_new_candidate_configuration() {
-		ElementConfigName configName = ElementConfigName.valueOf("updated_configuration");
+		ElementConfigName configName = elementConfigName("updated_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -192,7 +193,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void activate_candidate_configuration() {
-		ElementConfigName configName = ElementConfigName.valueOf("activate_candidate_configuration");
+		ElementConfigName configName = elementConfigName("activate_candidate_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -241,7 +242,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void read_history_revision() {
-		ElementConfigName configName = ElementConfigName.valueOf("history_revision");
+		ElementConfigName configName = elementConfigName("history_revision");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -278,7 +279,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void do_not_remove_active_config() {
-		ElementConfigName configName = ElementConfigName.valueOf("cannot_remove_active_config");
+		ElementConfigName configName = elementConfigName("cannot_remove_active_config");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -324,7 +325,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void remove_config_revision() {
-		ElementConfigName configName = ElementConfigName.valueOf("remove_config_revision");
+		ElementConfigName configName = elementConfigName("remove_config_revision");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
@@ -372,7 +373,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void update_comment_of_existing_config() {
-		ElementConfigName configName = ElementConfigName.valueOf("update_comment_of_existing_config");
+		ElementConfigName configName = elementConfigName("update_comment_of_existing_config");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 

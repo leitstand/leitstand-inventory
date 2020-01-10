@@ -34,8 +34,8 @@ import io.leitstand.inventory.jpa.ElementConfigNameConverter;
 import io.leitstand.inventory.service.ConfigurationState;
 import io.leitstand.inventory.service.ElementConfigId;
 import io.leitstand.inventory.service.ElementConfigName;
-import io.leitstand.security.auth.UserId;
-import io.leitstand.security.auth.jpa.UserIdConverter;
+import io.leitstand.security.auth.UserName;
+import io.leitstand.security.auth.jpa.UserNameConverter;
 
 @Entity
 @Table(schema="inventory", name="element_config")
@@ -108,8 +108,8 @@ public class Element_Config implements Serializable {
 	@Basic(fetch=LAZY)
 	private String config;
 	private String comment;
-	@Convert(converter=UserIdConverter.class)
-	private UserId creator;
+	@Convert(converter=UserNameConverter.class)
+	private UserName creator;
 	
 	protected Element_Config(){
 		// JPA
@@ -121,7 +121,7 @@ public class Element_Config implements Serializable {
 						  MediaType contentType,
 						  String contentHash,
 						  String config,
-						  UserId creator){
+						  UserName creator){
 		this(element,
 			 name,
 			 configState,
@@ -137,7 +137,7 @@ public class Element_Config implements Serializable {
 						  String contentType,
 			  			  String contentHash,
 			  			  String config,
-			  			  UserId creator){
+			  			  UserName creator){
 		this.configId = randomConfigId();
 		this.element = element;
 		this.name = name;
@@ -226,7 +226,7 @@ public class Element_Config implements Serializable {
 		this.contentHash = contentHash;
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 }

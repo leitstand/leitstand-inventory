@@ -42,6 +42,7 @@ import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static io.leitstand.inventory.service.ServiceType.CONTAINER;
 import static io.leitstand.inventory.service.ServiceType.DAEMON;
+import static io.leitstand.security.auth.UserName.userName;
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.junit.Assert.assertNotNull;
@@ -94,7 +95,7 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class ForceRemoveElementIT extends InventoryIT{
 
@@ -273,7 +274,7 @@ public class ForceRemoveElementIT extends InventoryIT{
 		transaction(()->{
 			ElementConfigManager configManager = new ElementConfigManager(repository, 
 																		  database, 
-																		  UserId.valueOf("junit"), 
+																		  userName("junit"), 
 																		  event, 
 																		  messages);	
 			ElementConfigService configService = new DefaultElementConfigService(elements, 

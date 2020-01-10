@@ -14,7 +14,7 @@ import io.leitstand.commons.jsonb.IsoDateAdapter;
 import io.leitstand.inventory.service.ConfigurationState;
 import io.leitstand.inventory.service.ElementConfigId;
 import io.leitstand.inventory.service.ElementConfigName;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public abstract class ElementConfigEvent extends ElementEvent {
 
@@ -48,7 +48,7 @@ public abstract class ElementConfigEvent extends ElementEvent {
 			return (B) this;
 		}
 		
-		public B withCreator(UserId creator) {
+		public B withCreator(UserName creator) {
 			assertNotInvalidated(getClass(),object);
 			((ElementConfigEvent)object).creator = creator;
 			return (B) this;
@@ -71,7 +71,7 @@ public abstract class ElementConfigEvent extends ElementEvent {
 	private String contentType;
 	@JsonbTypeAdapter(IsoDateAdapter.class)
 	private Date dateModified;
-	private UserId creator;
+	private UserName creator;
 	
 	
 	public ElementConfigId getConfigId() {
@@ -97,7 +97,7 @@ public abstract class ElementConfigEvent extends ElementEvent {
 		return new Date(dateModified.getTime());
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 	

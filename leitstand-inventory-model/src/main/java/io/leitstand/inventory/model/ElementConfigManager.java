@@ -32,7 +32,7 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configCreated;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configUpdated;
-import static io.leitstand.security.auth.UserId.userId;
+import static io.leitstand.security.auth.UserName.userName;
 import static io.leitstand.security.crypto.SecureHashes.md5;
 import static java.lang.String.format;
 
@@ -60,7 +60,7 @@ import io.leitstand.inventory.service.ElementConfigRevisions;
 import io.leitstand.inventory.service.ElementConfigs;
 import io.leitstand.inventory.service.StoreElementConfigResult;
 import io.leitstand.security.auth.Authenticated;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 @Dependent
 public class ElementConfigManager {
@@ -71,11 +71,11 @@ public class ElementConfigManager {
 	private DatabaseService database;
 	private Messages messages;
 	private Event<ElementConfigEvent> event;
-	private UserId creator;
+	private UserName creator;
 	@Inject
 	protected ElementConfigManager(	@Inventory Repository repository, 
 									@Inventory DatabaseService database,
-									@Authenticated UserId creator,
+									@Authenticated UserName creator,
 									Event<ElementConfigEvent> event,
 									Messages messages){
 		this.creator = creator;
@@ -111,7 +111,7 @@ public class ElementConfigManager {
 									 								 	   .withConfigId(elementConfigId(rs.getString(1)))
 									 								 	   .withConfigName(elementConfigName(rs.getString(2)))
 									 								 	   .withConfigState(configurationState(rs.getString(3)))
-									 								 	   .withCreator(userId(rs.getString(4)))
+									 								 	   .withCreator(userName(rs.getString(4)))
 									 								 	   .withComment(rs.getString(5))
 									 								 	   .withContentType(rs.getString(6))
 									 								 	   .withDateModified(rs.getTimestamp(7))
@@ -143,7 +143,7 @@ public class ElementConfigManager {
 							  										  	    .withConfigId(elementConfigId(rs.getString(1)))
 							  										  	    .withConfigName(configName)
 							  										  	    .withConfigState(configurationState(rs.getString(2)))
-							  										  	    .withCreator(userId(rs.getString(3)))
+							  										  	    .withCreator(userName(rs.getString(3)))
 							  										  		.withComment(rs.getString(4))
 							  										  		.withDateModified(rs.getTimestamp(5))
 							  										  		.build());

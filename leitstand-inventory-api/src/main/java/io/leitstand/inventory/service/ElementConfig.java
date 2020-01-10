@@ -10,7 +10,7 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 /**
  * A configuration of an element.
@@ -92,7 +92,7 @@ public class ElementConfig extends BaseElementEnvelope{
 			return this;
 		}
 		
-		public Builder withCreator(UserId creator) {
+		public Builder withCreator(UserName creator) {
 			assertNotInvalidated(getClass(), object);
 			object.creator = creator;
 			return this;
@@ -130,7 +130,7 @@ public class ElementConfig extends BaseElementEnvelope{
 	@NotNull(message="{config.required}")
 	private Object config;
 	
-	private UserId creator;
+	private UserName creator;
 	
 	private Date dateModified;
 	
@@ -176,7 +176,7 @@ public class ElementConfig extends BaseElementEnvelope{
 		return contentType;
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 	

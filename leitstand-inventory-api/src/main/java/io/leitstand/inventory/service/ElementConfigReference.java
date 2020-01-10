@@ -8,7 +8,7 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import java.util.Date;
 
 import io.leitstand.commons.model.CompositeValue;
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 public class ElementConfigReference extends CompositeValue {
 
@@ -26,7 +26,7 @@ public class ElementConfigReference extends CompositeValue {
 			return this;
 		}
 		
-		public Builder withCreator(UserId creator) {
+		public Builder withCreator(UserName creator) {
 			assertNotInvalidated(getClass(),ref);
 			ref.creator = creator;
 			return this;
@@ -76,7 +76,7 @@ public class ElementConfigReference extends CompositeValue {
 	private ElementConfigId configId;
 	private ElementConfigName configName;
 	private ConfigurationState configState;
-	private UserId creator;
+	private UserName creator;
 	private String comment;
 	private Date dateModified;
 	private String contentType;
@@ -97,7 +97,7 @@ public class ElementConfigReference extends CompositeValue {
 		return comment;
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 	

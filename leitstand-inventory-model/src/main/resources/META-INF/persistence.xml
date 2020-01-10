@@ -83,7 +83,7 @@
 		<class>io.leitstand.inventory.jpa.VisualizationConfigIdConverter</class>
 		<class>io.leitstand.inventory.jpa.VisualizationConfigNameConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
-		<class>io.leitstand.security.auth.jpa.UserIdConverter</class>
+		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>
 		<class>io.leitstand.commons.jpa.BooleanConverter</class>
 		<class>io.leitstand.commons.jpa.SerializableJsonObjectConverter</class>
 		<class>io.leitstand.commons.jpa.URLConverter</class>
