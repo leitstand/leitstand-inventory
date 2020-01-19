@@ -1,40 +1,18 @@
-<!--  {{#physical_interface}} -->
-<ui-view-header>
-	<ui-breadcrumbs href="element-ifps.html?group={{group_id}}&element={{element_id}}">Physical Interfaces</ui-breadcrumbs>
-	<ui-breadcrumbs>{{&ifp_name}}</ui-breadcrumbs>
-	<ui-title>Physical Interface Details</ui-title>
-	<ui-subtitle>Settings of physical interface {{&ifp_name}}</ui-subtitle>
-</ui-view-header>
-<ui-details>
-		<ui-property>
-			<ui-label>Interface Name</ui-label>
-			<ui-value>{{&ifp_name}}</ui-value>
-		</ui-property>
-		<ui-property>
-			<ui-label>Interface Alias</ui-label>
-			<ui-value>{{ifp_alias}}</ui-value>
-		</ui-property>
-		<ui-property>
-			<ui-label>Interface Class</ui-label>
-			<ui-value>{{ifp_class}}</ui-value>
-		</ui-property>		
-		<ui-property>
-			<ui-label>MAC Address</ui-label>
-			<ui-value><code>{{mac_address}}</code></ui-value>
-		</ui-property>		
-		<ui-property>
-			<ui-label>Bandwidth</ui-label>
-			<ui-value>{{bandwidth}}</ui-value>
-		</ui-property>
-		<ui-property>
-			<ui-label>Operational State</ui-label>
-			<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
-		</ui-property>
-		<ui-property>
-			<ui-label>Administrative State</ui-label>
-			<ui-value><span class="{{administrative_state}}">{{administrative_state}}</span></ui-value>
-		</ui-property>
-		<!-- {{#neighbor}} -->	
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
 		<ui-property>
 			<ui-label>Neighbor Interface Name</ui-label>
 			<ui-value>
