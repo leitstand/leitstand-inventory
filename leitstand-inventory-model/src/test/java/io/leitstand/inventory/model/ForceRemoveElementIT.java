@@ -107,7 +107,6 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
-import io.leitstand.security.auth.UserName;
 
 public class ForceRemoveElementIT extends InventoryIT{
 
