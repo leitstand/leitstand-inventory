@@ -85,3 +85,8 @@ subprojects {
     }
 }
 
+project(':leitstand-inventory-ui') {
+    sonarqube {
+        skipProject = true
+    }
+}
