@@ -1,10 +1,21 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
-import static io.leitstand.inventory.service.DnsName.dnsName;
 import static io.leitstand.inventory.service.DnsRecordSetId.randomDnsRecordSetId;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
@@ -27,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.inventory.service.DnsName;
 import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsRecordSetId;
 import io.leitstand.inventory.service.ElementDnsRecordSet;

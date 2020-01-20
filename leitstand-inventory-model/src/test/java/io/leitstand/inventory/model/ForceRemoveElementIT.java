@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.inventory.model;
 
@@ -42,6 +54,7 @@ import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static io.leitstand.inventory.service.ServiceType.CONTAINER;
 import static io.leitstand.inventory.service.ServiceType.DAEMON;
+import static io.leitstand.security.auth.UserName.userName;
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.junit.Assert.assertNotNull;
@@ -94,7 +107,6 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
-import io.leitstand.security.auth.UserId;
 
 public class ForceRemoveElementIT extends InventoryIT{
 
@@ -273,7 +285,7 @@ public class ForceRemoveElementIT extends InventoryIT{
 		transaction(()->{
 			ElementConfigManager configManager = new ElementConfigManager(repository, 
 																		  database, 
-																		  UserId.valueOf("junit"), 
+																		  userName("junit"), 
 																		  event, 
 																		  messages);	
 			ElementConfigService configService = new DefaultElementConfigService(elements, 

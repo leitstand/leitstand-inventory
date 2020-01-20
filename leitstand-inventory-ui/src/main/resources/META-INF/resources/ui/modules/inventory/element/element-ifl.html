@@ -1,67 +1,15 @@
-<!--  {{#logical_interface}} -->
-<ui-view-header>
-	<ui-breadcrumbs>
-		<ui-breadcrumb href="element-ifls.html?group={{group_id}}&element={{element_id}}">Logical Interfaces</ui-breadcrumb>
-		<ui-breadcrumb>{{&ifl_name}}</ui-breadcrumb>
-	</ui-breadcrumbs>
-	<ui-title>Logical Interface</ui-title>
-	<ui-subtitle>Inspect logical interface {{&ifl_name}} of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
-</ui-view-header>
-<ui-details>
-	<ui-property>
-		<ui-label>Interface Name</ui-label>
-		<ui-value>{{&ifl_name}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Operational State</ui-label>
-		<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Administrative State</ui-label>
-		<ui-value><span class="{{administrative_state}}">{{administrative_state}}</span></ui-value>
-	</ui-property>
-</ui-details>
-
-<h3>IP addresses</h3>
-<table class="list">
-<thead>
-	<tr>
-		<th>IPv4 address</th>
-		<th>IPv4 prefix</th>
-		<th>IPv6 address</th>
-		<th>IPv6 prefix</th>
-	</tr>
-</thead>
-<tbody>
-	<!-- {{#ifas}} -->
-	<tr>
-		<td>{{ipv4_address}}</td>
-		<td>{{ipv4_prefix}}</td>
-		<td>{{ipv6_address}}</td>
-		<td>{{ipv6_prefix}}</td>
-	</tr>
-	<!-- {{/ifas}} -->
-</tbody>
-</table>
-<h3>Physical Interfaces</h3>
-<table class="list">
-<thead>
-	<tr>
-		<th>Name</th>
-		<th>MAC address</th>
-		<th>Administrative State</th>
-		<th>Operational State</th>
-	</tr>
-</thead>
-<tbody>
-<!-- {{#ifps}} -->
-	<tr>
-		<td><a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a></td>
-		<td><code>{{mac_address}}</code></td>
-		<td><span class="{{adminstrative_state}}">{{administrative_state}}</span></td>
-		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
-	</tr>
-<!--  {{/ifps}} -->
-</tbody>
-</table>
-<!--  {{/logical_interface}} -->
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->

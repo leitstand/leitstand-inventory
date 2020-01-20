@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.inventory.model;
 
@@ -34,8 +46,8 @@ import io.leitstand.inventory.jpa.ElementConfigNameConverter;
 import io.leitstand.inventory.service.ConfigurationState;
 import io.leitstand.inventory.service.ElementConfigId;
 import io.leitstand.inventory.service.ElementConfigName;
-import io.leitstand.security.auth.UserId;
-import io.leitstand.security.auth.jpa.UserIdConverter;
+import io.leitstand.security.auth.UserName;
+import io.leitstand.security.auth.jpa.UserNameConverter;
 
 @Entity
 @Table(schema="inventory", name="element_config")
@@ -108,8 +120,8 @@ public class Element_Config implements Serializable {
 	@Basic(fetch=LAZY)
 	private String config;
 	private String comment;
-	@Convert(converter=UserIdConverter.class)
-	private UserId creator;
+	@Convert(converter=UserNameConverter.class)
+	private UserName creator;
 	
 	protected Element_Config(){
 		// JPA
@@ -121,7 +133,7 @@ public class Element_Config implements Serializable {
 						  MediaType contentType,
 						  String contentHash,
 						  String config,
-						  UserId creator){
+						  UserName creator){
 		this(element,
 			 name,
 			 configState,
@@ -137,7 +149,7 @@ public class Element_Config implements Serializable {
 						  String contentType,
 			  			  String contentHash,
 			  			  String config,
-			  			  UserId creator){
+			  			  UserName creator){
 		this.configId = randomConfigId();
 		this.element = element;
 		this.name = name;
@@ -226,7 +238,7 @@ public class Element_Config implements Serializable {
 		this.contentHash = contentHash;
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 }

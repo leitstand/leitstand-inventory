@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.inventory.service;
 
@@ -10,7 +22,7 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import io.leitstand.security.auth.UserId;
+import io.leitstand.security.auth.UserName;
 
 /**
  * A configuration of an element.
@@ -92,7 +104,7 @@ public class ElementConfig extends BaseElementEnvelope{
 			return this;
 		}
 		
-		public Builder withCreator(UserId creator) {
+		public Builder withCreator(UserName creator) {
 			assertNotInvalidated(getClass(), object);
 			object.creator = creator;
 			return this;
@@ -130,7 +142,7 @@ public class ElementConfig extends BaseElementEnvelope{
 	@NotNull(message="{config.required}")
 	private Object config;
 	
-	private UserId creator;
+	private UserName creator;
 	
 	private Date dateModified;
 	
@@ -176,7 +188,7 @@ public class ElementConfig extends BaseElementEnvelope{
 		return contentType;
 	}
 	
-	public UserId getCreator() {
+	public UserName getCreator() {
 		return creator;
 	}
 	

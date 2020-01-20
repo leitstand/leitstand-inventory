@@ -1,5 +1,17 @@
 /*
- * (c) RtBrick, Inc - All rights reserved, 2015 - 2019
+ * Copyright 2020 RtBrick Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package io.leitstand.inventory.model;
 
@@ -12,34 +24,17 @@ import static io.leitstand.inventory.service.AdministrativeState.NEW;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.ReasonCode.IVT0306I_ELEMENT_CLONED;
 
-import java.util.Date;
-
-import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.TemporalType.TIMESTAMP;
-
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.Basic;
-import javax.persistence.Convert;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
 
 import io.leitstand.commons.db.DatabaseService;
-import io.leitstand.commons.jpa.SerializableJsonObjectConverter;
-import io.leitstand.commons.json.SerializableJsonObject;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.event.ElementEvent;
-import io.leitstand.inventory.jpa.EnvironmentIdConverter;
-import io.leitstand.inventory.jpa.EnvironmentNameConverter;
 import io.leitstand.inventory.service.CloneElementService;
 import io.leitstand.inventory.service.ElementCloneRequest;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.EnvironmentId;
-import io.leitstand.inventory.service.EnvironmentName;
 
 @Service
 public class DefaultCloneElementService implements CloneElementService{
