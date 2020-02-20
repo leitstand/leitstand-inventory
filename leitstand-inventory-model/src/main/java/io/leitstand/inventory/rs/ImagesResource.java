@@ -20,13 +20,13 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.RELEASE_MANAGER;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -39,11 +39,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
@@ -55,11 +55,13 @@ import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_IMAGE})
 @Path("/images")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ImagesResource {
 
 	@Inject
@@ -69,6 +71,7 @@ public class ImagesResource {
 	private Messages messages;
 	
 	@GET
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public List<ImageReference> findImages(@QueryParam("filter") @DefaultValue("") String filter, 
 										   @QueryParam("element_role") @Valid ElementRoleName elementRole,
 										   @QueryParam("image_type") ImageType type,
@@ -84,6 +87,7 @@ public class ImagesResource {
 	
 	@GET
 	@Path("/{element_role}")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public RoleImages findRoleImages(@PathParam("element_role") ElementRoleName elementRole) {
 		return service.findRoleImages(elementRole);
 	}
@@ -91,7 +95,6 @@ public class ImagesResource {
 	
 	@POST
 	@Path("/")
-	@RolesAllowed({RELEASE_MANAGER,SYSTEM})
 	public Response storeImage(@Valid ImageInfo image) {
 		if(service.storeImage(image)) {
 			return created(messages,"/images/%s",image.getImageId());
@@ -101,7 +104,6 @@ public class ImagesResource {
 	
 	@PUT
 	@Path("/{image_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({RELEASE_MANAGER,SYSTEM})
 	public Response storeImage(@PathParam("image_id") ImageId id, 
 							   @Valid ImageInfo image){
 		if(isDifferent(id, image.getImageId())){
@@ -119,7 +121,6 @@ public class ImagesResource {
 	
 	@PUT
 	@Path("/{image_id:"+UUID_PATTERN+"}/image_state")
-	@RolesAllowed({RELEASE_MANAGER,SYSTEM})
 	public Response storeImage(@PathParam("image_id") ImageId id, ImageState state){
 		service.updateImageState(id,state);
 		return success(messages);
@@ -127,19 +128,22 @@ public class ImagesResource {
 	
 	@GET
 	@Path("/{image_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+
 	public ImageInfo getImage(@PathParam("image_id") ImageId id){
 		return service.getImage(id);
 	}
 
 	@GET
 	@Path("/{image_id:"+UUID_PATTERN+"}/statistics")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+
 	public ImageStatistics getImageStatistics(@PathParam("image_id") ImageId id){
 		return service.getImageStatistics(id);
 	}
 	
 	@DELETE
 	@Path("/{image_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({RELEASE_MANAGER,SYSTEM})
 	public Response removeImage(@PathParam("image_id") ImageId id){
 		service.removeImage(id);
 		return success(messages);
@@ -148,6 +152,7 @@ public class ImagesResource {
 	
 	@GET
 	@Path("/metadata")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public ImageMetaData getImageMetadata() {
 		return service.getImageMetaData();
 	}

@@ -20,10 +20,13 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -38,6 +41,7 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironmentService;
 import io.leitstand.inventory.service.ElementId;
@@ -45,11 +49,13 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
+@Path("/elements")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-@Path("/elements")
 public class ElementEnvironmentResource {
 
 	
@@ -61,6 +67,7 @@ public class ElementEnvironmentResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/environments/{env}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementEnvironment getElementEnvironment(@Valid @PathParam("element") ElementId elementId,
 													@Valid @PathParam("env") EnvironmentName environmentName) {
 		return service.getElementEnvironment(elementId,
@@ -69,6 +76,7 @@ public class ElementEnvironmentResource {
 
 	@GET
 	@Path("/{element}/environments/{env}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementEnvironment getElementEnvironment(@Valid @PathParam("element") ElementName elementName,
 													@Valid @PathParam("env") EnvironmentName environmentName) {
 		return service.getElementEnvironment(elementName,
@@ -77,6 +85,7 @@ public class ElementEnvironmentResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/environments/{env:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementEnvironment getElementEnvironment(@Valid @PathParam("element") ElementId elementId,
 													@Valid @PathParam("env") EnvironmentId environmentId) {
 		ElementEnvironment env = service.getElementEnvironment(environmentId);
@@ -88,6 +97,7 @@ public class ElementEnvironmentResource {
 
 	@GET
 	@Path("/{element}/environments/{env:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementEnvironment getElementEnvironment(@Valid @PathParam("element") ElementName elementName,
 													@Valid @PathParam("env") EnvironmentId environmentId) {
 		ElementEnvironment env = service.getElementEnvironment(environmentId);

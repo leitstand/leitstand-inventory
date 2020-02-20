@@ -16,8 +16,11 @@
 package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -25,17 +28,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementLinkService;
 import io.leitstand.inventory.service.ElementLinks;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 @Path("/elements")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementLinksResource{
 
 	@Inject

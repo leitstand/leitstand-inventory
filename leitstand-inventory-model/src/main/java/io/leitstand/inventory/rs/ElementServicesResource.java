@@ -20,13 +20,13 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -36,11 +36,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementServiceStack;
@@ -49,11 +49,13 @@ import io.leitstand.inventory.service.ElementServices;
 import io.leitstand.inventory.service.ElementServicesService;
 import io.leitstand.inventory.service.OperationalState;
 import io.leitstand.inventory.service.ServiceName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT})
 @Path("/elements")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementServicesResource{
 
 	
@@ -65,6 +67,7 @@ public class ElementServicesResource{
 	
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/services/{service_name}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementServiceStack getElementServiceTopology(@Valid @PathParam("id") ElementId id, 
 	                                                     @Valid @PathParam("service_name") ServiceName serviceName){
 		return service.getElementServiceStack(id,serviceName);
@@ -73,6 +76,7 @@ public class ElementServicesResource{
 	
 	@GET
 	@Path("/{name}/services/{service_name}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementServiceStack getElementServiceTopology(@Valid @PathParam("name") ElementName name, 
 	                                                     @Valid @PathParam("service_name") ServiceName serviceName){
 		return service.getElementServiceStack(name,serviceName);
@@ -81,19 +85,20 @@ public class ElementServicesResource{
 	
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/services")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementServices getServices(@Valid @PathParam("id") ElementId id){
 		return service.getElementServices(id);
 	}
 		
 	@GET
 	@Path("/{name}/services")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementServices getServices(@Valid @PathParam("name") ElementName name){
 		return service.getElementServices(name);
 	}
 	
 	@DELETE
 	@Path("/{id:"+UUID_PATTERN+"}/services/{service_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementService(@Valid @PathParam("id") ElementId id, 
 										 @Valid @PathParam("service_name") ServiceName serviceName){
 		service.removeElementService(id,serviceName);
@@ -102,7 +107,6 @@ public class ElementServicesResource{
 	
 	@DELETE
 	@Path("/{name}/services/{service_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementService(@Valid @PathParam("name") ElementName name, 
 	                                 	 @Valid @PathParam("service_name") ServiceName serviceName){
 		service.removeElementService(name,serviceName);
@@ -112,7 +116,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/services/{service_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementService(@Valid @PathParam("id") ElementId id, 
 	                                    @Valid @PathParam("service_name") ServiceName serviceName, 
 	                                    @Valid ElementServiceSubmission submission){
@@ -132,7 +135,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{name}/services/{service_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementService(@Valid @PathParam("name") ElementName name, 
 	                                    @PathParam("service_name") ServiceName serviceName, 
 	                                    @Valid ElementServiceSubmission submission){
@@ -150,7 +152,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{name}/services/")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementServices(@Valid @PathParam("name") ElementName name,
 										 @Valid List<ElementServiceSubmission> submissions) {
 		service.storeElementServices(name, submissions);
@@ -159,7 +160,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/services/")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementServices(@Valid @PathParam("id") ElementId id,
 										 @Valid List<ElementServiceSubmission> submissions) {
 		service.storeElementServices(id, submissions);
@@ -168,7 +168,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{name}/services/{service_name}/operational_state")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementService(@Valid @PathParam("name") ElementName name, 
 	                                	@PathParam("service_name") ServiceName serviceName, 
 	                                	@Valid OperationalState state){
@@ -178,7 +177,6 @@ public class ElementServicesResource{
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/services/{service_name}/operational_state")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementService(@Valid @PathParam("id") ElementId id, 
 	                                    @PathParam("service_name") ServiceName serviceName, 
 	                                    @Valid OperationalState state){

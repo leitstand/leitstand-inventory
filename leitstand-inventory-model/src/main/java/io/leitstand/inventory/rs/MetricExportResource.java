@@ -16,10 +16,12 @@
 package io.leitstand.inventory.rs;
 
 
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_METRIC;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,10 +32,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.MetricExportService;
 import io.leitstand.inventory.service.MetricsExport;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_METRIC})
 @Path("/export")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
@@ -47,6 +52,7 @@ public class MetricExportResource {
 	
 	@GET
 	@Path("/metrics")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public Response exportMetricsJson(@QueryParam("filter") String filter){
 		
 		MetricsExport export = inventory.exportMetrics(filter);

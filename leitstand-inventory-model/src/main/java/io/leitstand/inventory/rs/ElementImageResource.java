@@ -17,13 +17,13 @@ package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -34,10 +34,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementImagesService;
 import io.leitstand.inventory.service.ElementInstalledImage;
@@ -45,11 +45,14 @@ import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_IMAGE})
+
 @Path("/elements")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementImageResource{
 
 	
@@ -61,6 +64,8 @@ public class ElementImageResource{
 	
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/images/{image_id}")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+
 	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("id") ElementId id, 
 	                                                                  @Valid @PathParam("image_id") ImageId imageId){
 		return service.getElementInstalledImage(id,imageId);
@@ -68,6 +73,7 @@ public class ElementImageResource{
 	
 	@GET
 	@Path("/{name}/images/{image_id}")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("name") ElementName name, 
 	                                                                  @Valid @PathParam("image_id") ImageId imageId){
 		return service.getElementInstalledImage(name,imageId);
@@ -75,19 +81,20 @@ public class ElementImageResource{
 	
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/images")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("id") ElementId id){
 		return service.getElementInstalledImages(id);
 	}
 
 	@GET
 	@Path("/{name}/images")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("name") ElementName name){
 		return service.getElementInstalledImages(name);
 	}
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeInstalledImages(@Valid @PathParam("id") ElementId id, 
 	                                       @Valid List<ElementInstalledImageReference> images){
 		service.storeInstalledImages(id, images);
@@ -96,7 +103,6 @@ public class ElementImageResource{
 	
 	@PUT
 	@Path("/{name}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeInstalledImages(@Valid @PathParam("name") ElementName name, 
 	                                       @Valid List<ElementInstalledImageReference> images){
 		service.storeInstalledImages(name, images);
@@ -105,7 +111,6 @@ public class ElementImageResource{
 	
 	@POST
 	@Path("/{id:"+UUID_PATTERN+"}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeCachedImages(@Valid @PathParam("id") ElementId id, 
 	                                  @Valid List<ElementInstalledImageReference> images){
 		service.addCachedImages(id, images);
@@ -114,7 +119,6 @@ public class ElementImageResource{
 	
 	@POST
 	@Path("/{name}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeCachedImages(@Valid @PathParam("name") ElementName name, 
 	                                  @Valid List<ElementInstalledImageReference> images){
 		service.addCachedImages(name, images);
@@ -123,7 +127,6 @@ public class ElementImageResource{
 
 	@DELETE
 	@Path("/{id:"+UUID_PATTERN+"}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeCachedImages(@Valid @PathParam("id") ElementId id, 
 	                                   @Valid List<ElementInstalledImageReference> images){
 		service.removeCachedImages(id, images);
@@ -133,7 +136,6 @@ public class ElementImageResource{
 	
 	@DELETE
 	@Path("/{name}/images")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeCachedImages(@Valid @PathParam("name") ElementName name, 
 	                                   @Valid List<ElementInstalledImageReference> images){
 		service.removeCachedImages(name, images);

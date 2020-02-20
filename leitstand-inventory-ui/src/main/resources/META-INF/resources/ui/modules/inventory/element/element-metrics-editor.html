@@ -22,7 +22,7 @@
 	<ui-subtitle>Select all metrics available for element {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <!-- {{#metrics.length}}  -->
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element">
 	<ui-group>
 		<ui-label>Metrics</ui-label>
 		<ui-note>Select all metrics supplied by this element.</ui-note>

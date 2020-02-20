@@ -13,7 +13,7 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<ui-confirm rolesAllowed="Operator">
+<ui-confirm>
 	<ui-title>Confirm to remove {{config_state}} {{config_name}} configuration</ui-title>
 	<ui-message>
 		<ui-note>
@@ -21,6 +21,6 @@
 			The configuration must be rebuilt manually, if removed accidentially.
 		</ui-note>
 	</ui-message>
-	<ui-approve name="confirm-remove" rolesAllowed="Operator">Confirm</ui-approve>
+	<ui-approve name="confirm-remove" scopesAllowed="ivt ivt.element ivt.element.config">Confirm</ui-approve>
 	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" class="btn btn-outline">Dismiss</ui-decline>
 </ui-form>

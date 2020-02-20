@@ -17,14 +17,15 @@ package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -38,14 +39,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import io.leitstand.commons.AccessDeniedException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementService;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.OperationalState;
+import io.leitstand.security.auth.ReasonCode;
+import io.leitstand.security.auth.Scopes;
+import io.leitstand.security.auth.UserContext;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 @Path("/elements")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
@@ -57,7 +64,11 @@ public class ElementResource {
 	@Inject
 	private Messages messages;
 	
+	@Inject
+	private UserContext user;
+	
 	@GET
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public List<ElementSettings> findElement(@QueryParam("filter") @DefaultValue("") String filter,
 	                                         @QueryParam("offset") @DefaultValue("0") int offset,
 											 @QueryParam("limit")  @DefaultValue("100") int limit){
@@ -66,10 +77,10 @@ public class ElementResource {
 	
 	@DELETE
 	@Path("/{element:"+UUID_PATTERN+"}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElement(@PathParam("element") ElementId elementId,
 								  @QueryParam("force") boolean force) {
 		if(force) {
+			verifyForceAllowed();
 			service.forceRemoveElement(elementId);
 		} else {
 			service.removeElement(elementId);
@@ -79,10 +90,10 @@ public class ElementResource {
 
 	@DELETE
 	@Path("/{element}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElement(@PathParam("element") ElementName elementName,
 							  	  @QueryParam("force") boolean force) {
 		if(force) {
+			verifyForceAllowed();
 			service.forceRemoveElement(elementName);
 		} else {
 			service.removeElement(elementName);
@@ -90,10 +101,14 @@ public class ElementResource {
 		return success(messages);
 	}
 	
+	private void verifyForceAllowed() {
+		if(!user.scopesIncludeOneOf(IVT,IVT_ELEMENT)) {
+			throw new AccessDeniedException(ReasonCode.AUT0002E_SCOPE_ACCESS_DENIED, format("%s %s",IVT,IVT_ELEMENT));
+		}
+	}
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/operational_state")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response updateOperationalState(@Valid @PathParam("id") ElementId id, 
 										   OperationalState state){
 		service.updateElementOperationalState(id,state);
@@ -102,7 +117,6 @@ public class ElementResource {
 	
 	@PUT
 	@Path("/{name}/operational_state")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response updateOperationalState(@Valid @PathParam("name") ElementName name, 
 										   OperationalState state){
 		service.updateElementOperationalState(name,state);

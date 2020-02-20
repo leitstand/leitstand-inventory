@@ -18,13 +18,14 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_MODULE;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -34,11 +35,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementModule;
 import io.leitstand.inventory.service.ElementModuleService;
@@ -46,11 +47,13 @@ import io.leitstand.inventory.service.ElementModules;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT, IVT_ELEMENT_MODULE})
 @Path("/elements")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementModulesResource{
 
 	@Inject
@@ -61,12 +64,14 @@ public class ElementModulesResource{
 	
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/modules")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModules getElementModules(@Valid @PathParam("id") ElementId id){
 		return service.getElementModules(id);
 	}
 
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModule getElementModule(@Valid @PathParam("id") ElementId id, 
 										  @PathParam("module") String module){
 		try {
@@ -78,12 +83,14 @@ public class ElementModulesResource{
 	
 	@GET
 	@Path("/{name}/modules")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModules getElementModules(@PathParam("name") ElementName name){
 		return service.getElementModules(name);
 	}
 	
 	@GET
 	@Path("/{name}/modules/{module}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModule getElementModule(@Valid @PathParam("name") ElementName name, 
 										  @PathParam("module") String module){
 		try {
@@ -95,7 +102,6 @@ public class ElementModulesResource{
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementModule(@Valid @PathParam("id") ElementId elementId, 
 	                                   @PathParam("module") ModuleName moduleName,
 	                                   ModuleData module){
@@ -107,7 +113,6 @@ public class ElementModulesResource{
 
 	@PUT
 	@Path("/{name}/modules/{module}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementModule(@Valid @PathParam("name") ElementName elementName, 
 									   @Valid @PathParam("module") ModuleName moduleName,
 	                                   @Valid ModuleData module){
@@ -119,7 +124,6 @@ public class ElementModulesResource{
 	
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/modules")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementModule(@Valid @PathParam("id") ElementId elementId, 
 									   @Valid List<ModuleData> modules){
 		service.storeElementModules(elementId, 
@@ -129,7 +133,6 @@ public class ElementModulesResource{
 	
 	@PUT
 	@Path("/{name}/modules")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementModules(@Valid @PathParam("name") ElementName elementName, 
 	                                    @Valid List<ModuleData> modules){
 		service.storeElementModules(elementName, 
@@ -139,7 +142,6 @@ public class ElementModulesResource{
 
 	@DELETE
 	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementModule(@Valid @PathParam("id") ElementId elementId, 
 	                               		@Valid @PathParam("module") ModuleName moduleName){
 		service.removeElementModule(elementId, 
@@ -149,13 +151,11 @@ public class ElementModulesResource{
 	
 	@DELETE
 	@Path("/{name}/modules/{module}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementModule(@Valid @PathParam("name") ElementName elementName, 
 	                               	@Valid @PathParam("module") ModuleName moduleName){
 		service.removeElementModule(elementName,
 									moduleName);
 		return success(messages);
-
 	}
 	
 }

@@ -13,7 +13,7 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<ui-confirm rolesAllowed="Operator">
+<ui-confirm>
 	<ui-title>Confirm to remove DNS zone {{dns_zone_name}}</ui-title>
 	<ui-message>
 		<ui-note>
@@ -26,6 +26,6 @@
 					 Only empty DNS zones can be removed by default.</ui-note>
 		</ui-checkbox>
 	</ui-message>
-	<ui-approve name="confirm-remove">Confirm</ui-approve>
+	<ui-approve name="confirm-remove" scopesAllowed="ivt ivt.element ivt.element.dns">Confirm</ui-approve>
 	<ui-decline href="zone-settings.html?zone={{dns_zone_id}}">Cancel</ui-decline>
 </ui-confirm>

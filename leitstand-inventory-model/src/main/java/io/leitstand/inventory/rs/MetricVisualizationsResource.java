@@ -21,14 +21,17 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_METRIC;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -39,6 +42,7 @@ import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.MetricId;
 import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.MetricVisualization;
@@ -47,9 +51,12 @@ import io.leitstand.inventory.service.MetricVisualizations;
 import io.leitstand.inventory.service.VisualizationConfig;
 import io.leitstand.inventory.service.VisualizationConfigId;
 import io.leitstand.inventory.service.VisualizationConfigName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_METRIC})
 @Path("/metrics")
+@Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class MetricVisualizationsResource {
 	
@@ -64,12 +71,14 @@ public class MetricVisualizationsResource {
 	
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}/visualizations")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricVisualizations getMetricVisualizations(@PathParam("metric") @Valid MetricId metricId) {
 		return service.getMetricVisualizations(metricId);
 	}
 	
 	@GET
 	@Path("/{metric_name}/visualizations")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricVisualizations getMetricVisualizations(@Valid @PathParam("metric_name") MetricName metricName) {
 		return service.getMetricVisualizations(metricName);
 	}
@@ -77,6 +86,7 @@ public class MetricVisualizationsResource {
 	
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}/visualizations/{visualization}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricVisualization getMetricVisualizations(@PathParam("metric") @Valid MetricId metricId,
 													   @PathParam("rule") @Valid VisualizationConfigName visualizationName) {
 		return service.getMetricVisualization(metricId, 
@@ -85,6 +95,7 @@ public class MetricVisualizationsResource {
 	
 	@GET
 	@Path("/{metric_name}/visualizations/{visualization}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricVisualization getMetricVisualizations(@PathParam("metric_name") @Valid MetricName metricName,
 													   @PathParam("rule") @Valid VisualizationConfigName visualizationName) {
 		return service.getMetricVisualization(metricName,

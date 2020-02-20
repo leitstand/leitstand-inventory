@@ -71,7 +71,7 @@ import io.leitstand.inventory.service.ElementConfigReference;
 import io.leitstand.inventory.service.ElementConfigRevisions;
 import io.leitstand.inventory.service.ElementConfigs;
 import io.leitstand.inventory.service.StoreElementConfigResult;
-import io.leitstand.security.auth.Authenticated;
+import io.leitstand.security.auth.UserContext;
 import io.leitstand.security.auth.UserName;
 
 @Dependent
@@ -84,13 +84,14 @@ public class ElementConfigManager {
 	private Messages messages;
 	private Event<ElementConfigEvent> event;
 	private UserName creator;
+	
 	@Inject
 	protected ElementConfigManager(	@Inventory Repository repository, 
 									@Inventory DatabaseService database,
-									@Authenticated UserName creator,
+									UserContext authenticated,
 									Event<ElementConfigEvent> event,
 									Messages messages){
-		this.creator = creator;
+		this.creator = authenticated.getUserName();
 		this.repository = repository;
 		this.database   = database;
 		this.event = event;

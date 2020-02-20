@@ -21,13 +21,13 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
@@ -44,15 +44,18 @@ import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
+import io.leitstand.security.auth.Scopes;
 
 /**
  * Manages the general settings of an element.
  */
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT,IVT_ELEMENT_SETTINGS})
 @Path("/elements")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
@@ -71,6 +74,7 @@ public class ElementSettingsResource{
 	 */
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/settings")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT,IVT_ELEMENT_SETTINGS})
 	public ElementSettings getElementSettings(@Valid @PathParam("element") ElementId element){
 		return service.getElementSettings(element);
 	}
@@ -82,6 +86,7 @@ public class ElementSettingsResource{
 	 */
 	@GET
 	@Path("/{element}/settings")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT,IVT_ELEMENT_SETTINGS})
 	public ElementSettings getElementSettings(@Valid @PathParam("element") ElementName element){
 		return service.getElementSettings(element);
 	}
@@ -95,7 +100,6 @@ public class ElementSettingsResource{
 	 */
 	@PUT
 	@Path("/{element:"+UUID_PATTERN+"}/settings")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementSettings(@Valid @PathParam("element") ElementId element, 
 	                                     @Valid ElementSettings settings){
 		
@@ -126,7 +130,6 @@ public class ElementSettingsResource{
 	 */
 	@PUT
 	@Path("/{element}/settings")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementSettings(@PathParam("element") ElementName element, 
 										 @Valid ElementSettings settings){
 		try {
@@ -146,7 +149,6 @@ public class ElementSettingsResource{
 	 * @return a created response if a new element was created, a success response if the settings of an existing element have been updated
 	 */
 	@POST
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementSettings(@Valid ElementSettings settings){
 		return storeElementSettings(settings.getElementId(),
 							 		settings);
@@ -163,6 +165,5 @@ public class ElementSettingsResource{
 			throw p;
 		}
 	}
-	
 
 }

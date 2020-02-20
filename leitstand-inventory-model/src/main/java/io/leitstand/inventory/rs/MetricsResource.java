@@ -21,16 +21,16 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_METRIC;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -43,14 +43,18 @@ import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.MetricId;
 import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.MetricScope;
 import io.leitstand.inventory.service.MetricSettings;
 import io.leitstand.inventory.service.MetricSettingsService;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_METRIC})
 @Path("/metrics")
+@Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class MetricsResource {
 
@@ -61,6 +65,7 @@ public class MetricsResource {
 	private Messages messages;
 	
 	@GET
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public List<MetricSettings> findMetrics(@QueryParam("filter") String filter,
 											@QueryParam("metric_scope") MetricScope scope){
 		return service.findMetrics(filter,scope);
@@ -68,19 +73,20 @@ public class MetricsResource {
 	
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricSettings getMetricSettings(@PathParam("metric") @Valid MetricId metricId) {
 		return service.getMetricSettings(metricId);
 	}
 	
 	@GET
 	@Path("/{metric_name}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricSettings getMetricSettings(@Valid @PathParam("metric_name") MetricName metricName) {
 		return service.getMetricSettings(metricName);
 	}
 		
 	@PUT
 	@Path("/{metric:"+UUID_PATTERN+"}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeMetricSettings(@Valid @PathParam("metric") MetricId metricId, 
 										@Valid MetricSettings settings) {
 		if(isDifferent(metricId, settings.getMetricId())) {
@@ -98,7 +104,6 @@ public class MetricsResource {
 	}
 	
 	@POST
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeMetricSettings(@Valid MetricSettings settings) {
 		return storeMetricSettings(settings.getMetricId(),settings);
 	}
@@ -106,7 +111,6 @@ public class MetricsResource {
 
 	@DELETE
 	@Path("/{metric}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeMetric(@PathParam("metric") @Valid MetricName metricName,
 								 @QueryParam("force") boolean force) {
 		if(force) {
@@ -119,7 +123,6 @@ public class MetricsResource {
 	
 	@DELETE
 	@Path("/{metric:"+UUID_PATTERN+"}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeMetric(@PathParam("metric") @Valid MetricId metricId,
 								 @QueryParam("force") boolean force) {
 		if(force) {

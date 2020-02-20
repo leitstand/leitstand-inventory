@@ -21,7 +21,7 @@
 	<ui-title>Module Details</ui-title>
 	<ui-subtitle>Inspect details of module {{module.module_name}}</ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element ivt.element.module">
 	<ui-group>
 		<ui-label>Module Information</ui-label>
 		<ui-input name="module_name" bind="module.module_name" disabled readonly>

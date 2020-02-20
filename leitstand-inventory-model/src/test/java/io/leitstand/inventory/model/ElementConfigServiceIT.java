@@ -43,6 +43,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import javax.enterprise.event.Event;
 
@@ -66,6 +67,7 @@ import io.leitstand.inventory.service.ElementConfigService;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.StoreElementConfigResult;
+import io.leitstand.security.auth.UserContext;
 
 public class ElementConfigServiceIT extends InventoryIT {
 	
@@ -83,10 +85,12 @@ public class ElementConfigServiceIT extends InventoryIT {
 		Event<ElementConfigEvent> event = mock(Event.class);
 		eventCaptor = forClass(ElementConfigEvent.class);
 		doNothing().when(event).fire(eventCaptor.capture());
+		UserContext userContext = mock(UserContext.class);
+		when(userContext.getUserName()).thenReturn(userName("unittest"));
 		
 		ElementConfigManager configs = new ElementConfigManager(repository,
 																db,
-																userName("unittest"),
+																userContext,
 																event,
 																mock(Messages.class));
 		service = new DefaultElementConfigService(elements,configs);
@@ -116,7 +120,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	public void raise_exception_if_config_does_not_exist() {
 		transaction(()->{
 			try {
-				service.getElementConfig(ELEMENT_NAME, ElementConfigId.randomConfigId());
+				service.getElementConfig(ELEMENT_NAME, randomConfigId());
 				fail("Exception expected!");
 			} catch (EntityNotFoundException e) {
 				assertEquals(IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,e.getReason());

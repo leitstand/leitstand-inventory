@@ -21,7 +21,7 @@
 	<ui-title>Platform Settings</ui-title>
 	<ui-subtitle>Manage settings of platform {{vendor_name}} {{model_name}}</ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element ivt.element.settings">
 	<ui-group>
 		<ui-label>General Settings</ui-label>
 		<ui-input name="vendor_name">

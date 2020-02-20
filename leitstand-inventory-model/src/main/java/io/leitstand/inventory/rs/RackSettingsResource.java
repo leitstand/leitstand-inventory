@@ -16,22 +16,33 @@
 package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupRack;
 import io.leitstand.inventory.service.ElementGroupRackService;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.RackName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_GROUP, IVT_GROUP_SETTINGS})
 @Path("/{group_type}")
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class RackSettingsResource {
 
 	
@@ -42,6 +53,7 @@ public class RackSettingsResource {
 	
 	@GET
 	@Path("/{group_name}/racks/{rack_name}")
+	@Scopes({IVT, IVT_READ, IVT_GROUP, IVT_GROUP_SETTINGS})
 	public ElementGroupRack getRack(@PathParam("group_type") ElementGroupType groupType,
 								    @PathParam("group_name") ElementGroupName groupName,
 								    @PathParam("rack_name") RackName rackName){
@@ -52,6 +64,7 @@ public class RackSettingsResource {
 
 	@GET
 	@Path("/{group_id:"+UUID_PATTERN+"}/racks/{rack_name}")
+	@Scopes({IVT, IVT_READ, IVT_GROUP, IVT_GROUP_SETTINGS})
 	public ElementGroupRack getRack(@PathParam("group_id") ElementGroupId groupId,
 							        @PathParam("rack_name") RackName rackName){
 		return service.getRack(groupId, 

@@ -20,10 +20,13 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_DNS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT3003I_ELEMENT_DNS_RECORD_OWNED_BY_OTHER_ELEMENT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -39,6 +42,7 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.DnsName;
 import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsRecordSetId;
@@ -48,11 +52,13 @@ import io.leitstand.inventory.service.ElementDnsRecordSetService;
 import io.leitstand.inventory.service.ElementDnsRecordSets;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
 @Path("/elements")
-@Produces(APPLICATION_JSON)
+@Scopes({IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 @Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementDnsRecordSetResource {
 
 	@Inject
@@ -63,18 +69,21 @@ public class ElementDnsRecordSetResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/dns")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSets getElementDnsRecordSets(@Valid @PathParam("element") ElementId elementId) {
 		return service.getElementDnsRecordSets(elementId);
 	}
 	
 	@GET
 	@Path("/{element}/dns")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSets getElementDnsRecordSets(@Valid @PathParam("element") ElementName elementName) {
 		return service.getElementDnsRecordSets(elementName);
 	}
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/dns/{dns_name}/{dns_type}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSet(@Valid @PathParam("element") ElementId elementId,
 													  @Valid @PathParam("dns_name") DnsName dnsName,
 													  @Valid @PathParam("dns_type") DnsRecordType dnsType) {
@@ -83,6 +92,7 @@ public class ElementDnsRecordSetResource {
 	
 	@GET
 	@Path("/{element}/dns/{dns_name}/{dns_type}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSets(@Valid @PathParam("element") ElementName elementName,
 															  @Valid @PathParam("dns_name") DnsName dnsName,
 															  @Valid @PathParam("dns_type") DnsRecordType dnsType) {
@@ -91,6 +101,7 @@ public class ElementDnsRecordSetResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/dns/{dns_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSet(@Valid @PathParam("element") ElementId elementId,
 															  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
 		ElementDnsRecordSet recordSet = service.getElementDnsRecordSet(dnsId);
@@ -105,6 +116,7 @@ public class ElementDnsRecordSetResource {
 	
 	@GET
 	@Path("/{element}/dns/{dns_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSet(@Valid @PathParam("element") ElementName elementName,
 															  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
 		ElementDnsRecordSet recordSet = service.getElementDnsRecordSet(dnsId);

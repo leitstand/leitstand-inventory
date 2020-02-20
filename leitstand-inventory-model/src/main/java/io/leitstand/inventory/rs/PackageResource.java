@@ -15,22 +15,32 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.PackageService;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.QualifiedPackageName;
 import io.leitstand.inventory.service.Version;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_READ, IVT_IMAGE})
 @Path("/packages")
-//@RolesAllowed("user")
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class PackageResource {
 
 	@Inject
