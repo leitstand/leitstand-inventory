@@ -1,0 +1,135 @@
+provider: leitstand.io
+controller: controller.js
+description: Element management views.
+extensions:
+- extend:
+    module: inventory
+    after: pod
+  menus:
+  - menu: element
+    label: "{{element_name}}"
+    title: Manage an element in the network
+    scopesAllowed:
+      - ivt
+      - ivt.read
+      - ivt.element
+      - ivt.element.read
+    requires:
+    - group_id
+    - element_id
+    query:
+      group: "{{group_id}}"
+      element: "{{element_id}}"
+    items:
+    - item: element-settings
+      label: Element Settings
+      title: Manage general settings of the element
+      view: element.html
+    - item: element-location
+      label: Location
+      title: Review the location of the element
+      view: element-rack.html
+    - item: configuration
+      label: Configuration
+      title: Manage the configuration of this element
+      view:  config/element-configs.html
+    - item: element-modules
+      label: Modules
+      title: Review element hardware modules.
+      view: element-modules.html
+    - item: element-ifps
+      label: Physical Interfaces  
+      title: View all physical interfaces of the element
+      view: element-ifps.html
+    - item: element-images
+      label: Images
+      title: View all images available on the element
+      view: element-images.html
+    - item: element-services
+      label: Services
+      title: View all servces installed on the element
+      view: element-services.html
+    - item: element-metrics
+      label: Metrics
+      title: See all metrics available for this element
+      view: element-metrics.html
+    - item: element-tools
+      label: Tools
+      title: See all available tools for this element
+      view: element-tools.html
+  - menu: services
+    label: "{{display_name}}"
+    title: View details of the selected service
+    scopesAllowed:
+      - ivt
+      - ivt.read
+      - ivt.element
+      - ivt.element.read
+    requires:
+    - group_id
+    - element_id
+    - service_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      service_id: "{{service}}"   # FIXME Naming issue   
+    items:
+    - item: element-service
+      label: Overview
+      title: See the details of this service
+      view: element-service.html
+    - item: element-service_metrics
+      label: Metrics
+      title: See the available metrics for this service
+      view: element-service_metrics.html
+  - menu: ifp
+    # Use & to prevent / to be escaped.
+    label: "{{&ifp_name}}"
+    title: View details of the selected physical interface
+    scopesAllowed:
+      - ivt
+      - ivt.read
+      - ivt.element
+      - ivt.element.read
+    requires:
+    - group_id
+    - element_id
+    - ifp_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      ifp_item: "{{&ifp_name}}"   
+    items:
+    - item: element-ifp
+      label: Settings
+      title: See the settings of this physical interface
+      view: element-ifp.html
+    - item: element-ifp-metrics
+      label: Metrics
+      title: See the availavble metrics for this physical interface
+      view: element-ifp-metrics.html      
+  - menu: ifl
+    label: "{{&logical_interface.ifl_name}}"
+    title: View details of the selected physical interface
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.element
+    - ivt.element.read
+    requires:
+    - group_id
+    - element_id
+    - ifl_name
+    query:
+      group: "{{group_id}}"     
+      element: "{{element_id}}"
+      ifl_item: "{{&logical_interface.ifl_name}}"   
+    items:
+    - item: element-ifl
+      label: Settings
+      title: See the settings of this physical interface
+      view: element-ifl.html
+    - item: element-ifl-metrics
+      label: Metrics
+      title: See the availavble metrics for this physical interface
+      view: element-ifl-metrics.html          

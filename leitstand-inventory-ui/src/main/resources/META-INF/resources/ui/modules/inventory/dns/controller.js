@@ -24,12 +24,12 @@ const DNS_TYPES = [{"label":"IPv4 address (A)","value":"A"},
 				   {"label":"Alias (CNAME)","value":"CNAME"}];
 
 
-let zonesController = function(){
-	let zones = new DnsZones();
+const zonesController = function(){
+	const zones = new DnsZones();
 	return new Controller({resource:zones,
 						   viewModel:function(zones){
 							   return {"zones":zones,
-								   	   "filter":this.location().param("filter")};
+								   	   "filter":this.location.param("filter")};
 						   },
 						   buttons:{
 							   "add-zone":function(){
@@ -42,16 +42,16 @@ let zonesController = function(){
 							});
 }
 
-let zoneSettingsController = function(){
-	let zone = new DnsZone({"scope":"settings"});
+const zoneSettingsController = function(){
+	const zone = new DnsZone({"scope":"settings"});
 	return new Controller({resource:zone,
 						   buttons:{
 							   "save-settings":function(){
-								   zone.storeSettings(this.location().params(),
+								   zone.storeSettings(this.location.params,
 										   			  this.getViewModel());	
 							   },
 							   "confirm-remove":function(){
-								   let params = this.location().params();
+								   let params = this.location.params;
 								   params.force = this.input("force").isChecked();
 								   zone.removeZone(params);
 							   }
@@ -61,54 +61,54 @@ let zoneSettingsController = function(){
 						   }});
 }
 
-let zoneElementsController = function(){
-	let zone = new DnsZone({"scope":"elements"});
+const zoneElementsController = function(){
+	const zone = new DnsZone({"scope":"elements"});
 	return new Controller({resource:zone});
 }
 
-let elementDnsRecordSetsController = function(){
-	let element = new Element({"scope":"dns"});
+const elementDnsRecordSetsController = function(){
+	const element = new Element({"scope":"dns"});
 	return new Controller({resource:element});
 };
 
-let addElementDnsRecordSetController = function(){
-	let element = new Element({"scope":"dns"});
+const addElementDnsRecordSetController = function(){
+	const element = new Element({"scope":"dns"});
 	return new Controller({resource:element,
 						   viewModel: async function(element){
 							   element.dns_types = DNS_TYPES;
 							   // Lookup all zones to prepare a select list.
-							   let zones = new DnsZones();
-							   element.zones = await zones.load(this.location().params());
+							   const zones = new DnsZones();
+							   element.zones = await zones.load(this.location.params);
 							   element.zones = element.zones.map(zone => ({"label":zone.dns_zone_name,"value":zone.dns_zone_name}));
 							   return element;
 						   },
 						   buttons:{
 							   "save-settings":function(){
-								   let dns = this.getViewModel("dns");
+								   const dns = this.getViewModel("dns");
 								   dns.dns_records=[
 									   {"dns_value": dns.dns_value,
 									    "disabled":dns.disabled}
 								   ];
-								   element.saveDnsRecord(this.location().params(),dns);
+								   element.saveDnsRecord(this.location.params,dns);
 							   }
 						   },
 						   onSuccess:function(){
 							   this.navigate({"view":"element-dns-records.html",
-								   			  "?":this.location().params()})
+								   			  "?":this.location.params})
 						   }
 	});
 };
 
-let elementDnsRecordSetController = function(){
-	let element = new Element({"scope":"dns/{{record}}"});
+const elementDnsRecordSetController = function(){
+	const element = new Element({"scope":"dns/{{record}}"});
 	return new Controller({resource:element,
 						   viewModel: async function(element){
 							   element.dns_types = DNS_TYPES;
 							   // Lookup all zones to prepare a select list.
-							   let zones = new DnsZones();
-							   element.zones = await zones.load(this.location().params());
+							   const zones = new DnsZones();
+							   element.zones = await zones.load(this.location.params);
 							   element.zones = element.zones.map(zone => ({"label":zone.dns_zone_name,"value":zone.dns_zone_name}));
-							   let record = element.dns_recordset.dns_records[0];
+							   const record = element.dns_recordset.dns_records[0];
 							   element.dns_recordset.dns_value = record.dns_value;
 							   element.dns_recordset.disabled = record.disabled;
 							   delete element.dns_recordset.dns_records;
@@ -116,39 +116,39 @@ let elementDnsRecordSetController = function(){
 						   },
 						   buttons:{
 							   "save-settings":function(){
-								   let dns = this.getViewModel("dns_recordset");
+								   const dns = this.getViewModel("dns_recordset");
 								   dns.dns_records=[
 									   {"dns_value": dns.dns_value,
 									    "disabled":dns.disabled}
 								   ];
-								   element.saveSettings(this.location().params(),dns);
+								   element.saveSettings(this.location.params,dns);
 							   },
 							   "confirm-remove":function(){
-								   element.remove(this.location().params());
+								   element.remove(this.location.params);
 							   }
 						   },
 						   onSuccess:function(){
 							   this.navigate({"view":"element-dns-records.html",
-								   			  "?":this.location().params()})
+								   			  "?":this.location.params})
 						   }
 	});
 };
 	
-let zonesView = {
+const zonesView = {
 		"master":zonesController(),
 		"details":{
 			"add-zone.html":zonesController()
 		}
 };
 
-let zoneSettingsView = {
+const zoneSettingsView = {
 		"master":zoneSettingsController(),
 		"details":{
 			"confirm-remove-zone.html":zoneSettingsController()
 		}
 };
 
-let elementDnsView = {
+const elementDnsView = {
 		"master":elementDnsRecordSetsController(),
 		"details":{
 			"element-dns-record.html":elementDnsRecordSetController(),

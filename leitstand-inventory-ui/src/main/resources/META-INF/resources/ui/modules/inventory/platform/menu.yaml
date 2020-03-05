@@ -1,0 +1,13 @@
+provider: leitstand.io
+controller: controller.js
+description: Platform management views.
+extensions:
+- extend:
+    module: inventory
+    menu: meta
+    after: roles
+  items:
+  - item: platforms
+    label: Platforms
+    title: Maintain hardware platforms
+    view: platforms.html

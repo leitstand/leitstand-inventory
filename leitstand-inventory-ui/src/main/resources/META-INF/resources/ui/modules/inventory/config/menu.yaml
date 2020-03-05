@@ -1,0 +1,13 @@
+provider: leitstand.io
+controller: controller.js
+description: Element configuration UI
+extensions:
+- extend:
+    module: inventory
+    menu: element
+    after: element-location
+  items:
+  - item: configuration
+    label: Configuration
+    title: Manage the configuration of this element
+    view:  element-configs.html

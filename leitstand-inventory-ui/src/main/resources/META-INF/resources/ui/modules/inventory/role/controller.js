@@ -16,16 +16,16 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Roles,Role} from '/ui/modules/inventory/inventory.js';
 
-let rolesController = function() {
-	let roles = new Roles();
+const rolesController = function() {
+	const roles = new Roles();
 		return new Controller({resource:roles,
 						viewModel:function(roles){
 							return {"roles":roles};
 						}});
 };
 	
-let roleController = function() {
-	let role = new Role();
+const roleController = function() {
+	const role = new Role();
 	return new Controller({resource:role,
 					 viewModel:function(settings){//TODO Refactor when porting to UI components.
 						 settings.planes=[{"plane":"DATA",
@@ -42,18 +42,18 @@ let roleController = function() {
 					 },
 					 buttons:{
 						"save":function(){
-							 let settings = this.updateViewModel({
+							 const settings = this.updateViewModel({
 								 "role_name":this.input("role_name").value(),
 								 "display_name":this.input("display_name").value(),
 								 "manageable":this.input("manageable").isChecked(),
 								 "plane":this.input("plane").value(),
 								 "description":this.input("description").value()
 							 });
-							 role.saveSettings(this.location().params(),
+							 role.saveSettings(this.location.params,
 									 		   settings);
 						},
 						"remove-role":function(){
-							role.remove(this.location().params());
+							role.remove(this.location.params);
 						}
 					},
 					onSuccess:function(){
@@ -65,19 +65,19 @@ let roleController = function() {
 				});
 };
 
-let addRoleController = function() {
-	let roles = new Roles();
+const addRoleController = function() {
+	const roles = new Roles();
 	return new Controller({resource:roles,
 				 	 buttons:{
 				 		 "save":function(){
-				 			 let role = {
+				 			 const role = {
 				 				"role_name":this.input("role_name").value(),
 								"display_name":this.input("display_name").value(),
 								"manageable":this.input("manageable").isChecked(),
 								"plane":this.input("plane").value(),
 								"description":this.input("description").value()
 							};
-							roles.addRole(this.location().params(),
+							roles.addRole(this.location.params,
 										  role);
 						}
 					 },
@@ -87,7 +87,7 @@ let addRoleController = function() {
 	});
 };
 
-let roleMenu =  {
+const roleMenu =  {
 	"master" : rolesController(),
 	"details" : {
 		"new-role.html":addRoleController(),

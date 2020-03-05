@@ -1,0 +1,38 @@
+name: pod
+provider: leitstand.io
+controller: controller.js
+description: Pod settings view.
+extensions:
+- extend:
+   module: inventory
+   after: main
+  menus:
+  - menu: pod
+    label: "{{group_name}}"
+    title: Explore the settings and elements of a certain PoD
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.group
+    - ivt.group.read
+    requires:
+    - group_id
+    query:
+      group: "{{group_id}}"
+    items:
+    - item: pod-settings
+      label: Pod Settings
+      title: Manage the general settings of the PoD
+      view: pod.html
+    - item: pod-location
+      label: Location
+      title: Manage the physical location of the PoD
+      view: pod-location.html
+    - item: pod-elements
+      label: Elements
+      title: Lists all elements of the PoD
+      view: pod-elements.html
+    - item: racks
+      label: Racks
+      title: Manage PoD racks
+      view: pod-racks.html

@@ -192,15 +192,28 @@ public class Element extends VersionableEntity {
 	protected Element(){
 		// JPA
 	}
+	
+	public Element(ElementGroup group,
+				   ElementRole role,
+				   ElementId elementId,
+				   ElementName elementName) {
+		this(group,
+			 role,
+			 null,
+			 elementId,
+			 elementName);
+	}
 
 	public Element(ElementGroup group, 
-	               ElementRole role, 
+	               ElementRole role,
+	               Platform platform,
 	               ElementId elementId, 
 	               ElementName elementName){
 		super(elementId.toString());
 		this.tags = new TreeSet<String>();
 		this.group = group;
 		this.role = role;
+		this.platform = platform;
 		this.elementName = elementName;
 		this.opState = OperationalState.DOWN;
 		this.admState = AdministrativeState.NEW;
