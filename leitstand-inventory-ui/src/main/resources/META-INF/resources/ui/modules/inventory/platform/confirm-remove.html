@@ -13,7 +13,7 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<ui-confirm rolesAllowed="Operator">
+<ui-confirm>
 	<ui-title>Confirm to remove platform {{vendor_name}} {{model_name}}</ui-title>
 	<ui-message>
 		<ui-note>
@@ -21,6 +21,6 @@
 		A platform can only be removed if no elements based on that platform exists.
 		</ui-note>
 	</ui-message>
-	<ui-approve name="remove-platform">Confirm</ui-approve>
+	<ui-approve name="remove-platform" scopesAllowed="ivt ivt.element ivt.element.settings">Confirm</ui-approve>
 	<ui-decline href="platform.html?platform={{platform_id}}">Cancel</ui-decline>
 </ui-confirm>

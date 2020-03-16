@@ -25,6 +25,6 @@
 		<ui-note>Provide details why the configuration is modified</ui-note>
 	</ui-input>
 	</ui-message>
-	<ui-approve name="confirm-edit" rolesAllowed="Operator" danger>Confirm</ui-approve>
+	<ui-approve name="confirm-edit" scopesAllowed="ivt ivt.element ivt.element.config" danger>Confirm</ui-approve>
 	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Cancel</ui-decline>
 </ui-confirm>

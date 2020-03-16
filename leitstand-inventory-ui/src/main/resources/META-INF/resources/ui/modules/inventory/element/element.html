@@ -17,7 +17,7 @@
 	<ui-title>Element Settings <span class="{{element.operational_state}}">{{element.operational_state}}</span></ui-title>
 	<ui-subtitle>Manage settings of element {{element.element_name}}{{#element.element_alias}} ({{.}}){{/element.element_alias}}</ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element ivt.element.settings">
 	<ui-group>
 		<ui-label>General Settings</ui-label>
 		<ui-note>Manage the element name, element alias, element role, administrative and operational state, and element description and set the pod of which the element belongs to.</ui-note>

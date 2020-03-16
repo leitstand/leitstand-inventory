@@ -19,6 +19,10 @@ import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.created;
@@ -28,7 +32,6 @@ import static javax.ws.rs.core.Response.ok;
 import java.net.URI;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
@@ -45,12 +48,15 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementRoleId;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementRoleService;
 import io.leitstand.inventory.service.ElementRoleSettings;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 @Path("/roles")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
@@ -62,18 +68,21 @@ public class ElementRoleResource {
 	private Messages messages;
 	
 	@GET
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public List<ElementRoleSettings> getElementRoles(){
 		return service.getElementRoles();
 	}
 	
 	@GET
 	@Path("/{role_name}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public ElementRoleSettings getElementRole(@Valid @PathParam("role_name") ElementRoleName roleName) {
 		return service.getElementRole(roleName);
 	}
 	
 	@GET
 	@Path("/{role_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public ElementRoleSettings getElementRole(@Valid @PathParam("role_id") ElementRoleId roleId) {
 		return service.getElementRole(roleId);
 	}

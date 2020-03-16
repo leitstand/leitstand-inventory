@@ -21,11 +21,14 @@ import static io.leitstand.commons.jsonb.IsoDateAdapter.parseIsoDate;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_METRIC;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.AlertRule;
 import io.leitstand.inventory.service.AlertRuleName;
 import io.leitstand.inventory.service.MetricAlertRule;
@@ -44,9 +48,12 @@ import io.leitstand.inventory.service.MetricAlertRuleService;
 import io.leitstand.inventory.service.MetricAlertRules;
 import io.leitstand.inventory.service.MetricId;
 import io.leitstand.inventory.service.MetricName;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_METRIC})
 @Path("/metrics")
+@Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class MetricAlertRulesResource {
 
@@ -59,18 +66,21 @@ public class MetricAlertRulesResource {
 
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}/alertrules")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRules getMetricAlertRules(@PathParam("metric") @Valid MetricId metricId) {
 		return service.getMetricAlertRules(metricId);
 	}
 	
 	@GET
 	@Path("/{metric_name}/alertrules")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRules getMetricAlertRules(@Valid @PathParam("metric_name") MetricName metricName) {
 		return service.getMetricAlertRules(metricName);
 	}
 	
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}/alertrules/{rule}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRuleRevisions getMetricAlertRuleRevisions(@PathParam("metric") @Valid MetricId metricId,
 																@PathParam("rule") @Valid AlertRuleName ruleName) {
 		return service.getMetricAlertRuleRevisions(metricId,
@@ -79,6 +89,7 @@ public class MetricAlertRulesResource {
 	
 	@GET
 	@Path("/{metric_name}/alertrules/{rule}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRuleRevisions getMetricAlertRuleRevisions(@PathParam("metric_name") @Valid MetricName metricName,
 																@PathParam("rule") @Valid AlertRuleName ruleName) {
 		return service.getMetricAlertRuleRevisions(metricName,
@@ -87,6 +98,7 @@ public class MetricAlertRulesResource {
 	
 	@GET
 	@Path("/{metric:"+UUID_PATTERN+"}/alertrules/{rule}/{dateModified}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRule getMetricAlertRuleRevisions(@PathParam("metric") @Valid MetricId metricId,
 													   @PathParam("rule") @Valid AlertRuleName ruleName,
 													   @PathParam("dateModified") String dateModified) {
@@ -97,6 +109,7 @@ public class MetricAlertRulesResource {
 	
 	@GET
 	@Path("/{metric_name}/alertrules/{rule}/{dateModified}")
+	@Scopes({IVT, IVT_READ, IVT_METRIC})
 	public MetricAlertRule getMetricAlertRule(@PathParam("metric_name") @Valid MetricName metricName,
 											  @PathParam("rule") @Valid AlertRuleName ruleName,
 											  @PathParam("dateModified") String dateModified) {

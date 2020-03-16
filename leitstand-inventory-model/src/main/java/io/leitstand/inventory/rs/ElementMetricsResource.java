@@ -17,14 +17,14 @@ package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static java.util.stream.Collectors.toList;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,10 +34,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementMetric;
 import io.leitstand.inventory.service.ElementMetricService;
@@ -45,11 +45,13 @@ import io.leitstand.inventory.service.ElementMetrics;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.MetricScope;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT})
 @Path("/elements")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementMetricsResource {
 
 	@Inject
@@ -60,6 +62,8 @@ public class ElementMetricsResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/metrics")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
+
 	public ElementMetrics getElementMetrics(@PathParam("element") ElementId elementId,
 											@QueryParam("metric_scope") MetricScope scope) {
 		return service.findElementMetrics(elementId,
@@ -68,6 +72,7 @@ public class ElementMetricsResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/metrics/{metric}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementMetric getElementMetric(@PathParam("element") ElementId elementId,
 									      @PathParam("metric") MetricName metricName) {
 		return service.getElementMetric(elementId,metricName);
@@ -75,6 +80,7 @@ public class ElementMetricsResource {
 	
 	@GET
 	@Path("/{element}/metrics/{metric}")
+	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementMetric getElementMetrics(@PathParam("element") ElementName elementName,
 										   @PathParam("metric") MetricName metricName) {
 		return service.getElementMetric(elementName,metricName);
@@ -82,7 +88,6 @@ public class ElementMetricsResource {
 	
 	@PUT
 	@Path("/{element:"+UUID_PATTERN+"}/metrics/{metric}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public void updateElementMetric(@PathParam("element") ElementId elementId,
 								    @PathParam("metric") MetricName metricName,
 								    ElementMetric metric) {
@@ -91,7 +96,6 @@ public class ElementMetricsResource {
 	
 	@PUT
 	@Path("/{element}/metrics/{metric}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public void updateElementMetric(@PathParam("element") ElementName elementName,
 			   						@PathParam("metric") MetricName metricName,
 			   						ElementMetric metric) {
@@ -101,7 +105,6 @@ public class ElementMetricsResource {
 	@PUT
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/metrics")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response registerElementMetrics(@PathParam("element") ElementId elementId,
 										   List<String> metrics) {
 		service.registerElementMetrics(elementId, 
@@ -114,7 +117,6 @@ public class ElementMetricsResource {
 	@POST
 	@PUT
 	@Path("/{element}/metrics")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response registerElementMetrics(@PathParam("element") ElementName elementName,
 										  List<String> metrics) {
 		service.registerElementMetrics(elementName, 

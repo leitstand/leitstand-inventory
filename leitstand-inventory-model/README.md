@@ -42,7 +42,9 @@ The `Platform` entity describes the platform the element operates on.
 
 See the next sections for more details on what data is stored per entity, or proceed at the [complete data model documentation](datamodel.md) to learn all details about the resource inventory data model.
 
-## Element
+## Aggregate Root Entities
+
+### Element
 An element represents a single network element and its resources.
 
 The following data is stored per element:
@@ -58,12 +60,12 @@ The following data is stored per element:
 - **DNS**, the DNS records of an element.
 - **Hardware Modules**, a list of hardware modules intended for asset accounting and spare part management.
 
-## Element Role
+### Element Role
 The element role describes the function of a network element.
 
 Each element role has a unique name, a brief description and is assigned to to either the _data_, _management_, or _control plane_ of the access network.
 
-## Element Group
+### Element Group
 An element group is a collection of elements.
 Each element is member of exactly one group.
 
@@ -74,7 +76,7 @@ The following data is stored per element group:
 
 __NOTE:__ The group membership of an element is stored in the element.
 
-## Metric
+### Metric
 A metric can be sampled from an element and is processed for network monitoring and capacity management.
 
 The following data is stored per metric
@@ -86,7 +88,7 @@ The following data is stored per metric
 - **Alert Rules**, to program alert conditions on specialized monitoring systems, whenever an alert condition is satisfied.
 _ **Visualization Configuration**, to provision dashboards in specialized time serialization tools.
 
-## Image
+### Image
 An image is a software image that can be installed on network elements.
 The image binaries are not stored in the resource inventory, but read from a specialized image repository.
 The following data is stored per image:
@@ -102,7 +104,7 @@ The following data is stored per image:
 - **Packages**, the list of packages that are shipped with the image. Each package consists of the organization that released the package, the package name, the package version, optional checksums,  
 - **Applications**, the list of applications that can be enabled for the image.
 
-## Platform
+### Platform
 A platform is the runtime environment for an element. 
 The software image of an element is always built for a specific element role that runs on a certain platform.
 
@@ -111,4 +113,28 @@ The following data is stored per platform:
 - **Model Name**, the name of the platform model
 - **Description**, an optional description of the platform.
 - **Dimensions**, the optional height of the platform in rack units and whether the platform is a half-rack device.
+
+## Scopes
+
+The following scopes exists to grant access to resource inventory records.
+
+| Scope                 | Description                                                                                 |
+|:----------------------|:--------------------------------------------------------------------------------------------|
+|_ivt_                  | Full access to all inventory records.                                                       |
+|_ivt.read_             | Readonly access to all inventory records.                                                   |
+|_ivt.element_          | Manage element records.                                                                     |
+|_ivt.element.settings_ | Manage element settings including element role and element platform settings.               |
+|_ivt.element.dns_      | Manage element DNS records and DNS zones.                                                   |
+|_ivt.element.config_   | Manage element configurations and variable sets used to generate configuration.             |
+|_ivt.element.module_   | Manage element module information.                                                          |
+|_ivt.group_			| Manage element group records.                                                               |
+|_ivt.group.settings_	| Manage element group settings (i.e. user is not allowed to add/remove elements to a group). |
+|_ivt.metric_			| Manage metric definition records.                                                           |
+|_ivt.image_			| Manage software image records.                                                              |
+
+
+
+
+
+
 

@@ -60,6 +60,7 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -107,6 +108,7 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
+import io.leitstand.security.auth.UserContext;
 
 public class ForceRemoveElementIT extends InventoryIT{
 
@@ -283,9 +285,12 @@ public class ForceRemoveElementIT extends InventoryIT{
 		
 		// Add configuration
 		transaction(()->{
+			UserContext userContext = mock(UserContext.class);
+			when(userContext.getUserName()).thenReturn(userName("junit"));
+			
 			ElementConfigManager configManager = new ElementConfigManager(repository, 
 																		  database, 
-																		  userName("junit"), 
+																		  userContext, 
 																		  event, 
 																		  messages);	
 			ElementConfigService configService = new DefaultElementConfigService(elements, 

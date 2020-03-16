@@ -21,14 +21,14 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0103E_GROUP_NAME_ALREADY_IN_USE;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.noContent;
 
-import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.validation.Valid;
@@ -46,13 +46,16 @@ import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupSettingsService;
 import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_GROUP, IVT_GROUP_SETTINGS})
 @Path("/{group_type}s")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
@@ -64,8 +67,23 @@ public class ElementGroupSettingsResource {
 	@Inject
 	private Messages messages;
 
+	@GET
+	@Path("/{group_id:" + UUID_PATTERN + "}/settings")
+	@Scopes({IVT_READ, IVT, IVT_GROUP, IVT_GROUP_SETTINGS})
+	public ElementGroupSettings getGroupSettings(@Valid @PathParam("group_id") ElementGroupId id) {
+		return service.getGroupSettings(id);
+	}
+
+	@GET
+	@Path("/{group_name}/settings")
+	@Scopes({IVT_READ, IVT, IVT_GROUP, IVT_GROUP_SETTINGS})
+	public ElementGroupSettings getGroupSettings(@Valid @PathParam("group_type") ElementGroupType groupType,
+												 @Valid @PathParam("group_name") ElementGroupName groupName) {
+		return service.getGroupSettings(groupType,
+										groupName);
+	}
+	
 	@POST
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementGroup(ElementGroupSettings settings) {
 		service.storeElementGroupSettings(settings);
 		return created("/%s/%/settings",
@@ -75,7 +93,6 @@ public class ElementGroupSettingsResource {
 
 	@PUT
 	@Path("/{group_id:" + UUID_PATTERN + "}/settings")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementGroup(@Valid @PathParam("group_id") ElementGroupId groupId, 
 							 		  @Valid ElementGroupSettings settings) {
 		if (isDifferent(groupId, settings.getGroupId())) {
@@ -97,23 +114,10 @@ public class ElementGroupSettingsResource {
 		}
 	}
 
-	@GET
-	@Path("/{group_id:" + UUID_PATTERN + "}/settings")
-	public ElementGroupSettings getGroupSettings(@Valid @PathParam("group_id") ElementGroupId id) {
-		return service.getGroupSettings(id);
-	}
 
-	@GET
-	@Path("/{group_name}/settings")
-	public ElementGroupSettings getGroupSettings(@Valid @PathParam("group_type") ElementGroupType groupType,
-												 @Valid @PathParam("group_name") ElementGroupName groupName) {
-		return service.getGroupSettings(groupType,
-										groupName);
-	}
 
 	@DELETE
 	@Path("/{id:" + UUID_PATTERN + "}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("id") ElementGroupId id) {
 		service.remove(id);
 		return noContent().build();
@@ -121,7 +125,6 @@ public class ElementGroupSettingsResource {
 	
 	@DELETE
 	@Path("/{group_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("group_type") ElementGroupType groupType,
 										@Valid @PathParam("group_name") ElementGroupName groupName) {
 		service.remove(groupType,

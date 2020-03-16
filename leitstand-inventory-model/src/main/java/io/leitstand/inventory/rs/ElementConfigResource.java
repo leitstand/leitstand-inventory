@@ -20,13 +20,14 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.seeOther;
 import static io.leitstand.commons.rs.Responses.success;
-import static io.leitstand.security.auth.Role.OPERATOR;
-import static io.leitstand.security.auth.Role.SYSTEM;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -45,6 +46,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ConfigurationState;
 import io.leitstand.inventory.service.ElementConfig;
 import io.leitstand.inventory.service.ElementConfigId;
@@ -55,9 +57,11 @@ import io.leitstand.inventory.service.ElementConfigs;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.StoreElementConfigResult;
+import io.leitstand.security.auth.Scopes;
 
-
+@Resource
 @Path("/elements")
+@Scopes({IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
 public class ElementConfigResource {
@@ -71,6 +75,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfigs findElementConfigs(@Valid @PathParam("element") ElementId elementId,
 											 @Valid @QueryParam("filter") String filter) {
 		return service.findElementConfigs(elementId,
@@ -79,6 +84,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element}/configs")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfigs findElementConfigs(@Valid @PathParam("element") ElementName elementName,
 											 @Valid @QueryParam("filter") String filter) {
 		return service.findElementConfigs(elementName,
@@ -87,6 +93,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfig getElementConfig(@Valid @PathParam("element") ElementId elementId,
 										  @Valid @PathParam("config_id") ElementConfigId configId){
 		return service.getElementConfig(elementId,
@@ -95,6 +102,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfig getElementConfig(@Valid @PathParam("element") ElementName elementName,
 									      @Valid @PathParam("config_id") ElementConfigId configId){
 		return service.getElementConfig(elementName, 
@@ -103,6 +111,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public Response getElementConfigData(@Valid @PathParam("element") ElementName elementName,
 					  		      	  	 @Valid @PathParam("config_id") ElementConfigId configId){
 		ElementConfig config = service.getElementConfig(elementName,
@@ -114,6 +123,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfigRevisions getRevisions(@Valid @PathParam("element") ElementId elementId,
 											   @Valid @PathParam("config_name") ElementConfigName configName) {
 		return service.getElementConfigRevisions(elementId,
@@ -122,6 +132,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element}/configs/{config_name}")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementConfigRevisions getRevisions(@Valid @PathParam("element") ElementName elementName,
 											   @Valid @PathParam("config_name") ElementConfigName configName) {
 		return service.getElementConfigRevisions(elementName,
@@ -130,7 +141,6 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("element") ElementId elementId,
 									    @Valid @PathParam("config_id") ElementConfigId configId){
 		service.removeElementConfig(elementId,configId);
@@ -139,7 +149,6 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{id:"+UUID_PATTERN+"}/configs/{config_name}/")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("id") ElementId id,
 										@Valid @PathParam("config_name") ElementConfigName configName){
 		service.removeElementConfig(id,
@@ -149,7 +158,6 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("element") ElementName elementName,
 								        @Valid @PathParam("config_id") ElementConfigId configId){
 		service.removeElementConfig(elementName,configId);
@@ -158,7 +166,6 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{element}/configs/{config_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response removeElementConfig(@Valid @PathParam("element") ElementName elementName,
 								        @Valid @PathParam("config_name") ElementConfigName configName){
 		service.removeElementConfig(elementName,
@@ -168,7 +175,6 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/_edit")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response editElementConfig(@Valid @PathParam("element") ElementId elementId,
 									  @Valid @PathParam("config_id") ElementConfigId configId,
 									  @QueryParam("comment") String comment){
@@ -183,7 +189,6 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/_edit")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response editElementConfig(@Valid @PathParam("element") ElementName elementName,
 									  @Valid @PathParam("config_id") ElementConfigId configId,
 									  @QueryParam("comment") String comment){
@@ -199,6 +204,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/config")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public Response downloadElementConfig(@Valid @PathParam("element") ElementId elementId,
 										  @Valid @PathParam("config_id") ElementConfigId configId){
 		
@@ -217,6 +223,7 @@ public class ElementConfigResource {
 	
 	@GET
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public Response downloadElementConfig(@Valid @PathParam("element") ElementName elementName,
 								     	  @Valid @PathParam("config_id") ElementConfigId configId){
 		ElementConfig config = service.getElementConfig(elementName, configId);
@@ -244,7 +251,6 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementConfig(@Valid @PathParam("element") ElementId elementId, 
 									   @Valid @PathParam("config_name") ElementConfigName configName,
 									   @NotNull @HeaderParam("Content-Type") String contentType,
@@ -269,7 +275,6 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element}/configs/{config_name}")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Response storeElementConfig(@Valid @PathParam("element") ElementName elementName, 
 									   @Valid @PathParam("config_name") ElementConfigName configName,
 									   @NotNull @HeaderParam("Content-Type") String contentType,
@@ -295,7 +300,6 @@ public class ElementConfigResource {
 	
 	@PUT
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/comment")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Messages storeElementConfigComment(@Valid @PathParam("element") ElementId elementId, 
 											  @Valid @PathParam("config_id") ElementConfigId configId,
 											  String comment){
@@ -308,7 +312,6 @@ public class ElementConfigResource {
 	
 	@PUT
 	@Path("/{element}/configs/{config_name}/{config_id:"+UUID_PATTERN+"}/comment")
-	@RolesAllowed({OPERATOR,SYSTEM})
 	public Messages storeElementConfigComment(@Valid @PathParam("element") ElementName elementName, 
 											  @Valid @PathParam("config_id") ElementConfigId configId,
 											  String comment){

@@ -13,7 +13,7 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<ui-confirm rolesAllowed="Operator">
+<ui-confirm>
 	<ui-title>Confirm to remove DNS record</ui-title>
 	<ui-message>
 		<ui-note>
@@ -22,6 +22,6 @@
 			A removed record has to be restored manually.
 		</ui-note>
 	</ui-message>
-	<ui-approve name="confirm-remove">Confirm</ui-approve>
+	<ui-approve name="confirm-remove" scopesAllowed="ivt ivt.element ivt.element.dns">Confirm</ui-approve>
 	<ui-decline href="element-dns-record.html?group={{group_id}}&element={{element_id}}&record={{dns_recordset.dns_recordset_id}}">Cancel</ui-decline>
 </ui-confirm>

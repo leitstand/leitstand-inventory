@@ -46,4 +46,3 @@ The table below lists the Leitstand Resource Inventory API services.
 | PlatformService                 | Manages the platforms elements are operating on.                                                                                             |
 | RetireElementService            | Retires an element to remove it from the network eventually.                                                                                 |
 | ServiceDefinitionService        | Manages the service definitions of all infrastructure services (e.g. BGP daemon definition).                                                 |
-

@@ -21,7 +21,7 @@
 	<ui-title>New Element</ui-title>
 	<ui-subtitle>Add a new element to {{group_name}}</ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element ivt.element.settings">
 	<ui-group>
 		<ui-label>Element Settings</ui-label>
 		<ui-input name="element_name" bind="element.element_name">

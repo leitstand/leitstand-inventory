@@ -17,10 +17,11 @@ package io.leitstand.inventory.rs;
 
 
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,11 +33,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementGroupExportService;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementGroupsExport;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT_READ, IVT})
 @Path("/export")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)

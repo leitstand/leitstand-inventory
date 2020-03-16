@@ -13,7 +13,7 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<ui-confirm rolesAllowed="Operator">
+<ui-confirm>
 	<ui-title>Confirm to restore {{config_state}} {{config_name}} configuration</ui-title>
 	<ui-message>
 		<ui-note>
@@ -25,6 +25,6 @@
 			<ui-note>Provide details why the configuration is restored</ui-note>
 		</ui-input>
 	</ui-message>
-	<ui-approve name="confirm-edit" rolesAllowed="Operator">Confirm</ui-button>
+	<ui-approve name="confirm-edit" scopesAllowed="ivt ivt.element ivt.element.config">Confirm</ui-button>
 	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Cancel</ui-decline>
 </ui-confirm>

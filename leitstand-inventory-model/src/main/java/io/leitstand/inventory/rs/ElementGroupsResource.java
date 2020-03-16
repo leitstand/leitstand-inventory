@@ -15,9 +15,14 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP;
+import static io.leitstand.inventory.rs.Scopes.IVT_GROUP_SETTINGS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -27,17 +32,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementGroupService;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupStatistics;
 import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_READ, IVT_GROUP, IVT_GROUP_SETTINGS})
 @Path("/{group}s")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes(APPLICATION_JSON)
+@Produces(APPLICATION_JSON)
 public class ElementGroupsResource {
 	
 	@Inject

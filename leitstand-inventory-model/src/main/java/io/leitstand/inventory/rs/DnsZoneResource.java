@@ -20,11 +20,14 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
+import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_DNS;
+import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -41,16 +44,19 @@ import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.DnsZoneElements;
 import io.leitstand.inventory.service.DnsZoneId;
 import io.leitstand.inventory.service.DnsZoneName;
 import io.leitstand.inventory.service.DnsZoneService;
 import io.leitstand.inventory.service.DnsZoneSettings;
+import io.leitstand.security.auth.Scopes;
 
-@RequestScoped
+@Resource
+@Scopes({IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
+@Path("/dns")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-@Path("/dns")
 public class DnsZoneResource {
 
 	@Inject
@@ -61,30 +67,35 @@ public class DnsZoneResource {
 	
 	
 	@GET
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	@Path("/zones")
 	public List<DnsZoneSettings> getDnsZones(@QueryParam("filter") @DefaultValue(".*") String filter){
 		return service.getDnsZones(filter, 0, 1000);
 	}
 	
 	@GET
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	@Path("/zones/{zone:"+UUID_PATTERN+"}/settings")
 	public DnsZoneSettings getDnsZoneSettings(@Valid @PathParam("zone") DnsZoneId zoneId){
 		return service.getDnsZoneSettings(zoneId);
 	}
 
 	@GET
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	@Path("/zones/{zone}/settings")
 	public DnsZoneSettings getDnsZoneSettings(@Valid @PathParam("zone") DnsZoneName zoneName){
 		return service.getDnsZoneSettings(zoneName);
 	}
 	
 	@GET
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	@Path("/zones/{zone:"+UUID_PATTERN+"}/elements")
 	public DnsZoneElements getDnsZoneElements(@Valid @PathParam("zone") DnsZoneId zoneId){
 		return service.getDnsZoneElements(zoneId);
 	}
 
 	@GET
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	@Path("/zones/{zone}/elements")
 	public DnsZoneElements getDnsZoneElements(@Valid @PathParam("zone") DnsZoneName zoneName){
 		return service.getDnsZoneElements(zoneName);

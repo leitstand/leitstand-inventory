@@ -5,6 +5,7 @@ applications:
  - application: topology
  - application: upgrade
  - application: ztp
+ - application: visualizer
 navigation:
   - menu: main
     items:

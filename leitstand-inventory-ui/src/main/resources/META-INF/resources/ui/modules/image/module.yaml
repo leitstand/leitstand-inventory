@@ -3,6 +3,11 @@ applications:
 - application: rollout
 navigation:
   - menu: main
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.image
+    - ivt.image.read
     items:
     - item: images
       label: Images
@@ -10,6 +15,11 @@ navigation:
   - menu: image
     label: "{{element_role}} {{image_version}}"
     title: View manage details
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.image
+    - ivt.image.read
     requires:
      - image_id
     query:

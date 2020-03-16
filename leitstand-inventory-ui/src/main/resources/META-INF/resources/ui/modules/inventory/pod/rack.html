@@ -22,7 +22,7 @@
 	<ui-subtitle>Manage settings of rack {{rack.rack_name}}</ui-subtitle>
 </ui-view-header>
 <div>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.group ivt.group.settings">
 	<ui-group>
 		<ui-label>Rack Settings</ui-label>
 		<ui-input name="rack_name" bind="rack.rack_name">

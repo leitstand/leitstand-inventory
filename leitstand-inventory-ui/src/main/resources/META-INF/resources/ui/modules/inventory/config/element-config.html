@@ -24,7 +24,7 @@
 	<ui-title>Element Configuration Editor</ui-title>
 	<ui-subtitle>{{config_name}} configuration of element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}} from <ui-date readonly>{{date_created}}</ui-date></ui-subtitle>
 </ui-view-header>
-<ui-form rolesAllowed="Operator">
+<ui-form scopesAllowed="ivt ivt.element ivt.element.config">
 	<ui-details>
 		<ui-property>
 			<ui-label>Name</ui-label>
