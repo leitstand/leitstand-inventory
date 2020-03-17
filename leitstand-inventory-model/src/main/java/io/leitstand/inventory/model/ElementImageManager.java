@@ -111,7 +111,7 @@ public class ElementImageManager {
 			Image image = elementImage.getImage();
 			
 			List<PackageVersionInfo> packages = new LinkedList<>();
-			for(PackageVersion revision : image.getPackages()){
+			for(Package_Version revision : image.getPackages()){
 				packages.add(packageVersionInfo(revision));
 			}
 			
@@ -182,7 +182,7 @@ public class ElementImageManager {
 		Image image = elementImage.getImage();
 			
 		List<PackageVersionInfo> packages = new LinkedList<>();
-		for(PackageVersion revision : image.getPackages()){
+		for(Package_Version revision : image.getPackages()){
 			packages.add(packageVersionInfo(revision));
 		}
 		

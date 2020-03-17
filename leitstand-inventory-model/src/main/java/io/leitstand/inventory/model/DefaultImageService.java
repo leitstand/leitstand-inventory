@@ -237,9 +237,9 @@ public class DefaultImageService implements ImageService {
 			element = elements.fetchElement(elementName);
 		}
 		
-		List<PackageVersion> versions = new LinkedList<>();
+		List<Package_Version> versions = new LinkedList<>();
 		for(PackageVersionInfo info : submission.getPackages()){
-			PackageVersion version = packages.getPackageVersion(info.getOrganization(), 
+			Package_Version version = packages.getPackageVersion(info.getOrganization(), 
 																info.getPackageName(), 
 																info.getPackageVersion());
 			if(version == null){
@@ -349,7 +349,7 @@ public class DefaultImageService implements ImageService {
 
 	public static ImageInfo imageInfo(Image image) {
 		List<PackageVersionInfo> pkgVersions = new LinkedList<>();
-		for(PackageVersion p : image.getPackages()){
+		for(Package_Version p : image.getPackages()){
 			pkgVersions.add(packageVersionInfo(p));
 		}
 		

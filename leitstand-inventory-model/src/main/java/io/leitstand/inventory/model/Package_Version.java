@@ -40,9 +40,9 @@ import io.leitstand.inventory.service.Version;
 
 @Entity
 @Table(schema="inventory",
-	   name="packageversion")
-@NamedQuery(name="PackageVersion.findByNameAndVersion", 
-			query="SELECT p FROM PackageVersion p "+
+	   name="package_version")
+@NamedQuery(name="Package_Version.findByNameAndVersion", 
+			query="SELECT p FROM Package_Version p "+
 				  "JOIN FETCH p.pkg "+
 				  "WHERE p.pkg.org=:org "+
 				  "AND p.pkg.name=:name "+
@@ -50,8 +50,8 @@ import io.leitstand.inventory.service.Version;
 				  "AND p.minor=:minor "+
 				  "AND p.patch=:patch "+
 				  "AND p.prerelease IS NULL")
-@NamedQuery(name="PackageVersion.findByNameAndPreReleaseVersion", 
-			query="SELECT p FROM PackageVersion p "+
+@NamedQuery(name="Package_Version.findByNameAndPreReleaseVersion", 
+			query="SELECT p FROM Package_Version p "+
 				  "JOIN FETCH p.pkg "+
 				  "WHERE p.pkg.org=:org "+
 				  "AND p.pkg.name=:name "+
@@ -59,14 +59,14 @@ import io.leitstand.inventory.service.Version;
 				  "AND p.minor=:minor "+
 				  "AND p.patch=:patch "+
 				  "AND p.prerelease=:prerelease")
-public class PackageVersion extends VersionableEntity {
+public class Package_Version extends VersionableEntity {
 	
 	private static final long serialVersionUID = 1L;
 
-	public static Query<PackageVersion> findPackageVersion(String org, String name, Version rev) {
+	public static Query<Package_Version> findPackageVersion(String org, String name, Version rev) {
 		if(isEmptyString(rev.getPreRelease())) {
-			return em -> em.createNamedQuery("PackageVersion.findByNameAndVersion",
-											 PackageVersion.class)
+			return em -> em.createNamedQuery("Package_Version.findByNameAndVersion",
+											 Package_Version.class)
 						   .setParameter("org",org)
 						   .setParameter("name", name)
 						   .setParameter("major",rev.getMajorLevel())
@@ -74,8 +74,8 @@ public class PackageVersion extends VersionableEntity {
 						   .setParameter("patch",rev.getPatchLevel())
 						   .getSingleResult();
 		}
-		return em -> em.createNamedQuery("PackageVersion.findByNameAndPreReleaseVersion",
-				 						 PackageVersion.class)
+		return em -> em.createNamedQuery("Package_Version.findByNameAndPreReleaseVersion",
+				 						 Package_Version.class)
 					   .setParameter("org",org)
 					   .setParameter("name", name)
 					   .setParameter("major",rev.getMajorLevel())
@@ -106,11 +106,11 @@ public class PackageVersion extends VersionableEntity {
 	private List<Checksum> checksums = emptyList();
 	
 	
-	protected PackageVersion(){
+	protected Package_Version(){
 		// JPA
 	}
 	
-	public PackageVersion(Package pkg, Version rev){
+	public Package_Version(Package pkg, Version rev){
 		this.pkg = pkg;
 		this.major = rev.getMajorLevel();
 		this.minor = rev.getMinorLevel();
@@ -130,11 +130,11 @@ public class PackageVersion extends VersionableEntity {
 		this.checksums = new ArrayList<>(checksums);
 	}
 	
-	boolean isRevisionOfSamePackage(PackageVersion revision){
+	boolean isRevisionOfSamePackage(Package_Version revision){
 		return this.pkg.getId().equals(revision.pkg.getId());
 	}
 	
-	boolean isSame(PackageVersion revision){
+	boolean isSame(Package_Version revision){
 		if(!isRevisionOfSamePackage(revision)){
 			return false;
 		}

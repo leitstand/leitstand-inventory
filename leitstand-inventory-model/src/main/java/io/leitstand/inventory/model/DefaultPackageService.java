@@ -17,7 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Package.findByName;
-import static io.leitstand.inventory.model.PackageVersion.findPackageVersion;
+import static io.leitstand.inventory.model.Package_Version.findPackageVersion;
 import static io.leitstand.inventory.service.PackageInfo.newPackageInfo;
 import static io.leitstand.inventory.service.PackageVersionId.newPackageVersionId;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
@@ -45,7 +45,7 @@ import io.leitstand.inventory.service.Version;
 @Service 
 public class DefaultPackageService implements PackageService {
 
-	static PackageVersionInfo packageVersionInfo(PackageVersion revision) {
+	static PackageVersionInfo packageVersionInfo(Package_Version revision) {
 		return newPackageVersionInfo()
 			   .withOrganization(revision.getOrganization())
 			   .withPackageName(revision.getPackageName())
@@ -103,7 +103,7 @@ public class DefaultPackageService implements PackageService {
 		}
 		
 		List<PackageVersionId> versions = new LinkedList<>();
-		for(PackageVersion version : pkg.getVersions()){
+		for(Package_Version version : pkg.getVersions()){
 			versions.add(newPackageVersionId()
 						 .withOrganization(version.getOrganization())
 						 .withPackageName(version.getPackageName())
@@ -123,7 +123,7 @@ public class DefaultPackageService implements PackageService {
 	public PackageVersionInfo getPackageVersion(String org, 
 												String name, 
 												Version version) {
-		PackageVersion pkg = repository.execute(findPackageVersion(org, 
+		Package_Version pkg = repository.execute(findPackageVersion(org, 
 																   name, 
 																   version));
 		if(pkg == null){

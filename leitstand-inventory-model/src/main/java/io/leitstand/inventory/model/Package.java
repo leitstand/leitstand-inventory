@@ -62,7 +62,7 @@ public class Package extends VersionableEntity{
 	private String ext;
 	
 	@OneToMany(cascade=ALL, orphanRemoval=true, mappedBy="pkg")
-	private List<PackageVersion> versions;
+	private List<Package_Version> versions;
 	
 	protected Package(){
 		//JPA
@@ -83,24 +83,24 @@ public class Package extends VersionableEntity{
 		return name;
 	}
 	
-	PackageVersion newVersion(Version rev){
+	Package_Version newVersion(Version rev){
 		if(findVersion(rev) != null){
 			throw new ConflictException(IVT0511E_PACKAGE_VERSION_EXISTS,getOrganization(),getPackageName(),rev);
 		}
-		PackageVersion revision = new PackageVersion(this,rev);
+		Package_Version revision = new Package_Version(this,rev);
 		versions.add(revision);
 		return revision;
 	}
 	
 	void removeVersion(Version rev){
-		PackageVersion version = findVersion(rev);
+		Package_Version version = findVersion(rev);
 		if(version != null){
 			versions.remove(version);
 		}
 	}
 	
-	private PackageVersion findVersion(Version rev){
-		for(PackageVersion revision : getVersions()){
+	private Package_Version findVersion(Version rev){
+		for(Package_Version revision : getVersions()){
 			if(revision.getPackageVersion().equals(rev)){
 				return revision;
 			}
@@ -108,7 +108,7 @@ public class Package extends VersionableEntity{
 		return null;
 	}
 	
-	List<PackageVersion> getVersions(){
+	List<Package_Version> getVersions(){
 		return unmodifiableList(versions);
 	}
 

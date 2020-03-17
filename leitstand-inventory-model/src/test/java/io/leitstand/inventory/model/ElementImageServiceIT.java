@@ -139,7 +139,7 @@ public class ElementImageServiceIT extends InventoryIT{
 								  Version revision, 
 								  Date buildDate, 
 								  List<Application> applications, 
-								  List<PackageVersion> packages) {
+								  List<Package_Version> packages) {
 
 		Image image = new Image(imageId);
 		image.setOrganization(org);
