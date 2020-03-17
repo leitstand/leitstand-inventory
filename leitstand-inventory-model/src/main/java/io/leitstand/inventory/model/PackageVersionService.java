@@ -17,7 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.Package.findByName;
-import static io.leitstand.inventory.model.PackageVersion.findPackageVersion;
+import static io.leitstand.inventory.model.Package_Version.findPackageVersion;
 import static java.util.stream.Collectors.toList;
 
 import javax.enterprise.context.Dependent;
@@ -48,21 +48,21 @@ class PackageVersionService{
 		return pkg;
 	}
 
-	public PackageVersion getPackageVersion(String org, String name, Version rev){
-		PackageVersion revision = repository.execute(findPackageVersion(org, name, rev));
+	public Package_Version getPackageVersion(String org, String name, Version rev){
+		Package_Version revision = repository.execute(findPackageVersion(org, name, rev));
 		if(revision != null){
 			return revision;
 		}
 		return null;
 	}
 
-	public PackageVersion storePackageVersion(PackageVersionInfo info){
+	public Package_Version storePackageVersion(PackageVersionInfo info){
 		String org = info.getOrganization();
 		String name = info.getPackageName();
 		String ext = info.getPackageExtension();
 		Version rev = info.getPackageVersion();
 		
-		PackageVersion revision = getPackageVersion(org, name, rev);
+		Package_Version revision = getPackageVersion(org, name, rev);
 		if(revision == null){
 			Package pkg = loadPackageForUpdate(org,name,ext);
 			revision = pkg.newVersion(rev);
@@ -79,7 +79,7 @@ class PackageVersionService{
 	}
 	
 	public void removePackageVersion(String org, String name, Version rev){
-		PackageVersion revision = repository.execute(findPackageVersion(org, name, rev));
+		Package_Version revision = repository.execute(findPackageVersion(org, name, rev));
 		if(revision == null){
 			return;
 		}

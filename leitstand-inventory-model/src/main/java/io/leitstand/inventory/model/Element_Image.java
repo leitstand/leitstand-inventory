@@ -175,7 +175,7 @@ public class Element_Image {
 		return image.getBuildDate();
 	}
 
-	public List<PackageVersion> getPackages() {
+	public List<Package_Version> getPackages() {
 		return image.getPackages();
 	}
 

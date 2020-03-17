@@ -400,10 +400,10 @@ public class Image extends VersionableEntity{
 	@ManyToMany
 	@JoinTable(
 			schema="INVENTORY",
-			name="IMAGE_PACKAGEVERSION",
+			name="IMAGE_PACKAGE_VERSION",
 			joinColumns=@JoinColumn(name="IMAGE_ID",referencedColumnName="ID")
 			)	
-	private List<PackageVersion> packages;
+	private List<Package_Version> packages;
 	
 	protected Image(){
 		// JPA
@@ -456,7 +456,7 @@ public class Image extends VersionableEntity{
 		return new Date(tsbuild.getTime());
 	}
 	
-	public List<PackageVersion> getPackages(){
+	public List<Package_Version> getPackages(){
 		return unmodifiableList(packages);
 	}
 	
@@ -505,7 +505,7 @@ public class Image extends VersionableEntity{
 		this.buildId = buildId;
 	}
 	
-	public void setPackages(List<PackageVersion> packages){
+	public void setPackages(List<Package_Version> packages){
 		this.packages = packages;
 	}
 

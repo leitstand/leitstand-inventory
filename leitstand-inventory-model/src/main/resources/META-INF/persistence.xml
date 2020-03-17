@@ -34,7 +34,7 @@
 		<class>io.leitstand.inventory.model.ElementGroup_Rack</class>
 		<class>io.leitstand.inventory.model.ElementGroup_Rack_Element</class>
 		<class>io.leitstand.inventory.model.Package</class>
-		<class>io.leitstand.inventory.model.PackageVersion</class>
+		<class>io.leitstand.inventory.model.Package_Version</class>
 		<class>io.leitstand.inventory.model.Platform</class>
 		<class>io.leitstand.inventory.model.Service</class>
 		<class>io.leitstand.inventory.service.AddressInterface</class>
