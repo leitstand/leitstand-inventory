@@ -163,25 +163,27 @@ public class ImageInfo extends ValueObject{
 		}
 		
 		/**
-		 * Sets the mandatory platform this image was built for.
-		 * @param platform the platform.
-		 * @return a reference of this this builder to continue with object creation
+		 * Sets the platform ID of the platform this image has been built for.
+		 * @param platformId the platform ID 
+		 * @return a reference to this builder to continue with object creation.
 		 */
-		public Builder withPlatform(ElementPlatformInfo.Builder platform) {
-			return withPlatform(platform.build());
-		}
-		
-		/**
-		 * Sets the mandatory platform this image was built for.
-		 * @param platform the platform.
-		 * @return a reference of this this builder to continue with object creation
-		 */
-		public Builder withPlatform(ElementPlatformInfo platform) {
-			assertNotInvalidated(getClass(), image);
-			image.platform = platform;
+		public Builder withPlatformId(PlatformId platformId) {
+			assertNotInvalidated(getClass(),image);
+			image.platformId = platformId;
 			return this;
 		}
 
+		/**
+		 * Sets the platform name of the platform this image has been built for.
+		 * @param platformId the platform name 
+		 * @return a reference to this builder to continue with object creation.
+		 */
+		public Builder withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(),image);
+			image.platformName = platformName;
+			return this;
+		}
+		
 		/**
 		 * Sets the optional element name this image was built for.
 		 * An image can be created for a certain element. 
@@ -383,10 +385,11 @@ public class ImageInfo extends ValueObject{
 	@Valid
 	private List<ApplicationName> applications;
 	
-	@NotNull(message="{platform.required}")
+	private PlatformId platformId;
+	@NotNull(message="{platform_name.required}")
 	@Valid
-	private ElementPlatformInfo platform;
-	
+	private PlatformName platformName;
+
 	private String description;
 	
 	private Map<String,String> checksums = emptyMap();
@@ -493,13 +496,21 @@ public class ImageInfo extends ValueObject{
 	}
 
 	/**
-	 * Returns the platform this image was built for.
-	 * @return the platform this image was built for.
+	 * Returns the platform ID of the platform this image has been built for.
+	 * @return the platform ID 
 	 */
-	public ElementPlatformInfo getPlatform() {
-		return platform;
+	public PlatformId getPlatformId() {
+		return platformId;
 	}
 	
+	/**
+	 * Returns the platform name of the platform this image has been built for.
+	 * @return the platform name.
+	 */
+	public PlatformName getPlatformName() {
+		return platformName;
+	}
+		
 	/**
 	 * Returns the image state.
 	 * @return the image state.

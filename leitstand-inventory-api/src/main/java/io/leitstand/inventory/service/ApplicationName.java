@@ -35,6 +35,18 @@ public class ApplicationName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates an <code>ApplicationName</code> from the specified string.
+	 * This method is an alias of the {@link #valueOf(String)} method to avoid static import conflicts.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param  name - the application name
+	 * @return the application name instance
+	 * @see Scalar#fromString(String, java.util.function.Function)
+	 */
+	public static ApplicationName applicationName(String name) {
+		return valueOf(name);
+	}
+	
 
 	/**
 	 * Creates an <code>ApplicationName</code> from the specified string.

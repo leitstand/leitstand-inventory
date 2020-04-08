@@ -1021,6 +1021,7 @@ The `platform` table stores the existing network element platforms.
 |:------------|:--------------|:----------------------------------------------------|
 | ID          | INT8          | Contiguous number as primary key. 					|	
 | UUID        | CHARACTER(36) | Unique platform ID.									|
+| NAME		  | CHARACTER(128)| Unique platform name.                               |
 | VENDOR      | VARCHAR(256)  | Vendor name.											|
 | MODEL       | VARCHAR(256)  | Model name.											|
 | DESCRIPTION | VARCHAR(1024) | Optional description.								|
@@ -1035,7 +1036,8 @@ The `ID` column forms the primary key.
 
 #### Unique Constraints
 This table has two unique constraints:
-- `UUID`, the platform ID is unique
+- `UUID`, the platform ID is unique.
+- `NAME`, the platform name is unique.
 - `VENDOR` and `MODEL` columns form a composite unique key. 
   The combination of vendor and model name is unique.
 

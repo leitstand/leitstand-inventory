@@ -17,6 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
+import static io.leitstand.inventory.service.ImageName.imageName;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
@@ -53,7 +54,6 @@ import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementManagementInterface;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.visitor.ElementConfigVisitor;
 import io.leitstand.inventory.visitor.ElementImageVisitor;
 import io.leitstand.inventory.visitor.ElementSettingsVisitor;
@@ -146,7 +146,7 @@ public class ElementTransformationManagerTest {
 	public void visit_installed_images() {
 		ElementInstalledImages images  = mock(ElementInstalledImages.class);
 		List<ElementInstalledImageData> installed = asList(newElementInstalledImageData()
-				  										   .withImageName(ImageName.valueOf("UNITTEST"))
+				  										   .withImageName(imageName("UNITTEST"))
 				  										   .build());
 		when(images.getImages()).thenReturn(installed);
 		
@@ -159,7 +159,7 @@ public class ElementTransformationManagerTest {
 
 		manager.apply(element, transformation);
 		
-		assertEquals(ImageName.valueOf("UNITTEST"), captor.getValue().getImage().getImageName());
+		assertEquals(imageName("UNITTEST"), captor.getValue().getImage().getImageName());
 
 	}
 	
@@ -167,7 +167,10 @@ public class ElementTransformationManagerTest {
 	@Test
 	public void visit_available_images() {
 		Image image = mock(Image.class);
-		when(image.getImageName()).thenReturn(ImageName.valueOf("UNITTEST"));
+		Platform platform = mock(Platform.class);
+		when(image.getPlatform()).thenReturn(platform);		
+		
+		when(image.getImageName()).thenReturn(imageName("UNITTEST"));
 
 		when(repository.execute(any(Query.class))).thenReturn(asList(image));
 		
@@ -180,7 +183,7 @@ public class ElementTransformationManagerTest {
 
 		manager.apply(element, transformation);
 		
-		assertEquals(ImageName.valueOf("UNITTEST"),captor.getValue().getImageName());
+		assertEquals(imageName("UNITTEST"),captor.getValue().getImageName());
 	}
 	
 	@Test

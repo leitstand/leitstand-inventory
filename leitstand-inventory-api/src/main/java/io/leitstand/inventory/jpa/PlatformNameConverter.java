@@ -13,20 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.service;
+package io.leitstand.inventory.jpa;
 
-import java.util.List;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import javax.validation.Valid;
+import io.leitstand.inventory.service.PlatformName;
 
-public interface PlatformService {
+@Converter
+public class PlatformNameConverter implements AttributeConverter<PlatformName, String> {
 
-	List<PlatformSettings> getPlatforms(String filter);
-	boolean storePlatform(PlatformSettings settings);
-	PlatformSettings getPlatform(PlatformId platformId);
-	PlatformSettings getPlatform(PlatformName platformName);
-	void removePlatform(@Valid PlatformId platformId);
-	List<PlatformSettings> getPlatforms();
-	void removePlatform(@Valid PlatformName platformName);
+	@Override
+	public String convertToDatabaseColumn(PlatformName platformId) {
+		return PlatformName.toString(platformId);
+	}
 	
+	@Override
+	public PlatformName convertToEntityAttribute(String platformId) {
+		return PlatformName.valueOf(platformId);
+	}
+
+	
+
 }

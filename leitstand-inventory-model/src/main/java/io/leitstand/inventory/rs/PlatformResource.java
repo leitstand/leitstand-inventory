@@ -18,6 +18,8 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
+import static io.leitstand.commons.rs.Responses.created;
+import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
@@ -41,12 +43,15 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
+import io.leitstand.commons.rs.Responses;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
 import io.leitstand.security.auth.Scopes;
@@ -66,8 +71,8 @@ public class PlatformResource {
 	@GET
 	@Path("/")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
-	public List<PlatformSettings> getPlatforms(){
-		return service.getPlatforms();
+	public List<PlatformSettings> getPlatforms(@QueryParam("filter") String filter){
+		return service.getPlatforms(filter);
 	}
 	
 	@POST
@@ -78,54 +83,64 @@ public class PlatformResource {
 	}
 
 	@GET
-	@Path("/{platform_id:"+UUID_PATTERN+"}")
+	@Path("/{platform:"+UUID_PATTERN+"}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
-	public PlatformSettings getPlatforms(@Valid @PathParam("platform_id") PlatformId platformId){
+	public PlatformSettings getPlatform(@Valid @PathParam("platform") PlatformId platformId){
 		return service.getPlatform(platformId);
 	}
-	
+
 	@GET
-	@Path("/{vendor}")
+	@Path("/{platform}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
-	public List<PlatformSettings> getPlatforms(@PathParam("vendor") String vendor){
-		return service.getPlatforms(vendor);
-	}
-	
-	@GET
-	@Path("/{vendor}/{model}")
-	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
-	public PlatformSettings getPlatform(@PathParam("vendor") String vendor, 
-									    @PathParam("model") String model) {
-		return service.getPlatform(vendor,model);
+	public PlatformSettings getPlatform(@Valid @PathParam("platform") PlatformName platformName){
+		return service.getPlatform(platformName);
 	}
 
+	
 	@PUT
-	@Path("/{platform_id:"+UUID_PATTERN+"}")
-	public Response storePlatforms(@Valid @PathParam("platform_id") PlatformId platformId, 
+	@Path("/{platform:"+UUID_PATTERN+"}")
+	public Response storePlatforms(@Valid @PathParam("platform") PlatformId platformId, 
 								   @Valid PlatformSettings settings){
 		if(isDifferent(platformId, settings.getPlatformId())) {
 			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE, 
-												   "platform_id", 
+												   "platform", 
 												   platformId, 
 												   settings.getPlatformId());
 		}		
 		if(service.storePlatform(settings)) {
-			return created(URI.create(format("%s",settings.getPlatformId())))
-				   .entity(messages)
-				   .build();
+			
+			return created(messages,
+						   "%s", 
+						   settings.getPlatformId());
 		}
-		return ok(messages)
-				.build();
+		return success(messages);
+	}
+	
+	
+	@PUT
+	@Path("/{platform}")
+	public Response storePlatforms(@Valid @PathParam("platform") PlatformName platformName, 
+								   @Valid PlatformSettings settings){
+		if(service.storePlatform(settings)) {
+			return created(messages,
+						   "%s", 
+						   settings.getPlatformId());
+		}
+		return success(messages);
 	}
 
 	@DELETE
-	@Path("/{platform_id:"+UUID_PATTERN+"}")
-	public Response deletePlatform(@PathParam("platform_id") @Valid PlatformId platformId) {
+	@Path("/{platform:"+UUID_PATTERN+"}")
+	public Response deletePlatform(@PathParam("platform") @Valid PlatformId platformId) {
 		service.removePlatform(platformId);
-		if(messages.size() > 0) {
-			return ok(messages).build();
-		}
-		return noContent().build();
+		return success(messages);
+	}
+	
+	@DELETE
+	@Path("/{platform}")
+	public Response deletePlatform(@PathParam("platform") @Valid PlatformName platformName) {
+		service.removePlatform(platformName);
+		return success(messages);
 	}
 	
 }

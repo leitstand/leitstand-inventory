@@ -58,13 +58,15 @@ public class ElementSettings extends BaseElementEnvelope{
 			super(new ElementSettings());
 		}
 		
-		public Builder withPlatform(ElementPlatformInfo.Builder vendor) {
-			return withPlatform(vendor.build());
+		public Builder withPlatformId(PlatformId platformId) {
+			assertNotInvalidated(getClass(),object);
+			object.platformId = platformId;
+			return this;
 		}
 		
-		public Builder withPlatform(ElementPlatformInfo vendor) {
-			assertNotInvalidated(getClass(), object);
-			object.platform = vendor;
+		public Builder withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(),object);
+			object.platformName = platformName;
 			return this;
 		}
 		
@@ -161,8 +163,8 @@ public class ElementSettings extends BaseElementEnvelope{
 	@JsonbProperty
 	private Set<String> tags = emptySet();
 	
-	@JsonbProperty("platform")
-	private ElementPlatformInfo platform;
+	private PlatformId platformId;
+	private PlatformName platformName;
 	
 	
 	public String getDescription() {
@@ -189,8 +191,12 @@ public class ElementSettings extends BaseElementEnvelope{
 		return tags;
 	}
 	
-	public ElementPlatformInfo getPlatform() {
-		return platform;
+	public PlatformId getPlatformId() {
+		return platformId;
+	}
+	
+	public PlatformName getPlatformName() {
+		return platformName;
 	}
 	
 	public String getSerialNumber() {

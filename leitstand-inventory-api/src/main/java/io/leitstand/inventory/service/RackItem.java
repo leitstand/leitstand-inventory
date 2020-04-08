@@ -57,11 +57,18 @@ public class RackItem extends CompositeValue{
 			return this;
 		}
 
-		public Builder withPlatform(ElementPlatformInfo platform) {
+		public Builder withPlatformId(PlatformId platformId) {
 			assertNotInvalidated(getClass(), rack);
-			rack.platform = platform;
+			rack.platformId = platformId;
 			return this;
 		}
+		
+		public Builder withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(), rack);
+			rack.platformName = platformName;
+			return this;
+		}
+		
 
 		public Builder withHeight(int height) {
 			assertNotInvalidated(getClass(), rack);
@@ -104,7 +111,8 @@ public class RackItem extends CompositeValue{
 	private ElementName elementName;
 	private ElementAlias elementAlias;
 	private ElementRoleName elementRole;
-	private ElementPlatformInfo platform;
+	private PlatformId platformId;
+	private PlatformName platformName;
 	private int unit;
 	private int height;
 	private boolean halfRack;
@@ -124,8 +132,12 @@ public class RackItem extends CompositeValue{
 		return elementRole;
 	}
 	
-	public ElementPlatformInfo getPlatform() {
-		return platform;
+	public PlatformId getPlatformId() {
+		return platformId;
+	}
+	
+	public PlatformName getPlatformName() {
+		return platformName;
 	}
 	
 	public int getUnit() {

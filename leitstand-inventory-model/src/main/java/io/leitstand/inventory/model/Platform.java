@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
+
 import java.util.List;
 
 import javax.persistence.Convert;
@@ -27,8 +29,9 @@ import javax.persistence.UniqueConstraint;
 import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
-import io.leitstand.inventory.service.ElementPlatformInfo;
+import io.leitstand.inventory.jpa.PlatformNameConverter;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 
 @Entity
 @Table(schema="inventory",
@@ -37,16 +40,17 @@ import io.leitstand.inventory.service.PlatformId;
 @NamedQueries({
 	@NamedQuery(name="Platform.findByPlatformId", 
 				query="SELECT p FROM Platform p WHERE p.uuid=:uuid"),
-	@NamedQuery(name="Platform.findByVendor", 
-				query="SELECT p FROM Platform p WHERE p.vendor=:vendor"),
-	@NamedQuery(name="Platform.findByVendorAndModel", 
-				query="SELECT p FROM Platform p WHERE p.vendor=:vendor AND p.model=:model"),
-	@NamedQuery(name="Platform.findByElementGroupAndElementRole", 
-				query="SELECT p FROM Element e JOIN e.platform p WHERE e.group=:group AND e.role=:role "),
+	@NamedQuery(name="Platform.findByPlatformName", 
+				query="SELECT p FROM Platform p WHERE p.name=:name"),
 	@NamedQuery(name="Platform.findAll", 
 				query="SELECT p FROM Platform p"),
+	@NamedQuery(name="Platform.findMatches", 
+				query="SELECT p FROM Platform p WHERE CAST(p.name as TEXT) REGEXP :filter OR p.vendor REGEXP :filter OR p.model REGEXP :filter "),	
+	@NamedQuery(name="Platform.findByElementGroupAndElementRole", 
+				query="SELECT p FROM Element e JOIN e.platform p WHERE e.group=:group AND e.role=:role "),
 	@NamedQuery(name="Platform.countElements",
 				query="SELECT count(e) FROM Element e WHERE e.platform=:platform")
+	
 })
 public class Platform extends VersionableEntity{
 
@@ -58,22 +62,20 @@ public class Platform extends VersionableEntity{
 					.getSingleResult();
 	}
 
-	public static Query<List<Platform>> findAll() {
-		return em -> em.createNamedQuery("Platform.findAll",Platform.class)
+	public static Query<List<Platform>> findAll(String filter) {
+		if(isEmptyString(filter) || ".*".equals(filter)) {
+			return em -> em.createNamedQuery("Platform.findAll",Platform.class)
+					   	   .getResultList();		
+		}
+		return em -> em.createNamedQuery("Platform.findMatches",Platform.class)
+					   .setParameter("filter",filter)
 					   .getResultList();
+		
 	}
 	
-	public static Query<Platform> findByVendor(ElementPlatformInfo vendor){
-		return em -> em.createNamedQuery("Platform.findByVendorAndModel",Platform.class)
-					   .setParameter("vendor",vendor.getVendorName())
-					   .setParameter("model",vendor.getModelName())
-					   .getSingleResult();
-	}
-	
-	public static Query<Platform> findByModel(String vendor, String model){
-		return em -> em.createNamedQuery("Platform.findByVendorAndModel",Platform.class)
-					   .setParameter("vendor",vendor)
-					   .setParameter("model",model)
+	public static Query<Platform> findByPlatformName(PlatformName name){
+		return em -> em.createNamedQuery("Platform.findByPlatformName",Platform.class)
+					   .setParameter("name", name)
 					   .getSingleResult();
 	}
 	
@@ -90,14 +92,10 @@ public class Platform extends VersionableEntity{
 					   .getSingleResult();
 	}
 	
-	public static Query<List<Platform>> findByVendor(String vendor){
-		return em -> em.createNamedQuery("Platform.findByVendor",Platform.class)
-					   .setParameter("vendor",vendor)
-					   .getResultList();
-	}
-	
-	private String model; // AS7712-23X
-	private String vendor; //EdgeCore
+	@Convert(converter = PlatformNameConverter.class)
+	private PlatformName name;
+	private String vendor;
+	private String model;
 	private String description;	
 	private int rackUnits;
 	@Convert(converter=BooleanConverter.class)
@@ -107,11 +105,14 @@ public class Platform extends VersionableEntity{
 		// JPA
 	}
 	
-	public Platform(PlatformId platformId, String vendor, String model) {
+	public Platform(PlatformId platformId, PlatformName platformName) {
 		super(platformId.toString());
-		this.vendor = vendor;
-		this.model = model;
+		this.name = platformName;
 		this.rackUnits = 1;
+	}
+	
+	public PlatformName getPlatformName() {
+		return name;
 	}
 	
 	public String getVendor() {
@@ -122,6 +123,11 @@ public class Platform extends VersionableEntity{
 		return model;
 	}
 	
+	public void setModel(String model) {
+		this.model = model;
+	}
+	
+	
 	public String getDescription() {
 		return description;
 	}
@@ -130,14 +136,15 @@ public class Platform extends VersionableEntity{
 		this.description = description;
 	}
 
-	void setVendor(String vendorName) {
-		this.vendor = vendorName;
+	void setPlatformName(PlatformName platformName) {
+		this.name = platformName;
 	}
 	
-	void setModel(String modelName) {
-		this.model = modelName;
+	void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 
+	
 	void setRackUnits(int rackUnits) {
 		this.rackUnits = rackUnits;
 	}

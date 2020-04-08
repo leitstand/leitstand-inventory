@@ -13,20 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.service;
+package io.leitstand.inventory.jsonb;
 
-import java.util.List;
+import javax.json.bind.adapter.JsonbAdapter;
 
-import javax.validation.Valid;
+import io.leitstand.inventory.service.PlatformName;
 
-public interface PlatformService {
+public class PlatformNameAdapter implements JsonbAdapter<PlatformName,String> {
 
-	List<PlatformSettings> getPlatforms(String filter);
-	boolean storePlatform(PlatformSettings settings);
-	PlatformSettings getPlatform(PlatformId platformId);
-	PlatformSettings getPlatform(PlatformName platformName);
-	void removePlatform(@Valid PlatformId platformId);
-	List<PlatformSettings> getPlatforms();
-	void removePlatform(@Valid PlatformName platformName);
-	
+	@Override
+	public String adaptToJson(PlatformName obj) throws Exception {
+		return PlatformName.toString(obj);
+	}
+
+	@Override
+	public PlatformName adaptFromJson(String obj) throws Exception {
+		return PlatformName.valueOf(obj);
+	}
+
 }

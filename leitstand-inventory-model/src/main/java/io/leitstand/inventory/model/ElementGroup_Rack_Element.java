@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
@@ -32,7 +31,6 @@ import io.leitstand.commons.model.Query;
 import io.leitstand.inventory.service.ElementAlias;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.ElementRackLocation.ElementRackLocationPosition;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.RackName;
@@ -128,17 +126,6 @@ public class ElementGroup_Rack_Element implements Serializable {
 		return element.getElementName();
 	}
 	
-	public ElementPlatformInfo getPlatform() {
-		Platform platform = element.getPlatform();
-		if(platform == null) {
-			return null;
-		}
-		return newPlatformInfo()
-			   .withModelName(platform.getModel())
-			   .withVendorName(platform.getVendor())
-			   .build();
-	}
-
 	public ElementGroup_Rack getRack() {
 		return rack;
 	}
@@ -149,6 +136,10 @@ public class ElementGroup_Rack_Element implements Serializable {
 
 	public ElementAlias getElementAlias() {
 		return element.getElementAlias();
+	}
+	
+	public Platform getPlatform() {
+		return element.getPlatform();
 	}
 	
 }

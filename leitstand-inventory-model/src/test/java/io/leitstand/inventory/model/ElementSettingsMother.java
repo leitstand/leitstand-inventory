@@ -19,10 +19,11 @@ import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 
 import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementGroupId;
@@ -72,9 +73,8 @@ public class ElementSettingsMother {
 			   .withPlane(DATA)
 			   .withOperationalState(OperationalState.OPERATIONAL)
 			   .withAdministrativeState(AdministrativeState.ACTIVE)
-			   .withPlatform(newPlatformInfo()
-					   		.withVendorName("net.rtbrick")
-					   		.withModelName("JUNIT"))
+			   .withPlatformId(randomPlatformId())
+			   .withPlatformName(platformName("unittest"))
 			   .build();
 	}
 	
@@ -93,9 +93,8 @@ public class ElementSettingsMother {
 			   .withPlane(DATA)
 			   .withOperationalState(OperationalState.OPERATIONAL)
 			   .withAdministrativeState(AdministrativeState.ACTIVE)
-			   .withPlatform(newPlatformInfo()
-					   		.withVendorName("net.rtbrick")
-					   		.withModelName("JUNIT"))
+			   .withPlatformId(randomPlatformId())
+			   .withPlatformName(platformName("unittest"))
 			   .build();
 	}
 	

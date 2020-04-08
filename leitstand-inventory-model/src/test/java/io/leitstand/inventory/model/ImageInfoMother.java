@@ -16,9 +16,10 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.model.ByteArrayUtil.encodeBase36String;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
+import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.security.crypto.SecureHashes.sha256;
 import static java.util.Arrays.asList;
 
@@ -91,10 +92,8 @@ public final class ImageInfoMother {
 			   .withImageId(id)
 			   .withChecksums(md5(DUMMY_MD5))
 			   .withPackages(asList(packages))
-			   .withPlatform(newPlatformInfo()
-					   		 .withVendorName("rtbrick")
-							 .withModelName("junit")
-							 .build())
+			   .withPlatformId(randomPlatformId())
+			   .withPlatformName(platformName("unittest"))
 			   .withExtension("tar.gz")
 			   .build();
 		
@@ -109,10 +108,8 @@ public final class ImageInfoMother {
 								  .withImageId(id)
 								  .withChecksums(md5(DUMMY_MD5))
 								  .withPackages(asList(packages))
-								  .withPlatform(newPlatformInfo()
-										  		.withVendorName("rtbrick")
-										  		.withModelName("junit")
-										  		.build())
+								  .withPlatformId(randomPlatformId())
+								  .withPlatformName(platformName("unittest"))
 								  .withExtension("tar.gz")
 								  .build();
 		

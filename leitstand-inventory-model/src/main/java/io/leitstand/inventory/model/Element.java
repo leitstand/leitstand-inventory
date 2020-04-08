@@ -264,13 +264,7 @@ public class Element extends VersionableEntity {
 		return unmodifiableMap(managementInterfaces);
 	}
 
-	public String getModelName() {
-		if(platform == null) {
-			return null;
-		}
-		return platform.getModel();
-	}
-
+	
 	public OperationalState getOperationalState() {
 		return opState;
 	}
@@ -278,12 +272,11 @@ public class Element extends VersionableEntity {
 	public Platform getPlatform() {
 		return platform;
 	}
-
+	
 	public ElementGroup getGroup() {
 		return group;
 	}
 	
-
 	public String getSerialNumber() {
 		return serialNumber;
 	}
@@ -300,13 +293,6 @@ public class Element extends VersionableEntity {
 		return unmodifiableSet(tags);
 	}
 	
-	public String getVendorName() {
-		if(platform == null) {
-			return null;
-		}
-		return platform.getVendor();
-	}
-
 	public boolean hasElementId(ElementId elementId) {
 		return Objects.equals(getElementId(), elementId);
 	}

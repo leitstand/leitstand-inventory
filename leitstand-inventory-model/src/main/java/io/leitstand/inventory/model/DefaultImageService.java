@@ -34,10 +34,10 @@ import static io.leitstand.inventory.model.Image.findByImageId;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.prerelease;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
-import static io.leitstand.inventory.model.Platform.findByVendor;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ElementRoleInfo.newElementRoleInfo;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.ImageId.imageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageMetaData.newImageMetaData;
 import static io.leitstand.inventory.service.ImageName.imageName;
@@ -45,7 +45,9 @@ import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
-import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.ImageType.imageType;
+import static io.leitstand.inventory.service.PlatformId.platformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
@@ -75,7 +77,6 @@ import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
-import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageEvent.ImageEventBuilder;
 import io.leitstand.inventory.jpa.ImageStateConverter;
@@ -84,7 +85,6 @@ import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.ElementRoleInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
@@ -97,6 +97,7 @@ import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -123,9 +124,9 @@ public class DefaultImageService implements ImageService {
 	@Inject
 	private ElementProvider elements;
 	
+	
 	@Inject
-	@Inventory
-	private SubtransactionService transaction;
+	private PlatformProvider platforms;
 	
 	@Inject
 	private Event<ImageEvent> sink;
@@ -134,14 +135,14 @@ public class DefaultImageService implements ImageService {
 		// EJB
 	}
 	
-	DefaultImageService(SubtransactionService transaction, 
-						PackageVersionService packages, 
+	DefaultImageService(PackageVersionService packages,
+						PlatformProvider platforms,
 						Repository repository,
 						DatabaseService db,
 						Messages messages,
 						Event<ImageEvent> sink){
-		this.transaction = transaction;
 		this.packages = packages;
+		this.platforms = platforms;
 		this.repository = repository;
 		this.db = db;
 		this.messages =messages;
@@ -157,7 +158,7 @@ public class DefaultImageService implements ImageService {
 										   int limit) {
 		List<Object> arguments = new LinkedList<>();
 		
-		String sql = "SELECT d.uuid, d.tsbuild, d.state, d.type, d.name, d.major, d.minor, d.patch, d.prerelease, e.name, r.name, p.vendor, p.model "+
+		String sql = "SELECT d.uuid, d.tsbuild, d.state, d.type, d.name, d.major, d.minor, d.patch, d.prerelease, e.name, r.name, p.uuid, p.name "+
 		             "FROM inventory.image d "+
 				     "JOIN inventory.platform p "+
 		             "ON d.platform_id = p.id "+
@@ -205,21 +206,19 @@ public class DefaultImageService implements ImageService {
 		
 		return db.executeQuery(prepare(sql,arguments),
 							   rs -> newImageReference()
-									 .withImageId(new ImageId(rs.getString(1)))
+									 .withImageId(imageId(rs.getString(1)))
 									 .withBuildDate(rs.getTimestamp(2))
 								     .withImageState(toImageState(rs.getString(3)))
-									 .withImageType(ImageType.imageType(rs.getString(4)))
+									 .withImageType(imageType(rs.getString(4)))
 									 .withImageName(imageName(rs.getString(5)))
 									 .withImageVersion(new Version(rs.getInt(6),
 											 					   rs.getInt(7),
 											 					   rs.getInt(8),
 											 					   prerelease(rs.getString(9))))
 									 .withElementName(elementName(rs.getString(10)))
-									 .withElementRole(ElementRoleName.valueOf(rs.getString(11)))
-									 .withPlatform(newPlatformInfo()
-												   .withVendorName(rs.getString(12))
-												   .withModelName(rs.getString(13))
-												   .build())
+									 .withElementRole(elementRoleName(rs.getString(11)))
+									 .withPlatformId(platformId(rs.getString(12)))
+									 .withPlatformName(platformName(rs.getString(13)))
 									 .build());
 		
 	}
@@ -271,15 +270,8 @@ public class DefaultImageService implements ImageService {
 			imageApplications.add(app);
 		}
 		
-		ElementPlatformInfo vendor = submission.getPlatform();
-		Platform platform = repository.execute(findByVendor(vendor));
-		if(platform == null) {
-			platform = transaction.run(repo -> repo.add(new Platform(randomPlatformId(),
-																	 vendor.getVendorName(), 
-																	 vendor.getModelName())),
-									   repo -> repo.execute(findByVendor(vendor)));
-		}
-		
+		Platform platform = platforms.findOrCreatePlatform(submission.getPlatformId(),
+														   submission.getPlatformName());
 		Image image = repository.execute(findByImageId(submission.getImageId()));
 		boolean created = false;
 		if(image == null){
@@ -358,15 +350,7 @@ public class DefaultImageService implements ImageService {
 												  .map(Application::getName)
 												  .collect(toList());
 		
-		ElementPlatformInfo vendor = null;
 		Platform platform = image.getPlatform();
-		if(platform != null) {
-			vendor = newPlatformInfo()
-					 .withVendorName(platform.getVendor())
-					 .withModelName(platform.getModel())
-					 .build();
-		}
-
 		
 		return newImageInfo()
 			   .withImageId(image.getImageId())
@@ -374,7 +358,8 @@ public class DefaultImageService implements ImageService {
 		   	   .withImageName(image.getImageName())
 		   	   .withImageState(image.getImageState())
 		   	   .withElementRole(image.getElementRoleName())
-		   	   .withPlatform(vendor)
+		   	   .withPlatformId(platform.getPlatformId())
+		   	   .withPlatformName(platform.getPlatformName())
 		   	   .withElementName(optional(image.getElement(), Element::getElementName))
 		   	   .withExtension(image.getImageExtension())
 		   	   .withImageVersion(image.getImageVersion())
@@ -562,11 +547,8 @@ public class DefaultImageService implements ImageService {
 															.withElementRole(ElementRoleName.valueOf(rs.getString(1)))
 						  									.withPlane(PlaneConverter.parse(rs.getString(2)))
 															.build());
-		List<ElementPlatformInfo> platforms = db.executeQuery(prepare("SELECT vendor,model FROM inventory.platform ORDER BY vendor,model"), 
-															  rs -> newPlatformInfo()
-																    .withVendorName(rs.getString(1))
-																    .withModelName(rs.getString(2))
-																	.build());
+		List<PlatformName> platforms = db.executeQuery(prepare("SELECT name FROM inventory.platform ORDER BY name"), 
+													   rs -> platformName(rs.getString(1)));
 		
 		return newImageMetaData()
 			   .withPlatforms(platforms)
