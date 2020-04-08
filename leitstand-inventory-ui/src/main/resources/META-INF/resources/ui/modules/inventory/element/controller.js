@@ -17,31 +17,8 @@ import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Select} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
-import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Connector,Platforms} from '/ui/modules/inventory/inventory.js';
+import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
 //import {Event,Events} from '/ui/modules/event/events.js';
-
-
-class PlatformSelector extends Select {
-
-	isSelected(option){
-		let platform = this.viewModel.getProperty(this.binding);
-		if(!platform){
-			return option['default'];
-		}
-		return option == `[${platform.vendor_name}][${platform.model_name}]`;
-	}
-
-	select(option){
-		let segments = /\[(.*)\]\[(.*)\]/.exec(option);
-		let vendor = segments[1];
-		let model  = segments[2];
-		this.value = {"vendor_name":vendor,"model_name":model};
-	}
-	
-}
-
-
-customElements.define('element-platform',PlatformSelector);
 
 //TODO: Implement Rack Component!
 
@@ -234,12 +211,12 @@ const elementController = function(){
 			const roles = new Metadata({'scope':'roles'});
 			const platforms = new Platforms();
 						
-			const viewModel = settings;
+			const viewModel = {};
 			viewModel.element = settings;
 			viewModel.roles = await roles.load();
 			viewModel.roles = viewModel.roles.map(role => ({"value":role.role_name,"label":role.display_name}));
 			viewModel.platforms = await platforms.load();
-			viewModel.platforms = viewModel.platforms.map(platform => ({"value":`[${platform.vendor_name}][${platform.model_name}]`,"label":`${platform.vendor_name} ${platform.model_name}`}));
+			viewModel.platforms = viewModel.platforms.map(platform => ({"value":platform.platform_id,"label":platform.platform_name}));
 			viewModel.administrative_states = [{"value":"NEW",
 												"label":"New"},
 											   {"value":"ACTIVE",
@@ -267,29 +244,11 @@ const elementController = function(){
 		},
 		buttons:{
 			"save-element":function(){
-				const platform = this.input("platform").value();
-				const segments = /\[(.*)\]\[(.*)\]/.exec(platform);
-				const vendorName = segments[1];
-				const modelName  = segments[2];
-				
-				//FIXME Select multivalue field
-				
-				
-				let settings = this.updateViewModel({"element_name":this.input("element_name").value(),
-													 "element_alias":this.input("element_alias").value() ? this.input("element_alias").value() : null,
-													 "element_role":this.input("element_role").value(),
-													 "description":this.input("description").value(),
-													 "administrative_state":this.input("adm_state").value(),
-													 "operational_state":this.input("op_state").value(),
-													 "serial_number":this.input("serial_number").value(),
-													 "platform":{
-														"vendor_name":vendorName,
-														"model_name":modelName
-													 }
-													});
-				
-				settings.mgmt_mac = this.input("mgmt_mac").value();
-				
+				const platformId = this.input("platform_id").value();
+				// Search selected platform option
+				const platformName = this.getViewModel("platforms").find(platform => platform.value == platformId).label;
+				const settings = this.getViewModel("element");
+				settings.platform_name = platformName;
 				element.saveSettings(this.location.params,
 				                     settings);
 			},

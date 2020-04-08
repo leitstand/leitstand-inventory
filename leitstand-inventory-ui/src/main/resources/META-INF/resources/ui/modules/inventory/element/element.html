@@ -62,10 +62,10 @@
 	<ui-group>
 		<ui-label>Hardware Information</ui-label>
 		<ui-note>Select the hardware platform of the element and maintain the chassis serial number and the MAC address of the management interface.</ui-note>
-		<element-platform name="platform" bind="element.platform" options="platforms">
+		<ui-select name="platform_id" bind="element.platform_id" options="platforms">
 			<ui-label>Hardware Platform</ui-label>
 			<ui-note>The hardware platform of the element.</ui-note>
-		</element-platform>
+		</ui-select>
 		<ui-input name="serial_number" bind="element.serial_number">
 			<ui-label>Serial Number</ui-label>
 			<ui-note>The serial number of the element</ui-note>

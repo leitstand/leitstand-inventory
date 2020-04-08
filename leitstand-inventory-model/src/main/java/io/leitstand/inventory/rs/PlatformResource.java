@@ -24,13 +24,8 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
-import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.created;
-import static javax.ws.rs.core.Response.noContent;
-import static javax.ws.rs.core.Response.ok;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,7 +44,6 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
-import io.leitstand.commons.rs.Responses;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
@@ -78,8 +72,8 @@ public class PlatformResource {
 	@POST
 	@Path("/")
 	public Response addPlatform(@Valid PlatformSettings settings){
-		return storePlatforms(settings.getPlatformId(), 
-							  settings);	
+		return storePlatform(settings.getPlatformId(), 
+							 settings);	
 	}
 
 	@GET
@@ -99,8 +93,8 @@ public class PlatformResource {
 	
 	@PUT
 	@Path("/{platform:"+UUID_PATTERN+"}")
-	public Response storePlatforms(@Valid @PathParam("platform") PlatformId platformId, 
-								   @Valid PlatformSettings settings){
+	public Response storePlatform(@Valid @PathParam("platform") PlatformId platformId, 
+								  @Valid PlatformSettings settings){
 		if(isDifferent(platformId, settings.getPlatformId())) {
 			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE, 
 												   "platform", 
