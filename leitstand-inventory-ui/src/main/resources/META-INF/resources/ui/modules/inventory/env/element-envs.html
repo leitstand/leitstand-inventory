@@ -1,0 +1,49 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-title>Element Environments</ui-title>
+	<ui-subtitle>List of environments declared for this element.</ui-subtitle>
+</ui-view-header>
+<ui-group>
+	<ui-label>Environments</ui-label>
+	<ui-note>Select on an environment for detailed information.</ui-note>
+	
+<!-- {{#environments.length}} -->
+<table class="list">
+<thead>
+	<tr>
+		<th class="small text">Name</th>
+		<th class="text">Description</th>
+	</tr>
+</thead>
+<!-- {{#environments}} -->
+	<tr>
+		<td class="small text"><a href="element-env.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}">{{environment_name}}</a></td>
+		<td class="text">{{description}}</td>
+	</tr>
+<!-- {{/environments}} -->
+</table>
+<!-- {{/environments.length}} -->
+<!-- {{^environments}} -->
+<ui-blankslate>
+<ui-title>No environments found.</ui-title>
+<ui-note>No environments have been registered for this element.</ui-note>
+</ui-blankslate>
+<!-- {{/environments}} -->
+</ui-group>
+<ui-actions>
+	<ui-button primary href="new-element-env.html?group={{group_id}}&element={{element_id}}" title="Create a new environment" scopesAllowed="ivt ivt.element ivt.element.config">Add environment</ui-button>
+</ui-actions>

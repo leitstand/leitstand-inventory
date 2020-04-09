@@ -211,7 +211,7 @@ const elementController = function(){
 			const roles = new Metadata({'scope':'roles'});
 			const platforms = new Platforms();
 						
-			const viewModel = {};
+			const viewModel = settings;
 			viewModel.element = settings;
 			viewModel.roles = await roles.load();
 			viewModel.roles = viewModel.roles.map(role => ({"value":role.role_name,"label":role.display_name}));

@@ -73,6 +73,7 @@ public class InventoryModule  {
 			Contribution podContrib 	  = contribution("pod/menu.yaml");
 			Contribution elementContrib   = contribution("element/menu.yaml");
 			Contribution configContrib 	  = contribution("config/menu.yaml");
+			Contribution envContrib		  = contribution("env/menu.yaml");
 			Contribution dnsContrib 	  = contribution("dns/menu.yaml");
 			Contribution platformContrib  = contribution("platform/menu.yaml");
 			Contribution roleContrib      = contribution("role/menu.yaml");
@@ -81,6 +82,7 @@ public class InventoryModule  {
 				   .withContributions(podContrib,
 						   			  elementContrib,
 						   			  configContrib,
+						   			  envContrib,
 						   			  dnsContrib,
 						   			  platformContrib,
 						   			  roleContrib)

@@ -1,0 +1,13 @@
+provider: leitstand.io
+controller: controller.js
+description: Element configuration UI
+extensions:
+- extend:
+    module: inventory
+    menu: element
+    after: element-config
+  items:
+  - item: environments
+    label: Environments
+    title: Manage environments of this element
+    view:  element-envs.html

@@ -28,10 +28,12 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRON
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -44,6 +46,7 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironmentService;
+import io.leitstand.inventory.service.ElementEnvironments;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
@@ -66,6 +69,20 @@ public class ElementEnvironmentResource {
 	private Messages messages;
 	
 	@GET
+	@Path("/{element:"+UUID_PATTERN+"}/environments/")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})	
+	public ElementEnvironments getElementEnvironments(@Valid @PathParam("element") ElementId elementId) {
+		return service.getElementEnvironments(elementId);
+	}
+	
+	@GET
+	@Path("/{element}/environments/")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})	
+	public ElementEnvironments getElementEnvironments(@Valid @PathParam("element") ElementName elementName) {
+		return service.getElementEnvironments(elementName);
+	}
+	
+	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/environments/{env}")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public ElementEnvironment getElementEnvironment(@Valid @PathParam("element") ElementId elementId,
@@ -82,6 +99,27 @@ public class ElementEnvironmentResource {
 		return service.getElementEnvironment(elementName,
 											 environmentName);
 	}
+	
+	@GET
+	@Path("/{element:"+UUID_PATTERN+"}/environments/{env}/variables")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
+	public JsonObject getElementEnvironmentVariables(@Valid @PathParam("element") ElementId elementId,
+													 @Valid @PathParam("env") EnvironmentName environmentName) {
+		return service.getElementEnvironment(elementId,
+										     environmentName)
+					  .getVariables();
+	}
+
+	@GET
+	@Path("/{element}/environments/{env}/variables")
+	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
+	public JsonObject getElementEnvironmentVariables(@Valid @PathParam("element") ElementName elementName,
+													 @Valid @PathParam("env") EnvironmentName environmentName) {
+		return service.getElementEnvironment(elementName,
+											 environmentName)
+					  .getVariables();
+	}
+	
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/environments/{env:"+UUID_PATTERN+"}")
@@ -166,5 +204,30 @@ public class ElementEnvironmentResource {
 		}
 		return success(messages);
 	}
+	
+	@POST
+	@Path("/{element}/environments")
+	public Response storeElementEnvironment(@Valid @PathParam("element") ElementName elementName,
+										   	@Valid Environment env) {
+		boolean created = service.storeElementEnvironment(elementName, 
+														  env);
+		if(created) {
+			return created(messages,env.getEnvironmentId());
+		}
+		return success(messages);
+	}
+
+	@POST
+	@Path("/{element:"+UUID_PATTERN+"}/environments")
+	public Response storeElementEnvironment(@Valid @PathParam("element") ElementId elementId,
+										   	@Valid Environment env) {
+		boolean created = service.storeElementEnvironment(elementId, 
+														  env);
+		if(created) {
+			return created(messages,env.getEnvironmentId());
+		}
+		return success(messages);
+	}
+
 	
 }
