@@ -18,6 +18,40 @@ import {Controller,Menu} from '/ui/js/ui.js';
 import {Select} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
+
+
+class PlatformSelector extends Select {
+	
+	options(){
+		const platforms = new Platforms();
+		return platforms.load()
+				 		.then(platforms => {
+				 					return platforms.map(platform => { 
+				 							return {"value":platform.platform_id,"label":platform.platform_name}
+				 					});
+				 				});
+	}
+	
+}
+customElements.define("element-platform",PlatformSelector);
+
+class ElementRoleSelector extends Select {
+
+	options(){
+		const roles = new Metadata({'scope':'roles'});
+		return roles.load()
+				 	.then(roles => {
+				 			return roles.map(role => { 
+				 							return {"value":role.role_name,"label":role.display_name}
+				 					});
+				 			});
+	}
+
+}
+customElements.define("element-role",ElementRoleSelector);
+
+
+
 //TODO: Implement Rack Component!
 const elementRackController = function(){
 	
@@ -197,39 +231,42 @@ const elementController = function(){
 		resource:element,
 		viewModel:async function(settings){
 			
-			const mgmt_interface_list = [];
-			for(const mgmt_ifc_name in settings.mgmt_interfaces){
-				mgmt_interface_list.push(settings.mgmt_interfaces[mgmt_ifc_name]);
-			}
-			
-			const roles = new Metadata({'scope':'roles'});
-			const platforms = new Platforms();
-						
+			// The element settings are the basis for this view model.
 			const viewModel = settings;
-			viewModel.element = settings;
-			viewModel.roles = await roles.load();
-			viewModel.roles = viewModel.roles.map(role => ({"value":role.role_name,"label":role.display_name}));
-			viewModel.platforms = await platforms.load();
-			viewModel.platforms = viewModel.platforms.map(platform => ({"value":platform.platform_id,"label":platform.platform_name}));
-			viewModel.administrative_states = [{"value":"NEW",
-												"label":"New"},
-											   {"value":"ACTIVE",
-												"label":"Active"},
-											   {"value":"RETIRED",
-												"label":"Retired"}];
+
+			// Add available administrative and operational states.
+			// Both transient again.
+			viewModel.administrative_states = this.transient([{"value" : "NEW",
+															   "label" : "New"},
+															  {"value" : "ACTIVE",
+															   "label" : "Active"},
+															  {"value" : "RETIRED",
+															   "label" : "Retired"}]);
 			
-			viewModel.operational_states = [{"value":"DOWN", 
-											 "label": "Down"},		
-										    {"value":"IMPAIRED", 
-											 "label": "Impaired"}, 
-										    {"value":"UP", 
-											 "label": "Up"}, 
-										    {"value":"DETACHED", 
-											 "label": "Detached"}, 
-										    {"value":"MAINTENANCE", 
-											 "label": "Maintenance"}];
+			viewModel.operational_states = this.transient([{"value" : "DOWN", 
+											 				"label" : "Down"},		
+											 			   {"value" : "UP", 
+											 			    "label" : "Up"}, 
+											 			   {"value" : "DETACHED", 
+											 			    "label" : "Detached"}, 
+											 			   {"value" : "MAINTENANCE", 
+											 			    "label" : "Maintenance"}]);
 			
-			viewModel.mgmt_interface_list = mgmt_interface_list;
+			// Translate map of management interfaces into an array to render the list of management interfaces.
+			viewModel.mgmt_interface_list = function() {
+				const mgmt_interface_list = [];
+				for(const mgmt_name in settings.mgmt_interfaces){
+					mgmt_interface_list.push(settings.mgmt_interfaces[mgmt_name]);
+				}
+				return mgmt_interface_list;
+			}
+			viewModel.mgmt_interface_list_length = function() {
+				const mgmt_interface_list = [];
+				for(const mgmt_name in settings.mgmt_interfaces){
+					mgmt_interface_list.push(settings.mgmt_interfaces[mgmt_name]);
+				}
+				return mgmt_interface_list.length;
+			}
 
 			viewModel.inactive = function(){
 				return settings.administrative_state != "ACTIVE";
@@ -238,20 +275,8 @@ const elementController = function(){
 		},
 		buttons:{
 			"save-element":function(){
-				const platformId = this.input("platform_id").value();
-				// Search selected platform option
-				// FIXME Test and fix save operation!!
-				const platformName = this.getViewModel("platforms").find(platform => platform.value == platformId).label;
-				const settings = this.updateViewModel({"element_name":this.input("element_name").value(),
-													   "element_alias":this.input("element_alias").value() ? this.input("element_alias").value() : null,
-													   "element_role":this.input("element_role").value(),
-													   "description":this.input("description").value(),
-													   "administrative_state":this.input("adm_state").value(),
-													   "operational_state":this.input("op_state").value(),
-													   "serial_number":this.input("serial_number").value(),
-													   "platform_id":platform_id,
-													   "platform_name":platform_name
-													});
+				const settings = this.getViewModel();
+				settings.platform_name = this.input("element-platform").unwrap().selected.label;
 				element.saveSettings(this.location.params,
 				                     settings);
 			},
@@ -282,49 +307,33 @@ const elementMgmtController = function(){
 	return new Controller({
 		resource:element,
 		viewModel:function(settings){
-			
+			// Augment settings with available management protocols.
+			settings.mgmt_protocols = this.transient([{"label":"HTTP",
+													   "value":"http"},
+													  {"label":"HTTPS",
+													   "value":"https"},
+													  {"label":"gNMI",
+													   "value":"gnmi"},
+													  {"label":"SSH",
+													   "value":"ssh"}]);
 			const mgmt_name = this.location.param("mgmt_name");
-	
-			const mgmt_ifc = settings.mgmt_interfaces[mgmt_name];
-			if(!mgmt_ifc){
-				mgmt_ifc = {};
-			}
-			//TODO Refactor to new UI component
-			mgmt_ifc.mgmt_protocols = [{"label":"HTTP",
-										"value":"http",
-										"selected":(mgmt_ifc.mgmt_protocol == "http" ? "selected" : "")},
-									   {"label":"HTTPS",
-									    "value":"https",
-										"selected":(mgmt_ifc.mgmt_protocol == "https" ? "selected" : "")},
-									   {"label":"gNMI",
-									    "value":"gnmi",
-										"selected":(mgmt_ifc.mgmt_protocol == "gnmi" ? "selected" : "")},
-									   {"label":"SSH",
-										"value":"ssh",
-										"selected":(mgmt_ifc.mgmt_protocol == "ssh" ? "selected" : "")}];
-			mgmt_ifc.element_id = this.transient(settings.element_id);
-			mgmt_ifc.element_name = this.transient(settings.element_name);
-			mgmt_ifc.group_id = this.transient(settings.group_id);
-			mgmt_ifc.group_name = this.transient(settings.group_name);
-			return mgmt_ifc;
+			settings.mgmt_ifc = settings.mgmt_interfaces[mgmt_name];
+			return settings;
 		},
 		buttons:{
 			"save-mgmt":function(){
+				// Read element settings
 				const settings = this.getViewModel();
+				// Read mgmt_name 
 				const mgmt_name = this.location.param("mgmt_name");
-				//Remove existing mgmt interface
-				delete settings.mgmt_interfaces[mgmt_name]
-				// Add mgmt interface (by that, renaming is implicitly solved)
-				let mgmt_ifc = {};
-				mgmt_name = this.input("mgmt_name").value();
-				mgmt_ifc["mgmt_name"] 	  = mgmt_name;
-				mgmt_ifc["mgmt_protocol"] = this.input("mgmt_protocol").value();
-				mgmt_ifc["mgmt_hostname"] = this.input("mgmt_hostname").value();
-				if(this.input("mgmt_port").value()){
-					mgmt_ifc["mgmt_port"] = this.input("mgmt_port").value();
+				if(mgmt_name){
+					//Remove existing mgmt interface and add it again.
+					delete settings.mgmt_interfaces[mgmt_name]					
 				}
-				mgmt_ifc["mgmt_path"] 	  = this.input("mgmt_path").value();
-				settings.mgmt_interfaces[mgmt_name] = mgmt_ifc;
+				// Register management interface. Rename is handled implicitly due to previous remove operation.
+				settings.mgmt_interfaces[settings.mgmt_ifc.mgmt_name] = settings.mgmt_ifc;
+				// Finally delete temporary mgmt_ifc binding to be compliant with REST API.
+				delete settings.mgmt_ifc
 				element.saveSettings(this.location.params,
 									 settings);
 			},
