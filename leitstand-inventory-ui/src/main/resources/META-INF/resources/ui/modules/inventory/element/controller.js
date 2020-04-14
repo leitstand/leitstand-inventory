@@ -18,11 +18,7 @@ import {Controller,Menu} from '/ui/js/ui.js';
 import {Select} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
-//import {Event,Events} from '/ui/modules/event/events.js';
-
 //TODO: Implement Rack Component!
-
-
 const elementRackController = function(){
 	
 	let Rack = function(rack){
@@ -115,10 +111,8 @@ const elementMountPointController = function(){
 	return new Controller({
 		resource:element,
 		viewModel: async function(settings){ 
-			
 			const racks = new Pod({"scope":"racks"})
 						  .load(this.location.params);
-			
 			const element = (function() {
 				for(let i=0; i < settings.elements.length; i++){
 					if(settings.elements[i].element_id == settings.element_id){
@@ -211,7 +205,7 @@ const elementController = function(){
 			const roles = new Metadata({'scope':'roles'});
 			const platforms = new Platforms();
 						
-			const viewModel = {};
+			const viewModel = settings;
 			viewModel.element = settings;
 			viewModel.roles = await roles.load();
 			viewModel.roles = viewModel.roles.map(role => ({"value":role.role_name,"label":role.display_name}));
@@ -246,9 +240,18 @@ const elementController = function(){
 			"save-element":function(){
 				const platformId = this.input("platform_id").value();
 				// Search selected platform option
+				// FIXME Test and fix save operation!!
 				const platformName = this.getViewModel("platforms").find(platform => platform.value == platformId).label;
-				const settings = this.getViewModel("element");
-				settings.platform_name = platformName;
+				const settings = this.updateViewModel({"element_name":this.input("element_name").value(),
+													   "element_alias":this.input("element_alias").value() ? this.input("element_alias").value() : null,
+													   "element_role":this.input("element_role").value(),
+													   "description":this.input("description").value(),
+													   "administrative_state":this.input("adm_state").value(),
+													   "operational_state":this.input("op_state").value(),
+													   "serial_number":this.input("serial_number").value(),
+													   "platform_id":platform_id,
+													   "platform_name":platform_name
+													});
 				element.saveSettings(this.location.params,
 				                     settings);
 			},
@@ -411,259 +414,6 @@ const elementServicesController = function(){
 	});
 };
 
-const local_metric_uri = function(uri){
-	return uri;
-	//return uri.replace(/http:\/\/[A-Za-z0-9\.\-]+(:\d+)?/,'/metrics');
-}
-
-const elementMetricsController = function(){
-	const element = new Element({"scope":"metrics"});
-	return new Controller({
-		resource:element,
-		viewModel:function(metrics){
-			metrics.metric_date = this.transient(new Date());
-			metrics.metric_display_name = function(){
-									  if(this.visualization_config && this.visualization_config.title){
-										  return this.visualization_config.title;
-									  }
-									  return this.metric_name
-								  };
-			metrics.element_scoped = function(){
-									 return this.metric_scope === "ELEMENT";
-								  };
-			metrics.metrics_list = function (){
-									 const list = [];
-									 for(const metric in metrics["metrics"]){
-									 	list.push(metrics["metrics"][metric]);
-									 }
-									 return list;
-								  };
-			return metrics;
-		},
-		postRender:function(){
-			// Augment view with telemetry data.
-			const metrics = this.getViewModel();
-			const tsdb = new Connector();
-			tsdb.onSuccess = this.newEventHandler(function(data){
-				for(const name in data.metrics){
-					const metric = data.metrics[name];
-					if(!metrics.metrics[name]){
-						continue;
-					}
-					const html = "<table>";
-					
-					const formattedSamples = [];
-					
-					metric.forEach(function(sample){
-						const labels = function(){
-							return mustache.render(metrics.metrics[name].visualization_config.legend_format,sample.labels);
-						};
-						formattedSamples.push({"labels":labels(),
-											   "value":Units.format(sample.value,metrics.metrics[name]["metric_unit"])});
-					});
-					formattedSamples.forEach(function(sample){	
-						html += "<tr><td class='text medium'>"+sample.labels+"</td><td class='text'>"+sample.value+"</td></tr>"
-					});
-					html+="</table>";
-					this.element(name+".values").html(html);
-				}
-			});
-			tsdb.onNotFound=function(){}; // Ignore when connector is not available.
-			tsdb.load({"element":metrics.element_name});
-		}
-	})
-};
-
-const elementIfpMetricsController = function(){
-	const element = new ElementPhysicalInterface({"scope":"metrics"});
-	return new Controller({
-		resource:element,
-		viewModel:function(metrics){
-			return this.updateViewModel({"metric_uri":function(){
-											return local_metric_uri(this["chart-uri"]);
-										 },
-										 "metric_display_name":function(){
-											 if(this.visualization_config && this.visualization_config.title){
-												 return this.visualization_config.title;
-											 }
-										 return this.metric_name},
-										 "group":this.location.param("group"),
-										 "element":this.location.param("element"),
-										 "ifp_name":this.location.param("ifp_name"),	
-										 "metric_date":new Date(),
-										 "metrics_list":function(){
-			  						  			const list = [];
-			  						  			for(const p in this["metrics"]){
-			  						  				list.push(this["metrics"][p]);
-			  						  			}
-			  						  			return list;
-										 }});
-		},
-		postRender:function(){	
-			const tsdb = new Connector({"scope":"ifp/{{&ifp_name}}"});
-			tsdb.onSuccess = this.newEventHandler(function(data){
-				for(const name in data.metrics){
-					const metric = data.metrics[name];
-					if(!metrics.metrics[name]){
-						continue;
-					}
-					const html = "<table>";
-					metric.forEach(function(sample){
-						const del = "";
-						const labels = function(){
-							return mustache.render(metrics.metrics[name].visualization_config.legend_format,sample.labels);
-						};
-						
-						html += "<tr><td class='text medium'>"+labels()+"</td><td class='text'>"+Units.format(sample.value,"Gbps")+"</td></tr>"
-					});
-					html+="</table>";
-					this.element(name+".values").html(html);
-				}
-			});
-			tsdb.onError = function(){alert("TSDB Not availble!")}; // Not a problem, if TDSB does not exist. TODO: Display error message.
-			tsdb.load({"element":metrics.element_name,
-					   "ifp_name":this.location.param("ifp_name")});
-		}
-	})
-};
-
-const elementIflMetricsController = function(){
-	const element = new ElementLogicalInterface({"scope":"metrics?metric_scope=IFL"});
-	return new Controller({
-		resource:element,
-		viewModel:function(metrics){
-			return this.updateViewModel({"metric_uri":function(){
-												return local_metric_uri(this["chart-uri"]);
-										},
-										"group":this.location.param("group"),
-										"element":this.location.param("element"),
-										"ifl_name":this.location.param("ifl_name"),
-										"metric_date":new Date(),
-										"metrics_list":function(){
-												const list = [];
-									 			for(const p in this["metrics"]){
-									 				list.push(this["metrics"][p]);
-									 			}
-									 			return list;
-								 }});
-		}
-	})
-};
-
-const elementServiceMetricsController = function(){
-	const element = new ElementLogicalInterface({"scope":"metrics?metric_scope=SERVICE"});
-	return new Controller({
-		resource:element,
-		viewModel:function(metrics){
-			return this.updateViewModel({"metric_uri":function(){
-													  	return local_metric_uri(this["chart-uri"]);
-											  		  },
-										"metrics_list":function(){
-									  			const list = [];
-									  			for(p in this["metrics"]){
-									  				list.push(this["metrics"][p]);
-									  			}
-									  			return list;
-										}});				
-		}
-	})
-};
-
-const elementMetricController = function(){
-	const element = new Element({"scope":"metrics/{{&metric_name}}"});
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			return this.updateViewModel({"metric_uri":function(){
-														return local_metric_uri(settings["chart"]);
-											   		  },
-								         "check_observe":function(){
-								        	 if(settings.metric.alert_config) {
-								        		 if(settings.metric.alert_config.alert_policy == "ALL"){
-								        			 return "checked readonly disabled";
-								        		 } 
-								        		 return settings.observe ? "checked" : "";
-								        	 }
-								        	 return "readonly disabled";
-								         }});
-		},			
-		buttons: {
-			"save-settings" : function(){
-				const model = this.getViewModel();
-				model["observe"]=this.input("observe").isChecked();
-				element.saveSettings(this.location.params,
-									model);	
-			}
-		}
-	});
-};
-
-const elementMetricsEditorController = function() {
-	const element = new Element({"scope":"metrics",
-								 "metric_scope":"ALL"});
-	return new Controller({
-		resource:element,
-		viewModel: async function(settings){
-			const metricsLoader = new metric.Metrics();
-			const metrics = await metricsLoader.load();
-			metrics.forEach(metric => metric.checked = settings.metrics[metric.metric_name] ? "checked" : "");
-			settings.metrics = metrics;
-			return metrics;
-		},
-		buttons:{
-			"save":function(){
-				element.saveSettings(this.location.params,
-									 this.input("metric").values());
-				
-			},
-			"select-all":function(){
-				this.elements("[name='metric']").forEach(function(metric){
-					metric.check();
-				});
-			},
-			"deselect-all":function(){
-				this.elements("[name='metric']").forEach(function(metric){
-					metric.check(false);
-				});
-			}
-		},
-		onSuccess:function(){
-			this.navigate({"view":"element-metrics.html",
-						   "?":this.location.params});
-		}
-	});
-}
-
-
-const elementIfpMetricController = function(){
-	const element = new Element({"scope":"physical_interfaces/{{&ifp_name}}/metrics/{{&metric_name}}"});
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			return this.updateViewModel({"metric_uri":function(){
-											      return local_metric_uri(settings["chart"]);
-											   },
-										 "check_observe":function(){
-											 if(settings.metric.alert_config) {
-												 if(settings.metric.alert_config.alert_policy == "ALL"){
-													 return "checked readonly disabled";
-												 }	 
-												 return settings.observe ? "checked" : "";
-											 }
-											 return "readonly disabled";}
-										  });
-		},			
-		buttons: {
-			"save-settings" : function(){
-				let model = this.getViewModel();
-				model["observe"]=this.input("observe").isChecked();
-				element.saveSettings(this.location.params,
-									model);	
-			}
-		}
-	})
-};
-
 const elementPodController = function(){
 	const element = new Element({"scope":"settings"});
 	return new Controller({
@@ -784,17 +534,6 @@ const modulesMenu = {
 	"details" : {"element-module.html" : elementModuleController()}
 };
 
-const elementMetricsMenu = {
-	"master" : elementMetricsController(),
-	"details"  : { "element-metric.html": elementMetricController(),
-				   "element-metrics-editor.html":elementMetricsEditorController()}
-};
-
-const elementIfpMetricsMenu = {
-	"master" : elementIfpMetricsController(),
-	"details"  : { "element-ifp-metric.html" : elementIfpMetricController()}
-};
-
 const elementMenu = {
 	"master" : elementController(),
 	"details" : {"element-mgmt.html" : elementMgmtController(),
@@ -815,10 +554,6 @@ export const menu = new Menu({
 		"element-ifps.html":elementIfpsController(),
 		"element-ifl.html": elementIflController(),
 		"element-ifp.html":elementIfpController(),
-		"element-metrics.html":elementMetricsMenu,
-		"element-ifp-metrics.html":elementIfpMetricsMenu,
-		"element-ifl-metrics.html":elementIflMetricsController(),
-		"element-service_metrics.html":elementServiceMetricsController(),
 		"element-location.html" : elementLocationController(),
 		"element-rack.html":elementRackMenu,
 		"element-modules.html" :modulesMenu,
