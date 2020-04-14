@@ -64,17 +64,17 @@ class Diff extends UIElement {
 			hljs.highlightBlock(this.querySelector('#diff'));
 			this.addEventListener('click',function(evt){
 				let div = this.eventSource().up('div');
-				if(div.css().contains('cell')){
+				if(div.css.contains('cell')){
 					if(div.style.width=='100%'){
 						this.elements('#comparator div.cell').forEach(function(element){
-							element.css().remove('hidden');
+							element.css.remove('hidden');
 						});
 						div.style.width=null;
 					} else {
 						this.elements('#comparator div.cell').forEach(function(element){
-							element.css().add('hidden');
+							element.css.add('hidden');
 						});
-						div.css().remove('hidden');
+						div.css.remove('hidden');
 						div.style.width='100%';
 					}				
 				}
@@ -83,7 +83,6 @@ class Diff extends UIElement {
 
 		}
 		}catch(e){
-			alert(JSON.stringify(e));
 			console.log(e);
 		}
 	}
@@ -110,8 +109,8 @@ class Editor extends Control {
 customElements.define('config-diff',Diff);
 customElements.define('config-editor',Editor);
 
-let elementConfigsController = function(){
-	let configs = new Element({scope:"configs"});
+const elementConfigsController = function(){
+	const configs = new Element({scope:"configs"});
 	return new Controller({
 		resource: configs,
 		buttons: {
@@ -122,9 +121,9 @@ let elementConfigsController = function(){
 	});
 };
 	
-let elementConfigController = function(){
-	let config = new Element({scope:"configs/{{config}}"});
-	let editor = null;
+const elementConfigController = function(){
+	const config = new Element({scope:"configs/{{config}}"});
+	const editor = null;
 	return new Controller({
 		resource: config,
 		viewModel:function(config){
@@ -155,14 +154,14 @@ let elementConfigController = function(){
 		},
 		buttons: {
 			"confirm-remove":function(){
-				config.remove(this.location().params());
+				config.remove(this.location.params);
 			},
 			"confirm-edit":function(){
-				config.editConfig(this.location().params(),
+				config.editConfig(this.location.params,
 								  this.input("comment").value());
 			},
 			"save-config":function(){
-				config.saveConfig(this.location().params(),
+				config.saveConfig(this.location.params,
 								  {"config_name":this.getViewModel("config_name"),
 								   "comment":this.getViewModel("comment"),
 								   "content":JSON.stringify(this.getViewModel("config"))});
@@ -170,46 +169,45 @@ let elementConfigController = function(){
 		},
 		onCreated: function(location){
 			// Extract config-id from redirect location
-			let params = this.location().params();
+			const params = this.location.params;
 			params.config=location.substring(location.lastIndexOf('/')+1);
 			this.navigate({"view":"/ui/views/inventory/config/element-config.html",
 						   "?":params});
 		},
 		onRedirect: function(location){
 			// Extract config-id from redirect location
-			let params = this.location().params();
+			const params = this.location.params;
 			params.config=location.substring(location.lastIndexOf('/')+1);
-			alert("Got a redirect notification. Proceed at: "+location);
 			this.navigate({"view":"/ui/views/inventory/config/element-config.html",
 						   "?":params});
 		},
 		onSuccess: function(){
 			this.navigate({"view":"/ui/views/inventory/config/element-config-history.html",
-						   "?": {"group":this.location().param("group"),
-							     "element":this.location().param("element"),
+						   "?": {"group":this.location.param("group"),
+							     "element":this.location.param("element"),
 							     "config":this.getViewModel("config_name")}})
 		}
 	});
 };
 
-let elementConfigHistoryCompareController = function(){
-	let source = new Element({scope:"configs/{{a}}"});
+const elementConfigHistoryCompareController = function(){
+	const source = new Element({scope:"configs/{{a}}"});
 	return new Controller({
 		resource: source,
 		viewModel:async function(source){
-			let compare = source;
+			const compare = source;
 			// Add a back reference to improve template readability.
 			compare.source = source;
 			// Load the target configuration to be compared with the selected configuration
-			let target = new Element({scope:"configs/{{b}}"});
-			compare.target = await target.load(this.location().params());
+			const target = new Element({scope:"configs/{{b}}"});
+			compare.target = await target.load(this.location.params);
 			return compare;
 		}
 	});
 };
 	
-let elementConfigHistoryController = function(){
-	let configs = new Element({scope:"configs/{{config}}"});
+const elementConfigHistoryController = function(){
+	const configs = new Element({scope:"configs/{{config}}"});
 	return new Controller({
 		resource: configs,
 		viewModel:function(settings){
@@ -228,7 +226,7 @@ let elementConfigHistoryController = function(){
 		},
 		buttons:{
 			compare: function(){
-				let params = this.location().params();
+				const params = this.location.params;
 				params.a = this.elememt("input[name='a']:checked").value();
 				params.b = this.radio("input[name='b']:checked").value();
 				this.navigate({"view":"/ui/views/inventory/config/element-config-history-compare.html",
@@ -238,7 +236,7 @@ let elementConfigHistoryController = function(){
 	});
 };
 
-let configsMenu = {
+const configsMenu = {
 	"master":elementConfigsController(),
 	"details":{ "element-config-history.html" : elementConfigHistoryController(),
 				"element-config.html" : elementConfigController(),

@@ -16,8 +16,8 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Platforms,Platform} from '/ui/modules/inventory/inventory.js';
 
-let platformsController = function() {
-	let platforms = new Platforms();
+const platformsController = function() {
+	const platforms = new Platforms();
 	return new Controller({
 		resource: platforms,
 		viewModel: function(platforms){
@@ -25,17 +25,17 @@ let platformsController = function() {
 		}});
 };
 	
-let platformController = function() {
-	let platform = new Platform();
+const platformController = function() {
+	const platform = new Platform();
 	return new Controller({
 		resource: platform,
 		buttons: {
 			"save":function(){
-				platform.saveSettings(this.location().params(),
+				platform.saveSettings(this.location.params,
 									  this.getViewModel());
 			},
 			"remove-platform":function(){
-				platform.remove(this.location().params());
+				platform.remove(this.location.params);
 			}
 		},
 		onSuccess:function(){
@@ -47,8 +47,8 @@ let platformController = function() {
 	});
 };	
 
-let addPlatformController = function() {
-	let platforms = new Platforms();
+const addPlatformController = function() {
+	const platforms = new Platforms();
 	return new Controller({
 		resource:platforms,
 		buttons:{
@@ -62,7 +62,7 @@ let addPlatformController = function() {
 	});
 };
 	
-let platformMenu =  {
+const platformMenu =  {
 	"master" : platformsController(),
 	"details" : {
 		"new-platform.html":addPlatformController(),

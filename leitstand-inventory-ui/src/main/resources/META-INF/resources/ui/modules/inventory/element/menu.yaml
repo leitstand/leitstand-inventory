@@ -1,0 +1,55 @@
+provider: leitstand.io
+controller: controller.js
+description: Element management views.
+extensions:
+- extend:
+    module: inventory
+    after: pod
+  menus:
+  - menu: element
+    label: "{{element_name}}"
+    title: Manage an element in the network
+    scopesAllowed:
+      - ivt
+      - ivt.read
+      - ivt.element
+      - ivt.element.read
+    requires:
+    - group_id
+    - element_id
+    query:
+      group: "{{group_id}}"
+      element: "{{element_id}}"
+    items:
+    - item: element-settings
+      label: Element Settings
+      title: Manage general settings of the element
+      view: element.html
+    - item: element-location
+      label: Location
+      title: Review the location of the element
+      view: element-rack.html
+    - item: configuration
+      label: Configuration
+      title: Manage the configuration of this element
+      view:  config/element-configs.html
+    - item: element-modules
+      label: Modules
+      title: Review element hardware modules.
+      view: element-modules.html
+    - item: element-ifps
+      label: Physical Interfaces  
+      title: View all physical interfaces of the element
+      view: element-ifps.html
+    - item: element-images
+      label: Images
+      title: View all images available on the element
+      view: element-images.html
+    - item: element-services
+      label: Services
+      title: View all servces installed on the element
+      view: element-services.html
+    - item: element-tools
+      label: Tools
+      title: See all available tools for this element
+      view: element-tools.html

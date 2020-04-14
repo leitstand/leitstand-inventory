@@ -1,0 +1,12 @@
+provider: leitstand.io
+controller: controller.js
+description: Role management views.
+extensions:
+- extend:
+    module: inventory
+    menu: meta
+  items:
+  - item: roles
+    label: Roles
+    title: Maintain element roles
+    view: roles.html

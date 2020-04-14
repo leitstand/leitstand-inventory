@@ -15,21 +15,18 @@
  */
 import {Resource,merge} from '/ui/js/client.js'
 
-//TODO JSDoc
-
-	
 /**
- * Creates a new Images resource
- * @constructor
- * @param {string} [cfg.element_role] The type of element to search images for
- * @param {string} [cfg.image_type] The type of image to search images for, such as ONL-IMAGE, LXC-IMAGE or CFG-IMAGE
- * @param {string} [cfg.filter] - a filter to search for images for certain elements.
- * @classdesc
  * The Images resource provides access to the collections of software images registered in the inventory.
  * @augments Resource
  */
 export class Images extends Resource {
 	
+	/**
+	 * Creates an <code>Images</code> resource
+	 * @param {string} [cfg.element_role] The type of element to search images for
+	 * @param {string} [cfg.image_type] The type of image to search images for, such as ONL-IMAGE, LXC-IMAGE or CFG-IMAGE
+	 * @param {string} [cfg.filter] - a filter to search for images for certain elements.
+	 */
 	constructor(cfg) {
 		super();
 		this._cfg = cfg;
@@ -65,16 +62,16 @@ export class Images extends Resource {
 
 
 /**
- * Creates a new Image resource.
- * @constructor
- * @param {string} [cfg.image] The image's UUID
- * @param {string} [cfg.scope] Optional statistics scope to fetch image utilization statistics.
- * @classdesc
  * The Image resource provides access to an image inventoried in the EMS.
  * @augments Resource
  */
 export class Image extends Resource {
-	
+
+	/**
+	 * Creates an <code>Image</code> resource.
+	 * @param {string} [cfg.image] The image's UUID
+	 * @param {string} [cfg.scope] Optional statistics scope to fetch image utilization statistics.
+	 */
 	constructor(cfg) {
 		super();
 		this._cfg = cfg;

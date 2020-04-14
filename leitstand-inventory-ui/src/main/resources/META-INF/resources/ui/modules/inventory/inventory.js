@@ -16,7 +16,7 @@
 import {Resource} from '/ui/js/client.js';
 
 /**
- * Creates a new Pods collection.
+ * Creates a Pods collection.
  * @constructor
  * 
  * @classdesc
@@ -180,7 +180,7 @@ export class PhysicalInterfaces extends Resource {
 }
 
 /**
- * Creates a new Pod resource.
+ * Creates a Pod resource.
  * @constructor
  * @param {string} cfg.scope The sub resource to be loaded, such as 
  *        <code>settings</code>,<code>link-state</code> or <code>elements</code> of the group.
@@ -203,8 +203,8 @@ export class Pod extends Resource {
 	 * @param {string} params.group the group's immutable UUID or the group's unique name 
 	 */
 	load(params) {
-		var query="";
-		var del="?";
+		let query="";
+		let del="?";
 		if(params["hops"]){
 			query+=(del+"hops={{&hops}}");
 			del="&";
@@ -315,7 +315,7 @@ export class Elements extends Resource {
 }
 
 /**
- * Creates a new Element resource.
+ * Creates a Element resource.
  * @constructor
  * @param {string} cfg.scope The sub-resource of the element to be accessed, such as 
  *        <code>settings</code>, <code>links</code>, <code>ports</code>, <code>modules</code>, 
@@ -452,7 +452,7 @@ export class Element extends Resource {
 }
 
 /**
- * Creates a new Events resource.
+ * Creates a Events resource.
  * @constructor
  * @param {string} [cfg.scope="/"] - specifies whether to load the events (<code>/</code>) or to count events (<code>counts</code>).
  * @param {string} [cfg.severity="WARNING"] The minimum severity of the loaded events (<code>INFORMATION &lt; WARNING &lt; ERROR</code>) 
@@ -515,7 +515,7 @@ export class Events extends Resource {
 }
 
 /**
- * Creates a new Event resource
+ * Creates a Event resource
  * @constructor
  * @param {string} [cfg.event_id] The event's UUID
  * @classdesc
@@ -654,42 +654,5 @@ export class Metadata extends Resource {
 	}
 }
 
-//TODO Documentation
-//TODO Move into other file
-export class CommandProxy extends Resource {
-	
-	constructor(cfg){
-		super();
-		this._cfg = cfg;
-	}
-	
-	submit(cmd){
-		return this.plainText("/api/v1/elements/{{&element}}/services/{{&service}}/_exec",
-							  this._cfg)
-				   .contentType("text/plain")
-				   .POST(cmd);
-	}
-}
 
-//TODO Move into other file
-export class Connector extends Resource {
-	constructor(cfg){
-		super();
-		if(!cfg){
-			cfg = {};
-		}
-		if(cfg.scope){
-			cfg.scope = "/"+cfg.scope;
-		}
-		
-		this._cfg = cfg;
-	}
-	
-	load(params){ //FIXME Install local revese proxy /api/v1/connectors/{{&scope}}
-		return this.json(`/api/v1/connectors/timeseries/{{&element}}${this._cfg.scope}`,
-				  		 this._cfg,
-				  		 params)
-				   .GET();
-	}
-}
 	

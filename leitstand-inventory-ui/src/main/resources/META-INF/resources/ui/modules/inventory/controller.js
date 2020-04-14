@@ -15,33 +15,33 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Pods,PhysicalInterfaces,Elements} from './inventory.js'
-import {Events} from '/ui/modules/event/events.js';
+//import {Events} from '/ui/modules/event/events.js';
 
-let podsController = function() {
-	let pods = new Pods();
+const podsController = function() {
+	const pods = new Pods();
 	return new Controller({
 		resource:pods,
 		viewModel:function(items){
-			let filter = this.location().param("filter");
-			return{"pods"	: items,
-				   "filter" : filter};
+			const filter = this.location.param("filter");
+			return {"pods"	: items,
+				    "filter" : filter};
 		},
 		postRender:function(){
 			// Fetch open error counts for all pods and add a link to events if errors exists.
-			let events = new Events({"scope":"counts"});
+			const events = new Events({"scope":"counts"});
 			events.onLoaded = this.newEventHandler(function(stats){
 				this.elements("tbody tr").forEach(function(group){
-					let name = group.select("td:nth-child(1)").text();
+					const name = group.select("td:nth-child(1)").text();
 					if(stats[name]){
-						let count = stats[name]["count"];
+						const count = stats[name]["count"];
 						if(count){
 							group.select(".hidden .counter").html(count);
-							group.select(".hidden").css().remove("hidden");
+							group.select(".hidden").css.remove("hidden");
 						}
 					}
 				});
 			});
-			events.load(this.location().params());
+			events.load(this.location.params);
 		},
 		buttons:{
 			"filter-pods":function(){
@@ -52,12 +52,12 @@ let podsController = function() {
 };
 
 
-let ifpsController = function() {
-	let ifps = new PhysicalInterfaces();
+const ifpsController = function() {
+	const ifps = new PhysicalInterfaces();
 	return new Controller({
 		resource:ifps,
 		viewModel:function(items){
-			let filter = this.location().param("filter");
+			const filter = this.location.param("filter");
 			return {"ifps"	: items,
 					"filter" : filter};
 			
@@ -70,16 +70,16 @@ let ifpsController = function() {
 	});
 };
 
-let addPodController = function(){
-	let pods = new Pods();
+const addPodController = function(){
+	const pods = new Pods();
 	return new Controller({
 		resource:pods,
 		buttons:{
 			"create-group":function(){
-				let group = {"group_name":this.input("group_name").value(),
-							 "description":this.input("description").value() };
+				const group = {"group_name":this.input("group_name").value(),
+							   "description":this.input("description").value() };
 				
-				pods.createPod(this.location().params(),
+				pods.createPod(this.location.params,
 							   group);
 			}
 		},
@@ -90,12 +90,12 @@ let addPodController = function(){
 }
 
 
-let elementsController = function() {
-	let elements = new Elements();
+const elementsController = function() {
+	const elements = new Elements();
 	return new Controller({
 		resource:elements,
 		viewModel:function(items){
-			let filter = this.location().param("filter");
+			const filter = this.location.param("filter");
 			return {"elements"	: items,
 					"filter" : filter};
 		},
@@ -107,7 +107,7 @@ let elementsController = function() {
 	});
 };
 
-let podsMenu = {
+const podsMenu = {
 		"master":podsController(),
 		"details":{
 			"new-pod.html":addPodController()

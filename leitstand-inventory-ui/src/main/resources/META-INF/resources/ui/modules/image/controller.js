@@ -17,17 +17,16 @@ import {Controller,Menu} from '/ui/js/ui.js';
 import {Metadata} from '/ui/modules/inventory/inventory.js';
 import {Images,Image} from './image.js';
 
-let imagesController = function(){
-	let images = new Metadata({"scope":"images"});
+const imagesController = function(){
+	const images = new Metadata({"scope":"images"});
 	return new Controller({
 		resource:images,
 		viewModel:async function(settings){ //TODO Refactor with view migration
-			let location = this.location();
-			let viewModel = settings;
-			viewModel.filter = { "filter":location.param("filter"),
-								 "image_type":location.param("image_type"),
-								 "image_version":location.param("image_version"),
-								 "image_state":location.param("image_state")};
+			const viewModel = settings;
+			viewModel.filter = { "filter":this.location.param("filter"),
+								 "image_type":this.location.param("image_type"),
+								 "image_version":this.location.param("image_version"),
+								 "image_state":this.location.param("image_state")};
 			viewModel.image_types = [{"label":"All image types",
 							   		  "value":""},
 							   		 {"label":"ONL Images",
@@ -35,7 +34,7 @@ let imagesController = function(){
 							   		 {"label":"LXC Images",
 							   		  "value":"LXC"}];
 
-	  		let images = new Images();
+	  		const images = new Images();
 	  		viewModel.images = await images.load(viewModel.filter);
 	  		viewModel.element_display_name = function(){
 	  			return this["element_name"] ? this["element_name"] : "*";
@@ -50,8 +49,8 @@ let imagesController = function(){
 	})
 };
 	
-let imageController = function(){
-	let image = new Image();
+const imageController = function(){
+	const image = new Image();
 		return new Controller({
 			resource:image,
 			viewModel: function(viewModel){
@@ -62,12 +61,12 @@ let imageController = function(){
 			},
 			buttons:{
 				"apply-state":function(){
-					let params = this.location().params();
+					let params = this.location.params;
 					params["image_state"] = this.input("[name='image_state']").value();
 					image.updateState(params);
 				},
 				"purge":function(){
-					image.purgeCaches(this.location().params());
+					image.purgeCaches(this.location.params);
 				}
 			},
 			onSuccess: function(){
@@ -76,17 +75,17 @@ let imageController = function(){
 		});
 	};
 
-let imageStatisticsController = function(){
-	let imageStats = new Image({"scope":"statistics"});
+const imageStatisticsController = function(){
+	const imageStats = new Image({"scope":"statistics"});
 	return new Controller({
 			resource: imageStats,
 			viewModel:function(stats){
-				let pods = {};
+				const pods = {};
 				let totalActiveCount = 0;
 				let totalCacheCount  = 0;
 				let podCount = 0;
 				if (stats.active_count){
-					for(let podName in stats.active_count){
+					for(const podName in stats.active_count){
 						let pod = pods[podName];
 						if(!pod){
 							pod = {"active_count":0,
@@ -99,7 +98,7 @@ let imageStatisticsController = function(){
 					}
 				}
 				if(stats.cached_count){
-					for(let podName in stats.cached_count){
+					for(const podName in stats.cached_count){
 						let pod = pods[podName];
 						if(!pod){
 							pod = {"active_count":0,
@@ -111,13 +110,13 @@ let imageStatisticsController = function(){
 						totalCacheCount += pod.cached_count;
 					}
 				}
-				let images = [];
-				for(let podName in pods){
-					let pod = pods[podName];
+				const images = [];
+				for(const podName in pods){
+					const pod = pods[podName];
 					pod["group_name"] = podName;
 					images.push(pod);
 				}
-				let viewModel = stats.image;
+				const viewModel = stats.image;
 				viewModel["pod_count"]=podCount;
 				viewModel["active_count"]=totalActiveCount;
 				viewModel["cached_count"]=totalCacheCount;
@@ -128,7 +127,7 @@ let imageStatisticsController = function(){
 	});
 }
 	
-let imagesMenu = {
+const imagesMenu = {
 	"master" : imagesController(),
 	"details"  : {
 		"image.html" : imageController()
