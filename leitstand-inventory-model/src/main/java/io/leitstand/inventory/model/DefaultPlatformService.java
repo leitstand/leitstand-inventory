@@ -18,18 +18,16 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.model.Platform.countElements;
 import static io.leitstand.inventory.model.Platform.findAll;
-import static io.leitstand.inventory.model.Platform.findByModel;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
-import static io.leitstand.inventory.model.Platform.findByVendor;
+import static io.leitstand.inventory.model.Platform.findByPlatformName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0901I_PLATFORM_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0902I_PLATFORM_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0903E_PLATFORM_NOT_REMOVABLE;
 import static java.lang.String.format;
-import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -41,6 +39,7 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
 
@@ -64,26 +63,23 @@ public class DefaultPlatformService implements PlatformService{
 	}
 	
 	@Override
-	public List<PlatformSettings> getPlatforms() {
-		List<PlatformSettings> platforms = new LinkedList<>();
-		for(Platform platform : repository.execute(findAll())){
-			platforms.add(platformSettings(platform));	
-		}
-		return unmodifiableList(platforms);
+	public List<PlatformSettings> getPlatforms(){
+		return getPlatforms(null);
 	}
-
+	
 	@Override
-	public List<PlatformSettings> getPlatforms(String vendor) {
-		List<PlatformSettings> platforms = new LinkedList<>();
-		for(Platform platform : repository.execute(findByVendor(vendor))){
-			platforms.add(platformSettings(platform));	
-		}
-		return unmodifiableList(platforms);
+	public List<PlatformSettings> getPlatforms(String filter) {
+		return repository.execute(findAll(filter))
+				 		 .stream()
+				 		 .map(p -> platformSettings(p))
+				 		 .collect(toList());
+		
 	}
-
+	
 	private PlatformSettings platformSettings(Platform platform) {
 		return newPlatformSettings()
 			   .withPlatformId(platform.getPlatformId())
+			   .withPlatformName(platform.getPlatformName())
 			   .withVendorName(platform.getVendor())
 			   .withModelName(platform.getModel())
 			   .withDescription(platform.getDescription())
@@ -93,14 +89,13 @@ public class DefaultPlatformService implements PlatformService{
 	}
 
 	@Override
-	public PlatformSettings getPlatform(String vendor, String model) {
-		Platform platform = repository.execute(findByModel(vendor, model));
+	public PlatformSettings getPlatform(PlatformName name) {
+		Platform platform = repository.execute(findByPlatformName(name));
 		if(platform == null) {
-			LOG.fine(() -> format("%s: Platform %s %s not found!",
+			LOG.fine(() -> format("%s: Platform %s not found!",
 								  IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
-								  vendor,
-								  model));
-			throw new EntityNotFoundException(IVT0900E_PLATFORM_NOT_FOUND, vendor,model);
+								  name));
+			throw new EntityNotFoundException(IVT0900E_PLATFORM_NOT_FOUND, name);
 		}
 		return platformSettings(platform);
 	}
@@ -120,24 +115,21 @@ public class DefaultPlatformService implements PlatformService{
 	@Override
 	public boolean storePlatform(PlatformSettings settings) {
 		try {
+			boolean created = false;
 			Platform platform = repository.execute(findByPlatformId(settings.getPlatformId()));
-			if(platform != null) {
-				platform.setVendor(settings.getVendorName());
-				platform.setModel(settings.getModelName());
-				platform.setHalfRack(settings.isHalfRackSize());
-				platform.setRackUnits(settings.getRackUnits());
-				platform.setDescription(settings.getDescription());
-				return false;
+			if(platform == null) {
+				platform = new Platform(settings.getPlatformId(),
+										settings.getPlatformName());
+				repository.add(platform);
+				created = true;
 			}
-			
-			platform = new Platform(settings.getPlatformId(),
-									settings.getVendorName(), 
-									settings.getModelName());
+			platform.setPlatformName(settings.getPlatformName());
+			platform.setVendor(settings.getVendorName());
+			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
 			platform.setHalfRack(settings.isHalfRackSize());
 			platform.setRackUnits(settings.getRackUnits());
-			repository.add(platform);
-			return true;
+			return created;
 		} finally {
 			messages.add(createMessage(IVT0901I_PLATFORM_STORED, 
 									   settings.getVendorName(),
@@ -156,6 +148,17 @@ public class DefaultPlatformService implements PlatformService{
 	@Override
 	public void removePlatform(PlatformId platformId) {
 		Platform platform = repository.execute(findByPlatformId(platformId));
+		removePlatform(platform);
+		
+	}
+
+	@Override
+	public void removePlatform(PlatformName platformName) {
+		Platform platform = repository.execute(findByPlatformName(platformName));
+		removePlatform(platform);
+	}
+	
+	private void removePlatform(Platform platform) {
 		if(platform != null) {
 			long count = repository.execute(countElements(platform));
 			if(count == 0) {
@@ -183,7 +186,6 @@ public class DefaultPlatformService implements PlatformService{
 										platform.getModel(), 
 										count);
 		}
-		
 	}
 
 }

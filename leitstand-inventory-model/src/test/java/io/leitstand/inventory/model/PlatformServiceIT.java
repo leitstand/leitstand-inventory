@@ -15,15 +15,22 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
+import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
+import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
+import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
+import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupType.groupType;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0902I_PLATFORM_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0903E_PLATFORM_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.hasSizeOf;
-import static io.leitstand.testing.ut.LeitstandCoreMatchers.isEmptyCollection;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +48,7 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,17 +57,29 @@ import org.mockito.ArgumentCaptor;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
+import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Message;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
+import io.leitstand.inventory.service.Plane;
+import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
 
 public class PlatformServiceIT extends InventoryIT{
 	
-	private static final String VENDOR = PlatformServiceIT.class.getSimpleName();
+	private static final ElementGroupId	  GROUP_ID	 = randomGroupId();
+	private static final ElementGroupName GROUP_NAME = groupName(PlatformServiceIT.class.getSimpleName());
+	private static final ElementGroupType GROUP_TYPE = groupType("pod");
+	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName(PlatformServiceIT.class.getSimpleName());
+	private static final String 		  VENDOR 	 = PlatformServiceIT.class.getSimpleName();
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -93,6 +113,26 @@ public class PlatformServiceIT extends InventoryIT{
 		this.elements = new DefaultElementSettingsService(manager, 
 														  elements, 
 														  mock(Event.class));
+		
+		transaction(()->{
+			repository.addIfAbsent(findElementGroupById(GROUP_ID),
+								   () -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
+			
+			repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
+								   () -> new ElementRole(ELEMENT_ROLE, DATA));	
+		});
+	}
+	
+	@After
+	public void remove_created_platforms() {
+		
+		transaction(()->{
+			DatabaseService db = getDatabase();
+			
+			db.executeUpdate(prepare("DELETE FROM inventory.element e WHERE e.platform_id IN (SELECT p.id FROM inventory.platform p WHERE p.vendor = ?)", VENDOR));
+			db.executeUpdate(prepare("DELETE FROM inventory.platform p WHERE p.vendor = ?", VENDOR));
+			
+		});
 	}
 	
 	@Test
@@ -104,18 +144,23 @@ public class PlatformServiceIT extends InventoryIT{
 	}
 	
 	@Test
-	public void throws_EntityNotFoundException_when_platform__model_is_unknown() {
+	public void throws_EntityNotFoundException_when_platform_name_is_unknown() {
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0900E_PLATFORM_NOT_FOUND));
 		
-		service.getPlatform(VENDOR,"unknown");
+		service.getPlatform(platformName("unknown"));
 	}
 	
 	@Test
 	public void add_platform() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+				
 		PlatformSettings newPlatform = newPlatformSettings()
+									   .withPlatformId(platformId)
+									   .withPlatformName(platformName)
 									   .withVendorName(VENDOR)
-									   .withModelName("new_model")
+									   .withModelName("model")
 									   .build();
 
 		transaction(() -> {
@@ -132,37 +177,131 @@ public class PlatformServiceIT extends InventoryIT{
 	}
 	
 	@Test
-	public void remove_platform() {
-		PlatformSettings removePlatform = newPlatformSettings()
-									      .withVendorName(VENDOR)
-									      .withModelName("remove")
-									      .build();
+	public void get_platform_by_id() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
+		PlatformSettings platform = newPlatformSettings()
+						     		.withPlatformId(platformId)
+									.withPlatformName(platformName)
+									.withVendorName(VENDOR)
+									.withModelName("model")
+									.build();
 
 		// Create platform to test remove function
 		transaction(() -> {
-			boolean created = service.storePlatform(removePlatform);
+			boolean created = service.storePlatform(platform);
 			assertTrue(created);
 		});
 
 		transaction(() -> {
-			service.removePlatform(removePlatform.getPlatformId());
+			PlatformSettings reloaded = service.getPlatform(platformId);
+			assertNotSame(platform,reloaded);
+			assertEquals(platform,reloaded);
+		});	
+	}
+	
+	@Test
+	public void get_platform_by_name() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
+		PlatformSettings platform = newPlatformSettings()
+						     		.withPlatformId(platformId)
+									.withPlatformName(platformName)
+									.withVendorName(VENDOR)
+									.withModelName("model")
+									.build();
+
+		// Create platform to test remove function
+		transaction(() -> {
+			boolean created = service.storePlatform(platform);
+			assertTrue(created);
+		});
+
+		transaction(() -> {
+			PlatformSettings reloaded = service.getPlatform(platformName);
+			assertNotSame(platform,reloaded);
+			assertEquals(platform,reloaded);
+		});
+		
+				
+	}
+	
+	@Test
+	public void remove_platform_by_id() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
+		PlatformSettings platform = newPlatformSettings()
+									.withPlatformId(platformId)
+									.withPlatformName(platformName)
+									.withVendorName(VENDOR)
+									.withModelName("model")
+									.build();
+
+		// Create platform to test remove function
+		transaction(() -> {
+			boolean created = service.storePlatform(platform);
+			assertTrue(created);
+		});
+
+		transaction(() -> {
+			service.removePlatform(platform.getPlatformId());
 		});
 		
 		assertThat(message.getValue().getReason(),is(IVT0902I_PLATFORM_REMOVED.getReasonCode()));
-		
+				
 	}
 
+
 	@Test
-	public void do_nothing_when_removing_an_unknown_platform() {
+	public void remove_platform_by_name() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
+		PlatformSettings platform = newPlatformSettings()
+									.withPlatformId(platformId)
+									.withPlatformName(platformName)
+									.withVendorName(VENDOR)
+									.withModelName("model")
+									.build();
+
+		// Create platform to test remove function
+		transaction(() -> {
+			boolean created = service.storePlatform(platform);
+			assertTrue(created);
+		});
+
+		transaction(() -> {
+			service.removePlatform(platform.getPlatformName());
+		});
+		
+		assertThat(message.getValue().getReason(),is(IVT0902I_PLATFORM_REMOVED.getReasonCode()));
+				
+	}
+	
+	@Test
+	public void do_nothing_when_removing_an_unknown_platform_id() {
 		service.removePlatform(randomPlatformId());
 		verify(messages,never()).add(any(Message.class));
 	}
 	
 	@Test
+	public void do_nothing_when_removing_an_unknown_platform_name() {
+		service.removePlatform(platformName("unknown"));
+		verify(messages,never()).add(any(Message.class));
+	}
+	
+	@Test
 	public void update_platform() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
 		PlatformSettings platform = newPlatformSettings()
+									.withPlatformId(platformId)
+									.withPlatformName(platformName)
 				   				  	.withVendorName(VENDOR)
-				   				  	.withModelName("update_init")
 				   				  	.build();
 
 		transaction(() -> {
@@ -172,7 +311,8 @@ public class PlatformServiceIT extends InventoryIT{
 	
 		PlatformSettings update = newPlatformSettings()
 								  .withPlatformId(platform.getPlatformId())
-				  				  .withVendorName("updated_vendor_name")
+								  .withPlatformName(platformName("new_platform_name"))
+								  .withVendorName(VENDOR)
 				  				  .withModelName("updated_model_name")
 				  				  .withHalfRackSize(true)
 				  				  .withRackUnits(10)
@@ -196,69 +336,112 @@ public class PlatformServiceIT extends InventoryIT{
 	}
 
 	@Test
-	public void get_platform_by_vendor_and_model() {
-
-		PlatformSettings platform = newPlatformSettings()
-									.withVendorName(VENDOR)
-									.withModelName("vendor_model_query")
-									.build();
-
-		transaction(() -> {
-			boolean created = service.storePlatform(platform);
-			assertTrue(created);
-		});
-
-		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(platform.getVendorName(), platform.getModelName());
-			assertEquals(platform,reloaded);
-		});
-
-		
-	}
-	
-	@Test
-	public void find_platforms_by_vendor() {
+	public void filter_platforms_by_platform_name() {
 		
 		PlatformSettings platformA = newPlatformSettings()
-								     .withVendorName("GROUP_BY_"+VENDOR)
+									 .withPlatformName(platformName("A"))
+								     .withVendorName(VENDOR)
 									 .withModelName("model_a")
 									 .build();
-		
+
 		PlatformSettings platformB = newPlatformSettings()
-									 .withVendorName("GROUP_BY_"+VENDOR)
+									 .withPlatformName(platformName("specific_name"))
+									 .withVendorName(VENDOR)
 									 .withModelName("model_b")
 									 .build();
 
-		
 		transaction(()->{
-			assertThat(service.getPlatforms("GROUP_BY_"+VENDOR),isEmptyCollection());
 			service.storePlatform(platformA);
 			service.storePlatform(platformB);
 		});
 		
 		transaction(()->{
-			List<PlatformSettings> platforms = service.getPlatforms("GROUP_BY_"+VENDOR);
-			assertThat(platforms,hasSizeOf(2));
-			assertEquals("model_a",platforms.get(0).getModelName());
-			assertEquals("model_b",platforms.get(1).getModelName());
+			List<PlatformSettings> platforms = service.getPlatforms("specific_\\w+");
+			assertThat(platforms,hasSizeOf(1));
+			assertEquals(platformName("specific_name"),platforms.get(0).getPlatformName());
 			
 		});
-		
-		
 		
 	}
 	
 	@Test
+	public void filter_platforms_by_vendor_name() {
+		
+		PlatformSettings platformA = newPlatformSettings()
+									 .withPlatformName(platformName("A"))
+								     .withVendorName(VENDOR)
+									 .withModelName("model_a")
+									 .build();
+
+		PlatformSettings platformB = newPlatformSettings()
+									 .withPlatformName(platformName("B"))
+									 .withVendorName(VENDOR)
+									 .withModelName("model_b")
+									 .build();
+		
+		
+		transaction(()->{
+			service.storePlatform(platformA);
+			service.storePlatform(platformB);
+		});
+		
+		transaction(()->{
+			List<PlatformSettings> platforms = service.getPlatforms(VENDOR);
+			assertThat(platforms,hasSizeOf(2));
+			assertEquals(platformName("A"),platforms.get(0).getPlatformName());
+			assertEquals("model_a",platforms.get(0).getModelName());
+			assertEquals(platformName("B"),platforms.get(1).getPlatformName());
+			assertEquals("model_b",platforms.get(1).getModelName());
+			
+		});
+		
+	}
+	
+	@Test
+	public void filter_platforms_by_model_name() {
+		
+		PlatformSettings platformA = newPlatformSettings()
+				 					 .withPlatformName(platformName("A"))
+				 					 .withVendorName(VENDOR)
+				 					 .withModelName("model_a")
+				 					 .build();
+
+		PlatformSettings platformB = newPlatformSettings()
+				 					 .withPlatformName(platformName("B"))
+				 					 .withVendorName(VENDOR)
+				 					 .withModelName("model_b")
+				 					 .build();
+
+		transaction(()->{
+			service.storePlatform(platformA);
+			service.storePlatform(platformB);
+		});
+		
+		transaction(()->{
+			List<PlatformSettings> platforms = service.getPlatforms("model_a");
+			assertThat(platforms,hasSizeOf(1));
+			assertEquals("model_a",platforms.get(0).getModelName());
+			
+		});
+		
+	}
+	
+	
+	@Test
 	public void cannot_remove_platform_in_use() {
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("platform");
+		
 		PlatformSettings platform = newPlatformSettings()
-									.withVendorName(VENDOR)
-									.withModelName("platform_in_use")
+									.withPlatformId(platformId)
+									.withPlatformName(platformName)
 									.build();
 		
 		ElementSettings element = element(element("element_with_platform"))
-								  .withPlatform(newPlatformInfo()
-										  		.withVendorName(VENDOR)
-										  		.withModelName("platform_in_use"))
+								  .withGroupId(GROUP_ID)
+								  .withElementRole(ELEMENT_ROLE)
+								  .withPlatformId(platformId)
+								  .withPlatformName(platformName)
 								  .build();
 		
 		transaction(() -> {
@@ -270,7 +453,7 @@ public class PlatformServiceIT extends InventoryIT{
 		exception.expect(reason(IVT0903E_PLATFORM_NOT_REMOVABLE));
 		
 		transaction(() -> {
-			service.removePlatform(platform.getPlatformId());
+			service.removePlatform(platformId);
 		});
 		
 	}

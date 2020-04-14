@@ -26,13 +26,17 @@
 			<thead>
 				<tr>
 				<th class="small text">Platform</th>
+				<th class="small text">Vendor</th>
+				<th class="small text">Model</th>
 				<th class="text">Description</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- {{#platforms}} -->
 				<tr>
-					<td class="text"><a href="platform.html?platform={{platform_id}}">{{vendor_name}} {{model_name}}</a></td>
+					<td class="text"><a href="platform.html?platform={{platform_id}}">{{platform_name}}</a></td>
+					<td class="text">{{vendor_name}}</td>
+					<td class="text">{{model_name}}</td>
 					<td class="text">{{description}}</td>
 				</tr>
 				<!-- {{/platforms}} -->

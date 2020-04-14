@@ -18,9 +18,9 @@
   <ui-subtitle>Explore available images</ui-subtitle>
 </ui-view-header>
 <ui-form>
-	<ui-filter name="filter" bind="filter.filter">
+	<ui-filter name="filter" bind="filter.filter" placeholder="Enter a filter expression">
 		<ui-label>Filter</ui-label>
-		<ui-note>Search for images by adding a regular expression to filter for image name, element role or platform.</ui-note>
+		<ui-note>Search for images by adding a regular expression to filter for image name, element role or platform name.</ui-note>
 		<ui-options>
 			<ui-select name="image_type" bind="filter.image_type" options="image_types">
 				<ui-label>Image Type</ui-label>
@@ -62,8 +62,8 @@
 			<tbody>
 				<!--  {{#images}}-->
 				<tr>
-					<td class="text">{{#platform}}{{vendor_name}} {{model_name}}{{/platform}}
-					<td class="text">{{element_role}}</td>
+					<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}" title="Show platform details">{{platform_name}}</a></td>
+					<td class="text"><a href="/ui/views/inventory/role/role.html?role={{element_role}}" tirle="Show row details">{{element_role}}</a></td>
 					<td class="text">{{element_display_name}}</td>
 					<td class="text">{{image_type}}</td>
 					<td class="text">{{image_name}}</td>

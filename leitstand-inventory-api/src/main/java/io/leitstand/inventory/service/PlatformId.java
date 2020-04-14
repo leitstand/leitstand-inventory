@@ -34,6 +34,10 @@ public class PlatformId extends Scalar<String>{
 		return valueOf(randomUUID().toString());
 	}
 
+	public static PlatformId platformId(String id) {
+		return valueOf(id);
+	}
+	
 	public static PlatformId valueOf(String id) {
 		return fromString(id, PlatformId::new);
 	}

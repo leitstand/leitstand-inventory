@@ -55,12 +55,9 @@ public class StoreImageIT extends InventoryIT{
 	public void initTestEnvironment(){
 		Repository repository = new Repository(getEntityManager());
 		this.packages = new PackageVersionService(repository);
-		Provider<SubtransactionService> provider = mock(Provider.class);
-		SubtransactionService transactions = new InventorySubtransactionService(repository, provider);
-		when(provider.get()).thenReturn(transactions);
 		
-		service = new DefaultImageService(transactions,
-										  packages, 
+		service = new DefaultImageService(packages, 
+										  new PlatformProvider(repository),
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),

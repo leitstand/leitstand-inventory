@@ -51,8 +51,12 @@ const addPlatformController = function() {
 	const platforms = new Platforms();
 	return new Controller({
 		resource:platforms,
+		viewModel:function(){
+			return {};
+		},
 		buttons:{
 			"save":function(){
+				alert(JSON.stringify(this.getViewModel()));
 				platforms.addPlatform(this.getViewModel());
 			}
 		},

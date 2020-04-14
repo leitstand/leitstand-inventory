@@ -16,7 +16,7 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
+import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
@@ -24,11 +24,11 @@ import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
@@ -40,17 +40,18 @@ import org.junit.Test;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageState;
-import io.leitstand.inventory.service.Plane;
+import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
 
 public class ManageRoleBasedImagesIT extends InventoryIT{
 	
-	
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
+	private static final PlatformName PLATFORM_NAME = platformName(ManageRoleBasedImagesIT.class.getName());
 	
 	private DefaultImageService service;
 	private Repository repository;
@@ -59,41 +60,41 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 	@Before
 	public void initTestEnvironment() {
 		repository = new Repository(getEntityManager());
-		SubtransactionService tx = mock(SubtransactionService.class);
-		Platform platform = new Platform(randomPlatformId(),
-										 "unit-vendor_name", "unit-model_name");
-		when(tx.run(any(), any())).thenReturn(platform);
-		when(tx.run(any())).thenReturn(platform);
 
-		service = new DefaultImageService(tx,
-										  mock(PackageVersionService.class), 
+		PlatformProvider platforms = new PlatformProvider(repository);
+		
+		service = new DefaultImageService(mock(PackageVersionService.class), 
+										  platforms,
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),
 										  mock(Event.class));
 		
-		repository.addIfAbsent(findRoleByName(new ElementRoleName("unit-element_type")), 
-							  ()-> new ElementRole(new ElementRoleName("unit-element_type"), Plane.DATA));
-		
-		ImageInfo image = newImageInfo()
-						  .withImageId(randomImageId())
-						  .withBuildDate(new Date())
-						  .withElementRole(new ElementRoleName("unit-element_type"))
-						  .withPlatform(newPlatformInfo()
-								        .withVendorName("unit-vendor_name")
-								  		.withModelName("unit-model_name"))
-						  .withOrganization("net.rtbrick")
-						  .withImageType(LXC)
-						  .withImageName(ImageName.valueOf("JUNIT"))
-						  .withImageVersion(new Version(1,0,0))
-						  .build();
-									  
-		
-		service.storeImage(image);
 		transaction(()->{
-			service.updateImageState(image.getImageId(), RELEASE);
-			ref = image;
-		});
+
+			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+													   () -> new Platform(PLATFORM_ID,PLATFORM_NAME));
+			
+			repository.addIfAbsent(findRoleByName(new ElementRoleName("unit-element_type")), 
+								  ()-> new ElementRole(new ElementRoleName("unit-element_type"), DATA));
+			
+			ImageInfo image = newImageInfo()
+							  .withImageId(randomImageId())
+							  .withBuildDate(new Date())
+							  .withElementRole(new ElementRoleName("unit-element_type"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
+							  .withOrganization("net.rtbrick")
+							  .withImageType(LXC)
+							  .withImageName(ImageName.valueOf("JUNIT"))
+							  .withImageVersion(new Version(1,0,0))
+							  .build();
+										  
+			
+			service.storeImage(image);
+				service.updateImageState(image.getImageId(), RELEASE);
+				ref = image;
+			});
 		
 	}
 	
@@ -105,9 +106,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 				  		 .withImageName(ImageName.valueOf("JUNIT"))
 				  		 .withBuildDate(new Date())
 				  		 .withElementRole(new ElementRoleName("unit-element_type"))
-				  		 .withPlatform(newPlatformInfo()
-				  				 	   .withVendorName("unit-vendor_name")
-				  				 	   .withModelName("unit-model_name"))
+				  		 .withPlatformId(PLATFORM_ID)
+				  		 .withPlatformName(PLATFORM_NAME)
 				  		 .withOrganization("net.rtbrick")
 				  		 .withImageType(LXC)
 				  		 .withImageVersion(new Version(1,0,1))
@@ -134,9 +134,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageVersion(new Version(2,0,0))
 		  		 		  .withBuildDate(new Date())
 		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
-		  		 		  .withPlatform(newPlatformInfo()
-		  		 				  		.withVendorName("unit-vendor_name")
-		  		 				  		.withModelName("unit-model_name"))
+		  		 		  .withPlatformId(PLATFORM_ID)
+		  		 		  .withPlatformName(PLATFORM_NAME)
 		  		 		  .withOrganization("net.rtbrick")
 		  		 		  .build();
 		transaction(()->{
@@ -170,9 +169,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageName(ImageName.valueOf("JUNIT"))
 		  		 		  .withImageVersion(new Version(1,0,1))
 		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
-		  		 		  .withPlatform(newPlatformInfo()
-		  		 		 		 	    .withVendorName("unit-vendor_name")
-		  		 				 	    .withModelName("unit-model_name"))
+		  		 		  .withPlatformId(PLATFORM_ID)
+		  		 		  .withPlatformName(PLATFORM_NAME)
 		  		 		  .withOrganization("net.rtbrick")
 		  		 		  .build();
 		transaction(()->{

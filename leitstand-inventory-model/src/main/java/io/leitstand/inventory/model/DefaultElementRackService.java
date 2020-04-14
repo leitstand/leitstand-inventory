@@ -17,6 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
+import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.model.ElementGroup_Rack.findByRackName;
 import static io.leitstand.inventory.model.ElementGroup_Rack_Element.findRackByElement;
 import static io.leitstand.inventory.model.ElementGroup_Rack_Element.findRackElement;
@@ -98,7 +99,8 @@ public class DefaultElementRackService implements ElementRackService{
 	   			  							  .withElementName(re.getElementName())
 	   			  							  .withElementAlias(re.getElementAlias())
 	   			  							  .withElementRole(re.getElementRoleName())
-	   			  							  .withPlatform(re.getPlatform())
+	   			  							  .withPlatformId(optional(re.getPlatform(),Platform::getPlatformId))
+	   			  							  .withPlatformName(optional(re.getPlatform(), Platform::getPlatformName))
 	   			  							  .withUnit(re.getUnit())
 	   			  							  .withHeight(re.getHeight())
 	   			  							  .withHalfRack(re.isHalfRack())

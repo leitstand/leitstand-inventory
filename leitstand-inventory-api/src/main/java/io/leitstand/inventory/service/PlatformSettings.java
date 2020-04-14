@@ -41,6 +41,13 @@ public class PlatformSettings extends ValueObject {
 			return this;
 		}
 		
+		public Builder withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(),settings);
+			settings.platformName = platformName;
+			return this;
+		}
+
+		
 		public Builder withVendorName(String vendorName) {
 			assertNotInvalidated(getClass(), settings);
 			settings.vendorName = vendorName;
@@ -78,9 +85,12 @@ public class PlatformSettings extends ValueObject {
 				this.settings = null;
 			}
 		}
+
 	}
 	
 	private PlatformId platformId = randomPlatformId();
+	@NotNull(message="{platform_name.required}")
+	private PlatformName platformName;
 	
 	@NotNull(message="{vendor_name.required}")
 	private String vendorName;
@@ -90,7 +100,7 @@ public class PlatformSettings extends ValueObject {
 	
 	private String description;
 	
-	@Min(value=1, message="{rack_units.must_be_greate_than_zero}")
+	@Min(value=1, message="{rack_units.must_be_greater_than_zero}")
 	private int rackUnits;
 	
 	@JsonbProperty("half_rack")
@@ -98,6 +108,10 @@ public class PlatformSettings extends ValueObject {
 	
 	public PlatformId getPlatformId() {
 		return platformId;
+	}
+	
+	public PlatformName getPlatformName() {
+		return platformName;
 	}
 	
 	public String getVendorName() {

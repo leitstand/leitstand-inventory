@@ -18,17 +18,17 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
-import static io.leitstand.inventory.model.Platform.findByVendor;
+import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementManagementInterface.newElementManagementInterface;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0100E_GROUP_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
@@ -59,29 +59,24 @@ import io.leitstand.inventory.service.ElementAlias;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
+import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
+import io.leitstand.inventory.service.PlatformSettings;
 
 public class ElementSettingsServiceIT extends InventoryIT {
 
 	private static final ElementId ELEMENT_ID = randomElementId();
 	private static final ElementRoleName ROLE_A = ElementRoleName.valueOf(ElementSettingsServiceIT.class.getSimpleName()+".A");
 	private static final ElementRoleName ROLE_B = ElementRoleName.valueOf(ElementSettingsServiceIT.class.getSimpleName()+".B");
-	private static final ElementPlatformInfo PLATFORM_A = newPlatformInfo()
-														  .withVendorName("ElementSettingsServiceIT")
-														  .withModelName("A")
-														  .build();
-	private static final ElementPlatformInfo PLATFORM_B = newPlatformInfo()
-														  .withVendorName("ElementSettingsServiceIT")
-														  .withModelName("B")
-														  .build();
-	private static final ElementPlatformInfo UNKNOWN_PLATFORM = newPlatformInfo()
-																.withVendorName("ElementSettingsServiceIT")
-																.withModelName("UNKNOWN")
-																.build();
+	
+	private static final Platform PLATFORM_A = new Platform(randomPlatformId(), 
+															platformName("ElementSettingsServiceIT_A"));
+	private static final Platform PLATFORM_B = new Platform(randomPlatformId(), 
+															platformName("ElementSettingsServiceIT_B"));
 
 	
 	private static final ElementRoleName UNKNOWN_ROLE = elementRoleName("unknown");
@@ -130,15 +125,12 @@ public class ElementSettingsServiceIT extends InventoryIT {
 					   					   									    seed.getGroupName());
 					   			          return group;});
 			
-			repository.addIfAbsent(findByVendor(PLATFORM_A), 
-								   () -> new Platform(randomPlatformId(), 
-										   			  PLATFORM_A.getVendorName(), 
-										   			  PLATFORM_A.getModelName()));
-			
-			repository.addIfAbsent(findByVendor(PLATFORM_B), 
-									() -> new Platform(randomPlatformId(), 
-							   			  PLATFORM_B.getVendorName(), 
-							   			  PLATFORM_B.getModelName()));
+			repository.addIfAbsent(findByPlatformId(PLATFORM_A.getPlatformId()),
+								   () -> PLATFORM_A);	
+
+			repository.addIfAbsent(findByPlatformId(PLATFORM_B.getPlatformId()),
+					   			   () -> PLATFORM_B);	
+
 			
 		});
 		
@@ -325,25 +317,29 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		transaction(() -> {
 			// Store an initial element and use a unique name to avoid conflicts with other tests
 			service.storeElementSettings(element(seed)
-										 .withPlatform(PLATFORM_A)
+										 .withPlatformId(PLATFORM_A.getPlatformId())
+										 .withPlatformName(PLATFORM_A.getPlatformName())
 										 .build());
 		});
 		
 		// Attempt to assign an unknown role.
 		ElementSettings newPlatform = element(seed)
-								  	  .withPlatform(PLATFORM_B)
+								  	  .withPlatformId(PLATFORM_B.getPlatformId())
+								  	  .withPlatformName(PLATFORM_B.getPlatformName())
 								  	  .build();
 		transaction(() -> {
 			ElementSettings reloaded = service.getElementSettings(newPlatform.getElementId());
 			assertNotNull(reloaded);
-			assertThat(reloaded.getPlatform(), is(PLATFORM_A));
+			assertThat(reloaded.getPlatformId(), is(PLATFORM_A.getPlatformId()));
+			assertThat(reloaded.getPlatformName(), is(PLATFORM_A.getPlatformName()));
 			service.storeElementSettings(newPlatform);
 		});
 
 		transaction(() -> {
 			ElementSettings reloaded = service.getElementSettings(newPlatform.getElementId());
 			assertNotNull(reloaded);
-			assertThat(reloaded.getPlatform(), is(PLATFORM_B));
+			assertThat(reloaded.getPlatformId(), is(PLATFORM_B.getPlatformId()));
+			assertThat(reloaded.getPlatformName(), is(PLATFORM_B.getPlatformName()));
 			service.storeElementSettings(newPlatform);
 		});
 		
@@ -352,8 +348,13 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	@Test
 	public void create_new_platform_when_element_with_unknown_platform_was_registered() {
 		
+		PlatformId platformId = randomPlatformId();
+		PlatformName platformName = platformName("ElementSettingServiceIT_New_Platform");
+		
+		
 		ElementSettings elementWithUnknownPlatform = element(seed)
-													 .withPlatform(UNKNOWN_PLATFORM)
+													 .withPlatformId(platformId)
+													 .withPlatformName(platformName)
 													 .build();
 		
 		transaction(() -> {
@@ -363,8 +364,12 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		
 		transaction(() -> {
 			// Verify that unknown platform was created
-			assertNotNull(platforms.getPlatform(UNKNOWN_PLATFORM.getVendorName(), 
-												UNKNOWN_PLATFORM.getModelName()));
+			PlatformSettings platform = platforms.getPlatform(platformId);
+			assertNotNull(platform);
+			assertEquals(platformId,platform.getPlatformId());
+			assertEquals(platformName,platform.getPlatformName());
+			assertNull(platform.getVendorName());
+			assertNull(platform.getModelName());
 		});
 		
 	}

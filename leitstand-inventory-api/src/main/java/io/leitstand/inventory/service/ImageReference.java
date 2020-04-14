@@ -48,9 +48,15 @@ public class ImageReference {
 			return this;
 		}
 		
-		public Builder withPlatform(ElementPlatformInfo platform) {
+		public Builder withPlatformId(PlatformId platformId) {
 			assertNotInvalidated(getClass(), image);
-			image.platform = platform;
+			image.platformId = platformId;
+			return this;
+		}
+		
+		public Builder withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(), image);
+			image.platformName = platformName;
 			return this;
 		}
 		
@@ -102,7 +108,8 @@ public class ImageReference {
 	
 	private ElementName elementName;
 
-	private ElementPlatformInfo platform;
+	private PlatformId platformId;
+	private PlatformName platformName;
 	
 	private ImageName imageName;
 	
@@ -134,8 +141,12 @@ public class ImageReference {
 		return buildDate;
 	}
 
-	public ElementPlatformInfo getPlatform() {
-		return platform;
+	public PlatformId getPlatformId() {
+		return platformId;
+	}
+	
+	public PlatformName getPlatformName() {
+		return platformName;
 	}
 	
 	public ImageName getImageName() {

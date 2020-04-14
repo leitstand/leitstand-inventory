@@ -18,6 +18,8 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
+import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.service.ApplicationName.applicationName;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -25,15 +27,17 @@ import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
+import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.NEW;
 import static io.leitstand.inventory.service.ImageType.LXC;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
@@ -81,16 +85,17 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
 
 public class ImageServiceIT extends InventoryIT{
 
-	
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
+	private static final PlatformName PLATFORM_NAME = platformName(ImageServiceIT.class.getSimpleName());
 	private static final ElementName ELEMENT_NAME = elementName("image-element");
 	private static final ElementGroupName GROUP_NAME = groupName("image_test");
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
@@ -104,8 +109,6 @@ public class ImageServiceIT extends InventoryIT{
 	public void initTestEnvironment() {
 		repository = new Repository(getEntityManager());
 		Provider<SubtransactionService> provider = mock(Provider.class);
-		SubtransactionService transactions = new InventorySubtransactionService(repository, provider);
-		when(provider.get()).thenReturn(transactions);
 		messageCaptor = ArgumentCaptor.forClass(Message.class);
 		Messages messages = mock(Messages.class);
 		doNothing().when(messages).add(messageCaptor.capture());
@@ -113,8 +116,9 @@ public class ImageServiceIT extends InventoryIT{
 		Event<ImageEvent> events = mock(Event.class);
 		doNothing().when(events).fire(eventCaptor.capture());
 		PackageVersionService pkgVersions = new PackageVersionService(repository);
-		service = new DefaultImageService(transactions,
-										  pkgVersions,
+		
+		service = new DefaultImageService(pkgVersions,
+										  new PlatformProvider(repository),
 										  repository,
 										  getDatabase(),
 										  messages,
@@ -143,16 +147,14 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 				  			  .withImageId(randomImageId())
 				  			  .withImageType(LXC)
-				  			  .withImageName(ImageName.valueOf("store_image_metadata"))
+				  			  .withImageName(imageName("store_image_metadata"))
 				  			  .withImageState(NEW)
 				  			  .withImageVersion(new Version(1,0,0))
 				  			  .withExtension("tar.gz")
-				  			  .withElementRole(ElementRoleName.valueOf("non-existent"))
+				  			  .withElementRole(elementRoleName("non-existent"))
 				  			  .withOrganization("io.leitstand")
 				  			  .withCategory("unittest")
-				  			  .withPlatform(newPlatformInfo()
-				  					  		.withVendorName("unittest")
-				  					  		.withModelName("on-demand"))
+				  			  .withPlatformId(randomPlatformId())
 				  			  .build();
 		
 		
@@ -171,16 +173,15 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("store_image_metadata"))
+							  .withImageName(imageName("store_image_metadata"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-									  		.withVendorName("unittest")
-									  		.withModelName("on-demand"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
 							  .build();
 		transaction(()->{
 			boolean created = service.storeImage(imageInfo);
@@ -193,7 +194,7 @@ public class ImageServiceIT extends InventoryIT{
 		transaction(()->{
 			ImageInfo storedImage = service.getImage(imageInfo.getImageId());
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
-			assertEquals(ImageName.valueOf("store_image_metadata"),storedImage.getImageName());
+			assertEquals(imageName("store_image_metadata"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
 			assertEquals(LXC,storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
@@ -204,8 +205,8 @@ public class ImageServiceIT extends InventoryIT{
 			assertTrue(storedImage.getApplications().isEmpty());
 			assertTrue(storedImage.getPackages().isEmpty());
 			assertTrue(storedImage.getChecksums().isEmpty());
-			assertEquals("unittest",storedImage.getPlatform().getVendorName());
-			assertEquals("on-demand",storedImage.getPlatform().getModelName());
+			assertEquals(PLATFORM_ID,storedImage.getPlatformId());
+			assertEquals(PLATFORM_NAME,storedImage.getPlatformName());
 			assertNull(storedImage.getBuildId());
 			assertNull(storedImage.getBuildDate());
 			
@@ -217,16 +218,15 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("store_image_metadata_with_build_info"))
+							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-								  			.withVendorName("unittest")
-								  			.withModelName("on-demand"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 
@@ -242,7 +242,7 @@ public class ImageServiceIT extends InventoryIT{
 		transaction(()->{
 			ImageInfo storedImage = service.getImage(imageInfo.getImageId());
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
-			assertEquals(ImageName.valueOf("store_image_metadata_with_build_info"),storedImage.getImageName());
+			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
 			assertEquals(LXC,storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
@@ -268,16 +268,15 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("store_image_metadata_with_build_info"))
+							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-								  			.withVendorName("unittest")
-								  			.withModelName("on-demand"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 							  .withChecksums(checksums)	
@@ -291,7 +290,7 @@ public class ImageServiceIT extends InventoryIT{
 		transaction(()->{
 			ImageInfo storedImage = service.getImage(imageInfo.getImageId());
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
-			assertEquals(ImageName.valueOf("store_image_metadata_with_build_info"),storedImage.getImageName());
+			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
 			assertEquals(LXC,storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
@@ -312,20 +311,19 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("store_image_metadata_with_build_info"))
+							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-								  			.withVendorName("unittest")
-								  			.withModelName("on-demand"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
-							  .withApplications(ApplicationName.valueOf("app1"),
-									  			ApplicationName.valueOf("app2"))	
+							  .withApplications(applicationName("app1"),
+									  			applicationName("app2"))	
 							  .build();
 		transaction(()->{
 			boolean created = service.storeImage(imageInfo);
@@ -338,7 +336,7 @@ public class ImageServiceIT extends InventoryIT{
 		transaction(()->{
 			ImageInfo storedImage = service.getImage(imageInfo.getImageId());
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
-			assertEquals(ImageName.valueOf("store_image_metadata_with_build_info"),storedImage.getImageName());
+			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
 			assertEquals(LXC,storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
@@ -350,8 +348,8 @@ public class ImageServiceIT extends InventoryIT{
 			assertTrue(storedImage.getChecksums().isEmpty());
 			assertEquals(imageInfo.getBuildDate(),storedImage.getBuildDate());
 			assertEquals(imageInfo.getBuildId(),storedImage.getBuildId());
-			assertEquals(asList(ApplicationName.valueOf("app1"),
-								ApplicationName.valueOf("app2")),
+			assertEquals(asList(applicationName("app1"),
+								applicationName("app2")),
 						 storedImage.getApplications());
 		});
 	}
@@ -361,17 +359,16 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("remove_image_with_applications_and_package_revisions"))
+							  .withImageName(imageName("remove_image_with_applications_and_package_revisions"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-									  		.withVendorName("unittest")
-									  		.withModelName("on-demand"))
-							  .withApplications(ApplicationName.valueOf("app1"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
+							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
 									  		.withPackageName("sample")
@@ -409,17 +406,16 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("update_image_state"))
+							  .withImageName(imageName("update_image_state"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-									  		.withVendorName("unittest")
-									  		.withModelName("on-demand"))
-							  .withApplications(ApplicationName.valueOf("app1"))
+							  .withPlatformId(PLATFORM_ID)
+							  .withPlatformName(PLATFORM_NAME)
+							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
 									  		.withPackageName("sample")
@@ -451,17 +447,15 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withImageType(LXC)
-							  .withImageName(ImageName.valueOf("rename_image"))
+							  .withImageName(imageName("rename_image"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatform(newPlatformInfo()
-									  		.withVendorName("unittest")
-									  		.withModelName("on-demand"))
-							  .withApplications(ApplicationName.valueOf("app1"))
+							  .withPlatformName(PLATFORM_NAME)
+							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
 									  		.withPackageName("sample")
@@ -475,17 +469,15 @@ public class ImageServiceIT extends InventoryIT{
 		ImageInfo renamedImage = newImageInfo()
 								 .withImageId(imageInfo.getImageId())
 								 .withImageType(LXC)
-								 .withImageName(ImageName.valueOf("renamed_image"))
+								 .withImageName(imageName("renamed_image"))
 								 .withImageState(NEW)
 								 .withImageVersion(new Version(1,0,0))
 								 .withExtension("tar.gz")
 								 .withElementRole(ELEMENT_ROLE)
 								 .withOrganization("io.leitstand")
 								 .withCategory("unittest")
-								 .withPlatform(newPlatformInfo()
-										 .withVendorName("unittest")
-										 .withModelName("on-demand"))
-								 .withApplications(ApplicationName.valueOf("app1"))
+								 .withPlatformName(PLATFORM_NAME)
+								 .withApplications(applicationName("app1"))
 								 .withPackages(newPackageVersionInfo()
 										 	   .withOrganization("io.leitstand")
 										 	   .withPackageName("sample")
@@ -502,7 +494,7 @@ public class ImageServiceIT extends InventoryIT{
 		});
 		
 		transaction(()->{
-			assertEquals(ImageName.valueOf("renamed_image"),service.getImage(imageInfo.getImageId()).getImageName());
+			assertEquals(imageName("renamed_image"),service.getImage(imageInfo.getImageId()).getImageName());
 
 		});
 		
@@ -519,8 +511,8 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_TYPE, 
 																		  				 GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(Platform.findByModel("image_it", "dummy"),
-													   ()->new Platform(PlatformId.randomPlatformId(), "image_it", "dummy"));
+			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -532,7 +524,7 @@ public class ImageServiceIT extends InventoryIT{
 			Image image = new Image(imageId,
 									"io.leitstand",
 									ImageType.LXC,
-									ImageName.valueOf("remove_bound_image"),
+									imageName("remove_bound_image"),
 									role,
 									platform,
 									new Version(1,0,0));
@@ -563,8 +555,8 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_TYPE, 
 																		  				 GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(Platform.findByModel("image_it", "dummy"),
-													   ()->new Platform(PlatformId.randomPlatformId(), "image_it", "dummy"));
+			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -576,7 +568,7 @@ public class ImageServiceIT extends InventoryIT{
 			Image image = new Image(imageId,
 									"io.leitstand",
 									ImageType.LXC,
-									ImageName.valueOf("stats_active_image"),
+									imageName("stats_active_image"),
 									role,
 									platform,
 									new Version(1,0,0));
@@ -601,14 +593,13 @@ public class ImageServiceIT extends InventoryIT{
 		ImageId imageId = randomImageId();
 		transaction(() -> {
 			ElementRole  role  = repository.execute(findRoleByName(ELEMENT_ROLE));
-			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, 
-																  						 GROUP_NAME), 
-																  () -> new ElementGroup(randomGroupId(), 
-																		  				 GROUP_TYPE, 
-																		  				 GROUP_NAME));
+			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, GROUP_NAME), 
+													() -> new ElementGroup(randomGroupId(), 
+																		   GROUP_TYPE, 
+																		   GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(Platform.findByModel("image_it", "dummy"),
-													   ()->new Platform(PlatformId.randomPlatformId(), "image_it", "dummy"));
+			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+													   ()->new Platform(PLATFORM_ID, PLATFORM_NAME));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -620,7 +611,7 @@ public class ImageServiceIT extends InventoryIT{
 			Image image = new Image(imageId,
 									"io.leitstand",
 									ImageType.LXC,
-									ImageName.valueOf("stats_active_image"),
+									imageName("stats_active_image"),
 									role,
 									platform,
 									new Version(1,0,0));

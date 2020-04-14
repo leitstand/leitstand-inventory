@@ -48,16 +48,12 @@ import io.leitstand.commons.model.Update;
 import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.ImageNameConverter;
 import io.leitstand.inventory.jpa.ImageStateConverter;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.Version;
-//TODO Config images are platform agnostic. We need to support three kind of images:
-// Images for a certain element role on a certain platform
-// Images for a certain element, role and platform
 @Entity
 @Table(schema="inventory", name="image")
 @NamedQuery(name="Image.findByImageId", 
@@ -253,20 +249,6 @@ public class Image extends VersionableEntity{
 					   .setParameter("patch", version.getPatchLevel())
 					   .setParameter("prerelease", prerelease(version))
 					   .getSingleResult();
-	}
-	
-	public static Query<Image> findDefaultImage(ElementRoleName elementRole,
-												ElementPlatformInfo platform,
-												ImageType imageType,
-												ImageName imageName){
-		return em -> em.createNamedQuery("Image.findDefaultImage",Image.class)
-					   .setParameter("vendor",platform.getVendorName())
-					   .setParameter("model",platform.getModelName())
-					   .setParameter("role",elementRole)
-					   .setParameter("type",imageType)
-					   .setParameter("name", imageName)
-					   .getSingleResult();
-		
 	}
 	
 	public static Query<List<Image>> findDefaultImages(ElementRole elementRole,

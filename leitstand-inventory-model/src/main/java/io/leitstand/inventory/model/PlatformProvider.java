@@ -15,7 +15,8 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.model.Platform.findByVendor;
+import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findByPlatformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static java.lang.String.format;
 
@@ -26,8 +27,8 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 
 @Dependent
 public class PlatformProvider {
@@ -45,35 +46,56 @@ public class PlatformProvider {
 		this.repository = repository;
 	}
 	
-	public Platform tryFetchPlatform(ElementPlatformInfo info) {
-		return repository.execute(findByVendor(info));
+	public Platform tryFetchPlatform(PlatformId platformId) {
+		return repository.execute(findByPlatformId(platformId));
 	}
 	
-	public Platform fetchPlatform(ElementPlatformInfo info) {
-		Platform platform = tryFetchPlatform(info);
-		if(platform == null) {
-			LOG.fine(() -> format("%s: Platform %s %s does not exist!", 
-							IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
-							info.getVendorName(),
-							info.getModelName()));
-			throw new EntityNotFoundException(IVT0900E_PLATFORM_NOT_FOUND,
-											  format("%s %s",
-													 info.getVendorName(),
-													 info.getModelName()));
-		}
-		return platform;
+	public Platform tryFetchPlatform(PlatformName platformName) {
+		return repository.execute(findByPlatformName(platformName));
 	}
 	
-	public Platform fetchPlatform(PlatformId platformId) {
-		Platform platform = repository.execute(Platform.findByPlatformId(platformId));
+	
+	public Platform fetchPlatform(PlatformId id) {
+		Platform platform = tryFetchPlatform(id);
 		if(platform == null) {
 			LOG.fine(() -> format("%s: Platform %s does not exist!", 
 							IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
-							platformId));
+							id));
 			throw new EntityNotFoundException(IVT0900E_PLATFORM_NOT_FOUND,
-											  platformId);
+											  id);
 		}
 		return platform;
+	}
+	
+	public Platform fetchPlatform(PlatformName name) {
+		Platform platform = tryFetchPlatform(name);
+		if(platform == null) {
+			LOG.fine(() -> format("%s: Platform %s does not exist!", 
+							IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
+							name));
+			throw new EntityNotFoundException(IVT0900E_PLATFORM_NOT_FOUND,
+											  name);
+		}
+		return platform;
+	}
+	
+	public Platform findOrCreatePlatform(PlatformId platformId, PlatformName platformName) {
+		if(platformId != null) {
+			Platform platform = tryFetchPlatform(platformId);
+			if(platform != null) {
+				return platform;
+			}
+		}
+		if(platformName != null) {
+			if(platformId != null) {
+				// Platform does not exist. Create new platform.
+				Platform platform = new Platform(platformId,platformName);
+				repository.add(platform);
+				return platform;
+			}
+			return tryFetchPlatform(platformName);
+		}
+		return null;
 	}
 	
 }

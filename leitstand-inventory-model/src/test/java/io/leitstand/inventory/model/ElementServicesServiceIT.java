@@ -35,6 +35,7 @@ import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.OperationalState.UP;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static io.leitstand.inventory.service.ServiceType.CONTAINER;
 import static io.leitstand.inventory.service.ServiceType.DAEMON;
@@ -68,6 +69,7 @@ import io.leitstand.inventory.service.ElementServiceSubmission;
 import io.leitstand.inventory.service.ElementServicesService;
 import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.ServiceInfo;
 import io.leitstand.inventory.service.ServiceName;
 
@@ -79,7 +81,7 @@ public class ElementServicesServiceIT extends InventoryIT {
 	private static final ElementId ELEMENT_ID = randomElementId();
 	private static final ElementName ELEMENT_NAME = elementName("element");
 	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementServicesServiceIT.class.getSimpleName());
-	private static final String VENDOR_NAME = ElementServicesServiceIT.class.getName();
+	private static final PlatformName PLATFORM_NAME = platformName(ElementServicesServiceIT.class.getName());
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final MetricName METRIC_NAME = metricName(ElementServicesServiceIT.class.getSimpleName());
 	private static final ServiceName CONTAINER_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".container");
@@ -137,9 +139,8 @@ public class ElementServicesServiceIT extends InventoryIT {
 																			   GROUP_NAME));
 	
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   () -> new Platform(PLATFORM_ID, 
-															   			  VENDOR_NAME, 
-															   			  "unittest"));
+													   () -> new Platform(PLATFORM_ID,
+															   			  PLATFORM_NAME));
 	
 			ElementRole role = repository.addIfAbsent(findRoleByName(ROLE_NAME),
 													  () -> new ElementRole(ROLE_NAME,

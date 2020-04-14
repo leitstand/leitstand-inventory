@@ -16,6 +16,7 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
+import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.model.ElementGroup_Rack.findByRackName;
 import static io.leitstand.inventory.model.ElementGroup_Rack.findRacksOfGroup;
 import static io.leitstand.inventory.service.ElementGroupRack.newElementGroupRack;
@@ -35,6 +36,7 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.model.ObjectUtil;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.ElementGroupId;
@@ -160,7 +162,8 @@ public class DefaultElementGroupRackService implements ElementGroupRackService {
 					   					   .withHalfRack(e.isHalfRack())
 					   					   .withHeight(e.getHeight())
 					   					   .withHalfRackPosition(e.getHalfRackPosition())
-					   					   .withPlatform(e.getPlatform())
+					   					   .withPlatformId(optional(e.getPlatform(),Platform::getPlatformId))
+					   					   .withPlatformName(optional(e.getPlatform(),Platform::getPlatformName))
 					   					   .build())
 					   			 .collect(toList()) )
 			   .build();	

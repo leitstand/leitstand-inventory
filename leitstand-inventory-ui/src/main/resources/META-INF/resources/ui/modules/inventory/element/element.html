@@ -14,71 +14,71 @@
  the License.
 -->
 <ui-view-header>
-	<ui-title>Element Settings <span class="{{element.operational_state}}">{{element.operational_state}}</span></ui-title>
-	<ui-subtitle>Manage settings of element {{element.element_name}}{{#element.element_alias}} ({{.}}){{/element.element_alias}}</ui-subtitle>
+	<ui-title>Element Settings <span class="{{operational_state}}">{{operational_state}}</span></ui-title>
+	<ui-subtitle>Manage settings of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
-<ui-form scopesAllowed="ivt ivt.element ivt.element.settings">
+<ui-form scopesAllowed="ivt ivt.element ivt.settings">
 	<ui-group>
 		<ui-label>General Settings</ui-label>
 		<ui-note>Manage the element name, element alias, element role, administrative and operational state, and element description and set the pod of which the element belongs to.</ui-note>
-		<ui-input name="group_name" disabled readonly bind="element.group_name">
+		<ui-input name="group_name" disabled readonly>
 			<ui-label>Pod Name</ui-label>
 			<ui-note>The pod to which this element belongs to.
 					 <a href="element-pod.html?group={{group_id}}&element={{element_id}}">Move element to another pod.</a></ui-note>
 		</ui-input>
-		<ui-input name="element_name" bind="element.element_name">
+		<ui-input name="element_name">
 			<ui-label>Element Name</ui-label>
 			<ui-note>The unique name of the element</ui-note>
 		</ui-input>
-		<ui-input name="element_alias" bind="element.element_alias">
+		<ui-input name="element_alias">
 			<ui-label>Element Alias</ui-label>
 			<ui-note>An optional unique alias of the element</ui-note>
 		</ui-input>
-		<ui-select name="element_role" bind="element.element_role" options="roles">
+		<element-role name="element_role">
 			<ui-label>Element Role</ui-label>
-			<ui-note>Select the role of the element.</ui-note>
-		</ui-select>
-		<ui-select name="adm_state" bind="element.administrative_state" options="administrative_states">
+			<ui-note>Select the role of the </ui-note>
+		</element-role>
+		<ui-select name="administrative_state" options="administrative_states">
 			<ui-label>Administrative State</ui-label>
-			<ui-note>Select the administrative state of the element.
+			<ui-note>Select the administrative state of the 
 					 The administrative state of an element expresses whether the element is a <em>new</em> element, 
 					 that is about to be installed in the network, an already <em>active</em> element or a <em>retired</em> element, 
 					 that is going to be removed from the network.</ui-note>	
 		</ui-select>
-		<ui-select name="op_state" bind="element.operational_state" options="operational_states">
+		<ui-select name="operational_state" options="operational_states">
 			<ui-label>Operational State</ui-label>
-			<ui-note>Select the operational state of the element.</ui-note>
+			<ui-note>Select the operational state of the </ui-note>
 		</ui-select>
-		<ui-textarea name="description" bind="element.description">
+		<ui-textarea name="description">
 			<ui-label>Description</ui-label>
-			<ui-note>Optional description of the element.</ui-note>
+			<ui-note>Optional description of the </ui-note>
 		</ui-textarea>
 	</ui-group>
 	<ui-group>
 		<ui-label>Tags</ui-label>
-		<ui-note>Optional tags to categorize the element.</ui-note>
-		<ui-tags name="tags" bind="element.tags"></ui-tags>
+		<ui-note>Optional tags to categorize the </ui-note>
+		<ui-tags name="tags"></ui-tags>
 	</ui-group>
 	<ui-group>
 		<ui-label>Hardware Information</ui-label>
 		<ui-note>Select the hardware platform of the element and maintain the chassis serial number and the MAC address of the management interface.</ui-note>
-		<element-platform name="platform" bind="element.platform" options="platforms">
+		<element-platform name="platform_id" options="platforms">
 			<ui-label>Hardware Platform</ui-label>
-			<ui-note>The hardware platform of the element.</ui-note>
+			<ui-note>The hardware platform of the </ui-note>
 		</element-platform>
-		<ui-input name="serial_number" bind="element.serial_number">
+		<ui-input name="serial_number" >
 			<ui-label>Serial Number</ui-label>
 			<ui-note>The serial number of the element</ui-note>
 		</ui-input>	
-		<ui-input name="mac_address" bind="element.mac_address">
+		<ui-input name="mgmt_mac">
 			<ui-label>MAC Address</ui-label>
 			<ui-note>The MAC address of the element management-port</ui-note>
 		</ui-input>	
 	</ui-group>
 	<ui-group>
 		<ui-label>Management Interfaces</ui-label>
-		<ui-note>Configure REST and SSH endpoints of the element.</ui-note>
-			<!--  {{#mgmt_interface_list.length}} -->
+		<ui-note>Configure REST and SSH endpoints of the </ui-note>
+			<!--  {{#mgmt_interface_list_length}} -->
 			<table class="list">
 				<thead>
 					<tr>
@@ -92,27 +92,28 @@
 				<tbody>
 					<!-- {{#mgmt_interface_list}} -->
 						<tr>
-							<td><a href="element-mgmt.html?group={{element.group_id}}&element={{element.element_id}}&mgmt_name={{mgmt_name}}" title="Edit management interface properties">{{mgmt_name}}</a></td>
+							<td><a href="element-mgmt.html?group={{group_id}}&element={{element_id}}&mgmt_name={{mgmt_name}}" title="Edit management interface properties">{{mgmt_name}}</a></td>
 							<td>{{mgmt_protocol}}</td>
 							<td>{{mgmt_hostname}}</td>
 							<td>{{mgmt_port}}</td>
-							<td>{{mgmt_path}}</td></tr>
+							<td>{{mgmt_path}}</td>
+						</tr>
 					<!-- {{/mgmt_interface_list}} -->
 				</tbody>
 			</table>
-			<!-- {{/mgmt_interface_list.length}} -->
+			<!-- {{/mgmt_interface_list_length}} -->
 			<!-- {{^mgmt_interface_list}} -->
 			<ui-blankslate>
 				<ui-title>No management interfaces found.</ui-title>
-				<ui-note>No management interfaces have been defined for this element.</ui-note>
+				<ui-note>No management interfaces have been defined for this </ui-note>
 			</ui-blankslate>
 			<!-- {{/mgmt_interface_list}} -->
 			<ui-actions>
-				<ui-button href="element-mgmt.html?group={{element.group_id}}&element={{element.element_id}}" title="Add new management interface" small>Add</ui-button>
+				<ui-button href="element-mgmt.html?group={{group_id}}&element={{element_id}}" title="Add new management interface" small>Add</ui-button>
 			</ui-actions>
 		</ui-group>
 	<ui-actions>
 		<ui-button name="save-element" primary>Save settings</ui-button>
-		<ui-button when="inactive" href="confirm-remove-element.html?group={{element.group_id}}&element={{element.element_id}}" danger>Remove element</ui-button>
+		<ui-button when="inactive" href="confirm-remove-html?group={{group_id}}&element={{element_id}}" danger>Remove element</ui-button>
 	</ui-actions>
 </ui-form>

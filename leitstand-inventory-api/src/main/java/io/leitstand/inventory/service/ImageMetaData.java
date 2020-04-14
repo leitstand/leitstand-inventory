@@ -36,7 +36,7 @@ public class ImageMetaData extends ValueObject{
 		
 		private ImageMetaData metadata = new ImageMetaData();
 		
-		public Builder withPlatforms(List<ElementPlatformInfo> platforms ) {
+		public Builder withPlatforms(List<PlatformName> platforms ) {
 			metadata.platforms = unmodifiableList(new LinkedList<>(platforms));
 			return this;
 		}
@@ -61,7 +61,7 @@ public class ImageMetaData extends ValueObject{
 	}
 	
 	
-	private List<ElementPlatformInfo> platforms;
+	private List<PlatformName> platforms;
 	@JsonbProperty("image_types")
 	private List<ImageType> types;
 	@JsonbProperty("element_roles")
@@ -72,7 +72,7 @@ public class ImageMetaData extends ValueObject{
 		return unmodifiableList(roles);
 	}
 	
-	public List<ElementPlatformInfo> getPlatforms() {
+	public List<PlatformName> getPlatforms() {
 		return unmodifiableList(platforms);
 	}
 	

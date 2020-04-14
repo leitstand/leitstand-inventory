@@ -24,22 +24,26 @@
 <ui-form scopesAllowed="ivt ivt.element ivt.element.settings">
 	<ui-group>
 		<ui-label>General Settings</ui-label>
+		<ui-input name="platform_name">
+			<ui-label>Platform Name</ui-label>
+			<ui-note>The unique platform name.</ui-note>
+		</ui-input>
 		<ui-input name="vendor_name">
 			<ui-label>Vendor Name</ui-label>
-			<ui-note>The name of the platform vendor</ui-note>
+			<ui-note>The name of the platform vendor.</ui-note>
 		</ui-input>
 		<ui-input name="model_name">
 			<ui-label>Model Name</ui-label>
-			<ui-note>The platform model name</ui-note>
+			<ui-note>The name of the platform model.</ui-note>
 		</ui-input>	
 		<ui-textarea name="description">
 			<ui-label>Description</ui-label>
-			<ui-note>A brief platform description.</ui-note>
+			<ui-note>A description of the platform.</ui-note>
 		</ui-textarea>	
 	</ui-group>
 	<ui-group>
 		<ui-label>Dimensions</ui-label>
-		<ui-select name="rack_unit">
+		<ui-select name="rack_units">
 			<ui-label>Rack Units</ui-label>
 			<ui-note>The chassis height in rack units</ui-note>
 			<ui-option value="1">1 RU</ui-option>

@@ -39,7 +39,17 @@ public class ImageId extends Scalar<String>{
 	
 	/**
 	 * Creates an <code>ImageId</code> from the specified string.
-	 * @param id the mage ID
+	 * This method is an alias of the {@link #valueOf(String)} method to avoid static import conflicts.
+	 * @param id the image ID
+	 * @return the <code>ImageId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
+	public static ImageId imageId(String id) {
+		return valueOf(id);
+	}
+	
+	/**
+	 * Creates an <code>ImageId</code> from the specified string.
+	 * @param id the image ID
 	 * @return the <code>ImageId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static ImageId valueOf(String id) {

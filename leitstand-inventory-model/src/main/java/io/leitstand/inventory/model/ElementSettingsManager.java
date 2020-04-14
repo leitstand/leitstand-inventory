@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
+import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.inventory.event.ElementMovedEvent.newElementMovedEvent;
 import static io.leitstand.inventory.event.ElementOperationalStateChangedEvent.newElementOperationalStateChangedEvent;
@@ -25,7 +26,6 @@ import static io.leitstand.inventory.event.ElementRenamedEvent.newElementRenamed
 import static io.leitstand.inventory.event.ElementRoleChangedEvent.newElementRoleChangedEvent;
 import static io.leitstand.inventory.service.ElementGroupSettings.newElementGroupSettings;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementPlatformInfo.newPlatformInfo;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.ReasonCode.IVT0301I_ELEMENT_STORED;
@@ -50,7 +50,6 @@ import io.leitstand.inventory.service.ElementAlias;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementPlatformInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.OperationalState;
@@ -77,9 +76,8 @@ public class ElementSettingsManager {
 			   .withManagementInterfaces(element.getManagementInterfaces())
 			   .withDescription(element.getDescription())
 			   .withTags(element.getTags())
-			   .withPlatform(newPlatformInfo()
-					   		 .withVendorName(element.getVendorName())
-							 .withModelName(element.getModelName()))
+			   .withPlatformId(optional(element.getPlatform(), Platform::getPlatformId))
+			   .withPlatformName(optional(element.getPlatform(), Platform::getPlatformName))
 			   .build();
 	}
 	
@@ -129,9 +127,9 @@ public class ElementSettingsManager {
 								  settings.getElementAlias());
 		
 		Element element = new Element(group,
-									 role,
-									 settings.getElementId(),
-									 settings.getElementName());
+									  role,
+									  settings.getElementId(),
+									  settings.getElementName());
 		element.setElementAlias(settings.getElementAlias());
 		element.setDescription(settings.getDescription());
 		element.setSerialNumber(settings.getSerialNumber());
@@ -140,21 +138,17 @@ public class ElementSettingsManager {
 		element.setTags(settings.getTags());
 		element.setAdministrativeState(settings.getAdministrativeState());
 		element.setOperationalState(settings.getOperationalState());
-		ElementPlatformInfo platform = settings.getPlatform();
-		if(platform != null) {
-			Platform _platform = platforms.tryFetchPlatform(platform);
-			if(_platform == null) {
-				_platform = new Platform(randomPlatformId(),
-										 platform.getVendorName(),
-										 platform.getModelName());
-			}
-			element.setPlatform(_platform);
-		}
+		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), settings.getPlatformName()));
+		
 		repository.add(element);
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED, 
 								   element.getElementName()));
 		
 	}
+	
+	
+
+	
 	
 	public void storeElementSettings(Element element, ElementSettings settings) {
 		if(!element.hasElementId(settings.getElementId())){
@@ -204,17 +198,9 @@ public class ElementSettingsManager {
 					   .build());
 		}
 		
-		
-		ElementPlatformInfo platform = settings.getPlatform();
-		if(platform != null) {
-			Platform _platform = platforms.tryFetchPlatform(platform);
-			if(_platform == null) {
-				_platform = new Platform(randomPlatformId(),
-										 platform.getVendorName(),
-										 platform.getModelName());
-			}
-			element.setPlatform(_platform);
-		}
+		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
+														   settings.getPlatformName()));	
+
 		
 		if(isDifferent(settings.getElementName(), previousElementName)){
 			LOG.fine(() -> format("Fire %s for %s element %s -> %s",
@@ -322,4 +308,6 @@ public class ElementSettingsManager {
 		
 	}
 
+	
+	
 }

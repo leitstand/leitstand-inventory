@@ -20,17 +20,23 @@ import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
 import static io.leitstand.inventory.model.Image.findElementRoleImage;
-import static io.leitstand.inventory.model.Platform.findByModel;
+import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
+import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
+import static io.leitstand.inventory.service.ElementName.elementName;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageType.LXC;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.Version.version;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -52,6 +58,9 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementAvailableUpdate;
+import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementImagesService;
 import io.leitstand.inventory.service.ElementInstalledImage;
@@ -59,17 +68,27 @@ import io.leitstand.inventory.service.ElementInstalledImageData;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
 
 public class ElementImageServiceIT extends InventoryIT{
 
+	private static final ElementGroupId GROUP_ID = randomGroupId();
+	private static final ElementGroupName GROUP_NAME = groupName(ElementImageServiceIT.class.getSimpleName());
+	private static final ElementGroupType GROUP_TYPE = groupType("pod");
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = ElementName.valueOf(ElementImageServiceIT.class.getSimpleName());
+	private static final ElementName ELEMENT_NAME = elementName(ElementImageServiceIT.class.getSimpleName());
+	private static final ElementRoleName ELEMENT_ROLE = elementRoleName(ElementImageServiceIT.class.getSimpleName());
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
+	private static final PlatformName PLATFORM_NAME = platformName(ElementImageServiceIT.class.getSimpleName());
+	
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
@@ -178,7 +197,14 @@ public class ElementImageServiceIT extends InventoryIT{
 		ElementSettingsService elementService = new DefaultElementSettingsService(manager,
 																				  elements,
 																				  mock(Event.class));
-		ElementSettings settings = element(ELEMENT_ID, ELEMENT_NAME);
+		ElementSettings settings = element(element(ELEMENT_ID, ELEMENT_NAME))
+								   .withGroupId(GROUP_ID)
+								   .withGroupType(GROUP_TYPE)
+								   .withGroupName(GROUP_NAME)
+								   .withElementRole(ELEMENT_ROLE)
+								   .withPlatformId(PLATFORM_ID)
+								   .withPlatformName(PLATFORM_NAME)
+								   .build();
 		service = new DefaultElementImagesService(new ElementImageManager(repository,
 												  mock(SubtransactionService.class),
 												  mock(Messages.class)), 
@@ -186,21 +212,21 @@ public class ElementImageServiceIT extends InventoryIT{
 
 		
 		transaction(()->{
-			ElementRole role = repository.addIfAbsent(findRoleByName(settings.getElementRole()),
-													  () -> new ElementRole(settings.getElementRole(),
+			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE),
+													  () -> new ElementRole(ELEMENT_ROLE,
 															  				DATA));
 
 			
-			repository.addIfAbsent(findElementGroupById(settings.getGroupId()),
-								   () -> {ElementGroup group = new ElementGroup(settings.getGroupId(),
-										   										settings.getGroupType(),
-										   										settings.getGroupName());
+			repository.addIfAbsent(findElementGroupById(GROUP_ID),
+								   () -> {ElementGroup group = new ElementGroup(GROUP_ID,
+										   										GROUP_TYPE,
+										   										GROUP_NAME);
 								   		  return group;});
 			
 			elementService.storeElementSettings(settings);		
 			
-			Platform platform = repository.addIfAbsent(findByModel("net.rtbrick", "JUNIT"), 
-													   () -> new Platform(randomPlatformId(), "net.rtbrick", "JUNIT"));
+			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
+													   () -> new Platform(PLATFORM_ID,PLATFORM_NAME));
 			
 			
 			// Create base image
