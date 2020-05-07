@@ -19,7 +19,6 @@ import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Element_Service.removeServices;
-import static io.leitstand.inventory.model.Metric.findMetricByName;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.model.Service.findService;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
@@ -30,7 +29,6 @@ import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ElementServiceReference.newElementServiceReference;
 import static io.leitstand.inventory.service.ElementServiceSubmission.newElementServiceSubmission;
-import static io.leitstand.inventory.service.MetricName.metricName;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.OperationalState.UP;
 import static io.leitstand.inventory.service.Plane.DATA;
@@ -67,7 +65,6 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementServiceContext;
 import io.leitstand.inventory.service.ElementServiceSubmission;
 import io.leitstand.inventory.service.ElementServicesService;
-import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.ServiceInfo;
@@ -83,7 +80,6 @@ public class ElementServicesServiceIT extends InventoryIT {
 	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementServicesServiceIT.class.getSimpleName());
 	private static final PlatformName PLATFORM_NAME = platformName(ElementServicesServiceIT.class.getName());
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final MetricName METRIC_NAME = metricName(ElementServicesServiceIT.class.getSimpleName());
 	private static final ServiceName CONTAINER_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".container");
 	private static final ServiceName DAEMON_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".daemon");
 	
@@ -129,9 +125,6 @@ public class ElementServicesServiceIT extends InventoryIT {
 			repository.addIfAbsent(findService(DAEMON_SERVICE),
 								   () -> new Service(DAEMON, DAEMON_SERVICE));
 
-			
-			Metric metric = repository.addIfAbsent(findMetricByName(METRIC_NAME), 
-												   () -> new Metric(METRIC_NAME));
 			
 			ElementGroup group = repository.addIfAbsent(findElementGroupById(GROUP_ID),
 														() -> new ElementGroup(GROUP_ID, 

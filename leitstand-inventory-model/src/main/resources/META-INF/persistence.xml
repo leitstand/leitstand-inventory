@@ -17,19 +17,12 @@
 		<class>io.leitstand.inventory.model.Element_Image</class>
 		<class>io.leitstand.inventory.model.Element_LogicalInterface</class>
 		<class>io.leitstand.inventory.model.Element_LogicalInterface_Vlan</class>
-		<class>io.leitstand.inventory.model.Element_Metric</class>
 		<class>io.leitstand.inventory.model.Element_Module</class>
 		<class>io.leitstand.inventory.model.Element_PhysicalInterface</class>
-		<class>io.leitstand.inventory.model.Element_PhysicalInterface_Metric</class>
 		<class>io.leitstand.inventory.model.Element_Service</class>
 		<class>io.leitstand.inventory.model.Element_ServiceContext</class>
-		<class>io.leitstand.inventory.model.Element_Service_Metric</class>
 		<class>io.leitstand.inventory.model.ElementRole</class>
 		<class>io.leitstand.inventory.model.Image</class>
-		<class>io.leitstand.inventory.model.Metric</class>
-		<class>io.leitstand.inventory.model.Metric_Visualization</class>
-		<class>io.leitstand.inventory.model.Metric_AlertRule</class>
-		<class>io.leitstand.inventory.model.Metric_AlertRule_Definition</class>
 		<class>io.leitstand.inventory.model.Module</class>
 		<class>io.leitstand.inventory.model.ElementGroup_Rack</class>
 		<class>io.leitstand.inventory.model.ElementGroup_Rack_Element</class>
@@ -41,8 +34,6 @@
 		<class>io.leitstand.inventory.service.Bandwidth</class>
 		<class>io.leitstand.inventory.service.ElementLocation</class>
 		<class>io.leitstand.inventory.service.ElementPort</class>
-		<class>io.leitstand.inventory.jpa.AlertRuleIdConverter</class>
-		<class>io.leitstand.inventory.jpa.AlertRuleNameConverter</class>
 		<class>io.leitstand.inventory.jpa.AdministrativeStateConverter</class>
 		<class>io.leitstand.inventory.jpa.ApplicationNameConverter</class>
 		<class>io.leitstand.inventory.jpa.DnsNameConverter</class>
@@ -69,7 +60,6 @@
 		<class>io.leitstand.inventory.jpa.ImageStateConverter</class>
 		<class>io.leitstand.inventory.jpa.InterfaceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.MACAddressConverter</class>
-		<class>io.leitstand.inventory.jpa.MetricNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ModuleNameConverter</class>
 		<class>io.leitstand.inventory.jpa.OperationalStateConverter</class>
 		<class>io.leitstand.inventory.jpa.PlaneConverter</class>
@@ -80,8 +70,6 @@
 		<class>io.leitstand.inventory.jpa.ServiceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ServiceTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.VlanIdConverter</class>
-		<class>io.leitstand.inventory.jpa.VisualizationConfigIdConverter</class>
-		<class>io.leitstand.inventory.jpa.VisualizationConfigNameConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformNameConverter</class>
 		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>

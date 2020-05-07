@@ -18,7 +18,6 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Metric.findMetricByName;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.model.Service.findService;
 import static io.leitstand.inventory.service.AdministrativeState.RETIRED;
@@ -46,7 +45,6 @@ import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
 import static io.leitstand.inventory.service.Environment.newEnvironment;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 import static io.leitstand.inventory.service.EnvironmentName.environmentName;
-import static io.leitstand.inventory.service.MetricName.metricName;
 import static io.leitstand.inventory.service.ModuleData.newModuleData;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.Plane.DATA;
@@ -56,7 +54,6 @@ import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static io.leitstand.inventory.service.ServiceType.CONTAINER;
 import static io.leitstand.inventory.service.ServiceType.DAEMON;
 import static io.leitstand.security.auth.UserName.userName;
-import static java.util.Arrays.asList;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -90,7 +87,6 @@ import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementLogicalInterfaceService;
-import io.leitstand.inventory.service.ElementMetricService;
 import io.leitstand.inventory.service.ElementModuleService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceService;
@@ -103,11 +99,9 @@ import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.IPvxPrefix;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
-import io.leitstand.inventory.service.MetricName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
-import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
 import io.leitstand.security.auth.UserContext;
@@ -122,9 +116,7 @@ public class ForceRemoveElementIT extends InventoryIT{
 	private static final ElementId ELEMENT_ID = randomElementId();
 	private static final ElementName ELEMENT_NAME = elementName(ForceRemoveElementIT.class.getName());
 	private static final ElementRoleName ROLE_NAME = elementRoleName(ForceRemoveElementIT.class.getSimpleName());
-	private static final String VENDOR_NAME = ForceRemoveElementIT.class.getName();
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final MetricName METRIC_NAME = metricName(ForceRemoveElementIT.class.getSimpleName());
 	private static final ServiceName CONTAINER_SERVICE = serviceName(ForceRemoveElementIT.class.getName()+".container");
 	private static final ServiceName DAEMON_SERVICE = serviceName(ForceRemoveElementIT.class.getName()+".daemon");
 	
@@ -134,7 +126,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 	private ElementGroupProvider groups;
 	private ElementRoleProvider roles;
 	private PlatformProvider platforms;
-	private MetricProvider metrics;
 	private DnsZoneProvider zones;
 	
 	@Before
@@ -145,7 +136,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 		this.groups = new ElementGroupProvider(repository);
 		this.roles = new ElementRoleProvider(repository);
 		this.platforms = new PlatformProvider(repository);
-		this.metrics = new MetricProvider(repository);
 		this.zones = new DnsZoneProvider(repository);
 		Event event = mock(Event.class);
 		messages = mock(Messages.class);
@@ -158,9 +148,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 			repository.addIfAbsent(findService(DAEMON_SERVICE),
 								   () -> new Service(DAEMON, DAEMON_SERVICE));
 
-			
-			Metric metric = repository.addIfAbsent(findMetricByName(METRIC_NAME), 
-												   () -> new Metric(METRIC_NAME));
 			
 			ElementGroup group = repository.addIfAbsent(findElementGroupById(GROUP_ID),
 														() -> new ElementGroup(GROUP_ID, 
@@ -359,16 +346,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 		});
 		
 		
-		// Add metric assignment
-		transaction(()->{
-			ElementMetricManager manager = new ElementMetricManager(repository, 
-																	new MetricProvider(repository), 
-																	messages);
-			ElementMetricService service = new DefaultElementMetricService(manager, elements);
-			service.registerElementMetrics(ELEMENT_ID, asList(METRIC_NAME));
-		});
-		
-		
 		ElementManager elementManager = new ElementManager(repository,mock(Event.class),messages);
 
 		service = new DefaultElementService(elementManager, 
@@ -405,7 +382,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 		assertNotNull(roles.fetchElementRole(ROLE_NAME));
 		assertNotNull(groups.fetchElementGroup(GROUP_ID));
 		assertNotNull(platforms.fetchPlatform(PLATFORM_ID));
-		assertNotNull(metrics.fetchMetric(METRIC_NAME));
 		
 	}
 	
