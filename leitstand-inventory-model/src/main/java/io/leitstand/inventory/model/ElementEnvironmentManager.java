@@ -202,7 +202,7 @@ public class ElementEnvironmentManager {
 					  			  element.getElementId()));		
 
 			messages.add(createMessage(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED, 
-									   id));
+									   env.getEnvironmentName()));
 			
 			event.fire(newElementEnvironmentRemovedEvent()
 					   .withGroupId(element.getGroupId())

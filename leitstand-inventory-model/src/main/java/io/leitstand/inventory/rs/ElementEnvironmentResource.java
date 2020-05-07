@@ -147,11 +147,15 @@ public class ElementEnvironmentResource {
 	
 	
 	@DELETE
-	@Path("/{element:"+UUID_PATTERN+"}/environments/{env}")
+	@Path("/{element:"+UUID_PATTERN+"}/environments/{env:"+UUID_PATTERN+"}")
 	public Response removeElementEnvironment(@Valid @PathParam("element") ElementId elementId,
-											 @Valid @PathParam("env") EnvironmentName environmentName) {
-		service.removeElementEnvironment(elementId,
-										 environmentName);
+											 @Valid @PathParam("env") EnvironmentId environmentId) {
+		ElementEnvironment env = service.getElementEnvironment(environmentId);
+		if(isDifferent(elementId, env.getElementId())) {
+			throw new ConflictException(IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT, 
+										environmentId);
+		}
+		service.removeElementEnvironment(environmentId);
 		return success(messages);
 	}
 

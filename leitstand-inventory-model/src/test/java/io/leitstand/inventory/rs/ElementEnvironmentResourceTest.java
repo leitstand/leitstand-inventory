@@ -21,6 +21,7 @@ import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -142,7 +143,7 @@ public class ElementEnvironmentResourceTest {
 	}
 	
 	@Test
-	public void throw_ConflictException_when_environment_is_owned_by_other_element_name() {
+	public void throw_ConflictException_when_reading_environment_is_owned_by_other_element() {
 		when(service.getElementEnvironment(environmentId)).thenReturn(elementEnv);
 		when(elementEnv.getElementName()).thenReturn(elementName("env_owner"));
 		
@@ -150,6 +151,29 @@ public class ElementEnvironmentResourceTest {
 		exception.expect(reason(IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT));
 		
 		resource.getElementEnvironment(elementName("name"), environmentId);
+	}
+	
+	@Test
+	public void throw_ConflictException_when_removing_environment_that_is_owned_by_other_element() {
+		when(service.getElementEnvironment(environmentId)).thenReturn(elementEnv);
+		when(elementEnv.getElementId()).thenReturn(randomElementId());
+		
+		exception.expect(ConflictException.class);
+		exception.expect(reason(IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT));
+
+		resource.removeElementEnvironment(randomElementId(), environmentId);
+		
+	}
+	
+	@Test
+	public void remove_environment() {
+		ElementId elementId = randomElementId();
+		when(service.getElementEnvironment(environmentId)).thenReturn(elementEnv);
+		when(elementEnv.getElementId()).thenReturn(elementId);
+		
+		resource.removeElementEnvironment(elementId, environmentId);
+		
+		verify(service).removeElementEnvironment(environmentId);
 	}
 	
 }
