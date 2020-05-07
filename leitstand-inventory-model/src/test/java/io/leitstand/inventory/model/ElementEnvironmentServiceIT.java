@@ -48,6 +48,7 @@ import org.junit.rules.ExpectedException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironmentService;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
@@ -129,8 +130,14 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			Environment reloaded = service.getElementEnvironment(ELEMENT_ID, ENVIRONMENT_NAME).getEnvironment();
-			assertEquals(env,reloaded);
+			ElementEnvironment reloaded = service.getElementEnvironment(ELEMENT_ID, ENVIRONMENT_NAME);
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(env.getEnvironmentName(),reloaded.getEnvironmentName());
+			assertEquals(env.getCategory(),reloaded.getCategory());
+			assertEquals(env.getType(),reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());
+			
 		});
 	}
 	
@@ -164,8 +171,13 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			Environment reloaded = service.getElementEnvironment(ELEMENT_ID, ENVIRONMENT_NAME).getEnvironment();
-			assertEquals(env,reloaded);
+			ElementEnvironment reloaded = service.getElementEnvironment(ELEMENT_ID, ENVIRONMENT_NAME);
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(env.getEnvironmentName(),reloaded.getEnvironmentName());
+			assertEquals(env.getCategory(),reloaded.getCategory());
+			assertEquals(env.getType(),reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());		
 		});
 	}
 	
@@ -193,6 +205,124 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			service.getElementEnvironment(ELEMENT_NAME, ENVIRONMENT_NAME);
 		});
 		
+	}
+	
+	@Test
+	public void rename_environment() {
+		transaction(()->{
+			Environment env = newEnvironment()
+					  		  .withEnvironmentId(ENVIRONMENT_ID)
+					  		  .withEnvironmentName(ENVIRONMENT_NAME)
+					  		  .withType("type")
+					  		  .withVariables(createObjectBuilder().add("foo", "bar").build())
+					  		  .build();
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertTrue(created);
+		});
+		
+		Environment env = newEnvironment()
+						  .withEnvironmentId(ENVIRONMENT_ID)
+						  .withEnvironmentName(environmentName("new_environment_name"))
+						  .withCategory("category")
+						  .withDescription("description")
+						  .withType("type")
+						  .withVariables(createObjectBuilder().add("foo", "bar").build())
+						  .build();
+
+
+		transaction(()->{
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertFalse(created);
+		});
+		
+		transaction(()->{
+			ElementEnvironment reloaded = service.getElementEnvironment(ENVIRONMENT_ID);
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(environmentName("new_environment_name"),reloaded.getEnvironmentName());
+			assertEquals(env.getCategory(),reloaded.getCategory());
+			assertEquals(env.getType(),reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());		
+		});
+	}
+	
+	@Test
+	public void update_environment_category() {
+		transaction(()->{
+			Environment env = newEnvironment()
+					  		  .withEnvironmentId(ENVIRONMENT_ID)
+					  		  .withEnvironmentName(ENVIRONMENT_NAME)
+					  		  .withType("type")
+					  		  .withVariables(createObjectBuilder().add("foo", "bar").build())
+					  		  .build();
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertTrue(created);
+		});
+		
+		Environment env = newEnvironment()
+						  .withEnvironmentId(ENVIRONMENT_ID)
+						  .withEnvironmentName(ENVIRONMENT_NAME)
+						  .withCategory("other_category")
+						  .withDescription("description")
+						  .withType("type")
+						  .withVariables(createObjectBuilder().add("foo", "bar").build())
+						  .build();
+
+
+		transaction(()->{
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertFalse(created);
+		});
+		
+		transaction(()->{
+			ElementEnvironment reloaded = service.getElementEnvironment(ENVIRONMENT_ID);
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(env.getEnvironmentName(),reloaded.getEnvironmentName());
+			assertEquals("other_category",reloaded.getCategory());
+			assertEquals(env.getType(),reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());		
+		});
+	}
+	
+	
+	@Test
+	public void update_environment_type() {
+		transaction(()->{
+			Environment env = newEnvironment()
+					  		  .withEnvironmentId(ENVIRONMENT_ID)
+					  		  .withEnvironmentName(ENVIRONMENT_NAME)
+					  		  .withType("type")
+					  		  .withVariables(createObjectBuilder().add("foo", "bar").build())
+					  		  .build();
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertTrue(created);
+		});
+		
+		Environment env = newEnvironment()
+						  .withEnvironmentId(ENVIRONMENT_ID)
+						  .withEnvironmentName(ENVIRONMENT_NAME)
+						  .withCategory("category")
+						  .withDescription("description")
+						  .withType("other_type")
+						  .withVariables(createObjectBuilder().add("foo", "bar").build())
+						  .build();
+
+
+		transaction(()->{
+			boolean created = service.storeElementEnvironment(ELEMENT_ID, env);
+			assertFalse(created);
+		});
+		
+		transaction(()->{
+			ElementEnvironment reloaded = service.getElementEnvironment(ENVIRONMENT_ID);
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(env.getEnvironmentName(),reloaded.getEnvironmentName());
+			assertEquals(env.getCategory(),reloaded.getCategory());
+			assertEquals("other_type",reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());		
+		});
 	}
 	
 	
@@ -249,13 +379,17 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			Environment reloaded = service.getElementEnvironment(ELEMENT_ID, environmentName("new-name")).getEnvironment();
-			assertEquals(env,reloaded);
+			ElementEnvironment reloaded = service.getElementEnvironment(ELEMENT_ID, environmentName("new-name"));
+			assertEquals(env.getEnvironmentId(),reloaded.getEnvironmentId());
+			assertEquals(env.getEnvironmentName(),reloaded.getEnvironmentName());
+			assertEquals(env.getCategory(),reloaded.getCategory());
+			assertEquals(env.getType(),reloaded.getType());
+			assertEquals(env.getDescription(),reloaded.getDescription());
+			assertEquals(env.getVariables(),reloaded.getVariables());		
 		});
 		
 	}
 
-	
 	@Test
 	public void throws_EntityNotFoundException_when_attempting_to_store_environment_for_unknown_element_id() {
 		exception.expect(EntityNotFoundException.class);

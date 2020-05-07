@@ -16,6 +16,9 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
+
+import javax.json.JsonObject;
 
 public class ElementEnvironment extends BaseElementEnvelope {
 
@@ -28,21 +31,73 @@ public class ElementEnvironment extends BaseElementEnvelope {
 			super(new ElementEnvironment());
 		}
 		
-		public Builder withEnvironment(Environment.Builder env) {
-			return withEnvironment(env.build());
-		}
-		
-		public Builder withEnvironment(Environment env) {
+		public Builder withEnvironmentId(EnvironmentId environmentId) {
 			assertNotInvalidated(getClass(), object);
-			object.environment = env;
+			object.environmentId = environmentId;
 			return this;
 		}
+		
+		public Builder withEnvironmentName(EnvironmentName environmentName) {
+			assertNotInvalidated(getClass(), object);
+			object.environmentName = environmentName;
+			return this;
+		}
+		
+		public Builder withCategory(String category) {
+			assertNotInvalidated(getClass(), object);
+			object.category = category;
+			return this;
+		}
+		
+		public Builder withDescription(String description) {
+			assertNotInvalidated(getClass(), object);
+			object.description = description;
+			return this;
+		}
+		
+		public Builder withType(String type) {
+			assertNotInvalidated(getClass(), object);
+			object.type = type;
+			return this;
+		}
+		
+		public Builder withVariables(JsonObject variables) {
+			assertNotInvalidated(getClass(), object);
+			object.variables = variables;
+			return this;
+		}
+		
 	}
 	
-	private Environment environment;
+	private EnvironmentId environmentId = randomEnvironmentId();
+	private EnvironmentName environmentName;
+	private String category;
+	private String type;
+	private String description;
+	private JsonObject variables;
 	
-	public Environment getEnvironment() {
-		return environment;
+	public EnvironmentId getEnvironmentId() {
+		return environmentId;
+	}
+	
+	public EnvironmentName getEnvironmentName() {
+		return environmentName;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public JsonObject getVariables() {
+		return variables;
 	}
 	
 }

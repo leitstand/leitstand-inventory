@@ -24,7 +24,6 @@ import static io.leitstand.inventory.model.Element_Environment.findEnvironmentBy
 import static io.leitstand.inventory.model.Element_Environment.findEnvironments;
 import static io.leitstand.inventory.service.ElementEnvironment.newElementEnvironment;
 import static io.leitstand.inventory.service.ElementEnvironments.newElementEnvironments;
-import static io.leitstand.inventory.service.Environment.newEnvironment;
 import static io.leitstand.inventory.service.EnvironmentInfo.newEnvironmentInfo;
 import static io.leitstand.inventory.service.ReasonCode.IVT0390E_ELEMENT_ENVIRONMENT_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0391I_ELEMENT_ENVIRONMENT_STORED;
@@ -109,13 +108,12 @@ public class ElementEnvironmentManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
-			   .withEnvironment(newEnvironment()
-					   			.withEnvironmentId(env.getEnvironmentId())
-					   			.withEnvironmentName(env.getEnvironmentName())
-					   			.withCategory(env.getCategory())
-					   			.withType(env.getType())
-					   			.withDescription(env.getDescription())
-					   			.withVariables(env.getVariables()))
+   			   .withEnvironmentId(env.getEnvironmentId())
+   			   .withEnvironmentName(env.getEnvironmentName())
+   			   .withCategory(env.getCategory())
+   			   .withType(env.getType())
+   			   .withDescription(env.getDescription())
+   			   .withVariables(env.getVariables())
 			   .build();
 	}
 	
@@ -141,6 +139,11 @@ public class ElementEnvironmentManager {
 			created = true;
 		} 
 		
+		// Update variables first. 
+		// The lazy loading of variables otherwise might replace all other applied property changes!
+		// The described behavior does not occur in the integration tests. It is an observed runtime behavior!
+		_env.setVariables(env.getVariables());
+		
 		Element owner = _env.getElement();
 		if(isDifferent(element, owner)) {
 			LOG.fine(()->format("Move environment %s (%s) from %s %s (%s) to %s %s (%s).",
@@ -159,7 +162,6 @@ public class ElementEnvironmentManager {
 		_env.setEnvironmentName(env.getEnvironmentName());
 		_env.setCategory(env.getCategory());
 		_env.setType(env.getType());
-		_env.setVariables(env.getVariables());
 		_env.setDescription(env.getDescription());
 		LOG.fine(()->format("%s: Stored element environment %s for %s %s (%s)",
 							IVT0391I_ELEMENT_ENVIRONMENT_STORED.getReasonCode(),
@@ -200,7 +202,7 @@ public class ElementEnvironmentManager {
 					  			  element.getElementId()));		
 
 			messages.add(createMessage(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED, 
-									   id));
+									   env.getEnvironmentName()));
 			
 			event.fire(newElementEnvironmentRemovedEvent()
 					   .withGroupId(element.getGroupId())

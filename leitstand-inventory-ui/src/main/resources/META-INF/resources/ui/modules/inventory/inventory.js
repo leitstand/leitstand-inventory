@@ -443,6 +443,14 @@ export class Element extends Resource {
 				   .POST(config.content);
 	}
 	
+	saveEnvironment(params,env){
+		return this.json("/api/v1/elements/{{&element}}/environments",
+				 		 this._cfg,
+				 		 params)
+				   .POST(env);
+		
+	}
+	
 	saveDnsRecord(params,record){
 		return this.json("/api/v1/elements/{{&element}}/dns",
 						 this._cfg,

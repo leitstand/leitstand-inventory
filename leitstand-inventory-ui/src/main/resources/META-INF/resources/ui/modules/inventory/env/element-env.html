@@ -1,0 +1,52 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-bread-crumbs>
+		<ui-breadcrumb href="element-envs.html?group={{group_id}}&element={{element_id}}" 
+					   title="Show list of all element environments">Element Environments</ui-breadcrumb>
+		<ui-breadcrumb>{{environment_name}}</ui-breadcrumb>
+	</ui-bread-crumbs>
+	<ui-title>Element Environment</ui-title>
+	<ui-subtitle>{{environment_name}} environment of element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
+</ui-view-header>
+<ui-form scopesAllowed="ivt ivt.element ivt.element.config">
+	<ui-group>
+		<ui-label>Environment</ui-label>
+		<ui-input name="environment_name">
+			<ui-label>Environment Name</ui-label>
+			<ui-note>The environment name is unique per element</ui-note>
+		</ui-input>
+		<ui-input name="category" >
+			<ui-label>Category</ui-label>
+			<ui-note>Optional environment category.</ui-note>
+		</ui-input>
+		<ui-input name="type">
+			<ui-label>Type</ui-label>
+			<ui-note>Optional environment type.</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>Optional environment description.</ui-note>
+		</ui-textarea>
+		<env-editor type="json" name="variables" style="height:50em;">
+			<!--  Configuration editor to modify the current configuration -->
+		</env-editor>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-env" primary title="Apply all configuration changes">Save environment</ui-button>
+		<ui-button href="confirm-remove.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}" title="Remove environment" danger>Remove environment</ui-button>
+	</ui-actions>
+</ui-form>

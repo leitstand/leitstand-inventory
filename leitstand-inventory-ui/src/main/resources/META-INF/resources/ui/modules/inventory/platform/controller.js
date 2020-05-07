@@ -56,7 +56,6 @@ const addPlatformController = function() {
 		},
 		buttons:{
 			"save":function(){
-				alert(JSON.stringify(this.getViewModel()));
 				platforms.addPlatform(this.getViewModel());
 			}
 		},

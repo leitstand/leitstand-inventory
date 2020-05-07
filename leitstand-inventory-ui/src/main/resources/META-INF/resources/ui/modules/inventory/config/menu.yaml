@@ -7,7 +7,7 @@ extensions:
     menu: element
     after: element-location
   items:
-  - item: configuration
+  - item: element-config
     label: Configuration
     title: Manage the configuration of this element
     view:  element-configs.html

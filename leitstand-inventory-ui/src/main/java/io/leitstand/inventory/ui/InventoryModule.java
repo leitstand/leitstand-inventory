@@ -46,7 +46,7 @@ public class InventoryModule  {
 				   .withBaseUri(contrib)
 				   .build();
 		} catch (Exception e) {
-			LOG.severe(format("%s: Cannot process contribution %s for module %s. Reason; %s",
+			LOG.severe(format("%s: Cannot process contribution %s for module %s. Reason: %s",
 							  UIM0002E_CANNOT_PROCESS_MODULE_EXTENSION.getReasonCode(),
 							  contrib,
 							  MODULE_NAME,
@@ -73,6 +73,7 @@ public class InventoryModule  {
 			Contribution podContrib 	  = contribution("pod/menu.yaml");
 			Contribution elementContrib   = contribution("element/menu.yaml");
 			Contribution configContrib 	  = contribution("config/menu.yaml");
+			Contribution envContrib		  = contribution("env/menu.yaml");
 			Contribution dnsContrib 	  = contribution("dns/menu.yaml");
 			Contribution platformContrib  = contribution("platform/menu.yaml");
 			Contribution roleContrib      = contribution("role/menu.yaml");
@@ -81,12 +82,13 @@ public class InventoryModule  {
 				   .withContributions(podContrib,
 						   			  elementContrib,
 						   			  configContrib,
+						   			  envContrib,
 						   			  dnsContrib,
 						   			  platformContrib,
 						   			  roleContrib)
 					.build();
 		} catch (IOException e) {
-			LOG.severe(format("%s: Cannot process contribution %s for module %s. Reason; %s",
+			LOG.severe(format("%s: Cannot process %s module descriptor. Reason: %s",
 					  UIM0001E_CANNOT_PROCESS_MODULE_DESCRIPTOR.getReasonCode(),
 					  MODULE_NAME,
 					  e.getMessage()));

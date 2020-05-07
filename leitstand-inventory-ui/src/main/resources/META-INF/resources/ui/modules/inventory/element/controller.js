@@ -19,7 +19,6 @@ import {Select} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
 
-
 class PlatformSelector extends Select {
 	
 	options(){
@@ -49,8 +48,6 @@ class ElementRoleSelector extends Select {
 
 }
 customElements.define("element-role",ElementRoleSelector);
-
-
 
 //TODO: Implement Rack Component!
 const elementRackController = function(){
@@ -242,7 +239,6 @@ const elementController = function(){
 															   "label" : "Active"},
 															  {"value" : "RETIRED",
 															   "label" : "Retired"}]);
-			
 			viewModel.operational_states = this.transient([{"value" : "DOWN", 
 											 				"label" : "Down"},		
 											 			   {"value" : "UP", 
@@ -307,6 +303,7 @@ const elementMgmtController = function(){
 	return new Controller({
 		resource:element,
 		viewModel:function(settings){
+
 			// Augment settings with available management protocols.
 			settings.mgmt_protocols = this.transient([{"label":"HTTP",
 													   "value":"http"},

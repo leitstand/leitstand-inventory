@@ -29,10 +29,6 @@ extensions:
       label: Location
       title: Review the location of the element
       view: element-rack.html
-    - item: configuration
-      label: Configuration
-      title: Manage the configuration of this element
-      view:  config/element-configs.html
     - item: element-modules
       label: Modules
       title: Review element hardware modules.

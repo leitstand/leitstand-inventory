@@ -123,7 +123,6 @@ const elementConfigsController = function(){
 	
 const elementConfigController = function(){
 	const config = new Element({scope:"configs/{{config}}"});
-	const editor = null;
 	return new Controller({
 		resource: config,
 		viewModel:function(config){
