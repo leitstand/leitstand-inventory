@@ -20,6 +20,7 @@ import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import java.util.UUID;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import io.leitstand.commons.model.Scalar;
@@ -42,6 +43,7 @@ public class DnsRecordSetId extends Scalar<String>{
 		return Scalar.fromString(id, DnsRecordSetId::new);
 	}
 	
+	@NotNull(message="{dns_recordset_id.required}")
 	@Pattern(regexp=UUID_PATTERN, message="{dns_recordset_id.invalid}")
 	private String value;
 	

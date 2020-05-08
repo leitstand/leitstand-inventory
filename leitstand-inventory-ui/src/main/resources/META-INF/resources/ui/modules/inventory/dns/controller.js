@@ -23,6 +23,33 @@ const DNS_TYPES = [{"label":"IPv4 address (A)","value":"A"},
 				   {"label":"IPv6 address (AAAA)","value":"AAAA"},
 				   {"label":"Alias (CNAME)","value":"CNAME"}];
 
+class DnsTypeSelector extends Select {
+	constructor(){
+		super();
+	}
+	
+	options(){
+		return Promise.resolve(DNS_TYPES);
+	}
+}
+customElements.define("dns-types",DnsTypeSelector);
+
+class DnsZoneSelector extends Select {
+	
+	constructor(){
+		super();
+	}
+	
+	options(){
+		const zones = new DnsZones();
+		return zones.load(this.location.params)
+			 		.then(zones => zones.map(zone => ({"label":zone.dns_zone_name,
+				 							   		   "value":zone.dns_zone_id})));
+	}
+	
+	
+}
+customElements.define("dns-zones",DnsZoneSelector);
 
 const zonesController = function(){
 	const zones = new DnsZones();
@@ -34,12 +61,15 @@ const zonesController = function(){
 						   buttons:{
 							   "add-zone":function(){
 								   zones.addZone(this.getViewModel("zone"));
+							   },
+							   "filter":function(){
+								   this.reload({"filter":this.getViewModel("filter")})
 							   }
 						   },
 						   onSuccess:function(){
 							   this.navigate("zones.html");
 						   }
-							});
+						});
 }
 
 const zoneSettingsController = function(){
@@ -74,17 +104,14 @@ const elementDnsRecordSetsController = function(){
 const addElementDnsRecordSetController = function(){
 	const element = new Element({"scope":"dns"});
 	return new Controller({resource:element,
-						   viewModel: async function(element){
-							   element.dns_types = DNS_TYPES;
-							   // Lookup all zones to prepare a select list.
-							   const zones = new DnsZones();
-							   element.zones = await zones.load(this.location.params);
-							   element.zones = element.zones.map(zone => ({"label":zone.dns_zone_name,"value":zone.dns_zone_name}));
-							   return element;
+						   viewModel: function(element){
+							   return {};
 						   },
 						   buttons:{
 							   "save-settings":function(){
 								   const dns = this.getViewModel("dns");
+								   const zoneName = this.input("dns-zones").unwrap().selected.label;
+								   dns.dns_zone_name = zoneName;
 								   dns.dns_records=[
 									   {"dns_value": dns.dns_value,
 									    "disabled":dns.disabled}
@@ -103,11 +130,6 @@ const elementDnsRecordSetController = function(){
 	const element = new Element({"scope":"dns/{{record}}"});
 	return new Controller({resource:element,
 						   viewModel: async function(element){
-							   element.dns_types = DNS_TYPES;
-							   // Lookup all zones to prepare a select list.
-							   const zones = new DnsZones();
-							   element.zones = await zones.load(this.location.params);
-							   element.zones = element.zones.map(zone => ({"label":zone.dns_zone_name,"value":zone.dns_zone_name}));
 							   const record = element.dns_recordset.dns_records[0];
 							   element.dns_recordset.dns_value = record.dns_value;
 							   element.dns_recordset.disabled = record.disabled;
@@ -117,6 +139,8 @@ const elementDnsRecordSetController = function(){
 						   buttons:{
 							   "save-settings":function(){
 								   const dns = this.getViewModel("dns_recordset");
+								   const zoneName = this.input("dns-zones").unwrap().selected.label;
+								   dns.dns_zone_name = zoneName;
 								   dns.dns_records=[
 									   {"dns_value": dns.dns_value,
 									    "disabled":dns.disabled}

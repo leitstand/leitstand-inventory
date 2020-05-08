@@ -23,6 +23,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.json.bind.annotation.JsonbProperty;
+
 public class DnsZoneElement extends BaseElementEnvelope {
 
 	public static Builder newDnsZoneElement() {
@@ -47,6 +49,7 @@ public class DnsZoneElement extends BaseElementEnvelope {
 		}
 	}
 	
+	@JsonbProperty("dns_recordsets")
 	private List<DnsRecordSet> dnsRecordSets; 
 	
 	public List<DnsRecordSet> getDnsRecordSets(){

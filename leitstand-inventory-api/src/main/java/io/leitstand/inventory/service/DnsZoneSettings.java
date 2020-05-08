@@ -19,6 +19,8 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.DnsZoneId.randomDnsZoneId;
 
 import javax.json.JsonObject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -82,8 +84,12 @@ public class DnsZoneSettings extends ValueObject {
 		}
 	}
 	
+	@Valid
+	@NotNull(message="{dns_zone_id.required}")
 	private DnsZoneId dnsZoneId = randomDnsZoneId();
 	
+	@Valid
+	@NotNull(message="{dns_zone_name.required}")
 	private DnsZoneName dnsZoneName;
 	
 	private String dnsZoneConfigType;

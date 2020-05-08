@@ -16,6 +16,8 @@
 package io.leitstand.inventory.service;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsRecordTypeAdapter;
@@ -33,6 +35,8 @@ public class DnsRecordType extends Scalar<String>{
 		return fromString(type, DnsRecordType::new);
 	}
 	
+	@NotNull(message="{dns_type.required}")
+	@Pattern(regexp="[A-Z0-9]+", message="{dns_type.invalid}")
 	private String value;
 	
 	public DnsRecordType(String type) {

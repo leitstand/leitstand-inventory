@@ -423,7 +423,9 @@ public class ElementDnsRecordSetServiceIT extends InventoryIT{
 			assertEquals(ROLE_NAME,recordSets.getElementRole());
 			assertEquals(ELEMENT_ID,recordSets.getElementId());
 			assertEquals(ELEMENT_NAME,recordSets.getElementName());
-			assertEquals(records,recordSets.getDnsRecordSets());
+			//Verify correct order of returned recordsets
+			assertEquals(records.get(0),recordSets.getDnsRecordSets().get(1));
+			assertEquals(records.get(1),recordSets.getDnsRecordSets().get(0));
 			
 			
 		});

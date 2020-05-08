@@ -103,7 +103,7 @@ public class ElementDnsRecordSetResource {
 	@Path("/{element:"+UUID_PATTERN+"}/dns/{dns_id:"+UUID_PATTERN+"}")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSet(@Valid @PathParam("element") ElementId elementId,
-															  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
+													  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
 		ElementDnsRecordSet recordSet = service.getElementDnsRecordSet(dnsId);
 		if(isDifferent(elementId,recordSet.getElementId())) {
 			throw new ConflictException(IVT3003I_ELEMENT_DNS_RECORD_OWNED_BY_OTHER_ELEMENT, 
@@ -118,7 +118,7 @@ public class ElementDnsRecordSetResource {
 	@Path("/{element}/dns/{dns_id:"+UUID_PATTERN+"}")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_DNS})
 	public ElementDnsRecordSet getElementDnsRecordSet(@Valid @PathParam("element") ElementName elementName,
-															  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
+													  @Valid @PathParam("dns_id") DnsRecordSetId dnsId) {
 		ElementDnsRecordSet recordSet = service.getElementDnsRecordSet(dnsId);
 		if(isDifferent(elementName,recordSet.getElementName())) {
 			throw new ConflictException(IVT3003I_ELEMENT_DNS_RECORD_OWNED_BY_OTHER_ELEMENT, 

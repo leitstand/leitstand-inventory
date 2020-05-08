@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
+import javax.validation.Valid;
 
 import io.leitstand.commons.model.BuilderUtil;
 
@@ -51,6 +52,7 @@ public class ElementDnsRecordSets extends BaseElementEnvelope {
 		}
 	}
 	
+	@Valid
 	@JsonbProperty("dns_recordsets")
 	private List<DnsRecordSet> dnsRecordSets = emptyList();
 	
