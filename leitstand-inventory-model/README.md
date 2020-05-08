@@ -31,9 +31,6 @@ Each `Element` has a certain role, which is represented by the `ElementRole` ent
 A managed element is managed by Leitstand applications 
 whereas an unmanaged element is stored for the sake of documentation only.
 
-The `Metric` entity describes a metric that can be sampled from an element.
-An element can provide multiple metrics and a metric can be provided by different elements.
-
 The `Image` entity describes a software image that can be installed on an element.
 An image is bound to an element role and to a platform.
 Multiple images per element can be stored in the inventory.
@@ -56,7 +53,6 @@ The following data is stored per element:
 - **Configurations**, the element configurations including the history per configuration. The inventory maintains a configuration lifecycle state to differentiate between the currently active configuration, a candidate configuration and superseded configurations.
 - **Images**, the installed software images.
 - **Environment Variables**, a set of environments, each with a unique name and a JSON object, to feed templates to generate configurations.
-- **Metrics**, the metrics sampled from the element. The time series data is stored in a specialized time series database (TSDB), but the inventory is aware of which time series shall be streamed to this TSDB.
 - **DNS**, the DNS records of an element.
 - **Hardware Modules**, a list of hardware modules intended for asset accounting and spare part management.
 
@@ -75,18 +71,6 @@ The following data is stored per element group:
 - **Racks**, the racks that contain the elements of this group
 
 __NOTE:__ The group membership of an element is stored in the element.
-
-### Metric
-A metric can be sampled from an element and is processed for network monitoring and capacity management.
-
-The following data is stored per metric
-- **Metric Name**, a unique metric name
-- **Metric Unit**, the unit of the sampled values.
-- **Description**, an optional description of the metric.
-- **Element Roles**, the element roles that provide this metric.
-- **Metric Scope**, expressing whether the metric is supplied for the entire element, a physical interface, a logical interface or a service.
-- **Alert Rules**, to program alert conditions on specialized monitoring systems, whenever an alert condition is satisfied.
-_ **Visualization Configuration**, to provision dashboards in specialized time serialization tools.
 
 ### Image
 An image is a software image that can be installed on network elements.
@@ -129,7 +113,6 @@ The following scopes exists to grant access to resource inventory records.
 |_ivt.element.module_   | Manage element module information.                                                          |
 |_ivt.group_			| Manage element group records.                                                               |
 |_ivt.group.settings_	| Manage element group settings (i.e. user is not allowed to add/remove elements to a group). |
-|_ivt.metric_			| Manage metric definition records.                                                           |
 |_ivt.image_			| Manage software image records.                                                              |
 
 
