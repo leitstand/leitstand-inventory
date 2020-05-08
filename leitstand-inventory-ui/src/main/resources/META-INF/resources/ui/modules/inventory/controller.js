@@ -15,7 +15,6 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Pods,PhysicalInterfaces,Elements} from './inventory.js'
-//import {Events} from '/ui/modules/event/events.js';
 
 const podsController = function() {
 	const pods = new Pods();
@@ -25,23 +24,6 @@ const podsController = function() {
 			const filter = this.location.param("filter");
 			return {"pods"	: items,
 				    "filter" : filter};
-		},
-		postRender:function(){
-			// Fetch open error counts for all pods and add a link to events if errors exists.
-			const events = new Events({"scope":"counts"});
-			events.onLoaded = this.newEventHandler(function(stats){
-				this.elements("tbody tr").forEach(function(group){
-					const name = group.select("td:nth-child(1)").text();
-					if(stats[name]){
-						const count = stats[name]["count"];
-						if(count){
-							group.select(".hidden .counter").html(count);
-							group.select(".hidden").css.remove("hidden");
-						}
-					}
-				});
-			});
-			events.load(this.location.params);
 		},
 		buttons:{
 			"filter-pods":function(){
