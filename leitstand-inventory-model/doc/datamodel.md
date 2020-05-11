@@ -123,10 +123,34 @@ The `image_application` table stores which applications an image supports.
 
 | Column 	  | Type 		  | Description 					   			|
 |:------------|:--------------|:----------------------------------------|
-| ID		 	  | INT8 		  | Contiguous number as primary key.		|
+| ID		 	  | INT8 		  | Sequential number as primary key.		|
 | UUID		  | CHARACTER(36) | Unique application ID in UUIDv4 format. |
 | NAME   	  | VARCHAR(64) 	  |	Unique application name.					|
 | DESCRIPTION | VARCHAR(1024) | Optional application description.		|
+| MODCOUNT 	  | INT4 		  | Modification counter. 					|
+| TSMODIFIED  | TIMESTAMP 	  | Last-modification timestamp.				|
+| TSCREATED 	  | TIMESTAMP 	  | Creation timestamp.						|
+
+#### Primary Key
+The `ID` column forms the primary key.
+
+#### Unique Constraints
+Unique constraints exist on the following columns:
+- `UUID`, the application ID must be unique for all applications
+- `NAME`, the application name must be unique for all applications
+
+### `dnszone` Table
+The `dnszone` table contains the configured DNS zones to provision a DNS server.
+
+#### Columns
+| Column 	  | Type 		  | Description 					   			|
+|:------------|:--------------|:----------------------------------------|
+| ID		 	  | INT8 		  | Sequential number as primary key.		|
+| UUID		  | CHARACTER(36) | Unique DNS zone ID in UUIDv4 format.    |
+| NAME   	  | VARCHAR(64) 	  |	Unique DNS zone name.					|
+| DESCRIPTION | VARCHAR(1024) | Optional DNS zone description.		    |
+| TYPE		  | VARCHAR(128)  | Optional configuration type information.|
+| CONFIG		  | JSON			  | Optional DNS zone settings.             |
 | MODCOUNT 	  | INT4 		  | Modification counter. 					|
 | TSMODIFIED  | TIMESTAMP 	  | Last-modification timestamp.				|
 | TSCREATED 	  | TIMESTAMP 	  | Creation timestamp.						|
@@ -145,7 +169,7 @@ The `element` table forms the element aggregate root and contains general elemen
 #### Columns
 | Column 			| Type 			| Description 							|
 |:------------------|:--------------|:--------------------------------------|
-| ID     			| INT8			| Contiguous number as primary key.	   	|
+| ID     			| INT8			| Sequential number as primary key.	   	|
 | UUID   			| CHARACTER(36)	| Unique element ID in UUIDv4 format.  	|
 | NAME 				| VARCHAR (255)	| Unique element name. 					|
 | ALIAS 				| VARCHAR(255)	| Optional, unique element alias. 		|
@@ -235,6 +259,52 @@ i.e. the configuration ID is unique for all configurations.
 #### Foreign Keys
 The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
 This relation assigns a configuration to its element.
+
+### `element_dns` Table
+The `element_dns` table refers to the DNS records for an element and to the respective DNS zone.
+
+#### Columns
+| Columns     | Type          | Description                                            |
+|:------------|:--------------|:-------------------------------------------------------|
+| ID          | INT8          | Sequential number as primary key.                      |
+| ELEMENT_ID  | INT8          | Reference to the element record.                       |
+| DNSZONE_ID  | INT8          | Reference to the DNS zone record.                      |
+| UUID        | CHARACTER(36) | Unique element DNS entry ID in UUIDv4 format.          |
+| NAME        | VARCHAR(64)   | The DNS record name.                                   |
+| TYPE        | VARCHAR(16)   | The DNS record type.                                   |
+| TTL         | INT4          | Optional time-to-live of the DNS record in DNS caches. |
+| DESCRIPTION | VARCHAR(1024) | Optional DNS record description.                       |
+| TSMODIFIED  | TIMESTAMP     | Last modification date of the DNS record.              |
+
+#### Primary Key
+The `ID` column forms the primary key.
+
+#### Unique Constraints
+This table has two unique constraints:
+- The value of the `UUID` column must be unique.
+- The value of the `NAME` column must be unique.
+
+#### Foreign Keys
+This table has two foreign keys:
+- The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
+- The `DNSZONE_ID` column refers to the `ID` column in the `dnszone` table.
+
+#### `element_dns_record` table
+The `element_dns_record` table contains the values of a DNS record.
+
+#### Columns
+| Columns          | Type          | Description                                                                        |
+|:-----------------|:--------------|:-----------------------------------------------------------------------------------|
+| ELEMENT\_DNS\_ID | INT8          | Sequential number as primary key.                                                  |
+| VALUE            | VARCHAR(128   | The DNS value.                                                                     |
+| DISABLED         | CHAR(1)       | Flag to indicate whether this value is disabled (Y) or not (N).                    |
+| SETPTR           | CHAR(1)       | Flag to indicate whether to create (Y) a Pointer Resource Record (PTR) or not (N). |
+#### Primary Key
+The `ELEMENT_DNS_ID` column and the `VALUE` column form the primary key.
+
+#### Foreign Keys
+The `ELEMENT_DNS_ID` column refers to the `ID` column of the `element_dns` table.
+
 
 ### `element_env` Table
 The `element_env` table contains environment variables per element.
@@ -469,7 +539,7 @@ The modules are stored for the sake of documentation and can be leveraged for as
 #### Columns
 | Column 	   | Type 		   | Description 							  									  |
 |:-------------|:--------------|:-----------------------------------------------------------------------------|
-| ID			   | INT8	 	   | Contiguous number as primary key.                                         	  |
+| ID			   | INT8	 	   | Sequential number as primary key.                                         	  |
 | ELEMENT_ID	   | INT8		   | Reference to the element record.		 									  |	
 | NAME		   | VARCHAR(64)   | Hardware module name.   				  									  |
 | DESCRIPTION  | VARCHAR(1024) | Optional hardware module description.    									  |
@@ -545,7 +615,7 @@ The `element_service_context` table stores service-specific context information 
 #### Columns
 | Column     | Type 			 | Description                       |
 |:-----------|:--------------|:----------------------------------|
-| ID         | INT8          | Contiguous number as primary key. |
+| ID         | INT8          | Sequential number as primary key. |
 | UUID       | CHARACTER(36) | Unique service context ID.        |
 | ELEMENT_ID | INT8          | Reference to the element record.  |
 | SERVICE_ID | INT8          | Reference to the service record.  |
@@ -591,7 +661,7 @@ The `elementgroup` table stores the general settings of each element group.
 #### Columns
 | Column 	  | Type 		  | Description			 						|
 |:------------|:--------------|:--------------------------------------------|
-| ID			  | INT8			  | Contiguous number as primary key.			|
+| ID			  | INT8			  | Sequential number as primary key.			|
 | UUID 		  | CHARACTER(36) | Unique element group ID in UUIDv4 format.	|
 | TYPE		  | VARCHAR(16)	  | Element group type (e.g. pod) 				|
 | NAME		  | VARCHAR(64)	  | Unique element group name.					|
@@ -617,7 +687,7 @@ The `elementgroup_rack` describes the racks that contain the elements of an elem
 #### Columns
 | Column 		  | Type 		  | Description 							   |
 |:----------------|:--------------|:---------------------------------------|
-| ID 			  | INT8 		  | Contiguous number as primary key.	   | 
+| ID 			  | INT8 		  | Sequential number as primary key.	   | 
 | NAME			  | VARCHAR(64)	  | Unique rack name.					   |
 | ELEMENTGROUP_ID | INT8			  |	Reference to the element-group record. |
 | LOCATION		  | VARCHAR(255)	  | Optional rack location details.		   |
@@ -679,7 +749,7 @@ The `elementrole` table stores all defined element roles.
 #### Columns
 | Column 	  | Type 		  | Description			 							|
 |:------------|:--------------|:------------------------------------------------|
-| ID			  | INT8			  | Contiguous number as primary key.				|
+| ID			  | INT8			  | Sequential number as primary key.				|
 | UUID 		  | CHARACTER(36) | Unique element role ID in UUIDv4 format.			|
 | NAME		  | VARCHAR(64)	  | Unique element role name.						|
 | DISPLAYNAME | VARCHAR(64)	  | Optional element role display name.				|
@@ -710,7 +780,7 @@ The `image` table stores the existing software images including all available ve
 #### Columns
 | Column 		 | Type 			 | Description 								  |
 |:-------------- |:--------------|:-------------------------------------------|
-| ID		 		 | INT8			 | Contiguous number as primary key.			  |
+| ID		 		 | INT8			 | Sequential number as primary key.			  |
 | UUID			 | CHARACTER(36) | Unique image ID in UUIDv4 format.			  |
 | ORG			 | VARCHAR(255)  | Organization that issued the image.	      |
 | CATEGORY		 | VARCHAR(255)	 | Optional image category.					  |
@@ -826,7 +896,7 @@ The `package` table stores the general settings of a packages shipped with an im
 #### Columns
 | Column 	  | Type          | Description                               |
 |:------------|:--------------|:------------------------------------------|
-| ID    		  | INT8          | Contiguous number as primary key.         |
+| ID    		  | INT8          | Sequential number as primary key.         |
 | UUID 		  | CHARACTER(36) | Unique package ID in UUIDv4 format.       |
 | ORG		  | VARCHAR(64)   | The organization that issued the package. |
 | NAME 		  |	VARCHAR(64)   | Unique package name.                      |
@@ -849,7 +919,7 @@ The `package_version` table stores the known versions of each package.
 #### Columns
 | Column     | Type          | Description                          |
 |:-----------|:--------------|:-------------------------------------|
-| ID			 | INT8			 | Contiguous number as primary key.		|
+| ID			 | INT8			 | Sequential number as primary key.		|
 | PACKAGE_ID | INT8          | Reference to the package record.     |
 | MAJOR	     | INT4          | Major version number.	                |
 | MINOR      | INT4          | Minor version number.                |
@@ -876,7 +946,7 @@ The `platform` table stores the existing network element platforms.
 #### Columns
 | Column      | Type          | Description 											|
 |:------------|:--------------|:----------------------------------------------------|
-| ID          | INT8          | Contiguous number as primary key. 					|	
+| ID          | INT8          | Sequential number as primary key. 					|	
 | UUID        | CHARACTER(36) | Unique platform ID.									|
 | NAME		  | CHARACTER(128)| Unique platform name.                               |
 | VENDOR      | VARCHAR(256)  | Vendor name.											|
@@ -904,7 +974,7 @@ The `service` table stores services that are provisioned by network elements.
 #### Columns
 | Column      | Type			  | Description                       |
 |:------------|:--------------|:----------------------------------|
-| ID		 	  | INT8          | Contiguous number as primary key. |
+| ID		 	  | INT8          | Sequential number as primary key. |
 | UUID		  | CHARACTER(36) | Unique service ID.                |
 | NAME		  | VARCHAR(64)   | Service name.                     |
 | TYPE		  | VARCHAR(32)   | Service type.                     |
