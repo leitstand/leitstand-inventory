@@ -127,6 +127,7 @@ public class Element_DnsRecordSet {
 	private List<DnsRecord> records;
 	
 	@Convert(converter=DnsNameConverter.class)
+	@Column(unique=true)
 	private DnsName name;
 
 	private String description;
