@@ -32,9 +32,12 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.PackageVersionInfo;
+import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.Version;
 
 public final class ImageInfoMother {
+	
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	
 	private static final String DUMMY_MD5 = "DUMMY";
 	
@@ -92,8 +95,8 @@ public final class ImageInfoMother {
 			   .withImageId(id)
 			   .withChecksums(md5(DUMMY_MD5))
 			   .withPackages(asList(packages))
-			   .withPlatformId(randomPlatformId())
-			   .withPlatformName(platformName("unittest"))
+			   .withPlatformId(PLATFORM_ID)
+			   .withPlatformName(platformName("imageplatform"))
 			   .withExtension("tar.gz")
 			   .build();
 		
@@ -108,8 +111,8 @@ public final class ImageInfoMother {
 								  .withImageId(id)
 								  .withChecksums(md5(DUMMY_MD5))
 								  .withPackages(asList(packages))
-								  .withPlatformId(randomPlatformId())
-								  .withPlatformName(platformName("unittest"))
+								  .withPlatformId(PLATFORM_ID)
+								  .withPlatformName(platformName("impageplatform"))
 								  .withExtension("tar.gz")
 								  .build();
 		

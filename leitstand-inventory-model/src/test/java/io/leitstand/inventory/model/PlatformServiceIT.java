@@ -67,13 +67,15 @@ import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
-import io.leitstand.inventory.service.Plane;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
 
 public class PlatformServiceIT extends InventoryIT{
+	
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
+	private static final PlatformName PLATFORM_NAME = platformName("platform");
 	
 	private static final ElementGroupId	  GROUP_ID	 = randomGroupId();
 	private static final ElementGroupName GROUP_NAME = groupName(PlatformServiceIT.class.getSimpleName());
@@ -126,39 +128,42 @@ public class PlatformServiceIT extends InventoryIT{
 	@After
 	public void remove_created_platforms() {
 		
+		DatabaseService db = getDatabase();
 		transaction(()->{
-			DatabaseService db = getDatabase();
-			
 			db.executeUpdate(prepare("DELETE FROM inventory.element e WHERE e.platform_id IN (SELECT p.id FROM inventory.platform p WHERE p.vendor = ?)", VENDOR));
-			db.executeUpdate(prepare("DELETE FROM inventory.platform p WHERE p.vendor = ?", VENDOR));
-			
 		});
+
+		transaction(()->{
+			db.executeUpdate(prepare("DELETE FROM inventory.platform p WHERE p.vendor = ?", VENDOR));
+
+		});
+
 	}
 	
 	@Test
 	public void throws_EntityNotFoundException_when_platform_id_is_unknown() {
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0900E_PLATFORM_NOT_FOUND));
-		
-		service.getPlatform(randomPlatformId());
+		transaction(()->{
+			service.getPlatform(randomPlatformId());
+		});
 	}
 	
 	@Test
 	public void throws_EntityNotFoundException_when_platform_name_is_unknown() {
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0900E_PLATFORM_NOT_FOUND));
-		
-		service.getPlatform(platformName("unknown"));
+		transaction(()->{
+			service.getPlatform(randomPlatformId());
+		});
 	}
 	
 	@Test
 	public void add_platform() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
 				
 		PlatformSettings newPlatform = newPlatformSettings()
-									   .withPlatformId(platformId)
-									   .withPlatformName(platformName)
+									   .withPlatformId(PLATFORM_ID)
+									   .withPlatformName(PLATFORM_NAME)
 									   .withVendorName(VENDOR)
 									   .withModelName("model")
 									   .build();
@@ -169,7 +174,7 @@ public class PlatformServiceIT extends InventoryIT{
 		});
 		
 		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(newPlatform.getPlatformId());
+			PlatformSettings reloaded = service.getPlatform(PLATFORM_ID);
 			assertNotSame(newPlatform,reloaded);
 			assertEquals(newPlatform,reloaded);
 		});
@@ -178,12 +183,10 @@ public class PlatformServiceIT extends InventoryIT{
 	
 	@Test
 	public void get_platform_by_id() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
 		
 		PlatformSettings platform = newPlatformSettings()
-						     		.withPlatformId(platformId)
-									.withPlatformName(platformName)
+						     		.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
 									.withVendorName(VENDOR)
 									.withModelName("model")
 									.build();
@@ -195,7 +198,7 @@ public class PlatformServiceIT extends InventoryIT{
 		});
 
 		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(platformId);
+			PlatformSettings reloaded = service.getPlatform(PLATFORM_ID);
 			assertNotSame(platform,reloaded);
 			assertEquals(platform,reloaded);
 		});	
@@ -203,12 +206,10 @@ public class PlatformServiceIT extends InventoryIT{
 	
 	@Test
 	public void get_platform_by_name() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
 		
 		PlatformSettings platform = newPlatformSettings()
-						     		.withPlatformId(platformId)
-									.withPlatformName(platformName)
+						     		.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
 									.withVendorName(VENDOR)
 									.withModelName("model")
 									.build();
@@ -220,7 +221,7 @@ public class PlatformServiceIT extends InventoryIT{
 		});
 
 		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(platformName);
+			PlatformSettings reloaded = service.getPlatform(PLATFORM_NAME);
 			assertNotSame(platform,reloaded);
 			assertEquals(platform,reloaded);
 		});
@@ -230,12 +231,10 @@ public class PlatformServiceIT extends InventoryIT{
 	
 	@Test
 	public void remove_platform_by_id() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
 		
 		PlatformSettings platform = newPlatformSettings()
-									.withPlatformId(platformId)
-									.withPlatformName(platformName)
+									.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
 									.withVendorName(VENDOR)
 									.withModelName("model")
 									.build();
@@ -257,12 +256,9 @@ public class PlatformServiceIT extends InventoryIT{
 
 	@Test
 	public void remove_platform_by_name() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
-		
 		PlatformSettings platform = newPlatformSettings()
-									.withPlatformId(platformId)
-									.withPlatformName(platformName)
+									.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
 									.withVendorName(VENDOR)
 									.withModelName("model")
 									.build();
@@ -295,12 +291,10 @@ public class PlatformServiceIT extends InventoryIT{
 	
 	@Test
 	public void update_platform() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
 		
 		PlatformSettings platform = newPlatformSettings()
-									.withPlatformId(platformId)
-									.withPlatformName(platformName)
+									.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
 				   				  	.withVendorName(VENDOR)
 				   				  	.build();
 
@@ -310,7 +304,7 @@ public class PlatformServiceIT extends InventoryIT{
 		});
 	
 		PlatformSettings update = newPlatformSettings()
-								  .withPlatformId(platform.getPlatformId())
+								  .withPlatformId(PLATFORM_ID)
 								  .withPlatformName(platformName("new_platform_name"))
 								  .withVendorName(VENDOR)
 				  				  .withModelName("updated_model_name")
@@ -322,14 +316,14 @@ public class PlatformServiceIT extends InventoryIT{
 		
 		
 		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(platform.getPlatformId());
+			PlatformSettings reloaded = service.getPlatform(PLATFORM_ID);
 			assertEquals(platform,reloaded);
 			boolean created = service.storePlatform(update);
 			assertFalse(created);
 		});
 		
 		transaction(() -> {
-			PlatformSettings reloaded = service.getPlatform(platform.getPlatformId());
+			PlatformSettings reloaded = service.getPlatform(PLATFORM_ID);
 			assertEquals(reloaded,update);
 		});
 
@@ -429,31 +423,33 @@ public class PlatformServiceIT extends InventoryIT{
 	
 	@Test
 	public void cannot_remove_platform_in_use() {
-		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("platform");
-		
 		PlatformSettings platform = newPlatformSettings()
-									.withPlatformId(platformId)
-									.withPlatformName(platformName)
+									.withPlatformId(PLATFORM_ID)
+									.withPlatformName(PLATFORM_NAME)
+									.withVendorName(VENDOR)
 									.build();
 		
 		ElementSettings element = element(element("element_with_platform"))
 								  .withGroupId(GROUP_ID)
 								  .withElementRole(ELEMENT_ROLE)
-								  .withPlatformId(platformId)
-								  .withPlatformName(platformName)
+								  .withPlatformId(PLATFORM_ID)
+								  .withPlatformName(PLATFORM_NAME)
 								  .build();
 		
 		transaction(() -> {
 			service.storePlatform(platform);
-			elements.storeElementSettings(element);
 		});
-		
-		exception.expect(ConflictException.class);
-		exception.expect(reason(IVT0903E_PLATFORM_NOT_REMOVABLE));
+
 		
 		transaction(() -> {
-			service.removePlatform(platformId);
+			elements.storeElementSettings(element);
+		});
+
+		exception.expect(ConflictException.class);
+		exception.expect(reason(IVT0903E_PLATFORM_NOT_REMOVABLE));
+
+		transaction(() -> {
+			service.removePlatform(PLATFORM_ID);
 		});
 		
 	}

@@ -19,6 +19,7 @@ import static io.leitstand.commons.model.StringUtil.isEmptyString;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -93,6 +94,7 @@ public class Platform extends VersionableEntity{
 	}
 	
 	@Convert(converter = PlatformNameConverter.class)
+	@Column(unique=true)
 	private PlatformName name;
 	private String vendor;
 	private String model;

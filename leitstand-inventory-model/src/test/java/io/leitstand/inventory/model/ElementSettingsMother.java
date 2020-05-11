@@ -33,11 +33,13 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.OperationalState;
+import io.leitstand.inventory.service.PlatformId;
 
 public class ElementSettingsMother {
 	
 	private static final ElementGroupName ELEMENT_SETTINGS_MOTHER_POD_NAME = new ElementGroupName(ElementSettings.class.getName());
 	private static final ElementGroupId POD_ID = randomGroupId();
+	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	
 	public static ElementSettings elementWithoutElementId() {
 		return newElementSettings()
@@ -73,8 +75,8 @@ public class ElementSettingsMother {
 			   .withPlane(DATA)
 			   .withOperationalState(OperationalState.OPERATIONAL)
 			   .withAdministrativeState(AdministrativeState.ACTIVE)
-			   .withPlatformId(randomPlatformId())
-			   .withPlatformName(platformName("unittest"))
+			   .withPlatformId(PLATFORM_ID)
+			   .withPlatformName(platformName("elementplatform"))
 			   .build();
 	}
 	
@@ -93,8 +95,8 @@ public class ElementSettingsMother {
 			   .withPlane(DATA)
 			   .withOperationalState(OperationalState.OPERATIONAL)
 			   .withAdministrativeState(AdministrativeState.ACTIVE)
-			   .withPlatformId(randomPlatformId())
-			   .withPlatformName(platformName("unittest"))
+			   .withPlatformId(PLATFORM_ID)
+			   .withPlatformName(platformName("elementplatform"))
 			   .build();
 	}
 	
