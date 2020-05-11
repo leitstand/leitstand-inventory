@@ -24,7 +24,6 @@ import static io.leitstand.inventory.model.Element_Config.removeAllConfiguration
 import static io.leitstand.inventory.model.Element_ContainerInterface.removeIfcs;
 import static io.leitstand.inventory.model.Element_DnsRecordSet.removeDnsRecordSets;
 import static io.leitstand.inventory.model.Element_Environment.removeEnvironments;
-import static io.leitstand.inventory.model.Element_Metric.removeMetrics;
 import static io.leitstand.inventory.model.Element_Module.removeModules;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.removeIfps;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.removeNeighbors;
@@ -181,13 +180,6 @@ public class ElementManager {
 		int removedServices = repository.execute(removeServices(element));
 		LOG.fine(()->format("Removed %d services of %s %s (%s)",
 						    removedServices,
-						    element.getElementRoleName(),
-						    element.getElementName(),
-						    element.getElementId()));
-		
-		int removedMetrics = repository.execute(removeMetrics(element));
-		LOG.fine(()->format("Removed %d metrics of %s %s (%s)",
-						    removedMetrics,
 						    element.getElementRoleName(),
 						    element.getElementName(),
 						    element.getElementId()));

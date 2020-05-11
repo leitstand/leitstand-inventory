@@ -26,7 +26,6 @@ public final class Scopes {
 	public static final String IVT_ELEMENT_MODULE = "ivt.element.module";
 	public static final String IVT_GROUP = "ivt.group";
 	public static final String IVT_GROUP_SETTINGS = "ivt.group.settings";
-	public static final String IVT_METRIC = "ivt.metric";
 	public static final String IVT_IMAGE = "ivt.image";
 	
 	

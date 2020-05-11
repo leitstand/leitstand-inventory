@@ -127,12 +127,6 @@ public enum ReasonCode implements Reason{
 	/** The image is not available on the specified element.*/
 	IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
 	
-	/** The element metric is registered.*/
-	IVT0350I_ELEMENT_METRIC_STORED,
-
-	/** The element metric is removed.*/
-	IVT0350I_ELEMENT_METRIC_REMOVED,
-	
 	/** The rack mount point of the element has been stored.*/
 	IVT0380I_ELEMENT_RACK_LOCATION_STORED,
 	
@@ -199,21 +193,6 @@ public enum ReasonCode implements Reason{
 	/** The package revision does already exist.*/
 	IVT0511E_PACKAGE_VERSION_EXISTS, 
 	
-	/** The requested metric does not exist!.*/
-	IVT0600E_METRIC_NOT_FOUND, 
-	
-	/** Metric definition added to the inventory.*/
-	IVT0601I_METRIC_STORED,
-	
-	/** The specified image is not revoked.*/
-	IVT0700E_IMAGE_NOT_REVOKED, 
-	
-	/** The metric configuration has been removed.*/
-	IVT0602I_METRIC_REMOVED, 
-	
-	/** Cannot remove metric that is bound to elements.*/
-	IVT0603E_CANNOT_REMOVE_BOUND_METRIC,
-
 	/** The requested rack does not exist.*/
 	IVT0800E_RACK_NOT_FOUND,
 	
@@ -249,42 +228,6 @@ public enum ReasonCode implements Reason{
 	
 	/** An attempt to import data into the inventory failed.*/
 	IVT1000E_IMPORT_ERROR,
-	
-	/** The requested alert rule does not exist.*/
-	IVT2000E_ALERT_RULE_NOT_FOUND,
-	
-	/** The alert rule has been stored. */
-	IVT2001I_ALERT_RULE_STORED,
-	
-	/** The alert rule has been removed.*/
-	IVT2002I_ALERT_REMOVED,
-	
-	/** The alert rule does revision not exist.*/
-	IVT2003I_ALERT_RULE_REVISION_NOT_FOUND,
-	
-	/** The alert profile rule has been stored.*/
-	IVT2004I_ALERT_RULE_REVISION_STORED,
-	
-	/** The alert profile rule has been stored.*/
-	IVT2005I_ALERT_RULE_REVISION_REMOVED,
-	
-	/** The alert rule definition is required and must not be omitted.*/
-	IVT2006E_ALERT_RULE_DEFINITION_REQUIRED,
-	
-	/** The alert rule is immutable and must not be modified.*/
-	IVT2007E_ALERT_RULE_IMMUTABLE,
-
-	/** The alert rule state cannot be set to the specified value.*/
-	IVT2008E_ALERT_RULE_INVALID_STATE,
-	
-	/** The requested metric visualization does not exist.*/
-	IVT2100E_METRIC_VISUALIZATION_NOT_FOUND,
-	
-	/** The metric visualization has been stored. */
-	IVT2101I_METRIC_VISUALIZATION_STORED,
-	
-	/** The alert rule has been removed.*/
-	IVT2101I_METRIC_VISUALIZATION_REMOVED,
 	
 	/** The requested environment does not exist.*/
 	IVT0390E_ELEMENT_ENVIRONMENT_NOT_FOUND,
