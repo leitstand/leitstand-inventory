@@ -45,8 +45,8 @@
 	<ui-title>No role information available</ui-title>
 	<ui-note>No role information exist. Do You want to <a href="new-role.html">add a first role</a>?</ui-note>
 </ui-blankslate>
-<ui-actions>
-	<ui-button href="new-role.html" primary title="Add new element role" {{Role.Operator}}>Add role</ui-button>
-</ui-actions>	
 <!-- {{/roles}} -->
+<ui-actions>
+	<ui-button href="new-role.html" primary title="Add new element role" scopesAllowed="ivt ivt.element ivt.element.settings">Add role</ui-button>
+</ui-actions>	
 </ui-form>
