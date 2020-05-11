@@ -170,7 +170,7 @@ public class DefaultPlatformService implements PlatformService{
 				return;
 			}
 			
-			LOG.fine(()->format("%s: Platform %s %s cannot be removed (%s) because of %d existing elements.", 
+			LOG.fine(()->format("%s: Platform %s cannot be removed (%s) because of %d existing elements.", 
 							    IVT0903E_PLATFORM_NOT_REMOVABLE.getReasonCode(),
 							    platform.getPlatformName(),
 							    platform.getPlatformId(),
