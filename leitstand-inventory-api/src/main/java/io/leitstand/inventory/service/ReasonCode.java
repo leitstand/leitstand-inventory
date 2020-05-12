@@ -214,6 +214,9 @@ public enum ReasonCode implements Reason{
 	/** Platform cannot be removed because of existing elements on that platform*/
 	IVT0903E_PLATFORM_NOT_REMOVABLE,
 	
+	/** The specified platform name conflicts with the name of another platform.*/
+	IVT0904E_PLAFORM_NAME_ALREADY_IN_USE,
+	
 	/** The requested DNS zone does not exist.*/
 	IVT0950E_DNS_ZONE_NOT_FOUND,
 	
