@@ -76,7 +76,7 @@ import io.leitstand.inventory.service.Plane;
 @NamedQuery(name="Element.findByElementGroupAndElementRole",
 			query="SELECT e FROM Element e WHERE e.group=:group AND e.role=:role")
 @NamedQuery(name="Element.findByElementNamePattern", 
-			query="SELECT e FROM Element e WHERE CONCAT('',e.elementName) REGEXP :name  OR  CONCAT('',e.elementAlias) REGEXP :name  ORDER by e.group.name ASC, e.elementName ASC")
+			query="SELECT e FROM Element e WHERE CAST(e.elementName AS TEXT) REGEXP :name  OR  CAST(e.elementAlias AS TEXT) REGEXP :name  ORDER by e.group.name ASC, e.elementName ASC")
 @NamedQuery(name="Element.findByElementGroupAndPlane",
 			query="SELECT e FROM Element e WHERE e.group=:group AND e.role.plane=:plane")
 

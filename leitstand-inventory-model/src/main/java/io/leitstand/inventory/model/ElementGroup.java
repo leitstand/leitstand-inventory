@@ -57,7 +57,7 @@ import io.leitstand.inventory.service.Plane;
 @NamedQuery(name="ElementGroup.findByGroupName",
 			query="SELECT g FROM ElementGroup g WHERE g.name=:name AND g.type=:type ORDER BY g.name"),
 @NamedQuery(name="ElementGroup.findByGroupNamePattern", 
-			query="SELECT g FROM ElementGroup g WHERE CONCAT('',g.name) REGEXP :name AND g.type=:type ORDER BY g.name"),
+			query="SELECT g FROM ElementGroup g WHERE CAST(g.name AS TEXT) REGEXP :name AND g.type=:type ORDER BY g.name"),
 @NamedQuery(name="ElementGroup.findAll", 
 			query="SELECT g FROM ElementGroup g WHERE g.type=:type ORDER BY g.name"),
 @NamedQuery(name="ElementGroup.findPlaneElements", 
