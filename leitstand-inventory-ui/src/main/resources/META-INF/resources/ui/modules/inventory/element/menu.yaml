@@ -45,7 +45,3 @@ extensions:
       label: Services
       title: View all servces installed on the element
       view: element-services.html
-    - item: element-tools
-      label: Tools
-      title: See all available tools for this element
-      view: element-tools.html
