@@ -18,6 +18,7 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
@@ -40,7 +41,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
@@ -116,7 +116,11 @@ public class ElementSettingsResource{
 			}
 			return success(messages);
 		} catch (PersistenceException e) {
-			throw resolveRootCause(e,settings.getElementName());
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
+			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
+																  key("element_name", settings.getElementName())));
+			throw e;
 		}
 	}
 	
@@ -138,7 +142,11 @@ public class ElementSettingsResource{
 			}
 			return success(messages);
 		} catch (PersistenceException e) {
-			throw resolveRootCause(e,element);
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
+			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
+																  key("element_name", settings.getElementName())));
+			throw e;
 		}
 	}
 	
@@ -152,18 +160,6 @@ public class ElementSettingsResource{
 	public Response storeElementSettings(@Valid ElementSettings settings){
 		return storeElementSettings(settings.getElementId(),
 							 		settings);
-	}
-
-	private PersistenceException resolveRootCause(PersistenceException p, ElementName elementName) {
-		try {
-			// A unique key constraint violation occurred if an element with the given name exists.
-			service.getElementSettings(elementName);
-			throw new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
-															key("element_name", elementName) );
-		} catch(EntityNotFoundException e) {
-			// Element does not exist. Continue with original exception
-			throw p;
-		}
 	}
 
 }
