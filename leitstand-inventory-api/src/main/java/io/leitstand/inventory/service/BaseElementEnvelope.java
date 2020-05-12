@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
+	@SuppressWarnings("unchecked")
 	public static class BaseElementEnvelopeBuilder<T extends BaseElementEnvelope, B extends BaseElementEnvelope.BaseElementEnvelopeBuilder<T,B>> extends BaseElementGroupEnvelopeBuilder<T, B>{
 		
 		protected BaseElementEnvelopeBuilder(T object) {

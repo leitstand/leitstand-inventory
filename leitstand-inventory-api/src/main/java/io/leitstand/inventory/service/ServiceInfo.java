@@ -38,6 +38,7 @@ public class ServiceInfo extends ValueObject {
 	/**
 	 * The builder to create an immutable <code>ElementServiceData</code> instance.
 	 */
+	@SuppressWarnings("unchecked")
 	public static class BaseServiceBuilder<T extends ServiceInfo, B extends BaseServiceBuilder<T,B>> {
 		
 		protected T service;

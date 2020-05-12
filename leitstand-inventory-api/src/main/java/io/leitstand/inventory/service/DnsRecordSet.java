@@ -36,6 +36,7 @@ public class DnsRecordSet extends ValueObject {
 		return new Builder();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static class BaseDnsRecordSetBuilder<T extends DnsRecordSet,B extends BaseDnsRecordSetBuilder<T,B>> {
 		
 		protected T set;

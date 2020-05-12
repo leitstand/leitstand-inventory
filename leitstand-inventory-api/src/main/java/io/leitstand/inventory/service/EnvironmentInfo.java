@@ -26,6 +26,7 @@ public class EnvironmentInfo extends ValueObject{
 		return new Builder();
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected static class BaseEnvironmentBuilder<T extends EnvironmentInfo, B extends BaseEnvironmentBuilder<T,B>>{
 		
 		protected T env;
