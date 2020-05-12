@@ -32,11 +32,11 @@
 			<ui-label>Element Alias</ui-label>
 			<ui-note>An optional unique element alias</ui-note>
 		</ui-input>
-		<ui-select name="element_role" bind="element.element_role" options="roles">
+		<element-role name="element_role" bind="element.element_role">
 			<ui-label>Element Role</ui-label>
 			<ui-note>Select the role of the element</ui-note>
-		</ui-select>
-		<element-platform name="platform" bind="element.platform" options="platforms">
+		</element-role>
+		<element-platform name="platform" bind="element.platform">
 			<ui-label>Hardware Platform</ui-label>
 			<ui-note>Select the hardware platform of the element</ui-note>
 		</element-platform>

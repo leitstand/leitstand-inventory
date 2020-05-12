@@ -17,6 +17,8 @@ import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Metadata,Platforms,Element,Rack} from '/ui/modules/inventory/inventory.js';
 import {Control} from '/ui/js/ui-components.js';
+import '../inventory-components.js';
+
 
 class PodLocation extends Control {
 	
@@ -81,16 +83,6 @@ const addElementController = function(){
 	const pod = new Pod({"scope":"settings"});
 	return new Controller({
 		resource:pod,
-		viewModel:async function(pod){
-			const roles = new Metadata({"scope":"roles"});
-			const platforms = new Platforms();
-			pod.roles = await roles.load();
-			pod.roles = pod.roles.map(role => ({"value":role.role_name,"label":role.display_name}));
-			pod.platforms = await platforms.load();
-			pod.platforms = pod.platforms.map(platform => ({"value":`[${platform.vendor_name}][${platform.model_name}]`,
-															"label":`${platform.vendor_name} ${platform.model_name}`}));
-			return pod;
-		},
 		buttons:{
 			"add-element":function(){
 				const element = new Element({"scope":"settings"});
@@ -103,17 +95,10 @@ const addElementController = function(){
 				submission.group_name = this.getViewModel("group_name");
 				submission.operational_state = "DOWN";
 				submission.administrative_state="NEW";
-
-				const platform = this.input("platform").value();
-				const segments = /\[(.*)\]\[(.*)\]/.exec(platform);
-				const vendorName = segments[1];
-				const modelName  = segments[2];
-				submission.platform = {
-						"model_name":modelName,
-						"vendor_name":vendorName
-				};
-				
-				//FIXME Select multivalue field
+				const settings = this.getViewModel();
+				const platform = this.input("element-platform").unwrap();
+				settings.platform_id = platform.selected.value;
+				settings.platform_name = platform.selected.label;
 				element.createElement(this.location.params,
 									  submission);
 			}

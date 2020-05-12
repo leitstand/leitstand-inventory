@@ -18,36 +18,7 @@ import {Controller,Menu} from '/ui/js/ui.js';
 import {Select} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
-
-class PlatformSelector extends Select {
-	
-	options(){
-		const platforms = new Platforms();
-		return platforms.load()
-				 		.then(platforms => {
-				 					return platforms.map(platform => { 
-				 							return {"value":platform.platform_id,"label":platform.platform_name}
-				 					});
-				 				});
-	}
-	
-}
-customElements.define("element-platform",PlatformSelector);
-
-class ElementRoleSelector extends Select {
-
-	options(){
-		const roles = new Metadata({'scope':'roles'});
-		return roles.load()
-				 	.then(roles => {
-				 			return roles.map(role => { 
-				 							return {"value":role.role_name,"label":role.display_name}
-				 					});
-				 			});
-	}
-
-}
-customElements.define("element-role",ElementRoleSelector);
+import '../inventory-components.js';
 
 //TODO: Implement Rack Component!
 const elementRackController = function(){
