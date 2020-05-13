@@ -133,6 +133,24 @@ public class ElementLinkData extends ValueObject{
 			return this;
 		}
 
+		public Builder withRemoteElementGroupId(ElementGroupId groupId) {
+			assertNotInvalidated(getClass(), link);
+			link.neighborElementGroupId = groupId;
+			return this;
+		}
+		
+		public Builder withRemoteElementGroupType(ElementGroupType groupType) {
+			assertNotInvalidated(getClass(), link);
+			link.neighborElementGroupType = groupType;
+			return this;
+		}
+		
+		public Builder withRemoteElementGroupName(ElementGroupName groupName) {
+			assertNotInvalidated(getClass(), link);
+			link.neighborElementGroupName = groupName;
+			return this;
+		}
+		
 		/**
 		 * Sets the local operational state.
 		 * @param opState - the local operational state
@@ -190,7 +208,6 @@ public class ElementLinkData extends ValueObject{
 				this.link = null;
 			}
 		}
-
 		
 	}
 	
@@ -224,6 +241,20 @@ public class ElementLinkData extends ValueObject{
 	@Valid
 	@JsonbProperty("neighbor_element_id")
 	private ElementId neighborElementId;
+	
+	@Valid
+	@JsonbProperty("neighbor_group_id")
+	private ElementGroupId neighborElementGroupId;
+	
+	@Valid
+	@JsonbProperty("neighbor_group_name")
+	private ElementGroupName neighborElementGroupName;
+
+	
+	@Valid
+	@JsonbProperty("neighbor_group_type")
+	private ElementGroupType neighborElementGroupType;
+
 
 	@JsonbProperty("neighbor_operational_state")
 	@NotNull(message="{local_operational_state.required}")
@@ -287,6 +318,15 @@ public class ElementLinkData extends ValueObject{
 		return neighborElementId;
 	}
 	
+	public ElementGroupName getNeighborElementGroupName() {
+		return neighborElementGroupName;
+	}
+	
+	public ElementGroupType getNeighborElementGroupType() {
+		return neighborElementGroupType;
+	}
+	
+	
 	/**
 	 * Returns the neighbor element name.
 	 * @return the neighbor element name.
@@ -331,6 +371,9 @@ public class ElementLinkData extends ValueObject{
 		return localBandwidth;
 	}
 	
+	public ElementGroupId getNeighborElementGroupId() {
+		return neighborElementGroupId;
+	}
 	
 	public Bandwidth getNeighborBandwidth() {
 		return neighborBandwidth;

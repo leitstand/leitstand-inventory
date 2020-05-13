@@ -18,6 +18,9 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.jpa.AdministrativeStateConverter.toAdministrativeState;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
+import static io.leitstand.inventory.service.ElementGroupId.groupId;
+import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.elementId;
 import static io.leitstand.inventory.service.ElementLinkData.newElementLinkData;
 import static io.leitstand.inventory.service.ElementLinks.newElementLinks;
@@ -49,7 +52,7 @@ public class ElementLinksManager {
 	
 	public ElementLinks getElementLinks(Element element) {
 		ElementGroup group = element.getGroup();
-		ResultSetMapping<ElementLinkData> mapping = 	rs -> newElementLinkData()
+		ResultSetMapping<ElementLinkData> mapping = rs -> newElementLinkData()
 														  .withLocalIfpName(interfaceName(rs.getString(1)))
 														  .withLocalMac(macAddress(rs.getString(2)))
 														  .withLocalOperationalState(toOperationalState(rs.getString(3)))
@@ -62,14 +65,18 @@ public class ElementLinksManager {
 														  .withRemoteBandwidth(new Bandwidth(rs.getFloat(11),Unit.valueOf(rs.getString(12))))
 														  .withRemoteElementId(elementId(rs.getString(13)))
 														  .withRemoteElementName(elementName(rs.getString(14)))
+														  .withRemoteElementGroupId(groupId(rs.getString(15)))
+														  .withRemoteElementGroupType(groupType(rs.getString(16)))
+														  .withRemoteElementGroupName(groupName(rs.getString(17)))
 														  .build();
 
 		List<ElementLinkData> links = datasource.executeQuery(prepare("SELECT local_ifp.name, local_ifp.mac_address, local_ifp.op_state, local_ifp.adm_state, local_ifp.bw_value, local_ifp.bw_unit, "+
 																		   "neighbor_ifp.name, neighbor_ifp.mac_address, neighbor_ifp.op_state, neighbor_ifp.adm_state, neighbor_ifp.bw_value, neighbor_ifp.bw_unit, "+
-																		   "neighbor_element.uuid, neighbor_element.name " +
+																		   "neighbor_element.uuid, neighbor_element.name, neighbor_group.uuid, neighbor_group.type, neighbor_group.name " +
 																  	  "FROM inventory.element_ifp local_ifp "+ 
 																  	  "JOIN inventory.element_ifp neighbor_ifp ON local_ifp.neighbor_element_id = neighbor_ifp.element_id AND local_ifp.neighbor_element_ifp_name = neighbor_ifp.name "+
 																  	  "JOIN inventory.element neighbor_element ON neighbor_ifp.element_id = neighbor_element.id "+
+																  	  "JOIN inventory.elementgroup neighbor_group ON neighbor_element.elementgroup_id = neighbor_group.id "+
 																  	  "WHERE local_ifp.element_id = ?",
 																  	  element.getId()), 
 								 							  mapping);
