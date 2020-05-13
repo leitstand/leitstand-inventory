@@ -7,8 +7,10 @@ extensions:
     after: pod
   menus:
   - menu: element
-    label: "{{element_name}}"
-    title: Manage an element in the network
+    label: Element
+    title: Element settings
+    entity: "{{element_role}} {{element_name}}"
+    expand: auto
     scopesAllowed:
       - ivt
       - ivt.read

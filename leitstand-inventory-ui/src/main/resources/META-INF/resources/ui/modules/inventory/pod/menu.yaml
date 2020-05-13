@@ -8,7 +8,8 @@ extensions:
    after: main
   menus:
   - menu: pod
-    label: "{{group_name}}"
+    label: Pod 
+    entity: "{{group_name}}"
     title: Explore the settings and elements of a certain PoD
     scopesAllowed:
     - ivt

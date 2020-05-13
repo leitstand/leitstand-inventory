@@ -1,6 +1,8 @@
 module: inventory
 menus:
 - menu: main
+  label: Inventory
+  title: Inventory main menu
   items:
   - item: pods
     label: Pods

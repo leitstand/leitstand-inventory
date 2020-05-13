@@ -3,6 +3,8 @@ applications:
 - application: rollout
 menus:
 - menu: main
+  label: Images
+  title: Software image management.
   scopesAllowed:
   - ivt
   - ivt.read
