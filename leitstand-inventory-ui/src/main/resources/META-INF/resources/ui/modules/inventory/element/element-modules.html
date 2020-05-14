@@ -17,6 +17,9 @@
 	<ui-title>Element Hardware Modules</ui-title>
 	<ui-subtitle>Hardware modules of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<!-- {{#modules.length}} -->
+<ui-group>
+<ui-label>Modules</ui-label>
 <table class="list">
 <thead>
 	<tr>
@@ -35,6 +38,8 @@
 	</tr>
 <!--   {{/modules}} -->
 </table>
+</ui-group>
+<!-- {{/modules.length}} -->
 <!-- {{^modules}} -->
 <ui-blankslate>
 <ui-title>No modules found.</ui-title>
