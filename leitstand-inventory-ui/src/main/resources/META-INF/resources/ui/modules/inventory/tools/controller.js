@@ -27,7 +27,6 @@ class ToolList extends UIElement{
 	renderDom(){
 		const element = this.controller.getViewModel();
 		const tools = this.view.module.computeMenuViewModel(element,m => m.menu=='element-tools')[0];
-		alert(JSON.stringify(tools))
 		if (tools.items.length > 0){
 			this.innerHTML=`
 			<ui-group>

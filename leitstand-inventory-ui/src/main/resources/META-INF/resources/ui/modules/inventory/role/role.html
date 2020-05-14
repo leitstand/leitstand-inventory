@@ -32,9 +32,12 @@
 			<ui-label>Display Name</ui-label>
 			<ui-note>The display name of the element role</ui-note>
 		</ui-input>
-		<ui-select name="plane" options="planes">
+		<ui-select name="plane">
 			<ui-label>Plane</ui-label>
-			<ui-note>Select the plane that contains elements of this role.</ui-note>
+			<ui-note>The plane this element role is installed at</ui-note>
+			<ui-option value="DATA">Data Plane</ui-option>
+			<ui-option value="MANAGEMENT">Management Plane</ui-option>
+			<ui-option value="CONTROL">Control Plane</ui-option>
 		</ui-select>
 		<ui-checkbox name="manageable" value="true">
 			<ui-label>Managed element</ui-label>
@@ -47,7 +50,7 @@
 		</ui-textarea>
 	</ui-group>
 	<ui-actions>
-		<ui-button primary name="save">Save settings</ui-button>
+		<ui-button primary name="save">Save role</ui-button>
 		<ui-button href="confirm-remove.html?role={{role_id}}" danger>Remove role</ui-button>
 	</ui-actions>
 </ui-form>

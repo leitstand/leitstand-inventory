@@ -84,10 +84,18 @@ public class ElementGroupSettingsResource {
 	
 	@POST
 	public Response storeElementGroup(ElementGroupSettings settings) {
-		service.storeElementGroupSettings(settings);
-		return created("/%s/%/settings",
-					   settings.getGroupType(),
-					   settings.getGroupId());
+		try {
+			service.storeElementGroupSettings(settings);
+			return created("/%s/%s/settings",
+						   settings.getGroupType(),
+						   settings.getGroupId());
+		} catch (Exception e) {
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getGroupSettings(settings.getGroupType(), settings.getGroupName()))	
+			.thenThrow(new UniqueKeyConstraintViolationException(IVT0103E_GROUP_NAME_ALREADY_IN_USE,
+						 										 key("group_name", settings.getGroupName())));
+			throw e;
+		}
 	}
 
 	@PUT

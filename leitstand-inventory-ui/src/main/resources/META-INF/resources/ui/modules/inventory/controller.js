@@ -25,6 +25,12 @@ const podsController = function() {
 			return {"pods"	: items,
 				    "filter" : filter};
 		},
+		postRender:function(){
+			const pods = new Pods({'scope':'_statistics'});
+			pods.load()
+				.then(stats => {
+				});
+		},
 		buttons:{
 			"filter-pods":function(){
 				this.reload({"filter":this.input("filter").value()});
@@ -56,13 +62,13 @@ const addPodController = function(){
 	const pods = new Pods();
 	return new Controller({
 		resource:pods,
+		viewModel:function(){
+			return {};
+		},
 		buttons:{
 			"create-group":function(){
-				const group = {"group_name":this.input("group_name").value(),
-							   "description":this.input("description").value() };
-				
 				pods.createPod(this.location.params,
-							   group);
+							   this.getViewModel());
 			}
 		},
 		onSuccess:function(){

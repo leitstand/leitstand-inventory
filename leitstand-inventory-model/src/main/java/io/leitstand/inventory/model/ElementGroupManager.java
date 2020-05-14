@@ -180,7 +180,7 @@ class ElementGroupManager{
 		args.add(type);
 		String query = "SELECT g.type, g.name, g.uuid, e.adm_state, e.op_state, count(*) "+
 					   "FROM inventory.elementgroup g "+
-					   "LEFT OUTER JOIN inventory.element e "+
+					   "JOIN inventory.element e "+
 					   "ON e.elementgroup_id = g.id "+
 					   "JOIN inventory.elementrole r "+
 					   "ON e.elementrole_id = r.id "+

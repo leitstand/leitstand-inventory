@@ -124,7 +124,7 @@ const podController = function(){
 				pod.removePod(this.location.params);
 			}
 		},
-		onRemoved:function(){
+		onSuccess:function(){
 			this.navigate({"view":"/ui/views/inventory/pods.html"});	
 		}
 	});

@@ -13,75 +13,48 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<h2>Pods</h2>
-<p>Explore existing pods and their respective elements or <a href="new-pod.html">add a new pod</a></p>
-<div id="pods">
-	<form>
-		<div class="form-group">
-			<div class="label">
-				<label for="filter">Filter pods by their names.</label>
-			</div>
-			<div class="input">
-				<input type="text" placeholder="Enter a filter expression"
-					class="form-control" id="filter" name="filter" autofocus value="{{filter}}">
-				<button name="filter-pods" id="filter-pods" class="btn btn-outline">Filter</button>
-				<p class="note">
-					Enter a regular expression to filter pods by their name.
-				</p>
-
-			</div>
-		</div>
-		<!-- {{#pods.length}} -->
-		<ui-group>
-			<ui-label>Pods</ui-label>
-			<table id="items" class="list">
-					<thead>
-						<tr>
-							<th class="text">Pod</th>
-							<th class="text">Tags</th>
-							<th class="text">Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					<!-- {{#pods}}  -->
-					<tr>
-						<td class="text">
-							<a href="/ui/views/inventory/topology/link-state.html?group={{group_id}}" title="Show link state graph">{{group_name}}</a>
-						</td>
-						<td class="text">
-							<a href="/ui/views/inventory/pod/pod-alerts.html?group={{group_name}}&state=OPEN&severity=WARNING" title="Show alerts" class="hidden btn btn-sm btn-danger">Alerts <span class="counter">12</span></a>
-							<ol class="tags">
-								<!--{{#tags}} -->
-								<li class="tag">{{.}}</li>
-								<!-- {{/tags}} -->
-							</ol>
-						</td>
-						<td class="text">{{description}}</td>
-					</tr>
-					<!--  {{/pods}} -->
-					</tbody>
-			</table>
-			<div class="form-actions" style="padding-top:0.5em">
-				<a href="/api/v1/export/pods?filter={{filter}}" title="Export {{group_type}} and element settings" class="btn btn-sm btn-outline right">Export to file</a>
-			</div>
-		</ui-group>
-
-		<!-- {{/pods.length}} -->
-		<!-- {{^pods}} -->
-			<div class="blankslate">
-				<h3>No pods found</h3>
-				<p><a href="." id="upload">Upload</a> an previously created export.
-				   <input id="file-selector" type="file" name="export" accept=".json,.yaml,.yml" class="hidden">
-				   <div id="confirm"  class="hidden">
-				   		<p>Import <span id="name"></span>?</p>
-				   		<button class="btn btn-sm btn-danger" id="cancle-upload">No</button>
-				   		<button class="btn btn-sm btn-primary" id="confirm-upload">Yes</button>
-				   </div>	
-				</p>
-			</div>
-		<!-- {{/pods}} -->
-		<div class="form-actions">
-			<a href="new-pod.html" class="btn btn-primary" title="Add a new pod">Add pod</a>
-		</div>
-	</form>
-</div>
+<ui-view-header>
+	<ui-title>Pods</ui-title>
+	<ui-subtitle>Overview of all registered pods.</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-filter name="filter" placeholder="Enter a filter expression...">
+		<ui-label>Filter</ui-label>
+		<ui-note>Filter elements by their name or alias.</ui-note>
+	</ui-filter>
+	<!--  {{#pods.length}} -->
+	<ui-group>
+		<ui-label>Pods</ui-label>
+		<ui-note>Explore existing pods ore <a href="new-pod.html">add a new pod</a>.</ui-note> 
+		<table id="items" class="list">
+			<thead>
+				<tr>
+					<th class="text">Pod</th>
+					<th class="text">Elements (active)</th>
+					<th class="text">Tags</th>
+					<th class="text">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--  {{#pods}} -->
+				<tr>
+					<td class="text"><a href="pod/pod.html?group={{group_id}}" title="Show {{group_type}} details">{{group_name}}</a></td>
+					<td class="text"><span class="pod-elements" data-pod="{{group_name}}">- (-)</span></td>
+					<td class="text"><ol class="tags">{{#tags}}<li class="tag">{{.}}</li>{{/tags}}</ol></td>
+					<td class="text">{{description}}</td>
+				</tr>
+				<!-- {{/pods}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/pods.length}} -->
+	<!-- {{^pods}}        -->
+	<ui-blankslate>
+		<ui-title>No pods found.</ui-title>
+		<ui-note>Please amend the filter expression or <a href="new-pod.html" title="Add a new pod">add a new pod</a>.</ui-note>
+	</ui-blankslate>
+	<!-- {{/pods}} -->
+	<ui-actions>
+		<ui-button href="new-pod.html" title="Add a new pod" primary>Add pod</ui-button>
+	</ui-actions>
+</ui-form>

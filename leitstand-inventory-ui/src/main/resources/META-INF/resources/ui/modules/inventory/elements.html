@@ -15,7 +15,7 @@
 -->
 <ui-view-header>
 	<ui-title>Elements</ui-title>
-	<ui-subtitle>Overview of all existing elements.</ui-subtitle>
+	<ui-subtitle>Overview of all registered elements.</ui-subtitle>
 </ui-view-header>
 <ui-form>
 	<ui-filter name="filter" placeholder="Enter a regular expression">
@@ -41,7 +41,7 @@
 					<td class="text"><a href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show {{group_type}} details">{{group_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_alias}}</a></td>
-					<td class="text"><a href="/ui/views/inventory/pod/pod-alerts.html?group={{group_id}}" title="Show alerts" class="hidden btn btn-sm btn-danger">Alerts<span class="counter"></span></a><ol class="tags">{{#tags}}<li class="tag">{{.}}</li>{{/tags}}</ol></td>
+					<td class="text"><ol class="tags">{{#tags}}<li class="tag">{{.}}</li>{{/tags}}</ol></td>
 					<td class="text">{{description}}</td>
 				</tr>
 				<!-- {{/elements}} -->
@@ -51,8 +51,8 @@
 	<!-- {{/elements.length}} -->
 	<!-- {{^elements}}        -->
 	<ui-blankslate>
-		<ui-title>No elements found</ui-title>
-		<ui-note>Please amend the filter expression to search for other elements.</ui-note>
+		<ui-title>No elements found.</ui-title>
+		<ui-note>Please amend the filter expression to search for other elements or add a new element to an existing pod.</ui-note>
 	</ui-blankslate>
 	<!-- {{/elements}} -->
 </ui-form>

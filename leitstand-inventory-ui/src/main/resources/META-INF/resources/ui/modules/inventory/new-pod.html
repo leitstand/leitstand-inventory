@@ -15,7 +15,7 @@
 -->
 <ui-view-header>
 	<ui-breadcrumbs>
-		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/view/inventory/pods.html">Pods</ui-breadcrumb>
 		<ui-breadcrumb>New Pod</ui-breadcrumb>
 	</ui-breadcrumbs>
 	<ui-title>New Pod</ui-title>
@@ -33,8 +33,15 @@
 			<ui-note>A brief description of this pod</ui-note>
 		</ui-textarea>
 	</ui-group>
+	<ui-group>
+		<ui-label>Tags</ui-label>
+		<ui-tags name="tags">
+			<ui-note>Optional tags to categorize the pod</ui-note>
+		</ui-tags>
+	</ui-group>
+	
 	<ui-actions>
-		<ui-button name="create-group" primary title="Create a new pod">Create pod</ui-button>
+		<ui-button name="create-group" primary title="Add a new pod">Add pod</ui-button>
 		<ui-button href="pods.html">Cancel</ui-button>
 	</ui-actions>
 </ui-form>
