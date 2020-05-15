@@ -137,7 +137,7 @@ public class Element_PhysicalInterface implements Serializable{
 	@Temporal(TIMESTAMP)
 	private Date tsCreated;
 	
-	@Column(name="ifp_alias")
+	@Column(name="alias")
 	private String ifpAlias;
 	
 	@Column(name="ifp_class")

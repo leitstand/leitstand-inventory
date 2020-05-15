@@ -31,7 +31,7 @@ public class VlanTag extends ValueObject{
 		
 		public Builder withTagType(Type type) {
 			assertNotInvalidated(getClass(), tag);
-			tag.type = type;
+			tag.vlanType = type;
 			return this;
 		}
 		
@@ -63,13 +63,13 @@ public class VlanTag extends ValueObject{
 	}
 	
 	
-	private Type type;
+	private Type vlanType;
 	private VlanTpId vlanTpId;
 	private VlanId vlanId;
 	
 	
-	public Type getType() {
-		return type;
+	public Type getVlanType() {
+		return vlanType;
 	}
 	
 	public VlanId getVlanId() {
