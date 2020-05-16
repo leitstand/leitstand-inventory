@@ -27,7 +27,6 @@ import static io.leitstand.inventory.event.ElementRoleChangedEvent.newElementRol
 import static io.leitstand.inventory.service.ElementGroupSettings.newElementGroupSettings;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
-import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.ReasonCode.IVT0301I_ELEMENT_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
 import static java.lang.String.format;
