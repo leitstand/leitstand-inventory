@@ -41,7 +41,7 @@ class PodLocation extends Control {
 	                style: new ol.style.Style({
 	                    image: new ol.style.Icon({
 	                      scale: 0.2,
-	                      src: '/images/pod.png'
+	                      src: '/ui/modules/inventory/pod/pod.png'
 	                    })
 	                })			                
 	             })
@@ -144,9 +144,9 @@ const podLocationController = function(){
 
 				const location = this.getViewModel("location");
 				if(location){
-					let coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
+					const coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
 					coord.onLoaded = this.newEventHandler(function(matches){
-						// Attempt to resove geolocation of given address...
+						// Attempt to resolve geolocation of given address...
 						if(matches && matches.length > 0){
 							this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
 																 "longitude":parseFloat(matches[0].lon)}});
