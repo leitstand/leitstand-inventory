@@ -46,7 +46,7 @@ const podsController = function() {
 						if(groupElements && groupElements.total){
 							totalElements = `<a href="pod/pod-elements.html?group=${groupId}" class="btn btn-sm btn-default" title="Show element list">${groupElements.total} in total</a>`
 							if(groupElements && groupElements.active){
-								activeElements = `<a href="pod/pod-elements.html?group=${groupId}" class="btn btn-sm btn-primary" title="Show link-state graph">${groupElements.active} active</a>`
+								activeElements = `<a href="topology/link-state.html?group=${groupId}" class="btn btn-sm btn-primary" title="Show link-state graph">${groupElements.active} active</a>`
 							}
 						} else {
 							totalElements = `<a href="pod/pod-elements.html?group=${groupId}">No elements.</a>`

@@ -15,9 +15,9 @@
  */
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select} from '/ui/js/ui-components.js';
+import {Select,Control} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
-import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
+import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
 
 //TODO: Implement Rack Component!
@@ -391,29 +391,63 @@ const elementServicesController = function(){
 	});
 };
 
+class PodSelector extends Control{
+	renderDom(){
+		const groupId = this.viewModel.getProperty("group_id");
+		const pods = new Pods({'filter':this.location.param('filter')});
+		pods.load()
+		    .then(pods => {
+		    			    	
+		    	this.innerHTML=`<table class="list">
+		    			<thead>
+		    				<tr>
+								<th class="text">Pod</th>
+								<th class="text">Description</th>
+		    				</tr>
+		    			</thead>
+			    		<tbody>
+		    				${pods.map(pod => `<tr>
+		    									<td class="text">
+		    										<label>
+		    											<input type="radio" name="group_id" value="${pod.group_id}" data-group-name="${pod.group_name}"  ${ groupId == pod.group_id && 'checked' }>
+		    											&nbsp;${pod.group_name}
+		    										</label>
+		    									</td>
+		    									<td class="text">${pod.description}</td> 
+		    								  </tr>`)
+		    					  .reduce((a,b)=>a+b,'')}
+		    			</tbody>
+		    		</table>`;
+		    
+		    
+		    
+		    
+		    
+		    });
+		    
+		    
+		this.addEventListener('change',(evt)=>{
+			this.viewModel.setProperty("group_id",evt.target.value);
+			this.viewModel.setProperty("group_name",evt.target.getAttribute("data-group-name"));
+		});
+		
+	}
+}
+
+customElements.define('element-pod',PodSelector);
+
+
 const elementPodController = function(){
 	const element = new Element({"scope":"settings"});
 	return new Controller({
 		resource:element,
-		viewModel: function(settings){
-			// Load all existing pods
-			const podsLoader = new Pods({"filter":this.location.param("filter")});
-			this.attach(podsLoader);
-			const pods = podsLoader.load();
-			pods.forEach(pod => pod.group_id == settings.group_id ? pod.checked = "checked" : pod.checked ="");
-			settings.pods = pods;
-			// Add filter statement
-			settings.filter = filter;
-			return settings;
-		},
 		buttons: {
-			"filter-pods":function(){
+			"filter":function(){
 				const params = this.location.params;
 				params.filter = this.input("filter").value();
 				this.reload(params);
 			},
 			"move-element":function(){
-				this.updateViewModel({"group_id":this.input("group_id").value()});
 				element.saveSettings(this.location.params,this.getViewModel());
 			}
 		},
