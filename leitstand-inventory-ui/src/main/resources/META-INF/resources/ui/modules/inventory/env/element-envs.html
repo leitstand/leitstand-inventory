@@ -17,33 +17,32 @@
 	<ui-title>Element Environments</ui-title>
 	<ui-subtitle>List of environments declared for this element.</ui-subtitle>
 </ui-view-header>
+<!-- {{#environments.length}} -->
 <ui-group>
 	<ui-label>Environments</ui-label>
 	<ui-note>Select on an environment for detailed information.</ui-note>
-	
-<!-- {{#environments.length}} -->
-<table class="list">
-<thead>
-	<tr>
-		<th class="small text">Name</th>
-		<th class="text">Description</th>
-	</tr>
-</thead>
-<!-- {{#environments}} -->
-	<tr>
-		<td class="small text"><a href="element-env.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}">{{environment_name}}</a></td>
-		<td class="text">{{description}}</td>
-	</tr>
-<!-- {{/environments}} -->
-</table>
+	<table class="list">
+	<thead>
+		<tr>
+			<th class="small text">Name</th>
+			<th class="text">Description</th>
+		</tr>
+	</thead>
+	<!-- {{#environments}} -->
+		<tr>
+			<td class="small text"><a href="element-env.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}">{{environment_name}}</a></td>
+			<td class="text">{{description}}</td>
+		</tr>
+	<!-- {{/environments}} -->
+	</table>
+</ui-group>
 <!-- {{/environments.length}} -->
 <!-- {{^environments}} -->
 <ui-blankslate>
-<ui-title>No environments found.</ui-title>
-<ui-note>No environments have been registered for this element.</ui-note>
+	<ui-title>No environments found.</ui-title>
+	<ui-note>No environments have been registered for this element.</ui-note>
 </ui-blankslate>
 <!-- {{/environments}} -->
-</ui-group>
 <ui-actions>
 	<ui-button primary href="new-element-env.html?group={{group_id}}&element={{element_id}}" title="Create a new environment" scopesAllowed="ivt ivt.element ivt.element.config">Add environment</ui-button>
 </ui-actions>
