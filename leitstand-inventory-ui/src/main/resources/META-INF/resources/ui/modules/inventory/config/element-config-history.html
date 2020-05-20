@@ -17,9 +17,7 @@
 	<ui-bread-crumbs>
 		<ui-breadcrumb href="element-configs.html?group={{group_id}}&element={{element_id}}" 
 					   title="Show list of all element configurations">Element Configurations</ui-breadcrumb>
-		<ui-breadcrumb href="element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}"
-					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
-		<ui-breadcrumb>{{config_state}} <ui-date readonly>{{date_modified}}</ui-date></ui-breadcrumb>
+		<ui-breadcrumb>{{config_name}}</ui-breadcrumb>
 	</ui-bread-crumbs>
 	<ui-title>Element Configuration History</ui-title>
 	<ui-subtitle>{{config_name}} configuration history of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
@@ -45,7 +43,7 @@
 					<th><input type="radio" name="b" value="{{config_id}}" {{check-second}}></th>
 					<td class="tiny"><span class="config {{config_state}}">{{config_state}}</span>
 					<td class="tiny">{{creator}}</td>
-					<td class="text"><a href="/ui/views/inventory/config/element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Show config">{{#format-timestamp}}date_modified{{/format-timestamp}}</a></td>
+					<td class="text"><a href="/ui/views/inventory/config/element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Show config"><ui-date readonly>{{date_modified}}</ui-date></a></td>
 					<td class="text">{{comment}}</td>
 					<td><a class="btn btn-sm btn-outline" href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</a></td>
 				</tr>

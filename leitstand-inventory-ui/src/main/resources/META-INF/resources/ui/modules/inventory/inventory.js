@@ -357,6 +357,13 @@ export class Element extends Resource {
 					   .GET();
 		}
 		
+		if(this._cfg["scope"]=="configs"){
+			return this.json("/api/v1/elements/{{&element}}/{{&scope}}?filter={{filter}}",
+							 this._cfg,
+							 params)
+					   .GET();
+		}
+
 		if(this._cfg["scope"]=="modules"){
 			return this.json("/api/v1/elements/{{&element}}/modules/{{&module_name}}",
 							 this._cfg,
