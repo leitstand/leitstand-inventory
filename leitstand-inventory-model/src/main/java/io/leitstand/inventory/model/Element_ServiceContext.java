@@ -68,7 +68,7 @@ public class Element_ServiceContext extends VersionableEntity {
 	private Element_Service service;
 	
 	@ManyToOne
-	@JoinColumn(name="parent_servicecontext_id")
+	@JoinColumn(name="parent_id")
 	private Element_ServiceContext parent;
 	
 	public Element_ServiceContext(){

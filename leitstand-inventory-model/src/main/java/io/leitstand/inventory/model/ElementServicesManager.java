@@ -133,20 +133,20 @@ public class ElementServicesManager {
 		
 		String sql = "WITH RECURSIVE HIERARCHY (servicecontext_id, element_id, element_uuid, element_name, service_id, service_type,service_name, "+
 		                                       "service_op_state, service_display_name, "+
-				                               "parent_servicecontext_id, level)"+ 
+				                               "parent_id, level)"+ 
 					 "AS ( "+
 					 "SELECT servicecontext_id, element_id, element_uuid, element_name, service_id, service_type, service_name,"+
 		                    "service_op_state, service_display_name, "+
-				            "parent_servicecontext_id, 1 "+
+				            "parent_id, 1 "+
 					 "FROM inventory.service_context "+
 					 "WHERE element_uuid=? AND service_name=? "+
 					 "UNION ALL "+
 					 "SELECT c.servicecontext_id, c.element_id, c.element_uuid, c.element_name, c.service_id, c.service_type, c.service_name, "+
 	                        "c.service_op_state, c.service_display_name,"+
-			                "c.parent_servicecontext_id, level + 1 "+
+			                "c.parent_id, level + 1 "+
 					 "FROM   inventory.service_context c "+ 
 					 "JOIN 	 HIERARCHY h "+
-					 "ON 	 c.servicecontext_id = h.parent_servicecontext_id "+
+					 "ON 	 c.servicecontext_id = h.parent_id "+
 					 ") "+
 					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_op_state "+
 					 "FROM   HIERARCHY ctx "+
@@ -154,16 +154,16 @@ public class ElementServicesManager {
 					 "ORDER BY level"; // Order the result by level to get a proper order of the service hierarchy.
 		
 		List<ServiceInfo> services = datasource.executeQuery(prepare(sql,
-																				 element.getElementId().toString(),
-																				 name.toString()),
-						  												 rs ->  newServiceInfo()
-						  												 		.withElementId(elementId(rs.getString(1)))
-						  													   	.withElementName(elementName(rs.getString(2)))
-						  													   	.withServiceType(ServiceTypeConverter.parse(rs.getString(3)))
-						  													   	.withServiceName(serviceName(rs.getString(4)))
-						  													   	.withDisplayName(rs.getString(5))
-						  													   	.withOperationalState(toOperationalState(rs.getString(6)))
-																				.build());
+																	 element.getElementId().toString(),
+																	 name.toString()),
+						  									 rs ->  newServiceInfo()
+						  											.withElementId(elementId(rs.getString(1)))
+						  											.withElementName(elementName(rs.getString(2)))
+						  											.withServiceType(ServiceTypeConverter.parse(rs.getString(3)))
+						  											.withServiceName(serviceName(rs.getString(4)))
+						  											.withDisplayName(rs.getString(5))
+						  											.withOperationalState(toOperationalState(rs.getString(6)))
+																	.build());
 		return newElementServiceStack()
 			   .withGroupId(group.getGroupId())
 			   .withGroupName(group.getGroupName())
