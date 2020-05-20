@@ -140,23 +140,21 @@ const podLocationController = function(){
 				pod.saveSettings(this.location.params,
 				                 this.getViewModel());
 			},
-			"lookup":function(){
+			"lookup":async function(){
 
 				const location = this.getViewModel("location");
 				if(location){
 					const coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
-					coord.onLoaded = this.newEventHandler(function(matches){
-						// Attempt to resolve geolocation of given address...
-						if(matches && matches.length > 0){
-							this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
-																 "longitude":parseFloat(matches[0].lon)}});
-						} else {
-							this.updateViewModel({"geolocation":null});
-						}
-						// ... and update view.
-						this.renderView();
-					});
-					coord.load();
+					const matches = await coord.load();
+					// Attempt to resolve geolocation of given address...
+					if(matches && matches.length > 0){
+						this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
+															 "longitude":parseFloat(matches[0].lon)}});
+					} else {
+						this.updateViewModel({"geolocation":null});
+					}
+					// ... and update view.
+					this.renderView();
 					
 				} else {
 					// Remove geolocation from view model...
