@@ -20,6 +20,33 @@ import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
 
+class AdministrativeStateSelector extends Select {
+	constructor(){
+		super();
+	}
+	
+	options(){
+		return Promise.resolve([{"value" : "NEW", "label" : "New"},
+				  				{"value" : "ACTIVE", "label" : "Active"},
+				  				{"value" : "RETIRED", "label" : "Retired"}]);
+	}
+}
+customElements.define("element-administrative-state",AdministrativeStateSelector);
+
+class OperationalStateSelector extends Select {
+	constructor(){
+		super();
+	}
+	
+	options(){
+		return Promise.resolve([{"value" : "DOWN", "label" : "Down"},		
+								{"value" : "UP",  "label" : "Up"}, 
+								{"value" : "DETACHED", "label" : "Detached"}, 
+								{"value" : "MAINTENANCE", "label" : "Maintenance"}]);
+	}
+}
+customElements.define("element-operational-state",OperationalStateSelector);
+
 //TODO: Implement Rack Component!
 const elementRackController = function(){
 	
@@ -198,26 +225,8 @@ const elementController = function(){
 	return new Controller({
 		resource:element,
 		viewModel:async function(settings){
-			
 			// The element settings are the basis for this view model.
 			const viewModel = settings;
-
-			// Add available administrative and operational states.
-			// Both transient again.
-			viewModel.administrative_states = this.transient([{"value" : "NEW",
-															   "label" : "New"},
-															  {"value" : "ACTIVE",
-															   "label" : "Active"},
-															  {"value" : "RETIRED",
-															   "label" : "Retired"}]);
-			viewModel.operational_states = this.transient([{"value" : "DOWN", 
-											 				"label" : "Down"},		
-											 			   {"value" : "UP", 
-											 			    "label" : "Up"}, 
-											 			   {"value" : "DETACHED", 
-											 			    "label" : "Detached"}, 
-											 			   {"value" : "MAINTENANCE", 
-											 			    "label" : "Maintenance"}]);
 			
 			// Translate map of management interfaces into an array to render the list of management interfaces.
 			viewModel.mgmt_interface_list = function() {
@@ -240,6 +249,22 @@ const elementController = function(){
 			}
 			return viewModel;
 		},
+		postRender:function(){
+			// Intercept all clicks on rendered links in order to save changes before leaving to "management interfaces" or "move to pod view";
+			const form = this.element("ui-form");
+			form.addEventListener("click",(evt) => {
+				if(evt.target.nodeName === 'A'){
+					evt.preventDefault();
+					evt.stopPropagation();
+					const settings = this.getViewModel();
+					settings.platform_name = this.input("element-platform").unwrap().selected.label;
+					element.saveSettings(this.location.params,settings)
+						   .then(() => { this.navigate(evt.target.href)});
+
+				}
+				
+			});
+		},
 		buttons:{
 			"save-element":function(){
 				const settings = this.getViewModel();
@@ -248,13 +273,17 @@ const elementController = function(){
 				                     settings);
 			},
 			"remove-element":function(){
-				const params = this.location.params;
+				this.removeAttribute(this.location.param("element_id"));
 				params["force"] = this.input("force").value();
 				element.removeElement(params);
 			},
 			"add-mgmt":function(){
-				this.navigate({"view" : "/ui/views/inventory/element/element-mgmt.html",
-							   "?" : this.location.params});
+				// Store view model to avoid loosing unsaved changes!
+				const settings = this.getViewModel();
+				settings.platform_name = this.input("element-platform").unwrap().selected.label;
+				element.saveSettings(this.location.params,settings)
+					   .then(() => { this.navigate({"view" : "/ui/views/inventory/element/element-mgmt.html",
+							   						"?" : this.location.params})});
 			}
 		},
 		onRemoved:function(){
