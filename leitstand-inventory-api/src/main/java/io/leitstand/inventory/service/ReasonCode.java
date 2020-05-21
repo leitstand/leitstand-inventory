@@ -145,12 +145,6 @@ public enum ReasonCode implements Reason{
 	/** The image is not available on the specified element.*/
 	IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
 	
-	/** The rack mount point of the element has been stored.*/
-	IVT0380I_ELEMENT_RACK_LOCATION_STORED,
-	
-	/** The rack mount point of the element has been removed.*/
-	IVT0381I_ELEMENT_RACK_LOCATION_REMOVED,
-	
 	/** The element role does not exist.*/
 	IVT0400E_ELEMENT_ROLE_NOT_FOUND,
 	
@@ -214,6 +208,24 @@ public enum ReasonCode implements Reason{
 	/** The package revision does already exist.*/
 	IVT0511E_PACKAGE_VERSION_EXISTS, 
 	
+	/** The requested facility does not exist.*/
+	IVT0600E_FACILITY_NOT_FOUND,
+	
+	/** The facility has been stored.*/
+	IVT0601I_FACILITY_STORED,
+	
+	/** The facility has been removed.*/
+	IVT0602I_FACILITY_REMOVED,
+	
+	/** The facility name is already used for another facility.*/
+	IVT0603E_FACILITY_NAME_ALREADY_IN_USE,
+	
+	/** The facility name in the request does not match the current facility name.*/
+	IVT0604W_FACILITY_NAME_MISMATCH,
+
+	/** The facility cannot be removed.*/
+	IVT0605E_FACILITY_NOT_REMOVABLE,
+	
 	/** The requested rack does not exist.*/
 	IVT0800E_RACK_NOT_FOUND,
 	
@@ -222,6 +234,24 @@ public enum ReasonCode implements Reason{
 	
 	/** The rack has been removed.*/
 	IVT0802I_RACK_REMOVED,
+	
+	/** The rack cannot be removed.*/
+	IVT0803E_RACK_NOT_REMOVABLE,
+	
+	/** The rack item has been stored.*/
+	IVT0804I_RACK_ITEM_STORED,
+	
+	/** The rack item has been removed.*/
+	IVT0805I_RACK_ITEM_REMOVED,
+	
+	/** The rack item has been removed.*/
+	IVT0806E_RACK_ITEM_NOT_FOUND,
+	
+	/** Cannot store rack item with either referenced element or descriptive name.*/
+	IVT0807E_RACK_ITEM_NAME_OR_ELEMENT_REQUIRED,
+
+	/** No rack item for element found.*/
+	IVT0808E_ELEMENT_RACK_ITEM_NOT_FOUND,
 	
 	/** The platform does not exist.*/
 	IVT0900E_PLATFORM_NOT_FOUND,

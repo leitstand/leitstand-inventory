@@ -19,7 +19,7 @@ import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Element_Service.removeServices;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.model.Service.findService;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
@@ -134,7 +134,7 @@ public class ElementServicesServiceIT extends InventoryIT {
 																			   GROUP_TYPE, 
 																			   GROUP_NAME));
 	
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID,
 															   			  PLATFORM_NAME,
 															   			  PLATFORM_CHIPSET));

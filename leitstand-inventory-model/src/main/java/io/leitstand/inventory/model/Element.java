@@ -166,8 +166,8 @@ public class Element extends VersionableEntity {
 					   .getResultList();
 	}
 	
-	public static Query<List<Element>> findByGroupAndRole(ElementGroup group, 
-														  ElementRole role) {
+	public static Query<List<Element>> findElementsByGroupAndRole(ElementGroup group, 
+																  ElementRole role) {
 		return em -> em.createNamedQuery("Element.findByElementGroupAndElementRole",Element.class)
 					   .setParameter("group", group)
 					   .setParameter("role", role)
@@ -175,8 +175,8 @@ public class Element extends VersionableEntity {
 	}
 	
 	
-	public static Query<List<Element>> findByGroupAndPlane(ElementGroup group, 
-														   Plane plane){
+	public static Query<List<Element>> findElementsByGroupAndPlane(ElementGroup group, 
+														   		   Plane plane){
 		return em -> em.createNamedQuery("Element.findByElementGroupAndPlane",Element.class)
 					   .setParameter("group", group)
 					   .setParameter("plane", plane)

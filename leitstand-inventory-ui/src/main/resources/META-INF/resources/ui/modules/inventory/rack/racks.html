@@ -1,0 +1,59 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-title>Racks</ui-title>
+	<ui-subtitle>Manage the racks containing the elements.</ui-subtitle>
+</ui-view-header>
+<!-- {{#racks.length}} -->
+<ui-form scopesAllowed="ivt ivt.rack">
+<ui-filter name="filter" placeholder="Enter a filter expression...">
+	<ui-label>Filter</ui-label>
+	<ui-note>Filter racks by name.</ui-note>
+</ui-filter>
+<ui-group>
+<ui-label>Racks</ui-label>
+<table class="list">
+	<thead>
+		<tr>
+			<th class="text">Rack</th>
+			<th class="text">Facility</th>
+			<th class="extra-small">State</th>
+			<th class="text">Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!--{{#racks}}-->
+		<tr>
+		  <td class="text"><a href="rack-items.html?rack={{rack_id}}">{{rack_name}}</a></td>
+		  <td class="text">{{#facility_name}}<a href="/ui/views/inventory/facility/facility.html?facility={{facility_id}}">{{facility_name}}</a>{{/facility_name}}{{^facility_name}}-{{/facility_name}} </td>
+		  <td><span class="admin {{administrative_state}}">{{administrative_state}}</span>
+		  <td class="text">{{description}}</td>
+		</tr>
+		<!--{{/racks}}-->
+	</tbody>
+</table>
+</ui-group>
+<!-- {{/racks.length}} -->
+<!-- {{^racks.length}} -->
+<ui-blankslate>
+	<ui-title>No racks found!</ui-title>
+	<ui-note>Amend your filter or <a href="new-rack.html" title="Add a new rack">add a rack.</a></ui-note>
+</ui-blankslate>
+<!-- {{/racks.length}} -->
+<ui-actions>
+	<ui-button href="new-rack.html" primary>Add rack</ui-button>
+</ui-actions>
+</ui-form>

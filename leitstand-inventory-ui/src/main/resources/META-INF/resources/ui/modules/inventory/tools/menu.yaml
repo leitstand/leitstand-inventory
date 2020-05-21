@@ -5,7 +5,7 @@ extensions:
 - extend:
     module: inventory
     menu: element
-    after: element-services
+    after: element-dns
   items:
   - item: element-tools
     label: Tools

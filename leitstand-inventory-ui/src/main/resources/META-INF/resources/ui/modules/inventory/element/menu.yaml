@@ -27,14 +27,14 @@ extensions:
       label: Element Settings
       title: Manage general settings of the element
       view: element.html
-    - item: element-location
-      label: Location
-      title: Review the location of the element
-      view: element-rack.html
-    - item: element-modules
-      label: Modules
-      title: Review element hardware modules.
-      view: element-modules.html
+    - item: element-images
+      label: Images
+      title: View all images available on the element
+      view: element-images.html
+    - item: element-services
+      label: Services
+      title: View all servces installed on the element
+      view: element-services.html
     - item: element-ifps
       label: Physical Interfaces  
       title: View all physical interfaces of the element
@@ -43,11 +43,7 @@ extensions:
       label: Logical Interfaces  
       title: Inspect logical interfaces of this element.
       view: element-ifls.html
-    - item: element-services
-      label: Services
-      title: View all servces installed on the element
-      view: element-services.html
-    - item: element-images
-      label: Images
-      title: View all images available on the element
-      view: element-images.html
+    - item: element-modules
+      label: Modules
+      title: Review element hardware modules.
+      view: element-modules.html

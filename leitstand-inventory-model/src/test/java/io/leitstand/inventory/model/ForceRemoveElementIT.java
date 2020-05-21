@@ -18,7 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.model.Service.findService;
 import static io.leitstand.inventory.service.AdministrativeState.RETIRED;
 import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
@@ -155,7 +155,7 @@ public class ForceRemoveElementIT extends InventoryIT{
 																			   GROUP_TYPE, 
 																			   GROUP_NAME));
 	
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID, 
 															   			  platformName(getClass().getName()),
 															   			  platformChipsetName("unittest")));

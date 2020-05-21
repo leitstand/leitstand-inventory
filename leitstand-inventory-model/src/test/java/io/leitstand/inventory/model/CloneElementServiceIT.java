@@ -3,7 +3,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.AdministrativeState.ACTIVE;
 import static io.leitstand.inventory.service.AdministrativeState.NEW;
 import static io.leitstand.inventory.service.ElementAlias.elementAlias;
@@ -95,7 +95,7 @@ public class CloneElementServiceIT extends InventoryIT {
 																			   GROUP_NAME));
 			
 			
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID,
 															   			  PLATFORM_NAME,
 															   			  PLATFORM_CHIPSET));

@@ -1,0 +1,78 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="racks.html">Racks</ui-breadcrumb>
+		<ui-breadcrumb href="rack-items.html?rack={{rack_id}}">Rack Items</ui-breadcrumb>
+		<ui-breadcrumb>Rack Item {{position}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Rack Item {{position}}</ui-title>
+	<ui-subtitle>Edit rack unit {{unit}} of rack {{rack_name}}.</ui-subtitle>
+</ui-view-header>
+<ui-form scopesAllowed="ivt ivt.rack">
+	<ui-group>
+		<ui-label>Rack Item Type</ui-label>
+		<ui-radio name="type" value="element" default>
+			<ui-label>Element</ui-label>
+			<ui-note>Select the element installed at this position of the rack.</ui-note>
+		</ui-radio>
+		<ui-radio name="type" value="other">
+			<ui-label>Other</ui-label>
+			<ui-note>Describe the rack item manually.</ui-note>
+		</ui-radio>
+	</ui-group>
+	<ui-group when="element">
+		<ui-label>Element</ui-label>
+		<rack-item-element></rack-item-element>
+	</ui-group>
+	<ui-group when="other">
+		<ui-input name="rack_item_name" bind="item.rack_item_name">
+			<ui-label>Name</ui-label>
+			<ui-note>Descriptive name of this rack item</ui-note>
+		</ui-input>
+		<ui-select name="height" bind="item.height">
+			<ui-label>Height</ui-label>
+			<ui-note>Select height in rack units</ui-note>
+			<ui-options>
+				<ui-option value="1">1 RU</ui-option>
+				<ui-option value="2">2 RU</ui-option>
+				<ui-option value="3">3 RU</ui-option>
+				<ui-option value="4">4 RU</ui-option>
+				<ui-option value="5">5 RU</ui-option>
+			</ui-options>
+		</ui-select>
+	</ui-group>
+	<ui-group>
+		<ui-label>Position</ui-label>
+		<rack-item-position name="position" bind="item.position" readonly disabled>
+			<ui-label>Position</ui-label>
+			<ui-note>Select rack position</ui-note>
+		</rack-item-position>	
+		<ui-select name="face" bind="item.face">
+			<ui-label>Rack Face</ui-label>
+			<ui-note>Select rack face.</ui-note>
+			<ui-options>
+				<ui-option value="FRONT">Front</ui-option>
+				<ui-option value="REAR">Rear</ui-option>
+			</ui-options>
+		</ui-select>
+	</ui-group>
+	
+	<ui-actions>
+		<ui-button primary name="save-settings">Save item</ui-button>
+		<ui-button href="rack-item.html?rack={{rack_id}}&unit={{item.position}}">Cancel</ui-button>
+	</ui-actions>
+</ui-form>

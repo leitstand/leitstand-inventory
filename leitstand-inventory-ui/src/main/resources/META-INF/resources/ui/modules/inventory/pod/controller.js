@@ -15,49 +15,51 @@
  */
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Pod,Metadata,Platforms,Element,Rack} from '/ui/modules/inventory/inventory.js';
+import {Pod,Metadata,Platforms,Element,Rack,Facilities} from '/ui/modules/inventory/inventory.js';
 import {Control} from '/ui/js/ui-components.js';
 import '../inventory-components.js';
 
 
-class PodLocation extends Control {
-	
-	connectedCallback(){
-		const id = `${this.id}-container`;
-		this.innerHTML = `<div id="${id}" style="display:block; clear: both; position:relative; width:750px; height:600px; margin:auto; background-color: #EFEFEF"></div>`;
-		const geolocation = this.viewModel.getProperty(this.binding);
-		if(geolocation){
-	      const map = new ol.Map({
-	          target: id,
-	          layers: [
-	            new ol.layer.Tile({
-	              source: new ol.source.OSM()
-	            }),
-	            new ol.layer.Vector({
-	                source: new ol.source.Vector({
-	                  features: [new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([geolocation.longitude, 
-	                		  														  geolocation.latitude])))]
-	                }),
-	                style: new ol.style.Style({
-	                    image: new ol.style.Icon({
-	                      scale: 0.2,
-	                      src: '/ui/modules/inventory/pod/pod.png'
-	                    })
-	                })			                
-	             })
-	          ],
-	          view: new ol.View({
-	            center: ol.proj.fromLonLat([geolocation.longitude, 
-	            							geolocation.latitude]),
-	            zoom: 16
-	          })
-	       });
-	       map.addControl(new ol.control.ScaleLine());
-		}
+class FacilitySelector extends Control{
+	renderDom(){
+		const facilityId = this.viewModel.getProperty("facility_id");
+		const facilities = new Facilities({'filter':this.location.param('filter')});
+		facilities.load()
+		    	  .then(facilities => {
+		    			    	
+		    		  this.innerHTML=`<table class="list">
+		    			  				<thead>
+						    				<tr>
+												<th class="text">Name</th>
+												<th class="text">Type</th>
+												<th class="text">Location</th>
+						    				</tr>
+						    			</thead>
+							    		<tbody>
+						    				${facilities.map(facility => `<tr>
+							    									   <td class="text">
+							    										 <label>
+							    											<input type="radio" name="facility_id" value="${facility.facility_id}" data-facility-name="${facility.facility_name}"  ${ facilityId == facility.facility_id && 'checked' }>
+							    											&nbsp;${facility.facility_name}
+							    										</label>
+							    									   </td>
+							    									   <td class="text">${facility.facility_type||''}</td> 
+							    								       <td class="text">${facility.location||''}</td> 
+							    								     </tr>`)
+		    			  								.reduce((a,b)=>a+b,'')}
+						    			</tbody>
+						    		</table>`;
+		    
+		    });
+		    
+		    
+		this.addEventListener('change',(evt)=>{
+			this.viewModel.setProperty("facility_id",evt.target.value);
+			this.viewModel.setProperty("facility_name",evt.target.getAttribute("data-facility-name"));
+		});
 	}
-	
 }
-customElements.define('pod-location',PodLocation);
+customElements.define('pod-facility',FacilitySelector);
 
 
 const podElementsController = function(){
@@ -116,136 +118,55 @@ const podController = function(){
 	return new Controller({
 		resource:pod,
 		buttons:{
-			"save-group":function(){
+			"save-pod":function(){
 				pod.saveSettings(this.location.params,
 				                 this.getViewModel());
+			},
+			"change-facility":function(){
+				pod.saveSettings(this.location.params,
+								 this.getViewModel())
+				   .then(()=>{
+					   this.navigate({"view":"/ui/views/inventory/pod/pod-facility.html",
+						   			  "?":this.location.params})
+				   });
 			},
 			"remove-pod":function(){
 				pod.removePod(this.location.params);
 			}
-		},
-		onSuccess:function(){
-			this.navigate({"view":"/ui/views/inventory/pods.html"});	
 		}
 	});
 };
 
-
-const podLocationController = function(){
+const podFacilityController = function(){
 	const pod = new Pod({"scope":"settings"});
 	return new Controller({
 		resource:pod,
 		buttons:{
-			"save-location":function(){
+			"filter":function(){
+				const params = this.location.params;
+				params.filter = this.input("filter").value();
+				this.reload(params);
+			},
+			"save-pod":function(){
 				pod.saveSettings(this.location.params,
 				                 this.getViewModel());
-			},
-			"lookup":async function(){
-
-				const location = this.getViewModel("location");
-				if(location){
-					const coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
-					const matches = await coord.load();
-					// Attempt to resolve geolocation of given address...
-					if(matches && matches.length > 0){
-						this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
-															 "longitude":parseFloat(matches[0].lon)}});
-					} else {
-						this.updateViewModel({"geolocation":null});
-					}
-					// ... and update view.
-					this.renderView();
-					
-				} else {
-					// Remove geolocation from view model...
-					this.updateViewModel({"location":null,
-										  "geolocation":null});
-					// ... and update view.
-					this.renderView();
-				}
 			}
+		},
+		onSuccess:function(){
+			this.navigate({"view":"/ui/views/inventory/pod/pod.html",
+						   "?":this.location.params});	
 		}
 	});
-}
+};
 
-const podRacksController = function(){
-	const racks = new Pod({"scope":"racks"});
-	return new Controller({resource:racks,
-					 buttons:{
-					   "add-rack":function(){
-						   this.navigate({"view":"new-rack.html",
-							   			  "?": this.location.params});
-					   }	 
-					 }});
-}
-
-const addRackController = function(){
-	const pod = new Pod({"scope":"settings"});
-	return new Controller({resource:pod,
-					 buttons:{
-		            	 "add-rack":function(){
-		            		 const settings = {
-		            			"rack_name":this.input("rack_name").value(),
-		            			"units":this.input("units").value(),
-		            			"location":this.input("location").value(),
-		            			"description":this.input("description").value()
-		            		 };
-		            		 const rack = new Rack();
-		            		 this.attach(rack);
-		            		 const params = this.location.params;
-		            		 params.rack = settings.rack_name;
-		            		 rack.saveSettings(params,
-		            				 		   settings);
-		            	 }
-		             },
-		             onSuccess:function(){
-		            	 this.navigate({"view":"pod-racks.html",
-		            		 			"?":this.location.params});
-		             }});
-}
-
-
-const rackController = function(){
-	const rack = new Rack();
-	return new Controller({resource:rack,
-					 buttons:{
-		            	 "save-rack":function(){
-		            		 const settings = {
-		            			"rack_name":this.input("rack_name").value(),
-		            			"units":this.input("units").value(),
-		            			"location":this.input("location").value(),
-		            			"description":this.input("description").value()
-		            		 };
-		            		 rack.saveSettings(this.location.params,
-		            				 		  settings);
-		            	 },
-		            	 "remove-rack":function(){
-		            		 this.navigate({"view":"confirm-remove-rack.html",
-		            			 			"?":this.location.params});
-		            	 },
-		            	 "confirm-remove":function(){
-		            		 rack.removeRack(this.location.params);
-		            	 }
-		             },
-		             onSuccess:function(){
-		            	 this.navigate({"view":"pod-racks.html",
-		            		 			"?":this.location.params});
-		             }});
-}
 
 
 const podMenu = {
 		"master":podController(),
 		"details" : {
-			"confirm-remove-pod.html" : podController()
+			"confirm-remove-pod.html" : podController(),
+			"pod-facility.html":podFacilityController()
 		}
-};
-
-const podRacksMenu = {
-		"master" : podRacksController(),	
-		"details" : { "new-rack.html":addRackController(),
-					  "rack.html":rackController(),
-					  "confirm-remove-rack.html":rackController()}	
 };
 
 const podElementsMenu = {
@@ -255,8 +176,6 @@ const podElementsMenu = {
 
 export const menu = new Menu({
 	"pod.html" : podMenu,
-	"pod-elements.html" : podElementsMenu,
-	"pod-location.html" : podLocationController(),
-	"pod-racks.html":podRacksMenu
+	"pod-elements.html" : podElementsMenu
 });
 

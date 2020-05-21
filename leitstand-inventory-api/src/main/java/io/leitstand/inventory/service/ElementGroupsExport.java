@@ -69,12 +69,6 @@ public class ElementGroupsExport extends ValueObject {
 			return this;
 		}
 		
-		public Builder withRacks(List<ElementRack> racks) {
-			assertNotInvalidated(getClass(), export);
-			export.racks = new LinkedList<>(racks);
-			return this;
-		}
-		
 		public ElementGroupsExport build() {
 			try {
 				assertNotInvalidated(getClass(), export);
@@ -89,12 +83,7 @@ public class ElementGroupsExport extends ValueObject {
 	private List<ElementRoleSettings> roles = emptyList();
 	private List<PlatformSettings> platforms = emptyList();
 	private List<ElementGroupExport> groups = emptyList();
-	private List<ElementRack> racks = emptyList();
 
-	
-	public List<ElementRack> getRacks() {
-		return unmodifiableList(racks);
-	}
 	
 	public List<ElementGroupExport> getGroups() {
 		return unmodifiableList(groups);

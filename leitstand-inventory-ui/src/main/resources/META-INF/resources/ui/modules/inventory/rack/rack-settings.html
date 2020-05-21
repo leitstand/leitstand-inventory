@@ -1,0 +1,94 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="racks.html">Racks</ui-breadcrumb>
+		<ui-breadcrumb>{{rack_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Rack Settings</ui-title>
+	<ui-subtitle>Manage settings of rack {{rack_name}}</ui-subtitle>
+</ui-view-header>
+<div>
+<ui-form scopesAllowed="ivt ivt.rack">
+	<ui-group>
+		<ui-label>General Settings</ui-label>
+		<ui-input name="rack_name">
+			<ui-label>Rack Name</ui-label>
+			<ui-note>The name of the rack</ui-note>
+		</ui-input>
+		<ui-select name="administrative_state">
+			<ui-label>Administrative State</ui-label>
+			<ui-note>The administrative state of this rack</ui-note>
+			<ui-options>
+				<ui-option value="ACTIVE">Active</ui-option>
+				<ui-option value="NEW">New</ui-option>
+				<ui-option value="RETIRED">Retired</ui-option>
+			</ui-options>
+		</ui-select>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional rack description or additional comments.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-group>
+		<ui-label>Dimensions</ui-label>
+		<ui-input name="units">
+			<ui-label>Rack Units</ui-label>
+			<ui-note>The rack height expressed as total number of available rack units</ui-note>
+		</ui-input>
+		<ui-radio name="ascending" value="true">
+			<ui-label>Ascending</ui-label>
+			<ui-note>Rack units enumerated in ascending order.</ui-note>
+		</ui-radio>
+		<ui-radio name="ascending" value="false" default>
+			<ui-label>Descending</ui-label>
+			<ui-note>Rack units enumerated in descending order.</ui-note>
+		</ui-radio>
+	</ui-group>
+	<ui-group>
+	  <ui-label>Location</ui-label>
+		<ui-input name="facility_name" readonly>
+			<ui-label>Facility Name</ui-label>
+			<ui-note>The facility where this rack is installed.</ui-note>
+			<ui-button name="change-facility">Change facility</ui-button>
+		</ui-input>
+		<ui-input name="location">
+			<ui-label>Location</ui-label>
+			<ui-note>The location of the rack in the operating room</ui-note>
+		</ui-input>
+		
+	</ui-group>
+	</ui-group>
+	<ui-group>
+		<ui-label>Additional Information</ui-label>
+		<ui-input name="rack_type">
+			<ui-label>Rack Type</ui-label>
+			<ui-note>Information about the rack type.</ui-note>
+		</ui-input>
+		<ui-input name="serial_number">
+			<ui-label>Serial Number</ui-label>
+			<ui-note>The serial number of this rack.</ui-note>
+		</ui-input>
+		<ui-input name="asset_id">
+			<ui-label>Asset ID</ui-label>
+			<ui-note>The asset ID of this rack.</ui-note>
+		</ui-input>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-rack" primary>Save rack</ui-button>
+		<ui-button href="confirm-remove-rack.html?rack={{rack_id}}" danger>Remove rack</ui-button>
+	</ui-actions>
+</ui-form>

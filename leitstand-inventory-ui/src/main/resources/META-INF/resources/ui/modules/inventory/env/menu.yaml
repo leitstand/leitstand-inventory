@@ -7,7 +7,7 @@ extensions:
     menu: element
     after: element-config
   items:
-  - item: environments
+  - item: element-envs
     label: Environments
     title: Manage environments of this element
     view:  element-envs.html

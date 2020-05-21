@@ -13,13 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import {Select} from '/ui/js/ui-components.js';
-import {Metadata,Platforms} from '/ui/modules/inventory/inventory.js';
+import {Select,UIElement} from '/ui/js/ui-components.js';
+import {Metadata,Platforms,Facilities,Panel} from '/ui/modules/inventory/inventory.js';
 
 class PlatformSelector extends Select {
 	
 	options(){
 		const platforms = new Platforms();
+		platforms.onNotFound=function(){
+		    console.log("No panel found!");
+		}
 		return platforms.load()
 				 		.then(platforms => {
 				 					return platforms.map(platform => { 

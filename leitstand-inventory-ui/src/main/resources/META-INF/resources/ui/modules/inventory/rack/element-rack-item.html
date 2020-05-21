@@ -1,0 +1,75 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Location</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Element Location</ui-title>
+	<ui-subtitle>Location of element {{element_name}}</ui-subtitle>
+</ui-view-header>
+<ui-form scopesAllowed="ivt ivt.rack">
+	<!-- {{#rack}} -->
+	<ui-details>
+		<ui-property>
+			<ui-label>Facility</ui-label>
+			<ui-value>{{#facility_id}}<a href="/ui/views/inventory/facility/facility.html?facility={{rack.facility_id}}" title="Show facility details">{{rack.facility_name}}</a>{{/facility_id}}
+		</ui-property>
+		<ui-property>
+			<ui-label>Rack</ui-label>
+			<ui-value><a href="/ui/views/inventory/rack/rack-items.html?rack={{rack.rack_id}}" title="Show rack items">{{rack.rack_name}}</a></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Position</ui-label>
+			<ui-value>U {{rack.item.position}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Element Group</ui-label>
+			<ui-value><a href="/ui/views/inventory/pod/pod.html?group={{item.group_id}}">{{group_name}}</a></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Element Role</ui-label>
+			<ui-value>{{element_role}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Element Name</ui-label>
+			<ui-value><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</a></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Element Alias</ui-label>
+			<ui-value>{{element_alias}}</ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Administrative State</ui-label>
+			<ui-value><span class="admin {{administrative_state}}">{{administrative_state}}</span></ui-value>
+		</ui-property>
+		<ui-property>
+			<ui-label>Platform</ui-label>
+			<ui-value>{{platform_name}}</ui-value>
+		</ui-property>
+	</ui-details>
+	<!-- {{/rack}} -->
+	<!-- {{^rack}} -->
+	<ui-blankslate>
+		<ui-title>No location found.</ui-title>
+		<ui-note>The location of this element has not been specified.</ui-note>
+	</ui-blankslate>
+	<!-- {{/rack}} -->
+
+</ui-form>

@@ -1,0 +1,53 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Facility</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Pod Facility</ui-title>
+	<ui-subtitle>The facility where pod {{group_name}} is installed at.</ui-subtitle>
+</ui-view-header>
+<!--  {{#facility}} -->
+<ui-group>
+	<ui-label>Location</ui-label>
+	<facility-location id="map" bind="facility.geolocation" readonly></facility-location>
+</ui-group>
+<ui-details>
+	<ui-property>
+		<ui-label>Facility</ui-label>
+		<ui-value>
+			<a href="facility.html?facility={{facility_id}}" title="Open facility settings">{{facility_name}}</a>
+		</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Address</ui-label>
+		<ui-value>{{location}}</ui-value>
+	</ui-property>
+</ui-details>
+<!-- {{/facility}} -->
+<!-- {{^facility}} -->
+<ui-blankslate>
+	<ui-title>No facility found.</ui-title>
+	<ui-note>This pod is not assigned to a facility.</ui-note>
+</ui-blankslate>
+<!-- {{/facility}} -->
+<ui-actions>
+	<ui-button href="/ui/views/inventory/pod/pod.html?group={{group_id}}">Assign facility</ui-button>
+</ui-actions>
+
+	

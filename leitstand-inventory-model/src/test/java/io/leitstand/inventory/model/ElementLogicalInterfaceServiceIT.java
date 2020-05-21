@@ -6,7 +6,7 @@ import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Element_ContainerInterface.findIfcByName;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpByName;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.AddressInterface.newAddressInterface;
 import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv4;
 import static io.leitstand.inventory.service.Bandwidth.bandwidth;
@@ -116,10 +116,11 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 															  				DATA));
 			ElementGroup group = repository.addIfAbsent(findElementGroupById(GROUP_ID), 
 														() -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID), 
 													   () -> new Platform(PLATFORM_ID, 
 															   			  PLATFORM_NAME, 
 															   			  PLATFORM_CHIPSET));
+
 			Element element = repository.addIfAbsent(findElementById(ELEMENT_ID), 
 													 () -> new Element(group,role,platform,ELEMENT_ID,ELEMENT_NAME));
 			element.setElementAlias(ELEMENT_ALIAS);

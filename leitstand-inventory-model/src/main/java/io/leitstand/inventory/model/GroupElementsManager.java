@@ -83,7 +83,7 @@ class GroupElementsManager{
 											  elementRole);
 		}
 		
-		List<ElementSettings> elements = repository.executeMapListItem(Element.findByGroupAndRole(group, role), 
+		List<ElementSettings> elements = repository.executeMapListItem(Element.findElementsByGroupAndRole(group, role), 
 																	   ElementSettingsManager::settingsOf);
 		return groupElements(group, elements);
 	}

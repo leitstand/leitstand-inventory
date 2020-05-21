@@ -28,6 +28,11 @@
 			<ui-label>Name</ui-label>
 			<ui-note>The name of the pod</ui-note>
 		</ui-input>
+		<ui-input name="facility_name" readonly>
+			<ui-label>Facility Name</ui-label>
+			<ui-note>The main facility where this pod is installed at</ui-note>
+			<ui-button name="change-facility" title="Change the pod facility">Change facility</ui-button>
+		</ui-input>
 		<ui-textarea name="description">
 			<ui-label>Description</ui-label>
 			<ui-note>An optional description of the pod</ui-note>
@@ -40,7 +45,7 @@
 		</ui-tags>
 	</ui-group>
 	<ui-actions>
-		<ui-button name="save-group" primary>Save settings</ui-button>
+		<ui-button name="save-pod" primary>Save settings</ui-button>
 		<ui-button href="confirm-remove-pod.html?group={{group_id}}" danger>Remove pod</ui-button>
 	</ui-actions>
 </ui-form>

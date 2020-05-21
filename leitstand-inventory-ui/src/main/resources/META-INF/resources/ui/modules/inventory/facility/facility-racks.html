@@ -1,0 +1,61 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/facility/facilities.html">Facilities</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/facility/facility.html?facility={{facility_id}}">{{facility_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Racks</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Racks</ui-title>
+	<ui-subtitle>Racks in facility {{facility_name}} </ui-subtitle>
+</ui-view-header>
+<ui-form scopesAllowed="ivt ivt.rack">
+<ui-filter name="filter" placeholder="Enter a filter expression...">
+	<ui-label>Filter</ui-label>
+	<ui-note>Filter racks by name.</ui-note>
+</ui-filter>
+<!-- {{#racks.length}} -->
+<ui-group>
+<ui-label>Racks</ui-label>
+<table class="list">
+	<thead>
+		<tr>
+			<th class="text">Rack</th>
+			<th class="extra-small">State</th>
+			<th>Units</th>
+			<th class="text">Location</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!--{{#racks}}-->
+		<tr>
+		  <td class="text"><a href="/ui/views/inventory/rack/rack-items.html?rack={{rack_id}}">{{rack_name}}</a></td>
+		  <td><span class="admin {{administrative_state}}">{{administrative_state}}</span>
+		  <td>{{units}}U</td>
+		  <td class="text">{{location}}</td>
+		</tr>
+		<!--{{/racks}}-->
+	</tbody>
+</table>
+</ui-group>
+<!-- {{/racks.length}} -->
+<!-- {{^racks.length}} -->
+<ui-blankslate>
+	<ui-title>No racks found!</ui-title>
+	<ui-note>No matching racks found for facility {{facility_name}}</a></ui-note>
+</ui-blankslate>
+<!-- {{/racks.length}} -->
+</ui-form>

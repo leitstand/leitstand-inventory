@@ -52,7 +52,6 @@ public class ElementGroupSettingsMother {
 		return newElementGroupSettings()
 			   .withGroupId(group.getGroupId())
 			   .withGroupName(group.getGroupName())
-			   .withLocation(group.getLocation())
 			   .withDescription(group.getDescription());
 	}
 	

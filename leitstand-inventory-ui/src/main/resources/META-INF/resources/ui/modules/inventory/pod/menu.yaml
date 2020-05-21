@@ -25,15 +25,7 @@ extensions:
       label: Pod Settings
       title: Manage the general settings of the PoD
       view: pod.html
-    - item: pod-location
-      label: Location
-      title: Manage the physical location of the PoD
-      view: pod-location.html
     - item: pod-elements
       label: Elements
       title: Lists all elements of the PoD
       view: pod-elements.html
-    - item: racks
-      label: Racks
-      title: Manage PoD racks
-      view: pod-racks.html

@@ -1,0 +1,48 @@
+name: pod
+provider: leitstand.io
+controller: controller.js
+description: Rack management.
+extensions:
+- extend:
+   module: inventory
+   menu: main
+   after: facilities
+  items:
+  - item: racks
+    label: Racks
+    title: Manage PoD racks
+    view: racks.html
+- extend:
+    module: inventory
+    menu: element
+    after: element-envs
+  items:
+  - item: element-location
+    label: Location
+    title: Manage at which rack position this element is installed.
+    view: element-rack-item.html   
+- extend:
+    module: inventory
+    after: facility
+  menus:
+  - menu: rack
+    label: Rack
+    entity: "{{rack_name}}"
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.rack
+    requires:
+    - rack_id
+    query:
+      rack: "{{rack_id}}"    
+    items:
+    - item: rack-items
+      label: Rack Items
+      title: Manage the rack items.
+      view: rack-items.html
+    - item: rack-settings
+      label: Rack Settings
+      title: Manage the rack settings.
+      view: rack-settings.html
+     

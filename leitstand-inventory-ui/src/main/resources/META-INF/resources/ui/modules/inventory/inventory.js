@@ -270,6 +270,82 @@ export class Pod extends Resource {
 	}
 }
 
+export class Facilities extends Resource{
+	
+	constructor(cfg){
+		super();
+		this._cfg = cfg;
+	}
+	
+	load(params){
+		return this.json("/api/v1/facilitys?filter={{&filter}}",this._cfg,params)
+				   .GET();
+	}
+	
+	add(params,rack){
+		return this.json("/api/v1/facilitys",params)
+				   .POST(rack);
+	}
+	
+	
+}
+
+export class Facility extends Resource {
+	
+	constructor(cfg){
+		super();
+		this._cfg = cfg;
+	}
+	
+	load(params){
+		return this.json("/api/v1/facilitys/{{&facility}}/{{&scope}}",
+						 this._cfg,
+						 params)
+				   .GET();
+	}
+
+	saveSettings(params, settings){
+		return this.json("/api/v1/facilitys/{{&facility}}/{{&scope}}",
+						 this._cfg,
+						 settings,
+						 params)
+				   .PUT(settings);
+	}
+	
+	removeFacility(params){
+		return this.json("/api/v1/facilitys/{{&facility}}",
+		          		 this._cfg,
+		          		 params)
+		           .DELETE();	
+	}
+}
+
+
+export class Racks extends Resource{
+	
+	constructor(cfg){
+		super();
+		this._cfg = cfg;
+	}
+	
+	load(params){
+		if(this._cfg && this._cfg.scope == '_findElement'){
+			return this.json("/api/v1/racks/_findElement?element={{element}}",this._cfg,params)
+					   .GET()
+		}
+		
+		return this.json("/api/v1/racks?filter={{filter}}&facility={{facility}}",this._cfg,params)
+				   .GET();
+	}
+	
+	add(params,rack){
+		return this.json("/api/v1/racks",params)
+				   .POST(rack);
+	}
+	
+	
+}
+
 export class Rack extends Resource {
 	
 	constructor(cfg){
@@ -278,22 +354,57 @@ export class Rack extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/pods/{{&group}}/racks/{{&rack}}",
+		return this.json("/api/v1/racks/{{&rack}}/{{&scope}}",
 						 this._cfg,
 						 params)
 				   .GET();
 	}
 
 	saveSettings(params, settings){
-		return this.json("/api/v1/pods/{{&group}}/racks/{{&rack}}",
+		return this.json("/api/v1/racks/{{&rack}}/{{&scope}}",
 						 this._cfg,
 						 settings,
 						 params)
 				   .PUT(settings);
 	}
 	
+	addRackItem(params,item){
+		return this.json("/api/v1/racks/{{&rack}}/items/{{position}}",params)
+				   .PUT(item);
+	}
+	
 	removeRack(params){
-		return this.json("/api/v1/pods/{{&group}}/racks/{{&rack}}",
+		return this.json("/api/v1/racks/{{&rack}}?force={{force}}",
+		          		 this._cfg,
+		          		 params)
+		           .DELETE();	
+	}
+}
+
+export class RackItem extends Resource {
+	
+	constructor(cfg){
+		super();
+		this._cfg = cfg;
+	}
+	
+	load(params){
+		return this.json("/api/v1/racks/{{&rack}}/items/{{&unit}}",
+						 this._cfg,
+						 params)
+				   .GET();
+	}
+
+	saveSettings(params, settings){
+		return this.json("/api/v1/racks/{{&rack}}/items/{{&unit}}",
+						 this._cfg,
+						 settings,
+						 params)
+				   .PUT(settings);
+	}
+	
+	removeRackItem(params){
+		return this.json("/api/v1/racks/{{&rack}}/items/{{&unit}}",
 		          		 this._cfg,
 		          		 params)
 		           .DELETE();	

@@ -16,8 +16,8 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
@@ -97,7 +97,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		
 		transaction(()->{
 
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID,
 															   		      PLATFORM_NAME,
 															   		      PLATFORM_CHIPSET));
