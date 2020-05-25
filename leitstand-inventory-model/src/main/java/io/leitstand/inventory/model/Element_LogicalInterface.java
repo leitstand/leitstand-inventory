@@ -98,12 +98,12 @@ public class Element_LogicalInterface implements Serializable {
 	})
 	private Element_ContainerInterface ifc;
 	
-	@Column(name="op_state")
+	@Column(name="opstate")
 	@Convert(converter=OperationalStateConverter.class)
 	private OperationalState opState;
 	
 	
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	@Convert(converter=AdministrativeStateConverter.class)
 	private AdministrativeState admState;
 	

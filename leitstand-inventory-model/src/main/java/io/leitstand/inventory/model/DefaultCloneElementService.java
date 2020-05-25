@@ -81,8 +81,8 @@ public class DefaultCloneElementService implements CloneElementService{
 										     rs -> rs.getLong(1));
 		
 		// Clone the element record
-		db.executeUpdate(prepare("INSERT INTO inventory.element (elementgroup_id, elementrole_id, platform_id, id, uuid, name, description, op_state, adm_state, mgmt_hostname, mgmt_mac, serial, location, rack_name, rack_position, modcount, tscreated, tsmodified)"+
-								 "SELECT elementgroup_id, elementrole_id, platform_id, ?, ?, ?, description, ?, ?, mgmt_hostname, ?, ?, location, rack_name, rack_position, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element (elementgroup_id, elementrole_id, platform_id, id, uuid, name, description, opstate, admstate, mgmthostname, mgmtmac, serial, location, modcount, tscreated, tsmodified)"+
+								 "SELECT elementgroup_id, elementrole_id, platform_id, ?, ?, ?, description, ?, ?, mgmthostname, ?, ?, location, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "+
 								 "FROM inventory.element "+
 								 "WHERE id=?",
 								 id,

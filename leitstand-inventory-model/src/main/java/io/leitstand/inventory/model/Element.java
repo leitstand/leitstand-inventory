@@ -134,7 +134,7 @@ public class Element extends VersionableEntity {
 	}
 	
 	
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	@Convert(converter=AdministrativeStateConverter.class)
 	private AdministrativeState admState;
 
@@ -158,7 +158,7 @@ public class Element extends VersionableEntity {
 	private Map<String,ElementManagementInterface> managementInterfaces;
 	
 	
-	@Column(name="op_state")
+	@Column(name="opstate")
 	@Convert(converter=OperationalStateConverter.class)
 	private OperationalState opState;
 	
@@ -177,7 +177,7 @@ public class Element extends VersionableEntity {
 	@Column(name="serial")
 	private String serialNumber;
 	
-	@Column(name="mgmt_mac")
+	@Column(name="mgmtmac")
 	@Convert(converter=MACAddressConverter.class)
 	private MACAddress mgmtMacAddress;
 

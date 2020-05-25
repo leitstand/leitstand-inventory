@@ -117,11 +117,11 @@ public class Element_PhysicalInterface implements Serializable{
 	private Bandwidth type;
 	
 	@Convert(converter=OperationalStateConverter.class)
-	@Column(name="op_state")
+	@Column(name="opstate")
 	private OperationalState opState;
 	
 	@Convert(converter=AdministrativeStateConverter.class)
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	private AdministrativeState admState;
 	
 	@Convert(converter=MACAddressConverter.class)

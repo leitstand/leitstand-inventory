@@ -35,12 +35,12 @@ public class OperationalStateConverterTest {
 	private OperationalStateConverter converter = new OperationalStateConverter();
 	
 	@Test
-	public void map_null_op_state_to_UNKNOWN() {
+	public void map_null_opstate_to_UNKNOWN() {
 		assertEquals("UNKNOWN",converter.convertToDatabaseColumn(null));
 	}
 	
 	@Test
-	public void map_nonnull_op_state_to_unique_character() {
+	public void map_nonnull_opstate_to_unique_character() {
 		assertEquals("DOWN",converter.convertToDatabaseColumn(DOWN));
 		assertEquals("MALFUNCTION",converter.convertToDatabaseColumn(MALFUNCTION));
 		assertEquals("MAINTENANCE",converter.convertToDatabaseColumn(MAINTENANCE));
@@ -54,7 +54,7 @@ public class OperationalStateConverterTest {
 	}
 
 	@Test
-	public void map_nonnull_column_to_op_state() {
+	public void map_nonnull_column_to_opstate() {
 		assertEquals(DOWN 	  , converter.convertToEntityAttribute("DOWN"));
 		assertEquals(MALFUNCTION , converter.convertToEntityAttribute("MALFUNCTION"));
 		assertEquals(MAINTENANCE , converter.convertToEntityAttribute("MAINTENANCE"));
@@ -67,12 +67,12 @@ public class OperationalStateConverterTest {
 	}
 
 	@Test
-	public void preserver_custom_op_states() {
+	public void preserver_custom_opstates() {
 		assertEquals(OperationalState.valueOf("UNKNOWN"),converter.convertToEntityAttribute("UNKNOWN"));
 	}
 	
 	@Test
-	public void map_null_column_to_null_op_state() {
+	public void map_null_column_to_null_opstate() {
 		assertEquals(UNKNOWN,converter.convertToEntityAttribute(null));
 	}
 	

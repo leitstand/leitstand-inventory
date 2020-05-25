@@ -70,8 +70,8 @@ public class ElementLinksManager {
 														  .withRemoteElementGroupName(groupName(rs.getString(17)))
 														  .build();
 
-		List<ElementLinkData> links = datasource.executeQuery(prepare("SELECT local_ifp.name, local_ifp.mac_address, local_ifp.op_state, local_ifp.adm_state, local_ifp.bw_value, local_ifp.bw_unit, "+
-																		   "neighbor_ifp.name, neighbor_ifp.mac_address, neighbor_ifp.op_state, neighbor_ifp.adm_state, neighbor_ifp.bw_value, neighbor_ifp.bw_unit, "+
+		List<ElementLinkData> links = datasource.executeQuery(prepare("SELECT local_ifp.name, local_ifp.mac_address, local_ifp.opstate, local_ifp.admstate, local_ifp.bw_value, local_ifp.bw_unit, "+
+																		   "neighbor_ifp.name, neighbor_ifp.mac_address, neighbor_ifp.opstate, neighbor_ifp.admstate, neighbor_ifp.bw_value, neighbor_ifp.bw_unit, "+
 																		   "neighbor_element.uuid, neighbor_element.name, neighbor_group.uuid, neighbor_group.type, neighbor_group.name " +
 																  	  "FROM inventory.element_ifp local_ifp "+ 
 																  	  "JOIN inventory.element_ifp neighbor_ifp ON local_ifp.neighbor_element_id = neighbor_ifp.element_id AND local_ifp.neighbor_element_ifp_name = neighbor_ifp.name "+

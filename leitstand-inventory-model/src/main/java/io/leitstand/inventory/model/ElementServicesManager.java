@@ -132,23 +132,23 @@ public class ElementServicesManager {
 		
 		
 		String sql = "WITH RECURSIVE HIERARCHY (servicecontext_id, element_id, element_uuid, element_name, service_id, service_type,service_name, "+
-		                                       "service_op_state, service_display_name, "+
+		                                       "service_opstate, service_display_name, "+
 				                               "parent_id, level)"+ 
 					 "AS ( "+
 					 "SELECT servicecontext_id, element_id, element_uuid, element_name, service_id, service_type, service_name,"+
-		                    "service_op_state, service_display_name, "+
+		                    "service_opstate, service_display_name, "+
 				            "parent_id, 1 "+
 					 "FROM inventory.service_context "+
 					 "WHERE element_uuid=? AND service_name=? "+
 					 "UNION ALL "+
 					 "SELECT c.servicecontext_id, c.element_id, c.element_uuid, c.element_name, c.service_id, c.service_type, c.service_name, "+
-	                        "c.service_op_state, c.service_display_name,"+
+	                        "c.service_opstate, c.service_display_name,"+
 			                "c.parent_id, level + 1 "+
 					 "FROM   inventory.service_context c "+ 
 					 "JOIN 	 HIERARCHY h "+
 					 "ON 	 c.servicecontext_id = h.parent_id "+
 					 ") "+
-					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_op_state "+
+					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_opstate "+
 					 "FROM   HIERARCHY ctx "+
 					 "WHERE  level < 10 "+ // Circuit breaker, if someone has accidentally stored a circular service dependency
 					 "ORDER BY level"; // Order the result by level to get a proper order of the service hierarchy.

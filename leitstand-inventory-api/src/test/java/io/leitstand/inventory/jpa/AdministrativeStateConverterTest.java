@@ -35,12 +35,12 @@ public class AdministrativeStateConverterTest {
 	private AdministrativeStateConverter converter = new AdministrativeStateConverter();
 	
 	@Test
-	public void map_null_adm_state_to_unknown() {
+	public void map_null_admstate_to_unknown() {
 		assertEquals("UNKNOWN",converter.convertToDatabaseColumn(null));
 	}
 	
 	@Test
-	public void map_nonnull_adm_state_to_unique_character() {
+	public void map_nonnull_admstate_to_unique_character() {
 		assertEquals("ACTIVE",converter.convertToDatabaseColumn(ACTIVE));
 		assertEquals("DOWN",converter.convertToDatabaseColumn(DOWN));
 		assertEquals("INACTIVE",converter.convertToDatabaseColumn(INACTIVE));
@@ -54,7 +54,7 @@ public class AdministrativeStateConverterTest {
 	}
 
 	@Test
-	public void map_nonnull_column_to_adm_state() {
+	public void map_nonnull_column_to_admstate() {
 		assertEquals(ACTIVE 	  , converter.convertToEntityAttribute("ACTIVE"));
 		assertEquals(DOWN   	  , converter.convertToEntityAttribute("DOWN"));
 		assertEquals(INACTIVE , converter.convertToEntityAttribute("INACTIVE"));
@@ -66,12 +66,12 @@ public class AdministrativeStateConverterTest {
 
 	}
 
-	public void preserve_custom_adm_states() {
+	public void preserve_custom_admstates() {
 		assertEquals(AdministrativeState.valueOf("CUSTOM") ,converter.convertToEntityAttribute("CUSTOM"));
 	}
 	
 	@Test
-	public void map_null_column_to_UNKNOWN_adm_state() {
+	public void map_null_column_to_UNKNOWN_admstate() {
 		assertEquals(UNKNOWN,converter.convertToEntityAttribute(null));
 	}
 	

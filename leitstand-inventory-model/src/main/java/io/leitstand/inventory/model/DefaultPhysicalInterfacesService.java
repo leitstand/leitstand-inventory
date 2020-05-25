@@ -67,7 +67,7 @@ public class DefaultPhysicalInterfacesService implements PhysicalInterfaceServic
 	}
 
 	private StatementPreparator filterQuery(String filter) {
-		String sql = "SELECT g.uuid,g.name,g.type,e.uuid,e.name,e.alias,r.name,ifp.name,ifp.alias,ifp.op_state,ifp.adm_state "+
+		String sql = "SELECT g.uuid,g.name,g.type,e.uuid,e.name,e.alias,r.name,ifp.name,ifp.alias,ifp.opstate,ifp.admstate "+
 				     "FROM inventory.element_ifp ifp "+
 				     "JOIN inventory.element e "+
 				     "ON ifp.element_id = e.id "+

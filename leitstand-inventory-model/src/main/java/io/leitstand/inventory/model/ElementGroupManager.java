@@ -178,7 +178,7 @@ class ElementGroupManager{
 			   											   String filter) {
 		List<Object> args = new LinkedList<>();
 		args.add(type);
-		String query = "SELECT g.type, g.name, g.uuid, e.adm_state, e.op_state, count(*) "+
+		String query = "SELECT g.type, g.name, g.uuid, e.admstate, e.opstate, count(*) "+
 					   "FROM inventory.elementgroup g "+
 					   "JOIN inventory.element e "+
 					   "ON e.elementgroup_id = g.id "+
@@ -191,8 +191,8 @@ class ElementGroupManager{
 		      args.add(filter);
 		}
 
-		query += "GROUP BY  g.type, g.name, g.uuid, e.adm_state, e.op_state "+
-				 "ORDER BY  g.name, g.uuid, e.op_state";
+		query += "GROUP BY  g.type, g.name, g.uuid, e.admstate, e.opstate "+
+				 "ORDER BY  g.name, g.uuid, e.opstate";
 
 		LinkedList<ElementGroupStatistics.Builder> stats = new LinkedList<>();	  
 

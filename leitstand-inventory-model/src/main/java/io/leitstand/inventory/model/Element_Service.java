@@ -106,7 +106,7 @@ public class Element_Service implements Serializable{
 	@OneToOne(mappedBy="service", fetch=LAZY, cascade=ALL)
 	private Element_ServiceContext context;
 	
-	@Column(name="op_state")
+	@Column(name="opstate")
 	@Convert(converter=OperationalStateConverter.class)
 	private OperationalState state;
 
