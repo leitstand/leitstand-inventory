@@ -15,8 +15,6 @@
  */
 package io.leitstand.inventory.service;
 
-import java.util.List;
-
 import javax.persistence.EntityNotFoundException;
 
 /**
@@ -24,6 +22,28 @@ import javax.persistence.EntityNotFoundException;
  */
 public interface ElementLogicalInterfaceService {
 
+	/**
+	 * Finds all logical interfaces for the specified element matching the specified filter.
+	 * @param elementId the element ID
+	 * @param filter a filter for interface name, IP prefix or VLAN ID.
+	 * @param limit 
+	 * @param offset 
+	 * @return the matching logical interfaces.
+	 */
+	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filter, int offset, int limit);
+	
+	
+	/**
+	 * Finds all logical interfaces for the specified element matching the specified filter.
+	 * @param elementId the element name
+	 * @param filter a filter for interface name, IP prefix or VLAN ID.
+	 * @param limit 
+	 * @param offset 
+	 * @return the matching logical interfaces.
+	 */
+	ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName, String filter,  int offset, int limit);
+
+	
 	/**
 	 * Returns the logical interface with the specified name at the specified element.
 	 * @param elementId the element ID
@@ -42,22 +62,6 @@ public interface ElementLogicalInterfaceService {
 	 */
 	ElementLogicalInterface getLogicalInterface(ElementName elementName, InterfaceName name);
 	
-	/**
-	 * Returns all logical interfaces of the specified element.
-	 * @param elementId the element ID
-	 * @return the logical interface with the specified name at the specified element
-	 * @throws EntityNotFoundException if the requested element does not exist. 
-	 */
-	ElementLogicalInterfaces getLogicalInterfaces(ElementId elementId);
-
-	/**
-	 * Returns all logical interfaces of the specified element.
-	 * @param elementName- the element name
-	 * @return the logical interface with the specified name at the specified element
-	 * @throws EntityNotFoundException if the requested element does not exist. 
-	 */
-	ElementLogicalInterfaces getLogicalInterfaces(ElementName elementName);
-
 	/**
 	 * Removes the specified logical interface from the specified element.
 	 * @param elementId the element ID
@@ -93,24 +97,5 @@ public interface ElementLogicalInterfaceService {
 	 * @throws EntityNotFoundException if the specified element does not exist
 	 */
 	boolean storeLogicalInterface(ElementName elementName, ElementLogicalInterfaceSubmission ifc);
-	
-	/**
-	 * Updates all logical interfaces of the specified element in one go.
-	 * @param elementId the element ID
-	 * @param ifcs the list of logical interfaces
-	 * @throws EntityNotFoundException if the specified element does not exist
-	 */
-	void storeLogicalInterfaces(ElementId elementId, List<ElementLogicalInterfaceSubmission> ifcs);
-	
-	/**
-	 * Updates all logical interfaces of the specified element in one go.
-	 * @param elementId the element ID
-	 * @param ifcs the list of logical interfaces
-	 * @throws EntityNotFoundException if the specified element does not exist
-	 */
-	void storeLogicalInterfaces(ElementName elementName, List<ElementLogicalInterfaceSubmission> ifcs);
-	
-	
-	
 	
 }

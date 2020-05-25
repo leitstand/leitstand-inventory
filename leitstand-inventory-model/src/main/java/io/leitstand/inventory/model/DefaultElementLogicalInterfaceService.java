@@ -15,8 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import io.leitstand.commons.model.Service;
@@ -54,18 +52,6 @@ public class DefaultElementLogicalInterfaceService implements ElementLogicalInte
 	}
 
 	@Override
-	public ElementLogicalInterfaces getLogicalInterfaces(ElementId elementId) {
-		Element element = elements.fetchElement(elementId);
-		return manager.getLogicalInterfaces(element);
-	}
-
-	@Override
-	public ElementLogicalInterfaces getLogicalInterfaces(ElementName elementName) {
-		Element element = elements.fetchElement(elementName);
-		return manager.getLogicalInterfaces(element);
-	}
-
-	@Override
 	public boolean storeLogicalInterface(ElementId elementId, ElementLogicalInterfaceSubmission ifc) {
 		Element element = elements.fetchElement(elementId);
 		return manager.storeLogicalInterface(element,ifc);
@@ -75,19 +61,6 @@ public class DefaultElementLogicalInterfaceService implements ElementLogicalInte
 	public boolean storeLogicalInterface(ElementName elementName, ElementLogicalInterfaceSubmission ifc) {
 		Element element = elements.fetchElement(elementName);
 		return manager.storeLogicalInterface(element,ifc);
-	}
-
-	@Override
-	public void storeLogicalInterfaces(ElementId elementId, List<ElementLogicalInterfaceSubmission> ifc) {
-		Element element = elements.fetchElement(elementId);
-		manager.storeLogicalInterfaces(element,ifc);
-		
-	}
-
-	@Override
-	public void storeLogicalInterfaces(ElementName elementName, List<ElementLogicalInterfaceSubmission> ifc) {
-		Element element = elements.fetchElement(elementName);
-		manager.storeLogicalInterfaces(element,ifc);
 	}
 
 	@Override
@@ -106,6 +79,30 @@ public class DefaultElementLogicalInterfaceService implements ElementLogicalInte
 	public ElementLogicalInterface getLogicalInterface(ElementId elementId, InterfaceName name) {
 		Element element = elements.fetchElement(elementId);
 		return manager.getLogicalInterface(element, name);
+	}
+
+	@Override
+	public ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, 
+														  String filter, 
+														  int offset, 
+														  int limit) {
+		Element element = elements.fetchElement(elementId);
+		return manager.findLogicalInterfaces(element,
+											 filter,
+											 offset,
+											 limit);
+	}
+
+	@Override
+	public ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName,
+														  String filter, 
+														  int offset,
+														  int limit) {
+		Element element = elements.fetchElement(elementName);
+		return manager.findLogicalInterfaces(element,
+				 							 filter,
+				 							 offset,
+				 							 limit);
 	}
 
 }

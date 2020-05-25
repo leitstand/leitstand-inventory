@@ -87,7 +87,6 @@ public class ElementLogicalInterfaceManagerTest {
 		
 		manager.removeLogicalInterface(element, iflName);
 		
-		verify(ifc).removeLogicalInterface(ifl);
 		verify(repository).remove(ifl);
 	}
 	

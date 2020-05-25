@@ -55,10 +55,10 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 		 * @param interfaces - the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withLogicalInterface(ElementLogicalInterfaceData.Builder... interfaces){
+		public Builder withLogicalInterface(LogicalInterfaceReference.Builder... interfaces){
 			assertNotInvalidated(getClass(), object);
 			return withLogicalInterface(stream(interfaces)
-									   .map(ElementLogicalInterfaceData.Builder::build)
+									   .map(LogicalInterfaceReference.Builder::build)
 									   .collect(toList()));
 		}
 		
@@ -67,7 +67,7 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 		 * @param interfaces - the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withLogicalInterface(ElementLogicalInterfaceData... interfaces){
+		public Builder withLogicalInterface(LogicalInterfaceReference... interfaces){
 			return withLogicalInterface(Arrays.asList(interfaces));
 		}
 
@@ -76,7 +76,7 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 		 * @param interfaces - the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withLogicalInterface(List<ElementLogicalInterfaceData> logicalInterface){
+		public Builder withLogicalInterface(List<LogicalInterfaceReference> logicalInterface){
 			assertNotInvalidated(getClass(), object);
 			object.logicalInterfaces = Collections.unmodifiableList(new ArrayList<>(logicalInterface));
 			return this;
@@ -85,13 +85,13 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 	}
 	
 	@JsonbProperty("logical_interfaces")
-	private List<ElementLogicalInterfaceData> logicalInterfaces;
+	private List<LogicalInterfaceReference> logicalInterfaces;
 	
 	/**
 	 * Returns an immutable list of all logical interfaces defined on the element.
 	 * @return the list of all logical interfaces
 	 */
-	public List<ElementLogicalInterfaceData> getLogicalInterfaces() {
+	public List<LogicalInterfaceReference> getLogicalInterfaces() {
 		return logicalInterfaces;
 	}
 }

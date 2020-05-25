@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -65,9 +64,27 @@ import io.leitstand.inventory.service.OperationalState;
 			query="UPDATE Element_PhysicalInterface p SET p.neighborElement=NULL, p.neighborElementIfpName=NULL WHERE p.neighborElement=:element")
 @NamedQuery(name="Element_PhysicalInterface.updateOperationalState",
 			query="UPDATE Element_PhysicalInterface p SET p.opState=:state WHERE p.element=:element")
+@NamedQuery(name="Element_PhysicalInterface.countLogicalInterfaces",
+			query="SELECT count(ifl) FROM Element_LogicalInterface ifl WHERE ifl.element=:element AND ifl.ifc=:ifc")
+@NamedQuery(name="Element_PhysicalInterface.findByLogicalInterface",
+			query="SELECT ifp FROM Element_PhysicalInterface ifp WHERE ifp.element=:element AND ifp.ifc=:ifc")
 public class Element_PhysicalInterface implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	public static Query<Long> countLogicalInterfaces(Element_PhysicalInterface ifp){
+		return em -> em.createNamedQuery("Element_PhysicalInterface.countLogicalInterfaces",Long.class)
+					   .setParameter("element", ifp.getElement())
+					   .setParameter("ifc", ifp.getContainerInterface())
+					   .getSingleResult();
+	}
+	
+	public static Query<List<Element_PhysicalInterface>> findIfpOfIfl(Element_LogicalInterface ifl){
+		return em -> em.createNamedQuery("Element_PhysicalInterface.findByLogicalInterface",Element_PhysicalInterface.class)
+					   .setParameter("element", ifl.getElement())
+					   .setParameter("ifc",ifl.getContainerInterface())
+					   .getResultList();
+	}
 	
 	public static Query<List<Element_PhysicalInterface>> findIfps(Element element){
 		return em -> em.createNamedQuery("Element_PhysicalInterface.findByElement",Element_PhysicalInterface.class)
@@ -214,16 +231,8 @@ public class Element_PhysicalInterface implements Serializable{
 	}
 	
 
-	public Set<Element_LogicalInterface> getLogicalInterfaces() {
-		return ifc.getLogicalInterfaces();
-	}
-
 	public void setContainerInterface(Element_ContainerInterface containerInterface) {
-		if(this.ifc != null) {
-			this.ifc.removePhyiscalInterface(this);
-		}
 		this.ifc = containerInterface;
-		this.ifc.addPhysicalInterface(this);
 	}
 
 	public Element_ContainerInterface getContainerInterface() {

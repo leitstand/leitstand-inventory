@@ -52,18 +52,29 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		private ElementLogicalInterfaceData data = new ElementLogicalInterfaceData();
 		
 		/**
-		 * Lists the interface name.
+		 * Sets the interface name.
 		 * @param name the interface name
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withInterfaceName(InterfaceName name){
 			assertNotInvalidated(getClass(), data);
-			data.name = name;
+			data.iflName = name;
 			return this;
 		}
 		
 		/**
-		 * Lists the routing instance name.
+		 * Sets the interface name.
+		 * @param name the interface name
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withInterfaceAlias(String alias){
+			assertNotInvalidated(getClass(), data);
+			data.iflAlias = alias;
+			return this;
+		}
+		
+		/**
+		 * Sets the routing instance name.
 		 * @param routingInstance the routing instance name.
 		 * @return a reference to this builder to continue with object creation.
 		 */
@@ -74,7 +85,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the IP addresses bound to this logical interface.
+		 * Sets the IP addresses bound to this logical interface.
 		 * @param ifas the address interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -85,7 +96,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Lists the IP addresses bound to this logical interface.
+		 * Sets the IP addresses bound to this logical interface.
 		 * @param ifas the address interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -94,7 +105,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the IP addresses bound to this logical interface.
+		 * Sets the IP addresses bound to this logical interface.
 		 * @param ifas the address interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -105,7 +116,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Lists the configured VLANs.
+		 * Sets the configured VLANs.
 		 * @param vlans the configured VLANs
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -116,7 +127,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the configured VLANS.
+		 * Sets the configured VLANS.
 		 * @param vlans the configured VLANs
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -127,7 +138,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the used physical interfaces.
+		 * Sets the used physical interfaces.
 		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withPhysicalInterfaces(PhysicalInterface.Builder... ifps){
@@ -137,7 +148,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the used physical interfaces.
+		 * Sets the used physical interfaces.
 		 * @param ifps the used physical interfaces 
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -146,7 +157,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Lists the used physical interfaces.
+		 * Sets the used physical interfaces.
 		 * @param ifps the used physical interfaces 
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -157,7 +168,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Lists the operational state of the logical interface.
+		 * Sets the operational state of the logical interface.
 		 * @param opState the operational state
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -168,7 +179,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Lists the administrative state of the logical interface.
+		 * Sets the administrative state of the logical interface.
 		 * @param operationalState the operational state
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -195,8 +206,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 	}
 	
-	@JsonbProperty("ifl_name")
-	private InterfaceName name;
+	private InterfaceName iflName;
+	private String iflAlias;
 	
 	private RoutingInstanceName routingInstance;
 	
@@ -214,8 +225,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	 * Returns the logical interface name.
 	 * @return the logical interface name.
 	 */
-	public InterfaceName getName() {
-		return name;
+	public InterfaceName getIflName() {
+		return iflName;
 	}
 	
 	/**
@@ -260,6 +271,10 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	 */
 	public RoutingInstanceName getRoutingInstance() {
 		return routingInstance;
+	}
+
+	public String getIflAlias() {
+		return iflAlias;
 	}
 	
 

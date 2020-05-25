@@ -30,6 +30,10 @@ public class RoutingInstanceName extends Scalar<String> implements Serializable 
 
 	private static final long serialVersionUID = 1L;
 
+	public static RoutingInstanceName routingInstance(String name) {
+		return valueOf(name);
+	}
+	
 	/**
 	 * Creates a <code>RoutingInstanceName</code> from the specified string.
 	 * @param name the routing instance name

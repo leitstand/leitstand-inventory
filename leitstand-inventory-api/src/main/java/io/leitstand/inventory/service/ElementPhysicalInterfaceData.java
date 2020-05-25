@@ -16,12 +16,6 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
-
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -115,26 +109,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Sets the names of all logical interfaces defined on top of this physical interface.
-		 * @param ifcs - the logical interface names
-		 * @return a reference to this builder to continue with object creation
-		 */
-		public Builder withLogicalInterfaces(InterfaceName... ifcs){
-			return withLogicalInterfaces(asList(ifcs));
-		}
-
-		/**
-		 * Sets the names of all logical interfaces defined on top of this physical interface.
-		 * @param ifcs - the logical interface names
-		 * @return a reference to this builder to continue with object creation
-		 */
-		public Builder withLogicalInterfaces(Collection<InterfaceName> ifcs){
-			assertNotInvalidated(getClass(), data);
-			data.logicalInterfaces = unmodifiableSet(new TreeSet<>(ifcs));
-			return this;
-		}
-		
-		/**
 		 * Sets the neighbor interface of this physical interface.
 		 * @param neighbor - the neighbor interface
 		 * @return a reference to this builder to continue with object creation
@@ -183,9 +157,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	@JsonbProperty("administrative_state")
 	private AdministrativeState administrativeState;
 	
-	@JsonbProperty("ifl_names")
-	private Set<InterfaceName> logicalInterfaces;
-	
 	private String ifpAlias;
 	private String category;
 	
@@ -203,7 +174,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	 * Returns the physical interface name.
 	 * @return the physical interface name.
 	 */
-	public InterfaceName getName(){
+	public InterfaceName getIfpName(){
 		return name;
 	}
 	
@@ -229,15 +200,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	 */
 	public AdministrativeState getAdministrativeState() {
 		return administrativeState;
-	}
-	
-	/**
-	 * Returns the names of all logical interfaces defined on this physical interface.
-	 * Returns an empty set, if no logical interfaces exist on this physical interface.
-	 * @return the logical interface names.
-	 */
-	public Set<InterfaceName> getLogicalInterfaces(){
-		return unmodifiableSet(logicalInterfaces);
 	}
 	
 	/**

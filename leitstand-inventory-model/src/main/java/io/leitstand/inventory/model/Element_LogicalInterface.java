@@ -62,10 +62,23 @@ import io.leitstand.inventory.service.VlanTag;
 			query="SELECT i FROM Element_LogicalInterface i WHERE i.element=:element")
 @NamedQuery(name="Element_LogicalInterface.removeAll", 
 			query="DELETE FROM Element_LogicalInterface i WHERE i.element=:element")
+@NamedQuery(name="Element_LogicalInterface.findLogicalInterfaces",
+			query="SELECT i FROM Element_LogicalInterface i JOIN i.addresses a JOIN i.vlans v WHERE CAST(i.routingInstance AS TEXT) REGEXP :filter OR CAST(i.name AS TEXT) REGEXP :filter OR CAST(a.address AS TEXT) = :filter OR CAST(v.vlanId AS TEXT) = :filter" )
 public class Element_LogicalInterface implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static Query<List<Element_LogicalInterface>> findIfls(Element element, 
+														         String filter, 
+														         int offset, 
+														         int limit) {
+		return em -> em.createNamedQuery("Element_LogicalInterface.findByElement", Element_LogicalInterface.class)
+				   	   .setParameter("element",element)
+				   	   .setFirstResult(offset)
+				   	   .setMaxResults(limit)
+				   	   .getResultList();	
+		}
+	
 	public static Query<Element_LogicalInterface> findIflByName(Element element, InterfaceName name) {
 		return em -> em.find(Element_LogicalInterface.class, new Element_InterfacePK(element,name));
 	}
@@ -91,6 +104,9 @@ public class Element_LogicalInterface implements Serializable {
 	@Column(name="name")
 	@Convert(converter=InterfaceNameConverter.class)
 	private InterfaceName name;
+	
+	private String alias;
+	
 	@ManyToOne
 	@JoinColumns({
 		@JoinColumn(name="element_id", referencedColumnName="element_id", updatable=false, insertable=false),
@@ -169,6 +185,14 @@ public class Element_LogicalInterface implements Serializable {
 		return name;
 	}
 	
+	public String getInterfaceAlias() {
+		return alias;
+	}
+	
+	public void setInterfaceAlias(String alias) {
+		this.alias = alias;
+	}
+	
 	public Element_ContainerInterface getContainerInterface(){
 		return ifc;
 	}
@@ -178,9 +202,7 @@ public class Element_LogicalInterface implements Serializable {
 	}
 
 	public void setContainerInterface(Element_ContainerInterface ifc) {
-		this.ifc.removeLogicalInterface(this);
 		this.ifc = ifc;
-		this.ifc.addLogicalInterface(this);
 	}
 	
 	public OperationalState getOperationalState() {

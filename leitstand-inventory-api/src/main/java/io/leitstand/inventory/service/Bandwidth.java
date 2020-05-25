@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static java.lang.String.format;
 import static javax.persistence.EnumType.STRING;
 
@@ -41,6 +42,13 @@ import io.leitstand.inventory.jsonb.BandwidthAdapter;
 public class Bandwidth extends CompositeValue implements Serializable{
 
 	private static final Pattern BANDWITH_PATTERN = Pattern.compile("^(\\d+[\\.]\\d{3}) ([KMGT]bps)$");
+	
+	public static Bandwidth bandwidth(String bandwidth) {
+		if(isEmptyString(bandwidth)) {
+			return null;
+		}
+		return new Bandwidth(bandwidth);
+	}
 	
 	/**
 	 * Enumeration of available bandwidths units.

@@ -59,6 +59,9 @@ import io.leitstand.security.auth.Scopes;
 @Produces(APPLICATION_JSON)
 public class ElementPhysicalInterfaceResource {
 	
+	private static final String IFP_PATTERN = "[a-z0-9]+-(?:\\d+\\/?)+";
+
+	
 	@Inject
 	private ElementPhysicalInterfaceService service;
 	
@@ -80,7 +83,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@GET
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementPhysicalInterface getPhysicalInterface(@PathParam("element_id") ElementId id, 
 	                                                   @PathParam("ifp_name") InterfaceName ifpName){
@@ -88,7 +91,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@GET
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementPhysicalInterface getPhysicalInterface(@PathParam("element_name") ElementName name,
 	                                                    @PathParam("ifp_name") InterfaceName ifpName){
@@ -96,7 +99,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	public Response storePhysicalInterface(@PathParam("element_id") ElementId id, 
 	                                       @PathParam("ifp_name") InterfaceName ifpName,
 	                                       ElementPhysicalInterfaceSubmission ifp){
@@ -115,7 +118,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/neighbor")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/neighbor")
 	public Response storePhysicealInterfaceNeighbor(@PathParam("element_name") ElementName name, 
 												@PathParam("ifp_name") InterfaceName ifpName,
 												ElementPhysicalInterfaceNeighbor neighbor){
@@ -125,7 +128,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@DELETE
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	public Response removePhysicalInterface(@PathParam("element_name") ElementName name, 
 	                              			@PathParam("ifp_name") InterfaceName ifpName){
 		service.removePhysicalInterface(name,ifpName);
@@ -133,7 +136,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@DELETE
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	public Response removePhysicalInterface(@PathParam("element_id") ElementId id, 
 											@PathParam("ifp_name") InterfaceName ifpName){
 		service.removePhysicalInterface(id,ifpName);
@@ -141,7 +144,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@DELETE
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/neighbor")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/neighbor")
 	public Response removePhysicalInterfaceNeighbor(@PathParam("element_name") ElementName name, 
 	                              					@PathParam("ifp_name") InterfaceName ifpName){
 		service.removePhysicalInterfaceNeighbor(name,ifpName);
@@ -149,7 +152,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@DELETE
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/neighbor")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/neighbor")
 	public Response removePhysicalInterfaceNeighbor(@PathParam("element_id") ElementId id, 
 													@PathParam("ifp_name") InterfaceName ifpName){
 		service.removePhysicalInterfaceNeighbor(id,ifpName);
@@ -157,7 +160,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/operational_state")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/operational_state")
 	public Response storePhysicalLink(@PathParam("element_name") ElementName name, 
 	                                  @PathParam("ifp_name") InterfaceName ifpName,
 	                                  OperationalState opState){
@@ -166,7 +169,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/operational_state")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/operational_state")
 	public Response storePhysicalLink(@PathParam("element_id") ElementId id, 
 	                              	  @PathParam("ifp_name") InterfaceName ifpName,
 	                              	  OperationalState opState){
@@ -175,7 +178,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/administrative_state")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/administrative_state")
 	public Response storePhysicalLink(@PathParam("element_name") ElementName name, 
 	                                  @PathParam("ifp_name") InterfaceName ifpName,
 	                                  AdministrativeState admState){
@@ -185,7 +188,7 @@ public class ElementPhysicalInterfaceResource {
 	
 	
 	@PUT
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/administrative_state")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/administrative_state")
 	public Response storePhysicalLink(@PathParam("element_id") ElementId id, 
 	                                  @PathParam("ifp_name") InterfaceName ifpName,
 	                                  AdministrativeState admState){
@@ -194,7 +197,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}/neighbor")
+	@Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}/neighbor")
 	public Response storePhysicalLink(@PathParam("element_id") ElementId id, 
 	                                  @PathParam("ifp_name") InterfaceName ifpName,
 	                                  ElementPhysicalInterfaceNeighbor neighbor){
@@ -203,7 +206,7 @@ public class ElementPhysicalInterfaceResource {
 	}
 	
 	@PUT
-	@Path("/{element_name}/physical_interfaces/{ifp_name:[a-z0-9]{2,4}-\\d+/\\d+/\\d+(:\\d+)?}")
+	@Path("/{element_name}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
 	public Response storePhysicalInterface(@PathParam("element_name") ElementName name, 
 	                                       @PathParam("ifp_name") InterfaceName ifpName,
 	                                       ElementPhysicalInterfaceSubmission ifp){
