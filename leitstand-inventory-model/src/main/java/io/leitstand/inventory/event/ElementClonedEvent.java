@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.event;
 
+import io.leitstand.inventory.service.ElementAlias;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.MACAddress;
@@ -51,6 +52,12 @@ public class ElementClonedEvent extends ElementEvent{
 			return this;
 		}
 		
+		public Builder withCloneElementAlias(ElementAlias elementAlias) {
+			object.cloneAlias = elementAlias;
+			return this;
+		}
+		
+		
 		public Builder withCloneSerialNumber(String serialNumber) {
 			object.cloneSerialNumber = serialNumber;
 			return this;
@@ -68,6 +75,7 @@ public class ElementClonedEvent extends ElementEvent{
 	private MACAddress  macAddress;
 	private ElementId cloneId;
 	private ElementName cloneName;
+	private ElementAlias cloneAlias;
 	private String cloneSerialNumber;
 	private MACAddress cloneMacAddress;
 	
@@ -94,5 +102,9 @@ public class ElementClonedEvent extends ElementEvent{
 	
 	public MACAddress getCloneMacAddress() {
 		return cloneMacAddress;
+	}
+
+	public ElementAlias getCloneAlias() {
+		return cloneAlias;
 	}
 }
