@@ -173,8 +173,8 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	 * @return the container interface name.
 	 */
 	public InterfaceName getIfcName() {
-		if(ifcName == null && ifpName != null) {
-			return new InterfaceName(ifpName+"/0");
+		if(ifcName == null) {
+			return ifpName;
 		}
 		return ifcName;
 	}
