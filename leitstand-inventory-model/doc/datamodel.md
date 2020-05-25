@@ -177,9 +177,9 @@ The `element` table forms the element aggregate root and contains general elemen
 | PLATFORM_ID    	| INT8			| Reference to the platform record.		|
 | ELEMENTGROUP_ID	| INT8			| Reference to the element group record.	|
 | DESCRIPTION 		| VARCHAR(1024) 	| Optional element description. 			|
-| OP_STATE 			| VARCHAR(16)	| Operational state of the element.		|
-| ADM_STATE 			| VARCHAR(16)   | Administrative state of the element.	|
-| MGMT_MAC 			| CHARACTER(17) | Management interface MAC address.		|
+| OPSTATE 			| VARCHAR(16)	| Operational state of the element.		|
+| ADMSTATE 			| VARCHAR(16)   | Administrative state of the element.	|
+| MGMTMAC 			| CHARACTER(17) | Management interface MAC address.		|
 | SERIAL 			| VARCHAR(255)  | Serial number of the element.			|
 | MODCOUNT 			| INT4 			| Modification counter.					| 			
 | TSMODIFIED 		| TIMESTAMP 		| Last-modification timestamp.			|
@@ -365,8 +365,8 @@ The `element_ifl` table stores the logical interfaces per element.
 | NAME 						  | VARCHAR(16)	  | Logical interface name. 						 |
 | ALIAS 						  | VARCHAR(255)	  | Optional logical interface alias. 			 |
 | ROUTING_INSTANCE			  | VARCHAR(255)	  | Routing instance name.						 |
-| ADM_STATE 					  | VARCHAR(16)	  | Logical interface administrative state.		 |
-| OP_STATE 					  | VARCHAR(16    | Logical interface operational state.			 |
+| ADMSTATE 					  | VARCHAR(16)	  | Logical interface administrative state.		 |
+| OPSTATE 					  | VARCHAR(16    | Logical interface operational state.			 |
 | TSMODIFIED 				  | TIMESTAMP 	  | Last-modification timestamp. 				 |
 | TSCREATED 					  | TIMESTAMP	  | Creation timestamp. 							 |
 
@@ -447,11 +447,11 @@ The `element_ifp` table stores the physical interfaces per element.
 | NAME 						  | VARCHAR(16)	  | Physical interface name. 					|
 | ALIAS 						  | VARCHAR(255)	  | Optional physical interface alias. 			|
 | CATEGORY 					  | VARCHAR(32)	  | Optional physical interface classification. |
-| ADM_STATE 					  | VARCHAR(16)	  | Physical interface administrative state. 	|
-| OP_STATE 					  | VARCHAR(16    | Physical interface operational state.		|
-| MAC_ADDRESS 				  | VARCHAR(17)   | Physical interface MAC address. 				|
-| BW_VALUE 					  | FLOAT4		  | Physical interface bandwidth value. 			|
-| BW_UNIT  					  | CHARACTER(4)	  | Physical interface bandwidth unit. 			|
+| ADMSTATE 					  | VARCHAR(16)	  | Physical interface administrative state. 	|
+| OPSTATE 					  | VARCHAR(16    | Physical interface operational state.		|
+| MACADDR   				      | VARCHAR(17)   | Physical interface MAC address. 				|
+| BWVALUE 					  | FLOAT4		  | Physical interface bandwidth value. 			|
+| BWUNIT  					  | CHARACTER(4)	  | Physical interface bandwidth unit. 			|
 | NEIGHBOR\_ELEMENT_ID 		  | INT8			  | Referehce to neighbor element record.	 	|
 | NEIGHBOR\_ELEMENT\_IFP_NAME | VARCHAR(16) 	  | Physical neighbor interface name.			|
 | TSMODIFIED 				  | TIMESTAMP 	  | Last-modification timestamp. 				|
@@ -544,17 +544,17 @@ The modules are stored for the sake of documentation and can be leveraged for as
 | DESCRIPTION  | VARCHAR(1024) | Optional hardware module description.    									  |
 | SERIAL		   | VARCHAR(32)   | Hardware module serial number.												  |
 | FRU		   |	 CHAR(1)		   | Flag, whether the hardware module is a field-replaceable unit.				  |
-| MODULE_CLASS | VARCHAR(255)  | Module classification (e.g. Power Supply Unit, Fan, CPU, Memory,...).		  |
-| MFC_NAME	   | VARCHAR(255)  | Manufacturer name.															  |
-| MFC_DATA	   | TIMESTAMP     | Manufacturing date.															  |
-| VENDOR_TYPE  | VARCHAR(255)  | Vendor-specific hardware module type information.							  |
-| MODEL_NAME   | VARCHAR(255)  | Hardware module model name.													  |
-| HARDWARE_REV | VARCHAR(64)   | Hardware revision number.													  |
-| FIRNWARE_REV | VARCHAR(64)   | Firmware revision number.													  |
-| SOFTWARE_REV | VARCHAR(64)   | Software revision number.													  |
+| MODULECLASS  | VARCHAR(255)  | Module classification (e.g. Power Supply Unit, Fan, CPU, Memory,...).		  |
+| MFCNAME	   | VARCHAR(255)  | Manufacturer name.															  |
+| MFCDATA	   | TIMESTAMP     | Manufacturing date.															  |
+| VENDORTYPE   | VARCHAR(255)  | Vendor-specific hardware module type information.							  |
+| MODELNAME    | VARCHAR(255)  | Hardware module model name.													  |
+| HWREV 		   | VARCHAR(64)   | Hardware revision number.													  |
+| FWREV 		   | VARCHAR(64)   | Firmware revision number.													  |
+| SWREV 		   | VARCHAR(64)   | Software revision number.													  |
 | LOCATION     | VARCHAR(255)  | Location of the hardware module in the device.								  |
-| ASSET_ID     | VARCHAR(64)   | Asset accounting identifier. 												  |
-| ADM_STATE    | VARCHAR(16)   | Administrative state. 														  |
+| ASSETID      | VARCHAR(64)   | Asset accounting identifier. 												  |
+| ADMSTATE     | VARCHAR(16)   | Administrative state. 														  |
 | PARENT_ID    | INT8   		   | Optional parent hardware module, if the module is located in another module. |
 | MODCOUNT     | INT4		   | Modification counter. 														  |
 | TSMODIFIED   | TIMESTAMP	   | Last-modification timestamp. 												  |
@@ -590,7 +590,7 @@ The `element_service` tables stores which services exist per element.
 |ELEMENT_ID		     | INT8 		   | Reference to the element record.					 |
 |SERVICE_ID 		     | INT8 		   | Reference to the service record.					 |
 |SERVICE\_CONTEXT_ID | INT8 		   | Optional foreign key to the service context record. |
-|OP_STATE			 | VARCHAR(16) | Operational state of the service.					 |
+|OPSTATE	      		 | VARCHAR(16) | Operational state of the service.					 |
 |TSMODIFIED 			 | TIMESTAMP   | Last-modification timestamp.						 |
 
 The following operational service states exist:
@@ -1012,7 +1012,7 @@ The `service_context` view combines information from the `element`, `element_ser
 | SERVICE_TYPE		   | Service type.				  |
 | SERVICE_NAME 		   | Service name.				  |
 | SERVICE\_DISPLAYNAME | Service display name.		  |
-| SERVICE\_OP\_STATE   | Service state.				  |
+| SERVICE\_OPSTATE     | Service state.				  |
 | PARENT_ID 			   | Parent service context ID.   |
 
 #### Usage
@@ -1033,8 +1033,7 @@ WITH RECURSIVE HIERARCHY (service_context_id,
 					    service_type,
 					    service_name,
 					    service_displayname,
-					    service_op_state,
-					    service_context_state,
+					    service_opstate,
 					    parent_id,
 					    level) 
 AS ( SELECT service_context_id, 
@@ -1058,8 +1057,7 @@ AS ( SELECT service_context_id,
             c.service_type, 
             c.service_name, 
             c.service_displayname,
-            c.service_op_state, 
-            c.service_context_state,
+            c.service_opstate, 
             c.parent_id,
             level + 1
      FROM inventory.service_context c 
@@ -1083,7 +1081,7 @@ SELECT element_uuid,
        service_type, 
        service_name, 
        service_displayname, 
-       service_op_state
+       service_opstate
 FROM   HIERARCHY ctx 
 WHERE  level < 10 
 ORDER BY level

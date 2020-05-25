@@ -111,8 +111,8 @@ public class Element_PhysicalInterface implements Serializable{
 	private InterfaceName name;
 	
 	@AttributeOverrides({
-		@AttributeOverride(name="value", column=@Column(name="bw_value")),
-		@AttributeOverride(name="unit", column=@Column(name="bw_unit"))
+		@AttributeOverride(name="value", column=@Column(name="bwvalue")),
+		@AttributeOverride(name="unit", column=@Column(name="bwunit"))
 	})
 	private Bandwidth type;
 	
@@ -125,7 +125,7 @@ public class Element_PhysicalInterface implements Serializable{
 	private AdministrativeState admState;
 	
 	@Convert(converter=MACAddressConverter.class)
-	@Column(name="mac_address")
+	@Column(name="macaddr")
 	private MACAddress mac;
 	
 	@Temporal(TIMESTAMP)

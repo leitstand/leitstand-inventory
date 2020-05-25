@@ -112,13 +112,13 @@ public class Element_Module extends AbstractEntity{
 	@Column(name="assetid")
 	private String assetId;
 	
-	@Column(name="hardwarerev")
+	@Column(name="hwrev")
 	private String hardwareRevision;
 	
-	@Column(name="softwarerev")
+	@Column(name="swrev")
 	private String softwareRevision;
 	
-	@Column(name="firmwarerev")
+	@Column(name="fwrev")
 	private String firmwareRevision;
 	
 	@Column(name="mfcname")
