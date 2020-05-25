@@ -41,9 +41,9 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 			return this;
 		}
 		
-		public Builder withIfpClass(String ifpClass) {
+		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), object);
-			object.ifpClass = ifpClass;
+			object.category = category;
 			return this;
 		}
 		
@@ -63,7 +63,7 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 	
 	private InterfaceName ifpName;
 	private String ifpAlias;
-	private String ifpClass;
+	private String category;
 	private OperationalState opState;
 	private AdministrativeState admState;
 	
@@ -75,8 +75,8 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 	
 	public OperationalState getOpState() {

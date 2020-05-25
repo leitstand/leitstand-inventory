@@ -115,7 +115,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/0"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -134,7 +134,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 			assertEquals(submission.getAdministrativeState(), ifp.getPhysicalInterface().getAdministrativeState());
 			assertEquals(submission.getBandwidth(), ifp.getPhysicalInterface().getBandwidth());
 			assertEquals(submission.getIfpAlias(), ifp.getPhysicalInterface().getIfpAlias());
-			assertEquals(submission.getIfpClass(), ifp.getPhysicalInterface().getIfpClass());
+			assertEquals(submission.getCategory(), ifp.getPhysicalInterface().getCategory());
 			assertEquals(submission.getMacAddress(), ifp.getPhysicalInterface().getMacAddress());
 			assertEquals(submission.getOperationalState(), ifp.getPhysicalInterface().getOperationalState());
 			assertNull(ifp.getPhysicalInterface().getNeighbor());
@@ -150,7 +150,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/1"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -173,7 +173,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 			assertEquals(submission.getAdministrativeState(), ifp.getPhysicalInterface().getAdministrativeState());
 			assertEquals(submission.getBandwidth(), ifp.getPhysicalInterface().getBandwidth());
 			assertEquals(submission.getIfpAlias(), ifp.getPhysicalInterface().getIfpAlias());
-			assertEquals(submission.getIfpClass(), ifp.getPhysicalInterface().getIfpClass());
+			assertEquals(submission.getCategory(), ifp.getPhysicalInterface().getCategory());
 			assertEquals(submission.getMacAddress(), ifp.getPhysicalInterface().getMacAddress());
 			assertEquals(submission.getOperationalState(), ifp.getPhysicalInterface().getOperationalState());
 			assertNotNull(ifp.getPhysicalInterface().getNeighbor());
@@ -188,7 +188,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/2"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -227,7 +227,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/3"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -266,7 +266,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/3"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -303,7 +303,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/4"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)
@@ -336,7 +336,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(new Bandwidth("100.000 Mbps"))
 														.withIfpAlias("IFP alias")
-														.withIfpClass("IFP class")
+														.withCategory("IFP category")
 														.withIfpName(new InterfaceName("ifp-0/0/5"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
 														.withOperationalState(OperationalState.UP)

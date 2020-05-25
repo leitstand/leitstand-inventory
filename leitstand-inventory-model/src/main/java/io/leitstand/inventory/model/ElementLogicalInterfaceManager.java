@@ -141,7 +141,7 @@ public class ElementLogicalInterfaceManager {
 				ifps.add(newPhysicalInterfaceInfo()
 						 .withIfpName(ifp.getIfpName())
 						 .withIfpAlias(ifp.getIfpAlias())
-						 .withIfpClass(ifp.getIfpClass())
+						 .withCategory(ifp.getCategory())
 						 .withMacAddress(ifp.getMacAddress())
 						 .withOperationalState(ifp.getOperationalState())
 						 .withAdministrativeState(ifp.getAdministrativeState())

@@ -103,7 +103,7 @@ public class ElementPhysicalInterfaceManager {
 		ElementPhysicalInterfaceData ifpData = newPhysicalInterfaceData()
 											  .withIfpName(ifp.getIfpName())
 											  .withIfpAlias(ifp.getIfpAlias())
-											  .withIfpClass(ifp.getIfpClass())
+											  .withCategory(ifp.getCategory())
 											  .withBandwidth(ifp.getBandwidth())
 											  .withMacAddress(ifp.getMacAddress())
 											  .withAdministrativeState(ifp.getAdministrativeState())
@@ -132,7 +132,7 @@ public class ElementPhysicalInterfaceManager {
 			ifps.add(newPhysicalInterfaceData()
 					 .withIfpName(ifp.getIfpName())
 					 .withIfpAlias(ifp.getIfpAlias())
-					 .withIfpClass(ifp.getIfpClass())
+					 .withCategory(ifp.getCategory())
 					 .withBandwidth(ifp.getBandwidth())
 					 .withMacAddress(ifp.getMacAddress())
 					 .withAdministrativeState(ifp.getAdministrativeState())
@@ -194,7 +194,7 @@ public class ElementPhysicalInterfaceManager {
 		ifp.setOperationalState(submission.getOperationalState());
 		ifp.setContainerInterface(ifc);
 		ifp.setIfpAlias(submission.getIfpAlias());
-		ifp.setIfpClass(submission.getIfpClass());
+		ifp.setCategory(submission.getCategory());
 		if(submission.getNeighbor() != null ) {
 			Element neighborElement = elements.tryFetchElement(submission.getNeighbor().getElementName());
 			if(neighborElement != null) {

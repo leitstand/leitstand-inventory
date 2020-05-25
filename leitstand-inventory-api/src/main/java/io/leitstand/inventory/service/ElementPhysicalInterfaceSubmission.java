@@ -47,9 +47,9 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 			return this;
 		}
 		
-		public Builder withIfpClass(String ifpClass) {
+		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), submission);
-			submission.ifpClass = ifpClass;
+			submission.category = category;
 			return this;
 		}
 		
@@ -105,26 +105,20 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 
-	@JsonbProperty("ifp_name")
 	private InterfaceName ifpName;
 	
 	private String ifpAlias;
 	
-	private String ifpClass;
+	private String category;
 
-	@JsonbProperty("bandwidth")
 	private Bandwidth bandwidth;
 
-	@JsonbProperty("mac_address")
 	private MACAddress macAddress;
 	
-	@JsonbProperty("operational_state")
 	private OperationalState operationalState;
 	
-	@JsonbProperty("administrative_state")
 	private AdministrativeState administrativeState;
 	
-	@JsonbProperty("ifc_name")
 	private InterfaceName ifcName;
 	
 	private ElementPhysicalInterfaceNeighbor neighbor;
@@ -179,7 +173,7 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 	/**
-	 * Returns the adminstrative state of the physical interface.
+	 * Returns the administrative state of the physical interface.
 	 * @return the administrative state
 	 */
 	public AdministrativeState getAdministrativeState() {
@@ -190,8 +184,8 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 	
 	public ElementPhysicalInterfaceNeighbor getNeighbor() {

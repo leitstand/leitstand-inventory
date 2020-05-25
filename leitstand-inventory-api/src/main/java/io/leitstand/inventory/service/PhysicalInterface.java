@@ -40,8 +40,8 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 			return this;
 		}
 		
-		public Builder withIfpClass(String ifpClass) {
-			ifp.ifpClass = ifpClass;
+		public Builder withCategory(String category) {
+			ifp.category = category;
 			return this;
 		}
 		
@@ -74,7 +74,7 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 	@JsonbProperty("ifp_name")
 	private InterfaceName ifpName;
 	
-	private String ifpClass;
+	private String category;
 	private String ifpAlias;
 	
 	@JsonbProperty("mac_address")
@@ -107,8 +107,8 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 	
 	@Override

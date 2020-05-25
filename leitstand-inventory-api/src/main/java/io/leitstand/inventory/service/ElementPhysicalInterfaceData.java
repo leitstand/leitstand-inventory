@@ -64,9 +64,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 			return this;
 		}
 
-		public Builder withIfpClass(String ifpClass) {
+		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), data);
-			data.ifpClass = ifpClass;
+			data.category = category;
 			return this;
 		}
 		
@@ -187,7 +187,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	private Set<InterfaceName> logicalInterfaces;
 	
 	private String ifpAlias;
-	private String ifpClass;
+	private String category;
 	
 	private ElementPhysicalInterfaceNeighbor neighbor;
 	
@@ -252,7 +252,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 }

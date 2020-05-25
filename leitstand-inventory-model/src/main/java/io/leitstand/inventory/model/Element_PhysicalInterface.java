@@ -137,8 +137,7 @@ public class Element_PhysicalInterface implements Serializable{
 	@Column(name="alias")
 	private String ifpAlias;
 	
-	@Column(name="ifp_class")
-	private String ifpClass;
+	private String category;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -271,12 +270,12 @@ public class Element_PhysicalInterface implements Serializable{
 		return ifpAlias;
 	}
 	
-	public void setIfpClass(String ifpClass) {
-		this.ifpClass = ifpClass;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 
 }
