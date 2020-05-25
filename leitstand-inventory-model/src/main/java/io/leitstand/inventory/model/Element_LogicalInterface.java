@@ -107,7 +107,7 @@ public class Element_LogicalInterface implements Serializable {
 	@Convert(converter=AdministrativeStateConverter.class)
 	private AdministrativeState admState;
 	
-	@Column(name="routing_instance")
+	@Column(name="instance")
 	@Convert(converter=RoutingInstanceNameConverter.class)
 	private RoutingInstanceName routingInstance;
 	
