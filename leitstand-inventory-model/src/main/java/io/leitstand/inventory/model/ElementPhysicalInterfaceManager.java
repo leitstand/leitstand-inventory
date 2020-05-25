@@ -192,7 +192,6 @@ public class ElementPhysicalInterfaceManager {
 		ifp.setMacAddress(submission.getMacAddress());
 		ifp.setAdministrativeState(submission.getAdministrativeState());
 		ifp.setOperationalState(submission.getOperationalState());
-		ifp.setMtuSize(submission.getMtuSize());
 		ifp.setContainerInterface(ifc);
 		ifp.setIfpAlias(submission.getIfpAlias());
 		ifp.setIfpClass(submission.getIfpClass());

@@ -82,17 +82,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Sets the configured MTU size
-		 * @param mtuSize - the MTU size
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withMtuSize(int mtuSize) {
-			assertNotInvalidated(getClass(), data);
-			data.mtuSize = mtuSize;
-			return this;
-		}
-		
-		/**
 		 * Sets the MAC address of the physical interface
 		 * @param macAddress - the MAC address
 		 * @return a reference to this builder to continue object creation
@@ -194,9 +183,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	@JsonbProperty("administrative_state")
 	private AdministrativeState administrativeState;
 	
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
-	
 	@JsonbProperty("ifl_names")
 	private Set<InterfaceName> logicalInterfaces;
 	
@@ -252,14 +238,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	 */
 	public Set<InterfaceName> getLogicalInterfaces(){
 		return unmodifiableSet(logicalInterfaces);
-	}
-	
-	/**
-	 * Returns the configured MTU size.
-	 * @return the MTU size
-	 */
-	public int getMtuSize() {
-		return mtuSize;
 	}
 	
 	/**

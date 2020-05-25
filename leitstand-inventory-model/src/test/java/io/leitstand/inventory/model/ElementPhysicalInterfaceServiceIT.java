@@ -118,7 +118,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/0"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.build();
 		ArgumentCaptor<ElementPhysicalInterfaceEvent> eventCaptor = forClass(ElementPhysicalInterfaceEvent.class);
@@ -154,7 +153,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/1"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.withNeighbor(newPhysicalInterfaceNeighbor()
 																	  .withElementId(neighbor.getElementId())
@@ -193,7 +191,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/2"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.build();
 		ArgumentCaptor<ElementPhysicalInterfaceEvent> eventCaptor = forClass(ElementPhysicalInterfaceEvent.class);
@@ -233,7 +230,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/3"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.withNeighbor(newPhysicalInterfaceNeighbor()
 																	  .withElementId(neighbor.getElementId())
@@ -273,7 +269,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/3"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.withNeighbor(newPhysicalInterfaceNeighbor()
 																	  .withElementId(neighbor.getElementId())
@@ -311,7 +306,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/4"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.withNeighbor(newPhysicalInterfaceNeighbor()
 																	  .withElementId(neighbor.getElementId())
@@ -345,7 +339,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 														.withIfpClass("IFP class")
 														.withIfpName(new InterfaceName("ifp-0/0/5"))
 														.withMacAddress(new MACAddress("00:11:22:33:44:55:66"))
-														.withMtuSize(1500)
 														.withOperationalState(OperationalState.UP)
 														.withNeighbor(newPhysicalInterfaceNeighbor()
 																	  .withElementId(neighbor.getElementId())

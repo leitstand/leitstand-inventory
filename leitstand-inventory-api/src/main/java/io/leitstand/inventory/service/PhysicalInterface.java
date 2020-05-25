@@ -61,11 +61,6 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 			return this;
 		}
 		
-		public Builder withMtuSize(int mtuSize) {
-			ifp.mtuSize = mtuSize;
-			return this;
-		}
-		
 		public PhysicalInterface build() {
 			try {
 				return ifp;
@@ -84,9 +79,6 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 	
 	@JsonbProperty("mac_address")
 	private MACAddress macAddress;
-	
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
 	
 	@JsonbProperty("operational_state")
 	private OperationalState operationalState;
@@ -111,10 +103,6 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 		return macAddress;
 	}
 	
-	public int getMtuSize() {
-		return mtuSize;
-	}
-
 	public String getIfpAlias() {
 		return ifpAlias;
 	}

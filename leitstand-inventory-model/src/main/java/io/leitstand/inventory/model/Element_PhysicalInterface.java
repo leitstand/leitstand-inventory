@@ -110,9 +110,6 @@ public class Element_PhysicalInterface implements Serializable{
 	@Column(name="name")
 	private InterfaceName name;
 	
-	@Column(name="mtu_size")
-	private int mtuSize;
-	
 	@AttributeOverrides({
 		@AttributeOverride(name="value", column=@Column(name="bw_value")),
 		@AttributeOverride(name="unit", column=@Column(name="bw_unit"))
@@ -170,7 +167,6 @@ public class Element_PhysicalInterface implements Serializable{
 		this.name  = name;
 		this.type    = type;
 		this.ifc = ifc;
-		this.mtuSize = 1500;
 		long now = System.currentTimeMillis();
 		this.tsCreated = new Date(now);
 		this.tsModified = new Date(now);
@@ -235,14 +231,6 @@ public class Element_PhysicalInterface implements Serializable{
 		return ifc;
 	}
 
-	public void setMtuSize(int mtuSize) {
-		this.mtuSize = mtuSize;
-	}
-	
-	public int getMtuSize() {
-		return mtuSize;
-	}
-	
 	public boolean linkTo(Element element, InterfaceName ifpName) {
 		if(Objects.equals(this.neighborElement, element) && Objects.equals(this.neighborElementIfpName, ifpName)) {
 			return false;

@@ -59,12 +59,6 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 			return this;
 		}
 		
-		public Builder withMtuSize(int mtuSize) {
-			assertNotInvalidated(getClass(), submission);
-			submission.mtuSize = mtuSize;
-			return this;
-		}
-		
 		public Builder withMacAddress(MACAddress macAddress) {
 			assertNotInvalidated(getClass(), submission);
 			submission.macAddress = macAddress;
@@ -121,9 +115,6 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	@JsonbProperty("bandwidth")
 	private Bandwidth bandwidth;
 
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
-	
 	@JsonbProperty("mac_address")
 	private MACAddress macAddress;
 	
@@ -195,14 +186,6 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 		return administrativeState;
 	}
 	
-	/**
-	 * Returns the configure MTU size.
-	 * @return the MTU size.
-	 */
-	public int getMtuSize() {
-		return mtuSize;
-	}
-
 	public String getIfpAlias() {
 		return ifpAlias;
 	}

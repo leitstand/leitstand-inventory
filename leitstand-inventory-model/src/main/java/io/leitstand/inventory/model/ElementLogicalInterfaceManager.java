@@ -101,7 +101,6 @@ public class ElementLogicalInterfaceManager {
 			ifps.add(newPhysicalInterfaceInfo()
 					 .withIfpName(ifp.getIfpName())
 					 .withMacAddress(ifp.getMacAddress())
-					 .withMtuSize(ifp.getMtuSize())
 					 .withOperationalState(ifp.getOperationalState())
 					 .withAdministrativeState(ifp.getAdministrativeState())
 					 .build());
@@ -144,7 +143,6 @@ public class ElementLogicalInterfaceManager {
 						 .withIfpAlias(ifp.getIfpAlias())
 						 .withIfpClass(ifp.getIfpClass())
 						 .withMacAddress(ifp.getMacAddress())
-						 .withMtuSize(ifp.getMtuSize())
 						 .withOperationalState(ifp.getOperationalState())
 						 .withAdministrativeState(ifp.getAdministrativeState())
 						 .build());

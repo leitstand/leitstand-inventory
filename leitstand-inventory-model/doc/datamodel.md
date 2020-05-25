@@ -452,7 +452,6 @@ The `element_ifp` table stores the physical interfaces per element.
 | MAC_ADDRESS 				  | VARCHAR(17)   | Physical interface MAC address. 				|
 | BW_VALUE 					  | FLOAT4		  | Physical interface bandwidth value. 			|
 | BW_UNIT  					  | CHARACTER(4)	  | Physical interface bandwidth unit. 			|
-| MTU_SIZE 					  | INT4			  | Physical interface MTU size. 				| 
 | NEIGHBOR\_ELEMENT_ID 		  | INT8			  | Referehce to neighbor element record.	 	|
 | NEIGHBOR\_ELEMENT\_IFP_NAME | VARCHAR(16) 	  | Physical neighbor interface name.			|
 | TSMODIFIED 				  | TIMESTAMP 	  | Last-modification timestamp. 				|
