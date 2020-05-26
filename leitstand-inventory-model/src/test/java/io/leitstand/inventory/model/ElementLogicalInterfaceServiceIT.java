@@ -127,7 +127,9 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 	
 	@After
 	public void removeLogicalInterface() {
-		service.removeLogicalInterface(ELEMENT_ID, IFL_NAME);
+		transaction(()->{
+			service.removeLogicalInterface(ELEMENT_ID, IFL_NAME);
+		});
 	}
 	
 	
@@ -173,7 +175,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			
 			Message message = messageCaptor.getValue();
-			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED));
+			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED.getReasonCode()));
 			
 			
 		});
@@ -219,7 +221,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		doNothing().when(messages).add(messageCaptor.capture());
 
 		transaction(() -> {
-			boolean created = service.storeLogicalInterface(ELEMENT_ID, ifc);
+			boolean created = service.storeLogicalInterface(ELEMENT_ID, update);
 			assertFalse(created);
 		});
 		
@@ -244,7 +246,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			
 			Message message = messageCaptor.getValue();
-			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED));
+			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED.getReasonCode()));
 			
 		});
 		
