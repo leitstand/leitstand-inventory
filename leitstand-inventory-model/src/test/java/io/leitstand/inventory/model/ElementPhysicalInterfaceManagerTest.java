@@ -96,7 +96,7 @@ public class ElementPhysicalInterfaceManagerTest {
 	
 	@Test
 	public void cannot_remove_physical_interface_with_associated_logical_interfaces() {
-		when(repository.execute(any(Query.class))).thenReturn(ifp);
+		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(1L);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
 		when(ifp.getContainerInterface()).thenReturn(ifc);
 		
@@ -108,7 +108,8 @@ public class ElementPhysicalInterfaceManagerTest {
 	
 	@Test
 	public void remove_physical_interface_without_associated_logical_interfaces() {
-		when(repository.execute(any(Query.class))).thenReturn(ifp);
+		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(0L);
+		when(ifp.getElement()).thenReturn(element);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
 		when(ifp.getContainerInterface()).thenReturn(ifc);
 		manager.removePhysicalInterface(element, IFP_NAME);
