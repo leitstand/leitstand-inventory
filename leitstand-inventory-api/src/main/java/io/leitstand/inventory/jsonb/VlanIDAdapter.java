@@ -13,29 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.jpa;
+package io.leitstand.inventory.jsonb;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import javax.json.bind.adapter.JsonbAdapter;
 
-import io.leitstand.inventory.service.VlanId;
-@Converter(autoApply=true)
-public class VlanIdConverter implements AttributeConverter<VlanId, Integer> {
+import io.leitstand.inventory.service.VlanID;
+
+public class VlanIDAdapter implements JsonbAdapter<VlanID,Integer> {
 
 	@Override
-	public Integer convertToDatabaseColumn(VlanId attribute) {
-		if(attribute == null) {
+	public VlanID adaptFromJson(Integer v) throws Exception {
+		if(v == null){
 			return null;
 		}
-		return attribute.getValue();
+		return new VlanID(v);
 	}
 
 	@Override
-	public VlanId convertToEntityAttribute(Integer dbData) {
-		if(dbData == null) {
+	public Integer adaptToJson(VlanID v) throws Exception {
+		if(v == null){
 			return null;
 		}
-		return new VlanId(dbData);
+		return v.getValue();
 	}
 
 }

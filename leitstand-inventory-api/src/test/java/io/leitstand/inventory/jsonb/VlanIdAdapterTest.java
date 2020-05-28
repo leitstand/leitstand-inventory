@@ -20,11 +20,11 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import io.leitstand.inventory.service.VlanId;
+import io.leitstand.inventory.service.VlanID;
 
 public class VlanIdAdapterTest {
 
-	private VlanIdAdapter adapter = new VlanIdAdapter();
+	private VlanIDAdapter adapter = new VlanIDAdapter();
 	
 	
 	@Test
@@ -39,13 +39,13 @@ public class VlanIdAdapterTest {
 	
 	@Test
 	public void non_null_type_is_adaptToJsonled_properly() throws Exception{
-		assertEquals(Integer.valueOf(10),adapter.adaptToJson(new VlanId(10)));
+		assertEquals(Integer.valueOf(10),adapter.adaptToJson(new VlanID(10)));
 
 	}
 	
 	@Test
 	public void non_null_string_is_adaptFromJsonled_properly() throws Exception{
-		assertEquals(new VlanId(10),adapter.adaptFromJson(Integer.valueOf(10)));
+		assertEquals(new VlanID(10),adapter.adaptFromJson(Integer.valueOf(10)));
 	}
 	
 }

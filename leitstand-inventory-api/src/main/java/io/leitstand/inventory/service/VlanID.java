@@ -18,20 +18,29 @@ package io.leitstand.inventory.service;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 
 import io.leitstand.commons.model.Scalar;
-import io.leitstand.inventory.jsonb.VlanIdAdapter;
+import io.leitstand.inventory.jsonb.VlanIDAdapter;
 
-@JsonbTypeAdapter(VlanIdAdapter.class)
-public class VlanId extends Scalar<Integer> {
+@JsonbTypeAdapter(VlanIDAdapter.class)
+public class VlanID extends Scalar<Integer> {
 
 	private static final long serialVersionUID = 1L;
 
+	public static VlanID vlanID(int vlanId) {
+		return valueOf(vlanId);
+	}
+	
+	public static VlanID valueOf(int vlanId) {
+		return new VlanID(vlanId);
+	}
+	
+	
 	private Integer value;
 	
-	public VlanId(int vlanId) {
+	public VlanID(int vlanId) {
 		this(Integer.valueOf(vlanId));
 	}
 	
-	public VlanId(Integer vlanId) {
+	public VlanID(Integer vlanId) {
 		this.value = vlanId;
 	}
 	

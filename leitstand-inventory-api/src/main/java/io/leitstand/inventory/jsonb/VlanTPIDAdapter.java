@@ -13,27 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.service;
+package io.leitstand.inventory.jsonb;
 
-import io.leitstand.commons.model.Scalar;
+import javax.json.bind.adapter.JsonbAdapter;
 
-public class VlanTpId extends Scalar<Integer>{
+import io.leitstand.inventory.service.VlanTPID;
 
-	private static final long serialVersionUID = 1L;
+public class VlanTPIDAdapter implements JsonbAdapter<VlanTPID,Integer> {
 
-	public static VlanTpId valueOf(int tpid) {
-		return new VlanTpId(tpid);
-	}
-	
-	private int value;
-	
-	public VlanTpId(int tpid) {
-		this.value = tpid;
-	}
-	
 	@Override
-	public Integer getValue() {
-		return value;
+	public VlanTPID adaptFromJson(Integer v) throws Exception {
+		if(v == null){
+			return null;
+		}
+		return new VlanTPID(v);
+	}
+
+	@Override
+	public Integer adaptToJson(VlanTPID v) throws Exception {
+		if(v == null){
+			return null;
+		}
+		return v.getValue();
 	}
 
 }

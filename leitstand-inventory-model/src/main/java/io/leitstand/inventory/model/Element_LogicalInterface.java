@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.service.VlanTag.newVlanTag;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -63,21 +62,47 @@ import io.leitstand.inventory.service.VlanTag;
 @NamedQuery(name="Element_LogicalInterface.removeAll", 
 			query="DELETE FROM Element_LogicalInterface i WHERE i.element=:element")
 @NamedQuery(name="Element_LogicalInterface.findLogicalInterfaces",
-			query="SELECT i FROM Element_LogicalInterface i JOIN i.addresses a JOIN i.vlans v WHERE CAST(i.routingInstance AS TEXT) REGEXP :filter OR CAST(i.name AS TEXT) REGEXP :filter OR CAST(a.address AS TEXT) = :filter OR CAST(v.vlanId AS TEXT) = :filter" )
+			query="SELECT i FROM Element_LogicalInterface i WHERE i.element=:element AND (CAST(i.routingInstance AS TEXT) REGEXP :filter OR CAST(i.name AS TEXT) REGEXP :filter OR CAST(i.alias AS TEXT) REGEXP :filter)" )
+@NamedQuery(name="Element_LogicalInterface.findLogicalInterfacesByPrefix",
+			query="SELECT i FROM Element_LogicalInterface i JOIN i.addresses a WHERE i.element=:element AND CAST(a.address AS TEXT)=:filter" )
+@NamedQuery(name="Element_LogicalInterface.findLogicalInterfacesByVlan",
+			query="SELECT i FROM Element_LogicalInterface i JOIN i.vlans v WHERE i.element=:element AND CAST(v.vlanId AS INTEGER)=:vlan" )
+
+
 public class Element_LogicalInterface implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public static Query<List<Element_LogicalInterface>> findIfls(Element element, 
 														         String filter, 
-														         int offset, 
 														         int limit) {
-		return em -> em.createNamedQuery("Element_LogicalInterface.findByElement", Element_LogicalInterface.class)
+		return em -> em.createNamedQuery("Element_LogicalInterface.findLogicalInterfaces", Element_LogicalInterface.class)
 				   	   .setParameter("element",element)
-				   	   .setFirstResult(offset)
+				   	   .setParameter("filter", filter)
 				   	   .setMaxResults(limit)
 				   	   .getResultList();	
-		}
+	}
+	
+	public static Query<List<Element_LogicalInterface>> findIflsByPrefix(Element element, 
+																	     String filter, 
+																	     int limit) {
+		return em -> em.createNamedQuery("Element_LogicalInterface.findLogicalInterfacesByPrefix", Element_LogicalInterface.class)
+					   .setParameter("element",element)
+					   .setParameter("filter", filter)
+					   .setMaxResults(limit)
+					   .getResultList();	
+	}
+	
+	public static Query<List<Element_LogicalInterface>> findIflsByVlanId(Element element, 
+																		 int vlan, 
+																		 int limit) {
+		return em -> em.createNamedQuery("Element_LogicalInterface.findLogicalInterfacesByVlan", Element_LogicalInterface.class)
+					   .setParameter("element",element)
+					   .setParameter("vlan", vlan)
+					   .setMaxResults(limit)
+					   .getResultList();	
+}
+	
 	
 	public static Query<Element_LogicalInterface> findIflByName(Element element, InterfaceName name) {
 		return em -> em.find(Element_LogicalInterface.class, new Element_InterfacePK(element,name));
@@ -147,7 +172,9 @@ public class Element_LogicalInterface implements Serializable {
 						@JoinColumn(name="element_id", referencedColumnName="element_id"),
 						@JoinColumn(name="element_ifl_name", referencedColumnName="name")
 					 })
-	private List<Element_LogicalInterface_Vlan> vlans;
+	@AttributeOverride(name="vlanTpid", column=@Column(name="tpid"))
+	@AttributeOverride(name="vlanId", column=@Column(name="vid"))
+	private List<VlanTag> vlans;
 	
 	@Temporal(TIMESTAMP)
 	private Date tsCreated;
@@ -234,33 +261,14 @@ public class Element_LogicalInterface implements Serializable {
 	}
 
 	public void setVlans(List<VlanTag> vlans) {
-		this.vlans.clear();
-		for(int i=0; i < vlans.size(); i++) {
-			this.vlans.add(new Element_LogicalInterface_Vlan(vlans.get(i).getVlanId(), i));
-		}
+		this.vlans = new LinkedList<>(vlans);
 	}
 	
 	public List<VlanTag> getVlans() {
 		if(this.vlans.isEmpty()) {
 			return emptyList();
 		}
-		VlanTag.Type type = VlanTag.Type.CTAG;
-		if(this.vlans.size() == 1) {
-			// Tag type is omitted for single-tagged VLANs.
-			type = null;
-		}
-		List<VlanTag> tags = new LinkedList<>();
-		for(Element_LogicalInterface_Vlan vlan : this.vlans) {
-			tags.add(newVlanTag()
-					 .withTagType(type)
-					 .withVlanId(vlan.getVlanId())
-					 .build());
-			// All remaining tags are S-Tags.
-			type = VlanTag.Type.STAG;
-		}
-		return unmodifiableList(tags);
+		return unmodifiableList(vlans);
 	}
 
-
-	
 }

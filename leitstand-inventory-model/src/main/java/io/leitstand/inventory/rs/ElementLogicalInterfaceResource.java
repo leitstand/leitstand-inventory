@@ -25,6 +25,8 @@ import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -70,11 +72,9 @@ public class ElementLogicalInterfaceResource {
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementLogicalInterfaces getLogicalInterfaces(@Valid @PathParam("element") ElementId id,
 														 @QueryParam("filter") String filter,
-														 @QueryParam("offset") @DefaultValue("0") int offset,
 														 @QueryParam("limit") @DefaultValue("100") int limit){
 		return service.findLogicalInterfaces(id, 
 											 filter,
-											 offset, 
 											 limit);
 	}
 	
@@ -83,11 +83,9 @@ public class ElementLogicalInterfaceResource {
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementLogicalInterfaces getLogicalInterfaces(@Valid @PathParam("element") ElementName name,
 			 											 @QueryParam("filter") String filter,
-			 											 @QueryParam("offset") @DefaultValue("0") int offset,
 			 											 @QueryParam("limit") @DefaultValue("100") int limit){
 		return service.findLogicalInterfaces(name, 
 											 filter,
-											 offset, 
 											 limit);
 	}
 	
@@ -144,6 +142,31 @@ public class ElementLogicalInterfaceResource {
 		return success(messages);
 	}
 	
+	@PUT
+	@Path("/{element:"+UUID_PATTERN+"}/logical_interfaces")
+	public Response storeLogicalInterfaces(@PathParam("element") ElementId id, 
+	                                       List<ElementLogicalInterfaceSubmission> ifls){
+		
+		service.removeLogicalInterfaces(id);
+		for(ElementLogicalInterfaceSubmission ifl : ifls) {
+			service.storeLogicalInterface(id, ifl);
+		}
+		
+		return success(messages);
+	}
+	
+	@PUT
+	@Path("/{element}/logical_interfaces")
+	public Response storeLogicalInterfaces(@PathParam("element") ElementName name, 
+										   List<ElementLogicalInterfaceSubmission> ifls){
+		service.removeLogicalInterfaces(name);
+		for(ElementLogicalInterfaceSubmission ifl : ifls) {
+			service.storeLogicalInterface(name, ifl);
+		}
+		return success(messages);
+	}
+		
+		
 	@DELETE
 	@Path("/{element}/logical_interfaces/{ifl_name:"+IFL_PATTERN+"}")
 	public Response removeLogicalInterface(@PathParam("element") ElementName elementName, 
@@ -161,3 +184,5 @@ public class ElementLogicalInterfaceResource {
 	}
 	
 }
+
+	

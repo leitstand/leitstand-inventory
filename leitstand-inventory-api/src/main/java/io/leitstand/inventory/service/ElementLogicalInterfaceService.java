@@ -27,10 +27,9 @@ public interface ElementLogicalInterfaceService {
 	 * @param elementId the element ID
 	 * @param filter a filter for interface name, IP prefix or VLAN ID.
 	 * @param limit 
-	 * @param offset 
 	 * @return the matching logical interfaces.
 	 */
-	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filter, int offset, int limit);
+	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filteR, int limit);
 	
 	
 	/**
@@ -41,7 +40,7 @@ public interface ElementLogicalInterfaceService {
 	 * @param offset 
 	 * @return the matching logical interfaces.
 	 */
-	ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName, String filter,  int offset, int limit);
+	ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName, String filter, int limit);
 
 	
 	/**
@@ -97,5 +96,21 @@ public interface ElementLogicalInterfaceService {
 	 * @throws EntityNotFoundException if the specified element does not exist
 	 */
 	boolean storeLogicalInterface(ElementName elementName, ElementLogicalInterfaceSubmission ifc);
+
+	
+	/**
+	 * Removes all logical interfaces of the specified element.
+	 * @param elementId the element ID
+	 * @param ifcs the logical interface of this element.
+	 */
+	void removeLogicalInterfaces(ElementId elementId);
+	
+	/**
+	 * Removes all logical interfaces of the specified element.
+	 * @param elementName the element name
+	 * @param ifcs the logical interface of this element.
+	 */
+	void removeLogicalInterfaces(ElementName elementName);
+	
 	
 }

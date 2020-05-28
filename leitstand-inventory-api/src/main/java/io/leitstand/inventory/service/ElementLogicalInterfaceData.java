@@ -18,11 +18,13 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -219,7 +221,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	private List<VlanTag> vlans;
 	
 	@JsonbProperty("physical_interfaces")
-	private List<PhysicalInterface> pyhsicalInterfaces;
+	private List<PhysicalInterface> pyhsicalInterfaces = emptyList();
 
 	/**
 	 * Returns the logical interface name.

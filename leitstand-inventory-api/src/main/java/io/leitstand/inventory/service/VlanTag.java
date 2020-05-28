@@ -17,8 +17,11 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
+import javax.persistence.Embeddable;
+
 import io.leitstand.commons.model.ValueObject;
 
+@Embeddable
 public class VlanTag extends ValueObject{
 	
 	public static Builder newVlanTag() {
@@ -29,21 +32,15 @@ public class VlanTag extends ValueObject{
 		
 		private VlanTag tag = new VlanTag();
 		
-		public Builder withTagType(Type type) {
-			assertNotInvalidated(getClass(), tag);
-			tag.vlanType = type;
-			return this;
-		}
-		
-		public Builder withVlanId(VlanId vlanId) {
+		public Builder withVlanId(VlanID vlanId) {
 			assertNotInvalidated(getClass(), tag);
 			tag.vlanId = vlanId;
 			return this;
 		}
 		
-		public Builder withVlanTpId(VlanTpId vlanTpId) {
+		public Builder withVlanTpid(VlanTPID vlanTpid) {
 			assertNotInvalidated(getClass(), tag);
-			tag.vlanTpId = vlanTpId;
+			tag.vlanTpid = vlanTpid;
 			return this;
 		}
 		
@@ -57,26 +54,14 @@ public class VlanTag extends ValueObject{
 		}
 	}
 
-	public static enum Type {
-		CTAG,
-		STAG;
-	}
+	private VlanTPID vlanTpid;
+	private VlanID vlanId;
 	
-	
-	private Type vlanType;
-	private VlanTpId vlanTpId;
-	private VlanId vlanId;
-	
-	
-	public Type getVlanType() {
-		return vlanType;
-	}
-	
-	public VlanId getVlanId() {
+	public VlanID getVlanId() {
 		return vlanId;
 	}
 	
-	public VlanTpId getVlanTpId() {
-		return vlanTpId;
+	public VlanTPID getVlanTpid() {
+		return vlanTpid;
 	}
 }

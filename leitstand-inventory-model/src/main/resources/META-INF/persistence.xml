@@ -69,7 +69,8 @@
 		<class>io.leitstand.inventory.jpa.ServiceContextStateConverter</class>
 		<class>io.leitstand.inventory.jpa.ServiceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ServiceTypeConverter</class>
-		<class>io.leitstand.inventory.jpa.VlanIdConverter</class>
+		<class>io.leitstand.inventory.jpa.VlanIDConverter</class>
+		<class>io.leitstand.inventory.jpa.VlanTPIDConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformNameConverter</class>
 		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>

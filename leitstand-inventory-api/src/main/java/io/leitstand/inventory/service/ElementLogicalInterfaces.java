@@ -17,12 +17,15 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -52,46 +55,36 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 		
 		/**
 		 * Sets all logical interfaces available on the element.
-		 * @param interfaces - the logical interfaces
+		 * @param interfaces the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withLogicalInterface(LogicalInterfaceReference.Builder... interfaces){
-			assertNotInvalidated(getClass(), object);
-			return withLogicalInterface(stream(interfaces)
-									   .map(LogicalInterfaceReference.Builder::build)
-									   .collect(toList()));
-		}
-		
-		/**
-		 * Sets all logical interfaces available on the element.
-		 * @param interfaces - the logical interfaces
-		 * @return a reference to this builder to continue object creation.
-		 */
-		public Builder withLogicalInterface(LogicalInterfaceReference... interfaces){
-			return withLogicalInterface(Arrays.asList(interfaces));
+		public Builder withLogicalInterfaces(ElementLogicalInterfaceData.Builder... interfaces){
+			return withLogicalInterfaces(stream(interfaces)
+										 .map(ElementLogicalInterfaceData.Builder::build)
+										 .collect(toList()));
 		}
 
 		/**
 		 * Sets all logical interfaces available on the element.
-		 * @param interfaces - the logical interfaces
+		 * @param interfaces the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withLogicalInterface(List<LogicalInterfaceReference> logicalInterface){
+		public Builder withLogicalInterfaces(List<ElementLogicalInterfaceData> logicalInterface){
 			assertNotInvalidated(getClass(), object);
-			object.logicalInterfaces = Collections.unmodifiableList(new ArrayList<>(logicalInterface));
+			object.logicalInterfaces = unmodifiableList(new ArrayList<>(logicalInterface));
 			return this;
 		}
 		
 	}
 	
 	@JsonbProperty("logical_interfaces")
-	private List<LogicalInterfaceReference> logicalInterfaces;
+	private List<ElementLogicalInterfaceData> logicalInterfaces = emptyList();
 	
 	/**
 	 * Returns an immutable list of all logical interfaces defined on the element.
 	 * @return the list of all logical interfaces
 	 */
-	public List<LogicalInterfaceReference> getLogicalInterfaces() {
+	public List<ElementLogicalInterfaceData> getLogicalInterfaces() {
 		return logicalInterfaces;
 	}
 }

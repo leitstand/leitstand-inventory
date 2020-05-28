@@ -84,25 +84,35 @@ public class DefaultElementLogicalInterfaceService implements ElementLogicalInte
 	@Override
 	public ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, 
 														  String filter, 
-														  int offset, 
 														  int limit) {
 		Element element = elements.fetchElement(elementId);
 		return manager.findLogicalInterfaces(element,
 											 filter,
-											 offset,
 											 limit);
 	}
 
 	@Override
 	public ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName,
 														  String filter, 
-														  int offset,
 														  int limit) {
 		Element element = elements.fetchElement(elementName);
 		return manager.findLogicalInterfaces(element,
 				 							 filter,
-				 							 offset,
 				 							 limit);
 	}
+
+	@Override
+	public void removeLogicalInterfaces(ElementId elementId) {
+		Element element = elements.fetchElement(elementId);
+		manager.removeLogicalInterfaces(element);
+	}
+
+	@Override
+	public void removeLogicalInterfaces(ElementName elementName) {
+		Element element = elements.fetchElement(elementName);
+		manager.removeLogicalInterfaces(element);
+	}
+
+
 
 }
