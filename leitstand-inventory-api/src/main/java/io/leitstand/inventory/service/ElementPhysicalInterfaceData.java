@@ -48,7 +48,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		 */
 		public Builder withIfpName(InterfaceName name){
 			assertNotInvalidated(getClass(), data);
-			data.name = name;
+			data.ifpName = name;
 			return this;
 		}
 		
@@ -144,8 +144,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	}
 	
 	
-	@JsonbProperty("ifp_name")
-	private InterfaceName name;
+	private InterfaceName ifpName;
 	
 	@JsonbProperty("bandwidth")
 	private Bandwidth bandwidth;
@@ -175,7 +174,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	 * @return the physical interface name.
 	 */
 	public InterfaceName getIfpName(){
-		return name;
+		return ifpName;
 	}
 	
 	/**
