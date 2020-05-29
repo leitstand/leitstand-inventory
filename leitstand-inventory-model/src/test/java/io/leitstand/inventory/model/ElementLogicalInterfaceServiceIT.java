@@ -1,5 +1,6 @@
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -138,9 +139,13 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 	}
 	
 	@After
-	public void removeLogicalInterface() {
-		transaction(()->{
-			service.removeLogicalInterface(ELEMENT_ID, IFL_NAME);
+	public void removeInterfaces() {
+		transaction(() -> {
+			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_vlan"));
+			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_ifa"));
+			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));
+			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
+			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifc"));
 		});
 	}
 	

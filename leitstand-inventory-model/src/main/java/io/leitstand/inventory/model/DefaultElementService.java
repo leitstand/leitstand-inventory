@@ -46,10 +46,50 @@ public class DefaultElementService implements ElementService {
 	}
 
 	@Override
-	public List<ElementSettings> findElements(String filter, int offset, int items) {
-		return manager.findElements(filter,offset,items);
+	public List<ElementSettings> findElementsByName(String filter, 
+													int offset, 
+													int items) {
+		return manager.filterElementsByName(filter,
+											offset,
+											items);
 	}
 
+	@Override
+	public List<ElementSettings> findElementsByNameOrTag(String filter, 
+														 int offset, 
+														 int items) {
+		return manager.filterElementsByNameOrTag(filter,
+											   	 offset,
+											   	 items);
+	}
+
+	@Override
+	public List<ElementSettings> findElementsByAssetId(String filter, 
+													   int offset, 
+													   int items) {
+		return manager.filterElementsByAssetId(filter,
+											   offset,
+											   items);
+	}
+
+	@Override
+	public List<ElementSettings> findElementsBySerialNumber(String filter, 
+															int offset, 
+															int items) {
+		return manager.filterElementsBySerialNumber(filter,
+												  	offset,
+												  	items);
+	}
+
+	@Override
+	public List<ElementSettings> findElementsByManagementIP(String filter, 
+															int offset, 
+															int items) {
+		return manager.filterElementsByManagementIP(filter,
+												 	offset,
+												 	items);
+	}
+	
 	@Override
 	public void removeElement(ElementId elementId) {
 		Element element = elements.tryFetchElement(elementId);
@@ -94,5 +134,7 @@ public class DefaultElementService implements ElementService {
 		Element element = elements.fetchElement(name);
 		manager.updateElementOperationalState(element,state);
 	}
+
+
 
 }

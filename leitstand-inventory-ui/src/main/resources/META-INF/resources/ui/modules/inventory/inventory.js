@@ -307,7 +307,7 @@ export class Elements extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements?filter={{&filter}}",
+		return this.json("/api/v1/elements?filter={{&filter}}&by={{by}}",
 						 this._cfg,
 						 params)
 				   .GET();

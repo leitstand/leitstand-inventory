@@ -71,6 +71,7 @@ public class ElementSettingsManager {
 			   .withOperationalState(element.getOperationalState())
 			   .withPlane(element.getElementRole().getPlane())
 			   .withSerialNumber(element.getSerialNumber())
+			   .withAssetId(element.getAssetId())
 			   .withManagementInterfaceMacAddress(element.getManagementInterfaceMacAddress())
 			   .withManagementInterfaces(element.getManagementInterfaces())
 			   .withDescription(element.getDescription())
@@ -132,6 +133,7 @@ public class ElementSettingsManager {
 		element.setElementAlias(settings.getElementAlias());
 		element.setDescription(settings.getDescription());
 		element.setSerialNumber(settings.getSerialNumber());
+		element.setAssetId(settings.getAssetId());
 		element.setManagementInterfaceMacAddress(settings.getManagementInterfaceMacAddress());
 		element.setElementManagementInterfaces(settings.getManagementInterfaces().values());
 		element.setTags(settings.getTags());
@@ -172,6 +174,7 @@ public class ElementSettingsManager {
 		OperationalState previousOperationalState = element.setOperationalState(settings.getOperationalState());
 		element.setDescription(settings.getDescription());
 		element.setSerialNumber(settings.getSerialNumber());
+		element.setAssetId(settings.getAssetId());
 		element.setElementManagementInterfaces(settings.getManagementInterfaces().values());
 		element.setManagementInterfaceMacAddress(settings.getManagementInterfaceMacAddress());
 		element.setTags(settings.getTags());
@@ -306,7 +309,5 @@ public class ElementSettingsManager {
 		}
 		
 	}
-
-	
 	
 }

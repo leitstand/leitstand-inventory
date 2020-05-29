@@ -107,13 +107,33 @@ const elementsController = function() {
 	return new Controller({
 		resource:elements,
 		viewModel:function(items){
-			const filter = this.location.param("filter");
-			return {"elements"	: items,
-					"filter" : filter};
+			const by = this.location.param("by") || "name";
+			return { "elements"	: items,
+					 "filter" : this.location.params,
+					 "render_description":function(){
+						return by == "name" || by == "ntag";
+					 },
+					 "render_serial":function(){
+						return by == "serial";
+				 	 },
+					 "render_assetid":function(){
+						return by == "assetid";
+					 },
+					 "render_mgmt_ip":function(){
+						return by == "ip";
+					 },
+					 "management_interface_list":function(){
+						 const ifcs = [];
+						 for(const ifc in this.mgmt_interfaces){
+							 ifcs.push(this.mgmt_interfaces[ifc]);
+						 }
+						 return ifcs;
+					 }};
 		},
 		buttons:{
 			"filter":function(){
-				this.reload({"filter":this.input("filter").value()});
+				this.reload({"filter":this.input("filter").value(),
+							 "by":this.input("by").value()});
 			}
 		}
 	});

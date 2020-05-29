@@ -115,7 +115,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 	}
 	
 	@After
-	public void removeIfps() {
+	public void removeInterfaces() {
 		transaction(() -> {
 			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
 			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));

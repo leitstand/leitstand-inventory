@@ -61,6 +61,48 @@ public class ElementResourceTest {
 	private ElementResource resource = new ElementResource();
 	
 	@Test
+	public void find_elements_by_name() {
+		resource.findElement("foo", "name", 0, 100);
+		verify(service).findElementsByName("foo", 0, 100);
+	}
+	
+	@Test
+	public void find_elements_by_name_or_tags() {
+		resource.findElement("foo", "ntag", 0, 100);
+		verify(service).findElementsByNameOrTag("foo", 0, 100);
+	}
+
+	@Test
+	public void find_elements_by_management_ip() {
+		resource.findElement("foo", "ip", 0, 100);
+		verify(service).findElementsByManagementIP("foo", 0, 100);
+	}
+
+	@Test
+	public void find_elements_by_serial_number() {
+		resource.findElement("foo", "serial", 0, 100);
+		verify(service).findElementsBySerialNumber("foo", 0, 100);
+	}
+
+	@Test
+	public void find_elements_by_asset_id() {
+		resource.findElement("foo", "assetid", 0, 100);
+		verify(service).findElementsByAssetId("foo", 0, 100);
+	}
+	
+	@Test
+	public void find_elements_by_name_or_tags_for_unkown_property() {
+		resource.findElement("foo", "unknown", 0, 100);
+		verify(service).findElementsByNameOrTag("foo", 0, 100);
+	}
+	
+	@Test
+	public void find_elements_by_name_or_tags_for_empty_property() {
+		resource.findElement("foo", "", 0, 100);
+		verify(service).findElementsByNameOrTag("foo", 0, 100);
+	}
+	
+	@Test
 	public void settings_scope_is_not_allowed_to_force_remove_element_identified_by_id() {
 		exception.expect(AccessDeniedException.class);
 		exception.expect(reason(AUT0002E_SCOPE_ACCESS_DENIED));
