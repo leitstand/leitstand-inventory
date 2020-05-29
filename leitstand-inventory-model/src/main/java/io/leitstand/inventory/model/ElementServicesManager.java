@@ -185,7 +185,7 @@ public class ElementServicesManager {
 			Service serviceDef = repository.execute(findService(submission.getServiceName()));
 			if(serviceDef == null){
 				serviceDef = transaction.run(action -> { Service newServiceDef = new Service(submission.getServiceType(),
-																							   submission.getServiceName());
+																							 submission.getServiceName());
 														 action.add(newServiceDef);}, 
 											  resume -> resume.execute(findService(submission.getServiceName())));
 			}

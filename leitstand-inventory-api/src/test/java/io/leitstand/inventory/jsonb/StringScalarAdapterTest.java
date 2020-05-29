@@ -62,6 +62,7 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.RoutingInstanceName;
+import io.leitstand.inventory.service.ServiceId;
 import io.leitstand.inventory.service.ServiceName;
 
 @RunWith(Parameterized.class)
@@ -102,6 +103,7 @@ public class StringScalarAdapterTest {
 			{new ElementGroupIdAdapter(),	 	 	uuid,					new ElementGroupId(uuid)},
 			{new ElementGroupNameAdapter(),	 		"unit-group",			new ElementGroupName("unit-group")},
 			{new ElementGroupTypeAdapter(),	 		"unit-type",			new ElementGroupType("unit-type")},
+			{new ServiceIdAdapter(),		 		uuid,					new ServiceId(uuid)},
 			{new ServiceNameAdapter(),		 		"unit-service",			new ServiceName("unit-service")},
 			{new PlatformIdAdapter(),			 	uuid,					new PlatformId(uuid)},
 			{new RackNameAdapter(),			 		"unit-rack",			new RackName("unit-rack")},
