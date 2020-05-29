@@ -29,7 +29,7 @@ public interface ElementLogicalInterfaceService {
 	 * @param limit 
 	 * @return the matching logical interfaces.
 	 */
-	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filteR, int limit);
+	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filter, int limit);
 	
 	
 	/**

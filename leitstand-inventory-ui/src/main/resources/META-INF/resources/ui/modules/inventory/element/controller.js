@@ -527,7 +527,14 @@ const elementIfpController = function(){
 const elementIflsController = function(){
 	const ifls = new ElementLogicalInterfaces();
 	return new Controller({
-		resource:ifls
+		resource:ifls,
+		button:{
+			"filter":function(){
+				const params = this.location.params();
+				params.filter = this.input("filter").value();
+				this.reload(params);
+			}
+		}
 	});
 };
 
@@ -581,6 +588,16 @@ const elementMenu = {
 				 "confirm-remove-element.html" : elementController()}
 };
 
+const elementIfpsMenu = {
+	"master"  : elementIfpsController(),
+	"details" : { "element-ifp.html" : elementIfpController() }
+};
+
+const elementIflsMenu = {
+	"master"  : elementIflsController(),
+	"details" : { "element-ifl.html" : elementIflController() }
+};
+
 const elementRackMenu = {
 	"master" : elementRackController(),
 	"details" : {"new-element-location.html" : addElementLocationController(),
@@ -589,15 +606,13 @@ const elementRackMenu = {
 }
 	
 export const menu = new Menu({
-		"element.html" : elementMenu,
-		"element-ifls.html": elementIflsController(),
-		"element-ifps.html":elementIfpsController(),
-		"element-ifl.html": elementIflController(),
-		"element-ifp.html":elementIfpController(),
-		"element-location.html" : elementLocationController(),
-		"element-rack.html":elementRackMenu,
-		"element-modules.html" :modulesMenu,
-		"element-images.html" : elementImagesMenu,
-		"element-services.html":elementServicesController(),
-		"element-service.html":elementServiceController()
- 	});
+	"element.html": elementMenu,
+	"element-ifls.html": elementIflsMenu,
+	"element-ifps.html": elementIfpsMenu,
+	"element-location.html" : elementLocationController(),
+	"element-rack.html": elementRackMenu,
+	"element-modules.html": modulesMenu,
+	"element-images.html" : elementImagesMenu,
+	"element-services.html": elementServicesController(),
+	"element-service.html": elementServiceController()
+});

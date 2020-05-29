@@ -22,16 +22,47 @@
 <thead>
 	<tr>
 		<th>Name</th>
-		<th>Administrative State</th>
+		<th>Alias</th>
+		<th>Instance</th>
+		<th>Adm.-State</th>
 		<th>Link State</th>
+		<th>VLANs</th>
+		<th>Prefixes</th>
 	</tr>
 </thead>
 <tbody>
 <!-- {{#logical_interfaces}} -->
-	<tr>
+	<tr style="vertical-align:top">
 		<td><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{&ifl_name}}" title="Show details of {{&ifl_name}}">{{&ifl_name}}</a></td>
-		<td>{{administrative_state}}</td>
-		<td>{{operational_state}}</td>
+		<td>{{ifl_alias}}</td>
+		<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
+		<td>
+			<!-- {{#vlans.length}} -->
+			<table>
+				<thead>
+					<tr><th>TPID</th><th>VLANID</th></tr>
+				</thead>
+				<!-- {{#vlans}} -->
+					<tr><td>{{vlan_tpid}}</td><td>{{vlan_id}}</td></tr>
+				<!-- {{/vlans}} -->
+			</table>
+			<!-- {{/vlans.length}} -->
+			<!-- {{^vlans.length}} -->
+			No VLANs defined.
+			<!-- {{/vlans.length}} -->
+		</td>
+		<td>
+			<!-- {{#addresses.length}} -->
+			<ul>
+				<li>{{address}}</li>
+			</ul>
+			<!-- {{/addresses.length}} -->
+			<!-- {{^addresses.length}} -->
+			No IP prefix assigned.
+			<!-- {{/addresses.length}} -->
+		</td>
+		
 	</tr>
 <!--  {{/logical_interfaces}} -->
 </tbody>

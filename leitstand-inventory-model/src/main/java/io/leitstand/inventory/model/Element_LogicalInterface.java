@@ -15,8 +15,12 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.inventory.service.VlanTag.newVlanTag;
+import static java.lang.Integer.compare;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
@@ -165,7 +169,6 @@ public class Element_LogicalInterface implements Serializable {
 	})
 	private List<AddressInterface> addresses;
 	
-	@ElementCollection
 	@CollectionTable(schema="inventory",
 					 name="element_ifl_vlan",
 					 joinColumns= {
@@ -174,7 +177,7 @@ public class Element_LogicalInterface implements Serializable {
 					 })
 	@AttributeOverride(name="vlanTpid", column=@Column(name="tpid"))
 	@AttributeOverride(name="vlanId", column=@Column(name="vid"))
-	private List<VlanTag> vlans;
+	private List<Element_LogicalInterface_Vlan> vlans;
 	
 	@Temporal(TIMESTAMP)
 	private Date tsCreated;
@@ -193,7 +196,7 @@ public class Element_LogicalInterface implements Serializable {
 		this.name = name;
 		this.addresses = new LinkedList<>();
 		this.vlans = new LinkedList<>();
-		long now = System.currentTimeMillis();
+		long now = currentTimeMillis();
 		this.tsCreated = new Date(now);
 		this.tsModified = new Date(now);
 	}
@@ -260,15 +263,27 @@ public class Element_LogicalInterface implements Serializable {
 		return routingInstance;
 	}
 
-	public void setVlans(List<VlanTag> vlans) {
-		this.vlans = new LinkedList<>(vlans);
+	public void setVlans(List<VlanTag> tags) {
+		this.vlans.clear();
+		this.vlans = new LinkedList<>();
+		for(int i=0; i  < tags.size(); i++) {
+			VlanTag vlan = tags.get(i);
+			this.vlans.add(new Element_LogicalInterface_Vlan(i,vlan.getVlanTpid(),vlan.getVlanId()));
+		}
 	}
 	
 	public List<VlanTag> getVlans() {
 		if(this.vlans.isEmpty()) {
 			return emptyList();
 		}
-		return unmodifiableList(vlans);
+		return unmodifiableList(vlans
+							    .stream()
+							    .sorted((a,b) -> compare(a.getItem(),b.getItem()))
+							    .map(vlan -> newVlanTag()
+							    			 .withVlanTpid(vlan.getVlanTpid())
+							    			 .withVlanId(vlan.getVlanId())
+							    			 .build())
+							    .collect(toList()));
 	}
 
 }
