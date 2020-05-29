@@ -169,6 +169,7 @@ public class Element_LogicalInterface implements Serializable {
 	})
 	private List<AddressInterface> addresses;
 	
+	@ElementCollection
 	@CollectionTable(schema="inventory",
 					 name="element_ifl_vlan",
 					 joinColumns= {
