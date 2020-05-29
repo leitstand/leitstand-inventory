@@ -278,7 +278,7 @@ public class Element_LogicalInterface implements Serializable {
 		}
 		return unmodifiableList(vlans
 							    .stream()
-							    .sorted((a,b) -> compare(a.getItem(),b.getItem()))
+							    .sorted((a,b) -> compare(a.getVlan(),b.getVlan()))
 							    .map(vlan -> newVlanTag()
 							    			 .withVlanTpid(vlan.getVlanTpid())
 							    			 .withVlanId(vlan.getVlanId())

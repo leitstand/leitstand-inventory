@@ -15,11 +15,9 @@
  */
 package io.leitstand.inventory.model;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 
 import io.leitstand.inventory.jpa.VlanIDConverter;
 import io.leitstand.inventory.jpa.VlanTPIDConverter;
@@ -30,26 +28,28 @@ import io.leitstand.inventory.service.VlanTPID;
 class Element_LogicalInterface_Vlan {
 
 	
-	private int item;
+	private int vlan;
 	
 	@Convert(converter=VlanIDConverter.class)
+	@Column(name="vid")
 	private VlanID vlanId;
 	
 	@Convert(converter=VlanTPIDConverter.class)
+	@Column(name="tpid")
 	private VlanTPID vlanTpid;
 
 	protected Element_LogicalInterface_Vlan() {
 		// JPA
 	}
 	
-	public Element_LogicalInterface_Vlan(int item,VlanTPID vlanTpid, VlanID vlanId) {
-		this.item = item;
+	public Element_LogicalInterface_Vlan(int vlan,VlanTPID vlanTpid, VlanID vlanId) {
+		this.vlan = vlan;
 		this.vlanTpid = vlanTpid;
 		this.vlanId = vlanId;
 	}
 	
-	public int getItem() {
-		return item;
+	public int getVlan() {
+		return vlan;
 	}
 	
 	public VlanID getVlanId() {
