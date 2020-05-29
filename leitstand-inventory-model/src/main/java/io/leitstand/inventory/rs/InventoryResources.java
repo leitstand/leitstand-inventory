@@ -51,6 +51,7 @@ public class InventoryResources implements ApiResourceProvider {
 						   ElementRoleResource.class,
 						   ElementImageResource.class,
 						   ElementPhysicalInterfaceResource.class,
+						   ElementLogicalInterfaceResource.class,
 						   ElementLinksResource.class,
 						   ElementModulesResource.class,
 						   ElementServicesResource.class,
