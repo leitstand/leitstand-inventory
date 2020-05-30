@@ -15,8 +15,12 @@
  */
 package io.leitstand.inventory.service;
 
-import io.leitstand.commons.model.Scalar;
+import javax.json.bind.annotation.JsonbTypeAdapter;
 
+import io.leitstand.commons.model.Scalar;
+import io.leitstand.inventory.jsonb.VlanTPIDAdapter;
+
+@JsonbTypeAdapter(VlanTPIDAdapter.class)
 public class VlanTPID extends Scalar<Integer>{
 
 	private static final long serialVersionUID = 1L;

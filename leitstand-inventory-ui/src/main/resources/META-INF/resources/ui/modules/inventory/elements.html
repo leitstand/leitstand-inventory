@@ -19,9 +19,9 @@
 </ui-view-header>
 <ui-form>
 	<ui-filter name="filter" bind="filter.filter" placeholder="Enter a regular expression">
-		<ui-label>Filter</ui-label>
-		<ui-note>Filter elements by their name or alias.</ui-note>
+		<ui-label>Expression</ui-label>
 		<ui-options>
+			<ui-note>Select the property to filter elements for.</ui-note>
 			<ui-radio name="by" bind="filter.by" value="name" default>
 				<ui-label>Name</ui-label>
 				<ui-note>Filter elements by element name and element alias</ui-note>

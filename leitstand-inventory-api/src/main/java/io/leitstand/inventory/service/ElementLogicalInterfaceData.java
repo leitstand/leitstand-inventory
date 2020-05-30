@@ -24,11 +24,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.json.bind.annotation.JsonbProperty;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -165,7 +162,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		 */
 		public Builder withPhysicalInterfaces(Collection<PhysicalInterface> ifps){
 			assertNotInvalidated(getClass(), data);
-			data.pyhsicalInterfaces = unmodifiableList(new LinkedList<>(ifps));
+			data.physicalInterfaces = unmodifiableList(new LinkedList<>(ifps));
 			return this;
 		}
 
@@ -220,8 +217,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	private List<AddressInterface> addresses;
 	private List<VlanTag> vlans;
 	
-	@JsonbProperty("physical_interfaces")
-	private List<PhysicalInterface> pyhsicalInterfaces = emptyList();
+	private List<PhysicalInterface> physicalInterfaces = emptyList();
 
 	/**
 	 * Returns the logical interface name.
@@ -248,7 +244,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	 * @return the physical interfaces leveraged by this logical interface.
 	 */
 	public List<PhysicalInterface> getPhysicalInterfaces() {
-		return unmodifiableList(pyhsicalInterfaces);
+		return unmodifiableList(physicalInterfaces);
 	}
 	
 	/**

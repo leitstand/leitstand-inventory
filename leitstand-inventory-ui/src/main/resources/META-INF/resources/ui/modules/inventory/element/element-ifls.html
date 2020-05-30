@@ -17,17 +17,27 @@
 	<ui-title>Logical Interfaces</ui-title>
 	<ui-subtitle>Logical interfaces of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<ui-filter name="filter">
+	<ui-label>Filter</ui-label>
+	<ui-note>Search for logical interfaces by name, alias, VLAN or IP prefixes.</ui-note>
+</ui-filter>
+<ui-group>
+<ui-label>Logical Interfaces</ui-label>
 <!-- {{#logical_interfaces.length}}  -->
 <table class="list">
 <thead>
+	<tr style="vertical-align: bottom">
+		<th rowspan="2">Name</th>
+		<th rowspan="2">Alias</th>
+		<th rowspan="2" class="text">Instance</th>
+		<th rowspan="2" class="tiny">Adm.-State</th>
+		<th rowspan="2" class="tiny">Link State</th>
+		<th colspan="2">VLANs</th>
+		<th rowspan="2" class="text">Prefixes</th>
+	</tr>
 	<tr>
-		<th>Name</th>
-		<th>Alias</th>
-		<th>Instance</th>
-		<th>Adm.-State</th>
-		<th>Link State</th>
-		<th>VLANs</th>
-		<th>Prefixes</th>
+		<th class="tiny">TPID</th>
+		<th class="tiny">VID</th>
 	</tr>
 </thead>
 <tbody>
@@ -35,38 +45,46 @@
 	<tr style="vertical-align:top">
 		<td><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{&ifl_name}}" title="Show details of {{&ifl_name}}">{{&ifl_name}}</a></td>
 		<td>{{ifl_alias}}</td>
+		<td class="text">{{routing_instance}}</td>
 		<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
 		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
-		<td>
-			<!-- {{#vlans.length}} -->
+		<td colspan="2">
+		<!-- {{#vlans.length}} -->
 			<table>
-				<thead>
-					<tr><th>TPID</th><th>VLANID</th></tr>
-				</thead>
-				<!-- {{#vlans}} -->
-					<tr><td>{{vlan_tpid}}</td><td>{{vlan_id}}</td></tr>
-				<!-- {{/vlans}} -->
+			<thead class="hidden">
+				<tr><th>TPID</th><th>VID</th></tr>
+			</thead>
+		<!-- {{#vlans}} -->
+			<tbody>
+			<tr>
+			<td class="tiny">{{vlan_tpid}}</td><td class="tiny">{{vlan_id}}</td>
+			</tr>
+			</tbody>
+		<!-- {{/vlans}} -->
 			</table>
-			<!-- {{/vlans.length}} -->
-			<!-- {{^vlans.length}} -->
+		<!-- {{/vlans.length}} -->
+		<!-- {{^vlans.length}} -->
 			No VLANs defined.
-			<!-- {{/vlans.length}} -->
+		<!-- {{/vlans.length}} -->
 		</td>
-		<td>
+		<td class="text">
 			<!-- {{#addresses.length}} -->
-			<ul>
+			<ul style="list-style-type: none">
+			<!-- {{#addresses}} -->
 				<li>{{address}}</li>
 			</ul>
+			<!-- {{/addresses}} -->
 			<!-- {{/addresses.length}} -->
 			<!-- {{^addresses.length}} -->
 			No IP prefix assigned.
 			<!-- {{/addresses.length}} -->
 		</td>
-		
 	</tr>
 <!--  {{/logical_interfaces}} -->
 </tbody>
 </table>
+<ui-note class="right">{{logical_interfaces.length}} interface(s) found</ui-note>
+</ui-group>
 <!-- {{/logical_interfaces.length}}  -->
 <!-- {{^logical_interfaces}} -->
 <ui-blankslate>

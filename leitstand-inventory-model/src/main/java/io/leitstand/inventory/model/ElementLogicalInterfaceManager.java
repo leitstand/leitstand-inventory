@@ -200,7 +200,7 @@ public class ElementLogicalInterfaceManager {
 		
 		ifls.addAll(repository.execute(findIfls(element, filter, limit)));
 		ifls.addAll(repository.execute(findIflsByPrefix(element, filter, limit)));
-		if(INTEGER.matcher(filter).matches()) {
+		if(filter != null && INTEGER.matcher(filter).matches()) {
 			ifls.addAll(repository.execute(findIflsByVlanId(element, parseInt(filter), limit)));
 		}
 

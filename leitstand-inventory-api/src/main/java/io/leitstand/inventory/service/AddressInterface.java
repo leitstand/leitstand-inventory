@@ -18,12 +18,16 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv4;
 import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv6;
+import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
 
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
+import javax.persistence.Enumerated;
 
 import io.leitstand.commons.model.ValueObject;
+import io.leitstand.inventory.jpa.IPvxPrefixConverter;
 
 /**
  * An address interface of a logical interface.
@@ -79,8 +83,9 @@ public class AddressInterface extends ValueObject implements Serializable {
 		}
 	}
 	
+	@Enumerated(STRING)
 	private AddressType addressType;
-	
+	@Convert(converter=IPvxPrefixConverter.class)
 	private IPvxPrefix address;
 	
 	/**

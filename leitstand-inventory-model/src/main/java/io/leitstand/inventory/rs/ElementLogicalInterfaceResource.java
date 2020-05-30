@@ -71,7 +71,7 @@ public class ElementLogicalInterfaceResource {
 	@Path("/{element:"+UUID_PATTERN+"}/logical_interfaces")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementLogicalInterfaces getLogicalInterfaces(@Valid @PathParam("element") ElementId id,
-														 @QueryParam("filter") String filter,
+														 @QueryParam("filter") @DefaultValue("") String filter,
 														 @QueryParam("limit") @DefaultValue("100") int limit){
 		return service.findLogicalInterfaces(id, 
 											 filter,

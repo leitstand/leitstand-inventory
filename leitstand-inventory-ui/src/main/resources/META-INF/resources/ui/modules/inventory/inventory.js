@@ -521,7 +521,7 @@ export class ElementLogicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements/{{&element}}/logical_interfaces",
+		return this.json("/api/v1/elements/{{&element}}/logical_interfaces?filter={{&filter}}",
 				  		 this._cfg,
 				  		 params)
 				   .GET()
