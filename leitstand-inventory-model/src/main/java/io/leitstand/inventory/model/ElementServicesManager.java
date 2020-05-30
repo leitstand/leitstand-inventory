@@ -98,7 +98,6 @@ public class ElementServicesManager {
 						 .withServiceName(service.getServiceName())
 						 .withDisplayName(service.getDisplayName())
 						 .withOperationalState(service.getOperationalState())
-						 .withDateModified(service.getDateModified())
 						 .withServiceType(service.getServiceType())
 						 .build());
 			

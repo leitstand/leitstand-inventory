@@ -528,9 +528,18 @@ const elementIflsController = function(){
 	const ifls = new ElementLogicalInterfaces();
 	return new Controller({
 		resource:ifls,
-		button:{
+		viewModel:function(ifls){
+			ifls.filter = this.location.param("filter");
+			ifls.hex = function(){
+				return function(tpid){
+					return "0x"+this[tpid].toString(16).toUpperCase();
+				}
+			};
+			return ifls;
+		},
+		buttons:{
 			"filter":function(){
-				const params = this.location.params();
+				const params = this.location.params;
 				params.filter = this.input("filter").value();
 				this.reload(params);
 			}
@@ -541,7 +550,15 @@ const elementIflsController = function(){
 const elementIflController = function(){
 	const ifl = new ElementLogicalInterface();
 	return new Controller({
-		resource:ifl
+		resource:ifl,
+		viewModel:function(ifl){
+			ifl.hex = function(){
+				return function(tpid){
+					return "0x"+this[tpid].toString(16).toUpperCase();
+				}
+			}
+			return ifl;
+		}
 	});
 };
 

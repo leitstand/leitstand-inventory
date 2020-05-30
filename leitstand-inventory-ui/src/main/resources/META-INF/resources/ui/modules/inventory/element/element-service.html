@@ -15,7 +15,11 @@
 -->
 <ui-view-header>
 	<ui-breadcrumbs>
-		<ui-breadcrumb href="element-services.html?group={{group_id}}&element={{element_id}}">Services</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="element-services.html?group={{group_id}}&element={{element_id}}" title="Show service list">Services</ui-breadcrumb>
 		<ui-breadcrumb>{{service_name}}</ui-breadcrumb>
 	</ui-breadcrumbs>
 	<ui-title>Service Details</ui-title>
@@ -27,8 +31,16 @@
 		<ui-value><a href="/ui/views/inventory/group.html?group={{group_id}}">{{group_name}}</a></ui-value>
 	</ui-property>
 	<ui-property>
-		<ui-label>Element</ui-label>
-		<ui-value><a href="/ui/views/inventory/element.html?group={{group_id}}&element={{element_id}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a></ui-value>
+		<ui-label>Element Role</ui-label>
+		<ui-value>{{element_role}}</a></ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Name</ui-label>
+		<ui-value><a href="/ui/views/inventory/element.html?group={{group_id}}&element={{element_id}}">{{element_name}}</a></ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Alias</ui-label>
+		<ui-value>{{element_alias}}</a></ui-value>
 	</ui-property>
 	<ui-property>
 		<ui-label>Service</ui-label>

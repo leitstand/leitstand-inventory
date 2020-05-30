@@ -24,6 +24,13 @@
 	}
 </style>
 <ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Installed Images</ui-breadcrumb>
+	</ui-breadcrumbs>
 	<ui-title>Installed Images</ui-title>
 	<ui-note>List of all images available on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-note>
 </ui-view-header>

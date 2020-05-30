@@ -93,17 +93,6 @@ public class ServiceInfo extends ValueObject {
 		}
 		
 		/**
-		 * Sets the last modification timestamp of the service inventory record
-		 * @param date - the last modification date
-		 * @return a reference to this builder to continue object creation
-		 */
-		public B withDateModified(Date date){
-			assertNotInvalidated(getClass(), service);
-			((ServiceInfo)service).dateModified = new Date(date.getTime());
-			return (B) this;
-		}
-		
-		/**
 		 * Sets the operational state of the service.
 		 * @param state - the operational state
 		 * @return a reference to this builder to continue object creation
@@ -167,8 +156,6 @@ public class ServiceInfo extends ValueObject {
 	
 	private OperationalState operationalState;
 	
-	private Date dateModified;
-	
 	private ServiceType serviceType;
 	
 	/**
@@ -193,14 +180,6 @@ public class ServiceInfo extends ValueObject {
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
-	}
-	
-	/**
-	 * Returns the last modification date of the service inventory record.
-	 * @return the last modification date.
-	 */
-	public Date getDateModified(){
-		return new Date(dateModified.getTime());
 	}
 	
 	/**

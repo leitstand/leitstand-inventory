@@ -27,8 +27,6 @@
 </ui-view-header>
 
 <!-- {{#logical_interface}} -->	
-<ui-group>
-<ui-label>Logical Interface</ui-label>
 <ui-details>
 	<ui-property>
 		<ui-label>Pod Name</ui-label>
@@ -63,23 +61,14 @@
 		<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
 	</ui-property>
 	<ui-property>
-		<ui-label>VLANs</ui-label>
-		<ui-valule>
+		<ui-label>VLAN Tags</ui-label>
+		<ui-value>
 		<!-- {{#vlans.length}} -->
-			<table class="list">
-				<thead>
-					<tr>
-						<th>TPID</th><th>VLANID</th>
-					</tr>
-				</thead>
+			<ul style="list-style-type: none; margin-left:0;">
 				<!-- {{#vlans}} -->
-				<tbody>
-					<tr>
-						<td>{{vlan_tpid}}</td><td>{{vlan_id}}</td>
-					</tr>
-				</tbody>
+				<li><span style="color: #767676 ">TPID</span> {{#hex}}vlan_tpid{{/hex}} <span style="color: #767676 ">VID</span> {{vlan_id}} </li>
 				<!-- {{/vlans}} -->
-			</table>
+			</ul>
 		<!-- {{/vlans.length}} -->
 		<!-- {{^vlans.length}} -->
 		No VLANs defined.
@@ -90,25 +79,16 @@
 		<ui-label>Prefixes</ui-label>
 		<ui-value>
 		<!-- {{#addresses.length}} -->
-		<ul>
+		<ul style="list-style-type: none; margin-left:0;">
 		<!-- {{#addresses}} -->
 		<li>{{address}}</li>			
-		<!-- {{/addresses.length}} -->			
+		<!-- {{/addresses}} -->			
 		</ul>
-		<!-- {{/addresses}} -->
+		<!-- {{/addresses.length}} -->
 		<!-- {{^addresses}} -->
 		No addresses assigned.
 		<!-- {{/addresses}} -->
 		</ui-value>
 	</ui-property>
-	
-</ui-group>
 </ui-details>
-</ui-group>
-<!-- {{#vlans}} -->
-<ui-group>
-	<ui-label>Addresses</ui-label>
-	<
-</ui-group>
-<!-- {{/vlans}} -->
 <!-- {{/logical_interface}} -->	
