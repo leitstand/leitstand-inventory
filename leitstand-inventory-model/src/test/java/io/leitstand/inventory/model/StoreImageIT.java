@@ -24,6 +24,7 @@ import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
@@ -79,7 +80,8 @@ public class StoreImageIT extends InventoryIT{
 	public void create_new_container_image_and_new_package(){
 		image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
 		transaction( () -> {
-			service.storeImage(image);
+			boolean created = service.storeImage(image);
+			assertTrue(created);
 		});
 	}
 	
@@ -91,7 +93,8 @@ public class StoreImageIT extends InventoryIT{
 		});
 		transaction(()->{
 			image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
-			service.storeImage(image);
+			boolean created = service.storeImage(image);
+			assertTrue(created);
 		});
 	}
 	
@@ -102,7 +105,8 @@ public class StoreImageIT extends InventoryIT{
 		});
 		transaction(()->{
 			image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
-			service.storeImage(image);
+			boolean created = service.storeImage(image);
+			assertTrue(created);
 		});
 	}
 	

@@ -225,7 +225,7 @@ public class ElementConfigManager {
 		Element_Config config = repository.execute(findActiveConfig(element,configName));
 		
 		if(config == null) {
-			LOG.fine(() -> format("%s: No active %s configuration for element found.",
+			LOG.fine(() -> format("%s: No active %s configuration for element %s found.",
 								  IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,
 								  configName,
 								  element.getElementName()));
