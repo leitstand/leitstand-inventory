@@ -19,7 +19,7 @@ import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
-import static io.leitstand.inventory.model.Image.findElementRoleImage;
+import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
@@ -80,6 +80,13 @@ import io.leitstand.inventory.service.Version;
 
 public class ElementImageServiceIT extends InventoryIT{
 
+	private static final ImageId IMAGE_200 = randomImageId();
+	private static final ImageId IMAGE_110 = randomImageId();
+	private static final ImageId IMAGE_101 = randomImageId();
+	private static final ImageId IMAGE_100 = randomImageId();
+
+	
+	
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupName GROUP_NAME = groupName(ElementImageServiceIT.class.getSimpleName());
 	private static final ElementGroupType GROUP_TYPE = groupType("pod");
@@ -92,7 +99,7 @@ public class ElementImageServiceIT extends InventoryIT{
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_200)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
@@ -100,7 +107,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_200)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
@@ -108,7 +115,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 	
 	private static final ElementInstalledImageReference ACTIVE_MINOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_110)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
@@ -116,7 +123,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MINOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_110)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
@@ -124,7 +131,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference ACTIVE_PATCH_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_101)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
@@ -132,7 +139,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_PATCH_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageId(randomImageId())	
+																				   .withImageId(IMAGE_101)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
@@ -140,6 +147,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 	
 	private static final ElementInstalledImageReference ACTIVE_BASE_REF = newElementInstalledImageReference()
+																		  .withImageId(IMAGE_100)
 																		  .withImageType(imageType("lxd"))
 																		  .withImageName(imageName("JUNIT"))
 																		  .withImageVersion(version("1.0.0"))
@@ -229,77 +237,63 @@ public class ElementImageServiceIT extends InventoryIT{
 			
 			
 			// Create base image
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														imageType("lxd"),
-														imageName("JUNIT"),
-														new Version(1,0,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		imageType("lxd"),
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,0,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_100),
+  								   () ->  newImage(IMAGE_100, 
+  										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,0,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
 			// Create patch upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														imageType("lxd"),
-														imageName("JUNIT"),
-														new Version(1,0,1)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		imageType("lxd"), 
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,0,1), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
-			
+			repository.addIfAbsent(findImageById(IMAGE_101),
+								   () ->  newImage(IMAGE_101, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,0,1), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
 			// Create minor upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														imageType("lxd"),
-														imageName("JUNIT"),
-														new Version(1,1,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		imageType("lxd"),
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,1,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_110),
+								   () ->  newImage(IMAGE_110, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,1,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
+			
 			
 			// Create major upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														imageType("lxd"),
-														imageName("JUNIT"),
-														new Version(2,0,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		imageType("lxd"),
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(2,0,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_200),
+								   () ->  newImage(IMAGE_200, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(2,0,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
+			
 			
 		});
+
 	}
 	
 	@After
