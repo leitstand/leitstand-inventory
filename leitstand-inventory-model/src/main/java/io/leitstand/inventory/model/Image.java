@@ -282,7 +282,7 @@ public class Image extends VersionableEntity{
 				       .getResultList();
 	}
 
-	public static Query<Image> findByImageId(ImageId id){
+	public static Query<Image> findImageById(ImageId id){
 		return em -> em.createNamedQuery("Image.findByImageId",
 										 Image.class)
 					   .setParameter("id", id.toString())
@@ -396,16 +396,13 @@ public class Image extends VersionableEntity{
 		super(id.toString());
 	}
 	
-	// Stub record!
 	protected Image(ImageId id, 
-					String org,
 					ImageType imageType,
 					ImageName imageName,
 					ElementRole role, 
 					Platform platform,
 					Version version) {
 		super(id.toString());
-		this.org = org;
 		this.imageType = imageType;
 		this.imageName = imageName;
 		this.imageState = CANDIDATE;

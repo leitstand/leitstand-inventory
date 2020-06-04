@@ -92,6 +92,7 @@ public class ElementImageServiceIT extends InventoryIT{
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
@@ -99,6 +100,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
@@ -106,6 +108,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 	
 	private static final ElementInstalledImageReference ACTIVE_MINOR_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
@@ -113,6 +116,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MINOR_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
@@ -120,6 +124,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference ACTIVE_PATCH_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
@@ -127,6 +132,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_PATCH_UPGRADE_REF = newElementInstalledImageReference()
+																				   .withImageId(randomImageId())	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
@@ -140,13 +146,6 @@ public class ElementImageServiceIT extends InventoryIT{
 																		  .withElementImageState(ACTIVE)
 																		  .build();
 
-	private static final ElementInstalledImageReference CACHED_BASE_REF = newElementInstalledImageReference()
-																		  .withImageType(imageType("lxd"))
-																		  .withImageName(imageName("JUNIT"))
-																		  .withImageVersion(version("1.0.0"))
-																		  .withElementImageState(CACHED)
-																		  .build();
-	
 	
 	private static Image newImage(ImageId imageId, 
 								  String org, 

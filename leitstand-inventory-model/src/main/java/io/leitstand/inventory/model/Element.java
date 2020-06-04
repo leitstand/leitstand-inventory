@@ -64,6 +64,7 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.OperationalState;
 import io.leitstand.inventory.service.Plane;
+import io.leitstand.inventory.service.PlatformName;
 
 @Entity
 @Table(schema="inventory", name="element")
@@ -456,6 +457,14 @@ public class Element extends VersionableEntity {
 	
 	public String getAssetId() {
 		return assetId;
+	}
+
+	public PlatformName getPlatformName() {
+		Platform platform = getPlatform();
+		if(platform != null) {
+			return platform.getPlatformName();
+		}
+		return null;
 	}
 	
 }

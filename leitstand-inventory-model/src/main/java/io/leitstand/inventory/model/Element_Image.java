@@ -91,22 +91,6 @@ public class Element_Image {
 					   .getSingleResult();
 	}
 	
-	public static Query<Element_Image> findInstalledImage(Element element, 
-	                                                      ImageType type, 
-	                                                      ImageName name,
-	                                                      Version version) {
-		return em -> em.createNamedQuery("Element_Image.findInstalledImageByName",
-										 Element_Image.class)
-					   .setParameter("element", element)
-					   .setParameter("type",type)
-					   .setParameter("name",name)
-					   .setParameter("major", version.getMajorLevel())
-					   .setParameter("minor", version.getMinorLevel())
-					   .setParameter("patch", version.getPatchLevel())
-					   .getSingleResult();
-	}
-	
-
 	
 	@OneToOne
 	@JoinColumn(name="IMAGE_ID", nullable=true)

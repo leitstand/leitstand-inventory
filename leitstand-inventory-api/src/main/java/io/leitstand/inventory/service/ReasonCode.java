@@ -189,6 +189,9 @@ public enum ReasonCode implements Reason{
 
 	/** The image is currently active on the element and the requested action therefore cannot be executed.*/
 	IVT0341E_ELEMENT_IMAGE_ACTIVE, 
+
+	/** The image has been removed from the element.*/
+	IVT0342I_ELEMENT_IMAGE_REMOVED, 
 	
 	/** The package revision does already exist.*/
 	IVT0511E_PACKAGE_VERSION_EXISTS, 

@@ -80,37 +80,7 @@ public interface ElementImagesService {
 	 */
 	void storeInstalledImages(ElementName name, List<ElementInstalledImageReference> images);
 
-	/**
-	 * Adds the specified images to the list of <em>cached</em> images on the element. 
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element id
-	 * @param images - add cached images
-	 */
-	void addCachedImages(ElementId id, List<ElementInstalledImageReference> images);
-
-	/**
-	 * Adds the specified images to the list of <em>cached</em> images on the element. 
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param name - the element name
-	 * @param images - all images installed on the element.
-	 */
-	void addCachedImages(ElementName name, List<ElementInstalledImageReference> images);
-	
-	/**
-	 * Removes the specified images from the list of <em>cached</em> images.
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element id
-	 * @param images - all images installed on the element.
-	 */
-	void removeCachedImages(ElementId id, List<ElementInstalledImageReference> images);
-	
-	
-	/**
-	 * Removes the specified images from the list of <em>cached</em> images.
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element name
-	 * @param images - all images installed on the element.
-	 */
-	void removeCachedImages(ElementName name, List<ElementInstalledImageReference> images);
+	void removeInstalledImage(ElementId id, ImageId imageId);
+	void removeInstalledImage(ElementName elementName, ImageId imageId);
 	
 }

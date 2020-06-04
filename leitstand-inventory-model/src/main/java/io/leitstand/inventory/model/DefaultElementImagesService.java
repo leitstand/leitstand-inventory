@@ -84,27 +84,15 @@ public class DefaultElementImagesService implements ElementImagesService {
 	}
 
 	@Override
-	public void addCachedImages(ElementId id, List<ElementInstalledImageReference> images) {
+	public void removeInstalledImage(ElementId id,ImageId imageId) {
 		Element element = elements.fetchElement(id);
-		manager.storeCachedImages(element,images);
+		manager.removeInstalledImage(element,imageId);
 	}
 
 	@Override
-	public void addCachedImages(ElementName name, List<ElementInstalledImageReference> images) {
+	public void removeInstalledImage(ElementName name, ImageId imageId) {
 		Element element = elements.fetchElement(name);
-		manager.storeCachedImages(element, images);
-	}
-
-	@Override
-	public void removeCachedImages(ElementId id, List<ElementInstalledImageReference> images) {
-		Element element = elements.fetchElement(id);
-		manager.removeCachedImages(element,images);
-	}
-
-	@Override
-	public void removeCachedImages(ElementName name, List<ElementInstalledImageReference> images) {
-		Element element = elements.fetchElement(name);
-		manager.removeCachedImages(element,images);
+		manager.removeInstalledImage(element,imageId);
 	}
 
 }

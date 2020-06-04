@@ -30,7 +30,7 @@ import static io.leitstand.inventory.model.DefaultPackageService.packageVersionI
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countImageReferences;
 import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
-import static io.leitstand.inventory.model.Image.findByImageId;
+import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.prerelease;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
@@ -272,7 +272,7 @@ public class DefaultImageService implements ImageService {
 		
 		Platform platform = platforms.findOrCreatePlatform(submission.getPlatformId(),
 														   submission.getPlatformName());
-		Image image = repository.execute(findByImageId(submission.getImageId()));
+		Image image = repository.execute(findImageById(submission.getImageId()));
 		boolean created = false;
 		if(image == null){
 			image = new Image(submission.getImageId());
@@ -331,7 +331,7 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public ImageInfo getImage(ImageId id) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image == null){
 			throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,id);
 		}
@@ -379,7 +379,7 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public ImageInfo removeImage(ImageId id) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image == null){
 			return null;
 		}
@@ -413,7 +413,7 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public void updateImageState(ImageId id, ImageState state) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image.getImageState() == state) {
 			return;
 		}

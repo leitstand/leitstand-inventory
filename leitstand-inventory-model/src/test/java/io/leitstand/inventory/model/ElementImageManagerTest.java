@@ -55,6 +55,7 @@ import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
 import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
+import io.leitstand.inventory.service.ImageId;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElementImageManagerTest {
@@ -88,17 +89,6 @@ public class ElementImageManagerTest {
 	@InjectMocks
 	private ElementImageManager manager = new ElementImageManager();
 
-	
-	@Test
-	public void attempt_to_remove_a_nonexistent_installed_image_fails_silently() {
-		when(repository.execute(any(Query.class))).thenReturn(null);
-		manager.removeInstalledImage(mock(Element.class), 
-									 imageType("lxd"), 
-									 imageName("JUNIT"),
-									 version("1.0.0"));
-		verify(repository,never()).remove(any());
-	}
-	
 	@Test
 	public void attempt_to_remove_an_active_installed_image_raises_conflict_exception() {
 		exception.expect(ConflictException.class);
@@ -108,10 +98,8 @@ public class ElementImageManagerTest {
 		doReturn(Boolean.TRUE).when(image).isActive();
 		when(repository.execute(any(Query.class))).thenReturn(image);
 
-		manager.removeInstalledImage(mock(Element.class), 
-									 imageType("lxd"), 
-									 imageName("JUNIT"),
-									 version("1.0.0"));
+		manager.removeInstalledImage(mock(Element.class),
+									 mock(ImageId.class));
 	}
 	
 	@Test
@@ -120,11 +108,17 @@ public class ElementImageManagerTest {
 		when(repository.execute(any(Query.class))).thenReturn(image);
 		
 		manager.removeInstalledImage(mock(Element.class), 
-									 imageType("lxd"), 
-									 imageName("JUNIT"),
-									 version("1.0.0"));
+									 mock(ImageId.class));
 		
 		verify(repository).remove(image);
+	}
+	
+	@Test
+	public void do_nothing_when_element_image_to_be_removed_does_not_exist() {
+		manager.removeInstalledImage(mock(Element.class), 
+									 mock(ImageId.class));
+		
+		verify(repository,never()).remove(any());
 	}
 	
 	@Test
@@ -205,57 +199,6 @@ public class ElementImageManagerTest {
 		
 
 		verify(repository).remove(cached);
-	}
-	
-	
-	@Test
-	public void removing_list_of_cached_images_fails_if_an_image_is_active() {
-		exception.expect(ConflictException.class);
-		exception.expect(reason(IVT0341E_ELEMENT_IMAGE_ACTIVE));
-		
-		Element_Image cached = mock(Element_Image.class);
-		doReturn(imageType("lxd")).when(cached).getImageType();
-		doReturn(imageName("JUNIT")).when(cached).getImageName();
-		doReturn(version("1.0.0")).when(cached).getImageVersion();
-		doReturn(CACHED).when(cached).getInstallationState();
-		doReturn(true).when(cached).isActive();
-		when(repository.execute(any(Query.class))).thenReturn(asList(cached));
-
-		manager.removeCachedImages(mock(Element.class),
-								   asList(CACHED_IMAGE_REF));
-		
-		
-	}
-
-	@Test
-	public void removing_list_of_images_ignores_when_image_was_already_removed() {
-		when(repository.execute(any(Query.class))).thenReturn(emptyList());
-
-		manager.removeCachedImages(mock(Element.class),
-										asList(ACTIVE_IMAGE_REF,CACHED_IMAGE_REF));
-		
-		verify(repository,never()).remove(any(Element_Image.class));
-		
-	}
-	
-	@Test
-	public void remove_inactive_cached_images() {
-		
-		Element_Image cached = mock(Element_Image.class);
-		doReturn(imageType("lxd")).when(cached).getImageType();
-		doReturn(imageName("JUNIT")).when(cached).getImageName();
-		doReturn(version("1.0.0")).when(cached).getImageVersion();
-		doReturn(CACHED).when(cached).getInstallationState();
-		doReturn(false).when(cached).isActive();
-		when(repository.execute(any(Query.class))).thenReturn(asList(cached));
-
-		manager.removeCachedImages(mock(Element.class),
-								   asList(CACHED_IMAGE_REF));
-		
-	
-		verify(repository).remove(cached);	
-		
-	}
-	
+	}	
 	
 }

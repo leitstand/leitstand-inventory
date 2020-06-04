@@ -522,12 +522,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
 									imageType("lxd"),
 									imageName("remove_bound_image"),
 									role,
 									platform,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			repository.add(new Element_Image(element, image));
 		});
@@ -566,12 +566,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
 									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
 									platform,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			Element_Image ei = new Element_Image(element, image);
 			ei.setImageInstallationState(ACTIVE);
@@ -609,12 +609,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
 									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
 									platform,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			Element_Image ei = new Element_Image(element, image);
 			ei.setImageInstallationState(CACHED);

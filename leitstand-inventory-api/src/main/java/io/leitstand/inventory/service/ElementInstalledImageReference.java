@@ -18,6 +18,9 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import io.leitstand.commons.model.ValueObject;
 
 /**
@@ -33,27 +36,33 @@ public class ElementInstalledImageReference extends ValueObject {
 		
 		private ElementInstalledImageReference ref = new ElementInstalledImageReference();
 		
-		public Builder withImageType(ImageType type) {
-			assertNotInvalidated(getClass(), ref);
-			ref.imageType = type;
+		public Builder withImageId(ImageId imageId) {
+			assertNotInvalidated(getClass(),ref);
+			ref.imageId = imageId;
 			return this;
 		}
 		
-		public Builder withImageName(ImageName name) {
+		public Builder withImageType(ImageType imageType) {
 			assertNotInvalidated(getClass(), ref);
-			ref.imageName = name;
+			ref.imageType = imageType;
 			return this;
 		}
 		
-		public Builder withElementImageState(ElementImageState state) {
+		public Builder withImageName(ImageName imageName) {
 			assertNotInvalidated(getClass(), ref);
-			ref.elementImageState = state;
+			ref.imageName = imageName;
 			return this;
 		}
 		
-		public Builder withImageVersion(Version version) {
+		public Builder withElementImageState(ElementImageState imageState) {
 			assertNotInvalidated(getClass(), ref);
-			ref.imageVersion = version;
+			ref.elementImageState = imageState;
+			return this;
+		}
+		
+		public Builder withImageVersion(Version imageVersion) {
+			assertNotInvalidated(getClass(), ref);
+			ref.imageVersion = imageVersion;
 			return this;
 		}
 		
@@ -68,11 +77,18 @@ public class ElementInstalledImageReference extends ValueObject {
 		
 	}
 	
-	
+	@Valid
+	@NotNull(message="{image_id.required}")
+	private ImageId imageId;
+
+	@Valid
+	@NotNull(message="{image_type.required}")
 	private ImageType imageType;
 	
 	private ImageName imageName;
-	
+
+	@Valid
+	@NotNull(message="{image_version.required}")
 	private Version imageVersion;
 	
 	private ElementImageState elementImageState;
@@ -114,4 +130,8 @@ public class ElementInstalledImageReference extends ValueObject {
 		return elementImageState == ACTIVE;
 	}
 
+	public ImageId getImageId() {
+		return imageId;
+	}
+	
 }
