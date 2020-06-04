@@ -18,7 +18,8 @@
   <ui-breadcrumb href="images.html">Images</ui-breadcrumb>
   <ui-breadcrumb>Image {{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
  </ui-breadcrumbs>
- <ui-title>{{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
+ <ui-title>{{image_name}}</ui-title>
+ <ui-subtitle>Review image metadata</ui-subtitle>
  <ui-note>Image Metadata</ui-note>
 </ui-view-header>
 <ui-details class="image">
@@ -60,7 +61,7 @@
 	</ui-property>
 	<ui-property>
 		<ui-label>Build Date</ui-label>
-		<ui-value><ui-date readonly>{{build_date}}</ui-date></ui-value>
+		<ui-value>{{#date_build}}<ui-date readonly>{{.}}</ui-date>{{/date_build}}</ui-value>
 	</ui-property>
 	<!-- {{#checksum_list}} -->
 	<ui-property>

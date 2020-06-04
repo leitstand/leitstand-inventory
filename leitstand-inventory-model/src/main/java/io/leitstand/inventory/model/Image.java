@@ -66,7 +66,6 @@ import io.leitstand.inventory.service.Version;
 			      "AND d.role=:role "+
 			      "AND d.element=:element "+
 			      "AND d.imageType=:type "+
-			      "AND d.imageName=:name "+
 			      "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 			      "AND ("+
 			      "(d.major=:major AND d.minor=:minor AND  d.patch=:patch AND d.prerelease IS NOT NULL AND d.prerelease < :prerelease) OR "+
@@ -81,7 +80,6 @@ import io.leitstand.inventory.service.Version;
 		    		  "AND d.role=:role "+
 		    		  "AND d.element=:element "+
 		    		  "AND d.imageType=:type "+
-		    		  "AND d.imageName=:name "+
 		    		  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 		    		  "AND ("+
 		    		  "(d.major=:major AND d.minor=:minor AND d.patch=:patch AND d.prerelease IS NOT NULL and d.prerelease > :prerelease) OR "+
@@ -95,7 +93,6 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.role=:role "+
 				  "AND d.element IS NULL "+
 				  "AND d.imageType=:type "+
-				  "AND d.imageName=:name "+
 				  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 				  "AND ("+
 			      "(d.major=:major AND d.minor=:minor AND  d.patch=:patch AND d.prerelease IS NOT NULL AND d.prerelease is NOT NULL AND d.prerelease < :prerelease) OR "+
@@ -109,7 +106,6 @@ import io.leitstand.inventory.service.Version;
 					  "AND d.role=:role "+
 					  "AND d.element IS NULL "+
 					  "AND d.imageType=:type "+
-					  "AND d.imageName=:name "+
 					  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 					  "AND ("+
 		    		  "(d.major=:major AND d.minor=:minor AND d.patch=:patch AND d.prerelease is NOT NULL AND d.prerelease > :prerelease) OR "+
@@ -121,7 +117,6 @@ import io.leitstand.inventory.service.Version;
 				  "WHERE d.platform=:platform "+
 		    	  "AND d.role=:role "+
 				  "AND d.imageType=:type "+
-		    	  "AND d.imageName=:name "+
 		    	  "AND d.major=:major "+
 				  "AND d.minor=:minor "+
 		    	  "AND d.patch=:patch "+
@@ -133,7 +128,6 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.platform.model=:model "+
 				  "AND d.role.name=:role "+
 				  "AND d.imageType=:type "+
-				  "AND d.imageName=:name "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
 @NamedQuery(name="Image.findDefaultImages",
@@ -148,7 +142,6 @@ import io.leitstand.inventory.service.Version;
 			    	  "AND d.imageState <> io.leitstand.inventory.service.ImageState.REVOKED " +
 			    	  "AND d.role.name=:role "+
 			    	  "AND d.imageType=:type "+
-			    	  "AND d.imageName=:name "+
 			    	  "AND (d.element IS NULL OR d.element=:element) "+
 			   		  "AND ((d.major > :major) "+
 			   		  "OR ( d.major = :major AND d.minor > :minor) "+
@@ -160,7 +153,6 @@ import io.leitstand.inventory.service.Version;
 				  "WHERE d.role=:role "+
 				  "AND d.platform=:platform "+
 				  "AND d.imageType=:type "+
-				  "AND d.imageName=:name "+
 				  "AND (d.element is NULL OR d.element=:element) "+
 				  "AND d.major=:major "+
 				  "AND d.minor=:minor "+
@@ -189,7 +181,6 @@ public class Image extends VersionableEntity{
 						   .setParameter("role", image.getElementRole())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
-						   .setParameter("name", image.getImageName())
 						   .setParameter("major",image.getImageVersion().getMajorLevel())
 						   .setParameter("minor",image.getImageVersion().getMinorLevel())
 						   .setParameter("patch",image.getImageVersion().getPatchLevel())
@@ -200,7 +191,6 @@ public class Image extends VersionableEntity{
 				   	   .setParameter("platform", image.getPlatform())
 				   	   .setParameter("role", image.getElementRole())
 				   	   .setParameter("type", image.getImageType())
-				   	   .setParameter("name", image.getImageName())
 				   	   .setParameter("major",image.getImageVersion().getMajorLevel())
 				   	   .setParameter("minor",image.getImageVersion().getMinorLevel())
 				   	   .setParameter("patch",image.getImageVersion().getPatchLevel())
@@ -216,7 +206,6 @@ public class Image extends VersionableEntity{
 						   .setParameter("role", image.getElementRole())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
-						   .setParameter("name", image.getImageName())
 						   .setParameter("major",image.getImageVersion().getMajorLevel())
 						   .setParameter("minor",image.getImageVersion().getMinorLevel())
 						   .setParameter("patch",image.getImageVersion().getPatchLevel())
@@ -227,7 +216,6 @@ public class Image extends VersionableEntity{
 					   .setParameter("platform", image.getPlatform())
 					   .setParameter("role", image.getElementRole())
 					   .setParameter("type", image.getImageType())
-					   .setParameter("name", image.getImageName())
 					   .setParameter("major",image.getImageVersion().getMajorLevel())
 					   .setParameter("minor",image.getImageVersion().getMinorLevel())
 					   .setParameter("patch",image.getImageVersion().getPatchLevel())
@@ -244,7 +232,6 @@ public class Image extends VersionableEntity{
 					   .setParameter("platform", platform)
 					   .setParameter("role", elementRole)
 					   .setParameter("type", imageType)
-					   .setParameter("name", imageName)
 					   .setParameter("major", version.getMajorLevel())
 					   .setParameter("minor", version.getMinorLevel())
 					   .setParameter("patch", version.getPatchLevel())
@@ -277,7 +264,6 @@ public class Image extends VersionableEntity{
 				       .setParameter("patch",version.getPatchLevel())
 					   .setParameter("prerelease", prerelease(version))
 				       .setParameter("type",imageType)
-				       .setParameter("name",imageName)
 				       .setParameter("element", element)
 				       .getResultList();
 	}
@@ -300,7 +286,6 @@ public class Image extends VersionableEntity{
 					   .setParameter("role", element.getElementRole())
 					   .setParameter("element", element)
 					   .setParameter("type",imageType)
-					   .setParameter("name",imageName)
 					   .setParameter("major",version.getMajorLevel())
 					   .setParameter("minor", version.getMinorLevel())
 					   .setParameter("patch", version.getPatchLevel())
@@ -337,7 +322,7 @@ public class Image extends VersionableEntity{
 	private ElementRole role;
 	
 	@ManyToOne
-	@JoinColumn(name="Element_id")
+	@JoinColumn(name="element_id")
 	private Element element;
 	
 	@Column(nullable=false)

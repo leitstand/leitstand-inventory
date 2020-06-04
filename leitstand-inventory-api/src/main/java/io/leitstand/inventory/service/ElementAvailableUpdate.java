@@ -64,7 +64,7 @@ public class ElementAvailableUpdate extends ValueObject {
 		
 		/** 
 		 * Sets the image id of the available update.
-		 * @param id - the image id
+		 * @param id the image id
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public Builder withImageId(ImageId id){
@@ -72,10 +72,21 @@ public class ElementAvailableUpdate extends ValueObject {
 			update.imageId = id;
 			return this;
 		}
+
+		/**
+		 * Sets the image name of the available update.
+		 * @param name the image name
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withImageName(ImageName name){
+			assertNotInvalidated(getClass(),update);
+			update.imageName = name;
+			return this;
+		}
 		
 		/** 
 		 * Sets the image version of the available update.
-		 * @param version - the image version
+		 * @param version the image version
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public Builder withImageVersion(Version version){
@@ -100,7 +111,7 @@ public class ElementAvailableUpdate extends ValueObject {
 		
 		/** 
 		 * Sets the type of the available update.
-		 * @param type - the update type
+		 * @param type the update type
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public Builder withUpdateType(UpdateType type){
@@ -121,6 +132,8 @@ public class ElementAvailableUpdate extends ValueObject {
 	}
 	
 	private ImageId imageId;
+	
+	private ImageName imageName;
 	
 	@JsonbTypeAdapter(IsoDateAdapter.class)
 	private Date buildDate;
@@ -184,12 +197,6 @@ public class ElementAvailableUpdate extends ValueObject {
 	}
 	
 	/**
-	 * Returns <code>true</code> when this update is a pre-release update.
-	 * @return <code>true</cpde> when this update is a pre-release update.
-	 * @see UpdateType#PRERELEASE
-	 */
-	
-	/**
 	 * Returns the update type.
 	 * @return the update type.
 	 * @see #isMajorUpdate()
@@ -198,6 +205,14 @@ public class ElementAvailableUpdate extends ValueObject {
 	 */
 	public UpdateType getUpdateType() {
 		return updateType;
+	}
+	
+	/**
+	 * Returns the image name.
+	 * @return the image name.
+	 */
+	public ImageName getImageName() {
+		return imageName;
 	}
 	
 }

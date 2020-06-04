@@ -15,7 +15,7 @@ menus:
     label: Images
     view: images.html
 - menu: image
-  label: "{{element_role}} {{image_version}}"
+  label: Image Information
   title: View manage details
   scopesAllowed:
   - ivt

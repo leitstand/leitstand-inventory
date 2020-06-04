@@ -401,7 +401,7 @@ public class ElementInstalledImageData extends ValueObject{
 		return elementImageState == ACTIVE;
 	}
 	
-	public ElementImageState getElementImageInstallationState() {
+	public ElementImageState getElementImageState() {
 		return elementImageState;
 	}
 	

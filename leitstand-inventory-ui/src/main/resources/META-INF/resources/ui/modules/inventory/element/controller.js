@@ -361,53 +361,13 @@ const elementImagesController = function(){
 	return new Controller({
 		resource:element,
 		viewModel:function(settings){
-			settings.updateSummary = function(){
-				const major = 0;
-				const minor = 0;
-				const patch = 0;
-				if(this["available_updates"]){
-					this["available_updates"].forEach(function(update){
-						if(update["update_type"]=="MAJOR"){
-							major++;
-						}
-						if(update["update_type"]=="MINOR"){
-							minor++;
-						}
-						if(update["update_type"]=="PATCH"){
-							patch++;
-						}
-					});					
+			
+			settings.available_updates = function(){
+				if(settings.images){
+					return settings.images.map(image => image.available_updates && image.available_updates.length || 0).reduce((a,b) => a+b,0);
 				}
-
-				return {"major":major,
-						"minor":minor,
-						"patch":patch, 
-						"updates": (major+minor+patch) > 0 };
+				return 0;
 			};
-			return settings;
-		},
-	});
-};
-
-const elementImageController = function(){
-	const element = new Element({"scope":"images"});
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			settings.updatesAvailable = function(){
-				return this["available_updates"] && this["available_updates"].length > 0;
-			};
-			
-			settings.displayType = function(){
-				if(this["type"] == "MAJOR") return "Major ";
-				if(this["type"] == "MINOR") return "Minor ";
-				if(this["type"] == "PATCH") return "Patch ";
-				return "Pre-Release ";
-			};
-			
-			settings.state = function(){
-				return this["active"] ? "STARTED" : "CACHED";
-			}
 			return settings;
 		},
 	});
@@ -447,11 +407,6 @@ class PodSelector extends Control{
 		    					  .reduce((a,b)=>a+b,'')}
 		    			</tbody>
 		    		</table>`;
-		    
-		    
-		    
-		    
-		    
 		    });
 		    
 		    
@@ -587,12 +542,6 @@ const elementModuleController = function(){
 
 
 
-const elementImagesMenu = {
-	"master" : elementImagesController(),
-	"details" : {"element-image.html" : elementImageController() }
-};
-
-
 const modulesMenu = {
 	"master" :  elementModulesController(),
 	"details" : {"element-module.html" : elementModuleController()}
@@ -629,7 +578,7 @@ export const menu = new Menu({
 	"element-location.html" : elementLocationController(),
 	"element-rack.html": elementRackMenu,
 	"element-modules.html": modulesMenu,
-	"element-images.html" : elementImagesMenu,
+	"element-images.html" : elementImagesController(),
 	"element-services.html": elementServicesController(),
 	"element-service.html": elementServiceController()
 });

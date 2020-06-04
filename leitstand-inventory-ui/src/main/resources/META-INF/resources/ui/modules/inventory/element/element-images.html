@@ -39,47 +39,70 @@ The active image is currently running on the element.
 An image in pull state is supposed to be pulled by the element into it's local image cache in order to become eligible for immediate activation.
 Cached images can be activated immediately from an element-local cache.
 </ui-note>
-<!-- {{#installed.length}} -->
+<!-- {{#images.length}} -->
+<ui-group>
+<ui-label>Images on {{element_name}}</ui-label>
 <table class="list">
 	<thead>
-		<tr>
+		<tr style="vertical-align:bottom">
 			<th>Type</th>
-			<th class="text">Name</th>
-			<th>Version</th>
+			<th>Lifecycle</th>
+			<th class="text">Version</th>
 			<th class="tiny">State</th>
 			<th>Date Installed</th>
-			<th class="text">Available updates</th>
 		</tr>
 	</thead>
-<!-- {{#installed}} -->
-	<tr>
+<!-- {{#images}} -->
+	<tr style="vertical-align:top">
 		<td>{{image_type}}</td>
-		<td class="text">{{image_name}}</td>
-		<td><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a></td>
-		<td><span class="{{installation_state}}">{{installation_state}}</span></td>
+		<td><a class="{{image_state}}">{{image_state}}</a></td>
+		<td class="text"><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a></td>
+		<td style="vertical-align: middle"><span class="{{element_image_state}}">{{element_image_state}}</span></td>
 		<td><ui-date readonly>{{date_installed}}</ui-date></td>
-		<td class="text">{{#update-summary}}
-			{{#major}} 
-				{{.}} major update(s) available.
-			{{/major}} 
-			{{#minor}} 
-				{{.}} minor update(s) available.
-			{{/minor}} 
-			{{#patch}} 
-				{{.}} patch(es) available.
-			{{/patch}} 
-			{{^updates}}
-				No updates available.
-			{{/updates}}
-			{{/update-summary}}
+		<td class="text">
 		</td>
 	</tr>
-<!--  {{/installed}}-->
+<!--  {{/images}}-->
 </table>
-<!-- {{/installed.length}} -->
-<!-- {{^installed.length}} -->
+</ui-group>
+<h4>Available Upgrades</h4>
+<ui-note>Review the existing upgrades for each of the installed images.</ui-note>
+<!-- {{#available_updates}} -->
+<!-- {{#images}} -->
+<!-- {{#available_updates.length}} -->
+<ui-group>
+<ui-label>{{image_type}}</ui-label>
+<ui-note>Upgrades for image {{image_name}}</ui-note>
+<table class="list">
+	<thead>
+		<th>Lifecycle</th>
+		<th>Upgrade Type</th>
+		<th class="text">Image</th>
+	</thead>
+	<tbody>
+	<!-- {{#available_updates}} -->
+	<tr>
+		<td><span class="{{image_state}}">{{image_state}}</span></td>
+		<td>{{displayType}}</td>
+		<td class="text"><a href="/ui/vies/image/image-image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_name}}</a></td>		
+	</tr>
+	<!-- {{/available_updates}} -->
+	</tbody>
+</table>
+<!-- {{/available_updates.length}} -->
+</ui-group>
+<!-- {{/images}} -->
+<!-- {{/available_updates}} -->
+<!-- {{^available_updates}} -->
+<ui-blankslate>
+	<ui-title>No upgrades found.</ui-title>
+	<ui-note>No upgrades for the installed images available.</ui-note>
+</ui-blankslate>
+<!-- {{/available_updates}} -->
+<!-- {{/images.length}} -->
+<!-- {{^images.length}} -->
 <ui-blankslate>
 	<ui-title>No images found</ui-title>
 	<ui-note>This element has not reported which images are installed</ui-note>
 </ui-blankslate>
-<!-- {{/installed.length}} -->
+<!-- {{/images.length}} -->

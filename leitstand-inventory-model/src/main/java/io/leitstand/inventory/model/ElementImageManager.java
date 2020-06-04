@@ -20,7 +20,6 @@ import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImage;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImages;
-import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.findUpdates;
 import static io.leitstand.inventory.service.ElementAvailableUpdate.newElementAvailableUpdate;
@@ -32,7 +31,6 @@ import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
-import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
 import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalleImages;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
@@ -40,11 +38,10 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0342I_ELEMENT_IMAGE_R
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -52,9 +49,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import io.leitstand.commons.ConflictException;
-import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.ObjectUtil;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementAvailableUpdate;
@@ -66,24 +61,11 @@ import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.PackageVersionInfo;
-import io.leitstand.inventory.service.ReasonCode;
 
 @Dependent
 public class ElementImageManager {
 
 	private static final Logger LOG = Logger.getLogger(ElementImageManager.class.getName());
-	
-	private static Comparator<? super ElementInstalledImageReference> INSTALLED_ELEMENT_COMPARATOR = (a,b)->{
-			int key = a.getImageType().compareTo(b.getImageType());
-			if(key != 0) {
-				return key;
-			}
-			key = a.getImageName().compareTo(b.getImageName());
-			if(key != 0) {
-				return key;
-			}
-			return a.getImageVersion().compareTo(b.getImageVersion());
-		};
 	
 	private Repository repository;
 	private Messages messages;
@@ -234,19 +216,13 @@ public class ElementImageManager {
 	}
 	
 	public void storeInstalledImages(Element element, List<ElementInstalledImageReference> refs) {
-		Map<ElementInstalledImageReference,Element_Image> images = new TreeMap<>(INSTALLED_ELEMENT_COMPARATOR);
+		Map<ImageId,Element_Image> images = new HashMap<>();
 		for(Element_Image image : repository.execute(findInstalledImages(element))){
-			ElementInstalledImageReference installed = newElementInstalledImageReference()
-													   .withImageId(image.getImageId())
-													   .withImageType(image.getImageType())
-													   .withImageName(image.getImageName())
-													   .withImageVersion(image.getImageVersion())
-													   .build();
-			images.put(installed,image);
+			images.put(image.getImageId(),image);
 		}
 		
 		for(ElementInstalledImageReference installed : refs){
-			Element_Image image = images.remove(installed);
+			Element_Image image = images.remove(installed.getImageId());
 			if(image != null) {
 				image.setImageInstallationState(imageInstallationState(installed));
 				continue;

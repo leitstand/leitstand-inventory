@@ -61,7 +61,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 		}
 		
 		if(image == null) {
-			image = new Image(randomImageId(), 
+			image = new Image(installed.getImageId(), 
 							  installed.getImageType(),
 							  imageName,
 							  attachedElement.getElementRole(),

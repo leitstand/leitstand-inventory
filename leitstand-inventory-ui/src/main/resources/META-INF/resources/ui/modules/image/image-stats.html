@@ -18,13 +18,15 @@
   	<ui-breadcrumb href="images.html">Images</ui-breadcrumb>
   	<ui-breadcrumb>{{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
   </ui-breadcrumbs>
-  <ui-title>{{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
-  <ui-note>Image Utilization</ui-note>
+  <ui-title>Image {{image_name}}</ui-title>
+  <ui-subtitle>View image utilization</ui-subtitle>
 </ui-view-header>
+<!-- {{#images.length}} -->
+<ui-group>
+<ui-label>Image Utilization</ui-label>
 <ui-note>
 This image is used by {{total_count}} element(s) in {{pod_count}} pod(s). See the table below for more information.
 </ui-note>
-<!-- {{#images.length}} -->
 <table class="list">
    <thead>	
      <tr>
@@ -40,6 +42,7 @@ This image is used by {{total_count}} element(s) in {{pod_count}} pod(s). See th
    	<tr><td class="right text"><strong>Total</strong></td><td>{{cached_count}}</td><td>{{active_count}}</td></tr>
    </tbody>
 </table>
+</ui-group>
 <!-- {{/images.length}}  -->
 <!-- {{^images}}  -->
 <ui-blankslate>
