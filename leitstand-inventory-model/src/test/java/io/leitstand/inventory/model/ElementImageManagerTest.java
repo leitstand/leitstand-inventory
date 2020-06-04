@@ -19,7 +19,7 @@ import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
 import static io.leitstand.inventory.service.ImageName.imageName;
-import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
 import static io.leitstand.inventory.service.Version.version;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
@@ -60,14 +60,14 @@ import io.leitstand.inventory.service.ElementInstalledImageReference;
 public class ElementImageManagerTest {
 	
 	private static final ElementInstalledImageReference ACTIVE_IMAGE_REF =  newElementInstalledImageReference()
-																			.withImageType(LXC)
+																			.withImageType(imageType("lxd"))
 																			.withImageName(imageName("JUNIT"))
 																			.withImageVersion(version("1.0.0"))
 																			.withElementImageState(ACTIVE)
 																			.build();
 
 	private static final ElementInstalledImageReference CACHED_IMAGE_REF =  newElementInstalledImageReference()
-			   																.withImageType(LXC)
+			   																.withImageType(imageType("lxd"))
 			   																.withImageName(imageName("JUNIT"))
 			   																.withImageVersion(version("1.0.0"))
 			   																.withElementImageState(CACHED)
@@ -93,7 +93,7 @@ public class ElementImageManagerTest {
 	public void attempt_to_remove_a_nonexistent_installed_image_fails_silently() {
 		when(repository.execute(any(Query.class))).thenReturn(null);
 		manager.removeInstalledImage(mock(Element.class), 
-									 LXC, 
+									 imageType("lxd"), 
 									 imageName("JUNIT"),
 									 version("1.0.0"));
 		verify(repository,never()).remove(any());
@@ -109,7 +109,7 @@ public class ElementImageManagerTest {
 		when(repository.execute(any(Query.class))).thenReturn(image);
 
 		manager.removeInstalledImage(mock(Element.class), 
-									 LXC, 
+									 imageType("lxd"), 
 									 imageName("JUNIT"),
 									 version("1.0.0"));
 	}
@@ -120,7 +120,7 @@ public class ElementImageManagerTest {
 		when(repository.execute(any(Query.class))).thenReturn(image);
 		
 		manager.removeInstalledImage(mock(Element.class), 
-									 LXC, 
+									 imageType("lxd"), 
 									 imageName("JUNIT"),
 									 version("1.0.0"));
 		
@@ -130,7 +130,7 @@ public class ElementImageManagerTest {
 	@Test
 	public void mark_existing_cached_image_as_active() {
 		Element_Image cached = mock(Element_Image.class);
-		when(cached.getImageType()).thenReturn(LXC);
+		when(cached.getImageType()).thenReturn(imageType("lxd"));
 		when(cached.getImageName()).thenReturn(imageName("JUNIT"));
 		when(cached.getImageVersion()).thenReturn(version("1.0.0"));
 		when(cached.getInstallationState()).thenReturn(CACHED);
@@ -149,13 +149,13 @@ public class ElementImageManagerTest {
 	public void add_new_installed_image_if_not_associated_with_element() {
 		Element_Image newImage = mock(Element_Image.class);
 		when(newImage.getImageType())
-		.thenReturn(LXC);
+		.thenReturn(imageType("lxd"));
 		
 		when(newImage.getImageVersion())
 		.thenReturn(version("1.0.0"));
 		
 		Image image = mock(Image.class);
-		when(image.getImageType()).thenReturn(LXC);
+		when(image.getImageType()).thenReturn(imageType("lxd"));
 		when(image.getImageVersion()).thenReturn(version("1.0.0"));
 		
 		when(repository.execute(any(Query.class)))
@@ -170,7 +170,7 @@ public class ElementImageManagerTest {
 		
 
 		assertEquals(version("1.0.0"),imageCaptor.getValue().getImageVersion());
-		assertEquals(LXC,imageCaptor.getValue().getImageType());
+		assertEquals(imageType("lxd"),imageCaptor.getValue().getImageType());
 		assertTrue(imageCaptor.getValue().isActive());
 	}
 	
@@ -194,7 +194,7 @@ public class ElementImageManagerTest {
 	@Test
 	public void remove_existing_references() {
 		Element_Image cached = mock(Element_Image.class);
-		when(cached.getImageType()).thenReturn(LXC);
+		when(cached.getImageType()).thenReturn(imageType("lxd"));
 		when(cached.getImageName()).thenReturn(imageName("JUNIT"));
 		when(cached.getImageVersion()).thenReturn(version("1.0.0"));
 		when(cached.getInstallationState()).thenReturn(CACHED);
@@ -214,7 +214,7 @@ public class ElementImageManagerTest {
 		exception.expect(reason(IVT0341E_ELEMENT_IMAGE_ACTIVE));
 		
 		Element_Image cached = mock(Element_Image.class);
-		doReturn(LXC).when(cached).getImageType();
+		doReturn(imageType("lxd")).when(cached).getImageType();
 		doReturn(imageName("JUNIT")).when(cached).getImageName();
 		doReturn(version("1.0.0")).when(cached).getImageVersion();
 		doReturn(CACHED).when(cached).getInstallationState();
@@ -242,7 +242,7 @@ public class ElementImageManagerTest {
 	public void remove_inactive_cached_images() {
 		
 		Element_Image cached = mock(Element_Image.class);
-		doReturn(LXC).when(cached).getImageType();
+		doReturn(imageType("lxd")).when(cached).getImageType();
 		doReturn(imageName("JUNIT")).when(cached).getImageName();
 		doReturn(version("1.0.0")).when(cached).getImageVersion();
 		doReturn(CACHED).when(cached).getInstallationState();

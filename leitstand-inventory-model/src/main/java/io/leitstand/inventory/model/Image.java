@@ -48,6 +48,7 @@ import io.leitstand.commons.model.Update;
 import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.ImageNameConverter;
 import io.leitstand.inventory.jpa.ImageStateConverter;
+import io.leitstand.inventory.jpa.ImageTypeConverter;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
@@ -317,7 +318,7 @@ public class Image extends VersionableEntity{
 	private String org;
 	
 
-	@Enumerated(STRING)
+	@Convert(converter=ImageTypeConverter.class)
 	@Column(name="type")
 	private ImageType imageType;
 	

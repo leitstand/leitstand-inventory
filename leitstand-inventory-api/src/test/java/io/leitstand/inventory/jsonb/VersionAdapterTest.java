@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import io.leitstand.commons.jsonb.IsoDateAdapter;
 import io.leitstand.inventory.service.Version;
 
 public class VersionAdapterTest {

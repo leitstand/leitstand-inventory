@@ -47,6 +47,7 @@
 		<class>io.leitstand.inventory.jpa.EnvironmentNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageIdConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ImageTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.RackIdConverter</class>
 		<class>io.leitstand.inventory.jpa.RackNameConverter</class>
 		<class>io.leitstand.inventory.jpa.RoutingInstanceNameConverter</class>

@@ -23,7 +23,7 @@ import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
-import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
@@ -85,7 +85,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 							  .withPlatformId(PLATFORM_ID)
 							  .withPlatformName(PLATFORM_NAME)
 							  .withOrganization("net.rtbrick")
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(ImageName.valueOf("JUNIT"))
 							  .withImageVersion(new Version(1,0,0))
 							  .build();
@@ -109,7 +109,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 				  		 .withPlatformId(PLATFORM_ID)
 				  		 .withPlatformName(PLATFORM_NAME)
 				  		 .withOrganization("net.rtbrick")
-				  		 .withImageType(LXC)
+				  		 .withImageType(imageType("lxd"))
 				  		 .withImageVersion(new Version(1,0,1))
 				  		 .build();
 
@@ -128,7 +128,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 	public void make_candidate_to_default_and_supersed_existing_default() {
 		ImageInfo image = newImageInfo()
 		  		 		  .withImageId(randomImageId())
-		  		 		  .withImageType(LXC)
+		  		 		  .withImageType(imageType("lxd"))
 		  		 		  .withImageName(ImageName.valueOf("JUNIT"))
 		  		 		  .withImageState(CANDIDATE)
 		  		 		  .withImageVersion(new Version(2,0,0))
@@ -165,7 +165,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		ImageInfo image = newImageInfo()
 		  		 		  .withImageId(randomImageId())
 		  		 		  .withBuildDate(new Date())
-		  		 		  .withImageType(LXC)
+		  		 		  .withImageType(imageType("lxd"))
 		  		 		  .withImageName(ImageName.valueOf("JUNIT"))
 		  		 		  .withImageVersion(new Version(1,0,1))
 		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))

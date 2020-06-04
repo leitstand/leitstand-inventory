@@ -56,6 +56,7 @@ import io.leitstand.inventory.service.IPv6Prefix;
 import io.leitstand.inventory.service.IPvxPrefix;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleName;
@@ -94,6 +95,7 @@ public class StringScalarAdapterTest {
 			{new EnvironmentNameAdapter(),	 		"unit-env",				new EnvironmentName("unit-env")},
 			{new ImageIdAdapter(),  			 	uuid,		 			new ImageId(uuid)},
 			{new ImageNameAdapter(),  		 		"unit-image",			new ImageName("unit-image")},
+			{new ImageTypeAdapter(),  		 		"unit-type",			new ImageType("unit-type")},
 			{new InterfaceNameAdapter(),		 	"unit-0/0/0",			new InterfaceName("unit-0/0/0")},
 			{new IPv4PrefixAdapter(),			 	"10.0.0/8",				new IPv4Prefix("10.0.0/8")},
 			{new IPv6PrefixAdapter(),			 	"10.0.0/8",				new IPv6Prefix("10.0.0/8")},

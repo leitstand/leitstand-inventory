@@ -33,7 +33,7 @@ import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.NEW;
-import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
@@ -146,7 +146,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void raise_entity_not_found_exception_when_role_does_not_exist() {
 		ImageInfo imageInfo = newImageInfo()
 				  			  .withImageId(randomImageId())
-				  			  .withImageType(LXC)
+				  			  .withImageType(imageType("lxd"))
 				  			  .withImageName(imageName("store_image_metadata"))
 				  			  .withImageState(NEW)
 				  			  .withImageVersion(new Version(1,0,0))
@@ -172,7 +172,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_metadata() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -196,7 +196,7 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
 			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
 			assertEquals("tar.gz",storedImage.getExtension());
@@ -217,7 +217,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_metadata_with_build_info() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -244,7 +244,7 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
 			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
 			assertEquals("tar.gz",storedImage.getExtension());
@@ -267,7 +267,7 @@ public class ImageServiceIT extends InventoryIT{
 		
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -292,7 +292,7 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
 			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
 			assertEquals("tar.gz",storedImage.getExtension());
@@ -310,7 +310,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_with_applications() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -338,7 +338,7 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
 			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
 			assertEquals("tar.gz",storedImage.getExtension());
@@ -358,7 +358,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void remove_image_with_applications_and_package_revisions() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("remove_image_with_applications_and_package_revisions"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -405,7 +405,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void update_image_state() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("update_image_state"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -446,7 +446,7 @@ public class ImageServiceIT extends InventoryIT{
 	public void rename_image() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("rename_image"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
@@ -468,7 +468,7 @@ public class ImageServiceIT extends InventoryIT{
 		
 		ImageInfo renamedImage = newImageInfo()
 								 .withImageId(imageInfo.getImageId())
-								 .withImageType(LXC)
+								 .withImageType(imageType("lxd"))
 								 .withImageName(imageName("renamed_image"))
 								 .withImageState(NEW)
 								 .withImageVersion(new Version(1,0,0))
@@ -523,7 +523,7 @@ public class ImageServiceIT extends InventoryIT{
 
 			Image image = new Image(imageId,
 									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("remove_bound_image"),
 									role,
 									platform,
@@ -567,7 +567,7 @@ public class ImageServiceIT extends InventoryIT{
 
 			Image image = new Image(imageId,
 									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
 									platform,
@@ -610,7 +610,7 @@ public class ImageServiceIT extends InventoryIT{
 
 			Image image = new Image(imageId,
 									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
 									platform,

@@ -182,7 +182,7 @@ public class DefaultImageService implements ImageService {
 		
 		if(type != null) {
 			sql += "AND d.type=? ";
-			arguments.add(type.name());
+			arguments.add(type.toString());
 		}
 		
 		if(state != null) {
@@ -541,7 +541,9 @@ public class DefaultImageService implements ImageService {
 	
 	@Override
 	public ImageMetaData getImageMetaData() {
-		List<ImageType> types = new ArrayList<>(allOf(ImageType.class));
+		List<ImageType> types = db.executeQuery(prepare("SELECT DISTINCT type FROM inventory.image ORDER BY type ASC"),
+												rs -> imageType(rs.getString(1)));
+								  
 		List<ElementRoleInfo> roles = db.executeQuery(prepare("SELECT name,plane FROM inventory.elementrole ORDER BY name,plane"), 
 													  rs -> newElementRoleInfo()
 															.withElementRole(ElementRoleName.valueOf(rs.getString(1)))
