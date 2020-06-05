@@ -337,7 +337,7 @@ public class DefaultImageService implements ImageService {
 												   	 .withPlatformId(p.getPlatformId())
 													 .withPlatformName(p.getPlatformName())
 													 .withModelName(p.getModel())
-													 .withVendorName(p.getModel())
+													 .withVendorName(p.getVendor())
 													 .withDescription(p.getDescription())
 													 .build())
 											.collect(toList());

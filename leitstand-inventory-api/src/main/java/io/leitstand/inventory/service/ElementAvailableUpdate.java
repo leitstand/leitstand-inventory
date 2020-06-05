@@ -84,6 +84,17 @@ public class ElementAvailableUpdate extends ValueObject {
 			return this;
 		}
 		
+		/**
+		 * Sets the image state of the available update.
+		 * @param state the image state
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withImageState(ImageState state){
+			assertNotInvalidated(getClass(),update);
+			update.imageState = state;
+			return this;
+		}
+		
 		/** 
 		 * Sets the image version of the available update.
 		 * @param version the image version
@@ -134,6 +145,8 @@ public class ElementAvailableUpdate extends ValueObject {
 	private ImageId imageId;
 	
 	private ImageName imageName;
+	
+	private ImageState imageState;
 	
 	@JsonbTypeAdapter(IsoDateAdapter.class)
 	private Date buildDate;
@@ -215,4 +228,7 @@ public class ElementAvailableUpdate extends ValueObject {
 		return imageName;
 	}
 	
+	public ImageState getImageState() {
+		return imageState;
+	}
 }

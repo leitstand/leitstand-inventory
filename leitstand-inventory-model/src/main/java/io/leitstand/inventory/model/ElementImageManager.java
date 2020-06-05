@@ -109,6 +109,8 @@ public class ElementImageManager {
 				
 				updates.add(newElementAvailableUpdate()
 						    .withImageId(update.getImageId())
+						    .withImageName(update.getImageName())
+						    .withImageState(update.getImageState())
 							.withImageVersion(update.getImageVersion())
 							.withBuildDate(update.getBuildDate())
 							.withUpdateType(type)
@@ -180,6 +182,8 @@ public class ElementImageManager {
 			
 			updates.add(newElementAvailableUpdate()
 					 	.withImageId(update.getImageId())
+					 	.withImageName(update.getImageName())
+					 	.withImageState(update.getImageState())
 					 	.withImageVersion(update.getImageVersion())
 					 	.withBuildDate(update.getBuildDate())
 						.withUpdateType(type)

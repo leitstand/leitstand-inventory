@@ -59,15 +59,15 @@ Cached images can be activated immediately from an element-local cache.
 		<td class="text"><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a></td>
 		<td style="vertical-align: middle"><span class="{{element_image_state}}">{{element_image_state}}</span></td>
 		<td><ui-date readonly>{{date_installed}}</ui-date></td>
-		<td class="text">
-		</td>
 	</tr>
 <!--  {{/images}}-->
 </table>
 </ui-group>
+<!-- {{/images.length}} -->
+<!-- {{#images.length}} -->
+
 <h4>Available Upgrades</h4>
 <ui-note>Review the existing upgrades for each of the installed images.</ui-note>
-<!-- {{#available_updates}} -->
 <!-- {{#images}} -->
 <!-- {{#available_updates.length}} -->
 <ui-group>
@@ -83,22 +83,21 @@ Cached images can be activated immediately from an element-local cache.
 	<!-- {{#available_updates}} -->
 	<tr>
 		<td><span class="{{image_state}}">{{image_state}}</span></td>
-		<td>{{displayType}}</td>
+		<td>{{update_type}}</td>
 		<td class="text"><a href="/ui/vies/image/image-image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_name}}</a></td>		
 	</tr>
 	<!-- {{/available_updates}} -->
 	</tbody>
 </table>
-<!-- {{/available_updates.length}} -->
 </ui-group>
-<!-- {{/images}} -->
-<!-- {{/available_updates}} -->
-<!-- {{^available_updates}} -->
+<!-- {{/available_updates.length}} -->
+<!-- {{^available_updates.length}} -->
 <ui-blankslate>
 	<ui-title>No upgrades found.</ui-title>
 	<ui-note>No upgrades for the installed images available.</ui-note>
 </ui-blankslate>
-<!-- {{/available_updates}} -->
+<!-- {{/available_updates.length}} -->
+<!-- {{/images}} -->
 <!-- {{/images.length}} -->
 <!-- {{^images.length}} -->
 <ui-blankslate>

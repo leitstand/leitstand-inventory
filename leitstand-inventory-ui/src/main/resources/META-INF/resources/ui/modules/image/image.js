@@ -109,4 +109,14 @@ export class Image extends Resource {
 						 params)
 				   .POST();
 	}
+	
+	/**
+	 * Updates the settings of an image.
+	 */
+	saveSettings(params,image){
+		return this.json("/api/v1/images/{{&image}}",
+				         this._cfg,
+				         params)
+				   .PUT(image);
+	}
 }

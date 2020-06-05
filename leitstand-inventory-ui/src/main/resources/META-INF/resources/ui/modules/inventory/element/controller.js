@@ -359,17 +359,7 @@ const elementMgmtController = function(){
 const elementImagesController = function(){
 	const element = new Element({"scope":"images"});
 	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			
-			settings.available_updates = function(){
-				if(settings.images){
-					return settings.images.map(image => image.available_updates && image.available_updates.length || 0).reduce((a,b) => a+b,0);
-				}
-				return 0;
-			};
-			return settings;
-		},
+		resource:element
 	});
 };
 

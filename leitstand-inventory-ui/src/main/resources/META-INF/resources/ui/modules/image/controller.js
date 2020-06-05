@@ -67,6 +67,9 @@ const imageController = function(){
 				},
 				"purge":function(){
 					image.purgeCaches(this.location.params);
+				},
+				"save-settings":function(){
+					image.saveSettings(this.getViewModel());
 				}
 			},
 			onSuccess: function(){

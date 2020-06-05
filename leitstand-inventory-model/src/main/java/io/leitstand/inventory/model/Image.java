@@ -45,6 +45,7 @@ import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.ImageNameConverter;
 import io.leitstand.inventory.jpa.ImageStateConverter;
 import io.leitstand.inventory.jpa.ImageTypeConverter;
+import io.leitstand.inventory.jpa.PlatformChipsetNameConverter;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
@@ -342,6 +343,7 @@ public class Image extends VersionableEntity{
 					 joinColumns=@JoinColumn(name="image_id"))
 	private List<Checksum> checksums = emptyList();
 	
+	@Convert(converter=PlatformChipsetNameConverter.class)
 	private PlatformChipsetName chipset;
 	
 	@ManyToMany

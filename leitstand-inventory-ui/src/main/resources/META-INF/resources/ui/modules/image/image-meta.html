@@ -56,32 +56,40 @@
 	</ui-group>
 	<ui-group>
 		<ui-label>Element Role and Platform</ui-label>
-			<ui-note>The element role and the available platforms where this image can be deployed.</ui-note>
-			<ui-input name="element_role" readonly>
-				<ui-label>Element Role</ui-label>
-				<ui-value>Element role (readonly).</ui-value>
-			</ui-input>
-		
-			<ui-input name="platform_chipset">
-				<ui-label>Platform Chipset</ui-label>
-				<ui-note>The chipset this image is build for.</ui-note>
-			</ui-input>		
-			<!-- {{#platforms.length}} -->
-			<h3>Supported platforms</h3>
-			<table class="list">
-				<thead>
-					<tr>
-						<th class="text">Platform</th>
-						<th class="text">Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}">{{platform_name}}</a></td>
-						<td class="text">{{description}}</td>
-					</tr>
-				</tbody>
-			</table>
-			<!-- {{/platforms.length}} -->
+		<ui-note>The element role and the available platforms where this image can be deployed.</ui-note>
+		<ui-input name="element_role" readonly>
+			<ui-label>Element Role</ui-label>
+			<ui-value>Element role (readonly).</ui-value>
+		</ui-input>
+	
+		<ui-input name="platform_chipset">
+			<ui-label>Platform Chipset</ui-label>
+			<ui-note>The chipset this image is build for.</ui-note>
+		</ui-input>		
 	</ui-group>
+	<!-- {{#platforms.length}} -->
+	<ui-group>
+		<ui-label>Supported Platforms</ui-label>
+		<ui-note>This image can be installed on the following platforms:</ui-note>
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text small">Platform</th>
+					<th class="text small">Vendor</th>
+					<th class="text">Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- {{#platforms}} -->
+				<tr>
+					<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}">{{platform_name}}</a></td>
+					<td class="text">{{vendor_name}}</td>
+					<td class="text">{{description}}</td>
+				</tr>
+				<!-- {{/platforms}} -->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/platforms.length}} -->
+	
 </ui-form>
