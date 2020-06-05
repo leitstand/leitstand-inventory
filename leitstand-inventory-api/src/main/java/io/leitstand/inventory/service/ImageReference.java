@@ -48,18 +48,6 @@ public class ImageReference {
 			return this;
 		}
 		
-		public Builder withPlatformId(PlatformId platformId) {
-			assertNotInvalidated(getClass(), image);
-			image.platformId = platformId;
-			return this;
-		}
-		
-		public Builder withPlatformName(PlatformName platformName) {
-			assertNotInvalidated(getClass(), image);
-			image.platformName = platformName;
-			return this;
-		}
-		
 		public Builder withImageName(ImageName imageName) {
 			assertNotInvalidated(getClass(), image);
 			image.imageName = imageName;
@@ -82,6 +70,12 @@ public class ImageReference {
 			assertNotInvalidated(getClass(), image);
 			image.imageVersion = version;
 			return this;
+		}
+		
+		public Builder withPlatformChipset(PlatformChipsetName chipset){
+			assertNotInvalidated(getClass(), image);
+			image.platformChipset = chipset;
+			return this;			
 		}
 		
 		public Builder withBuildDate(Date date){
@@ -108,9 +102,6 @@ public class ImageReference {
 	
 	private ElementName elementName;
 
-	private PlatformId platformId;
-	private PlatformName platformName;
-	
 	private ImageName imageName;
 	
 	private ImageType imageType;
@@ -120,6 +111,8 @@ public class ImageReference {
 	private Version imageVersion;
 	
 	private Date buildDate;
+	
+	private PlatformChipsetName platformChipset;
 	
 	public ImageId getImageId() {
 		return imageId;
@@ -141,12 +134,8 @@ public class ImageReference {
 		return buildDate;
 	}
 
-	public PlatformId getPlatformId() {
-		return platformId;
-	}
-	
-	public PlatformName getPlatformName() {
-		return platformName;
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
 	}
 	
 	public ImageName getImageName() {

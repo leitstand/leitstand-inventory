@@ -47,7 +47,7 @@ import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageType.imageType;
-import static io.leitstand.inventory.service.PlatformId.platformId;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
@@ -153,18 +153,15 @@ public class DefaultImageService implements ImageService {
 										   int limit) {
 		List<Object> arguments = new LinkedList<>();
 		
-		String sql = "SELECT d.uuid, d.tsbuild, d.state, d.type, d.name, d.major, d.minor, d.patch, d.prerelease, e.name, r.name, p.uuid, p.name "+
-		             "FROM inventory.image d "+
-				     "JOIN inventory.platform p "+
-		             "ON d.platform_id = p.id "+
+		String sql = "SELECT i.uuid, i.tsbuild, i.state, i.type, i.name, i.chipset, i.major, i.minor, i.patch, i.prerelease, e.name, r.name "+
+		             "FROM inventory.image i "+
 				     "JOIN inventory.elementrole r "+
-		             "ON d.elementrole_id = r.id "+
+		             "ON i.elementrole_id = r.id "+
 				     "LEFT OUTER JOIN inventory.element e "+
-		             "ON d.element_id = e.id "+
-				     "WHERE (p.vendor ~ ? OR p.model ~ ? OR r.name ~ ? OR e.name ~ ? OR d.name ~ ?) ";
+		             "ON i.element_id = e.id "+
+				     "WHERE (r.name ~ ? OR e.name ~ ? OR i.name ~ ? OR i.chipset ~ ?) ";
 		
 		// Add the same filter expression four times, for vendor, model, role, element and image name
-		arguments.add(filter);
 		arguments.add(filter);
 		arguments.add(filter);
 		arguments.add(filter);
@@ -176,28 +173,28 @@ public class DefaultImageService implements ImageService {
 		}
 		
 		if(type != null) {
-			sql += "AND d.type=? ";
+			sql += "AND i.type=? ";
 			arguments.add(type.toString());
 		}
 		
 		if(state != null) {
-			sql += "AND d.state=? ";
+			sql += "AND i.state=? ";
 			arguments.add(ImageStateConverter.toDbValue(state));
 		}
 
 		if(version != null) {
-			sql += "AND d.major=? AND d.minor=? AND d.patch=? ";
+			sql += "AND i.major=? AND i.minor=? AND i.patch=? ";
 			arguments.add(Integer.valueOf(version.getMajorLevel()));
 			arguments.add(Integer.valueOf(version.getMinorLevel()));
 			arguments.add(Integer.valueOf(version.getPatchLevel()));
 			if(isNonEmptyString(version.getPreRelease())) {
-				sql += "AND d.prerelease=?";
+				sql += "AND i.prerelease=?";
 				arguments.add(version.getPreRelease());
 			}
 		}
 		
 		
-		sql += "ORDER BY r.name, e.name, p.vendor, d.name, p.model";
+		sql += "ORDER BY r.name, e.name, i.name";
 		
 		return db.executeQuery(prepare(sql,arguments),
 							   rs -> newImageReference()
@@ -206,14 +203,13 @@ public class DefaultImageService implements ImageService {
 								     .withImageState(toImageState(rs.getString(3)))
 									 .withImageType(imageType(rs.getString(4)))
 									 .withImageName(imageName(rs.getString(5)))
-									 .withImageVersion(new Version(rs.getInt(6),
-											 					   rs.getInt(7),
+									 .withPlatformChipset(platformChipsetName(rs.getString(6)))
+									 .withImageVersion(new Version(rs.getInt(7),
 											 					   rs.getInt(8),
-											 					   prerelease(rs.getString(9))))
-									 .withElementName(elementName(rs.getString(10)))
-									 .withElementRole(elementRoleName(rs.getString(11)))
-									 .withPlatformId(platformId(rs.getString(12)))
-									 .withPlatformName(platformName(rs.getString(13)))
+											 					   rs.getInt(9),
+											 					   prerelease(rs.getString(10))))
+									 .withElementName(elementName(rs.getString(11)))
+									 .withElementRole(elementRoleName(rs.getString(12)))
 									 .build());
 		
 	}

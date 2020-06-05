@@ -60,7 +60,9 @@ import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceId;
@@ -108,6 +110,8 @@ public class StringScalarAdapterTest {
 			{new ServiceIdAdapter(),		 		uuid,					new ServiceId(uuid)},
 			{new ServiceNameAdapter(),		 		"unit-service",			new ServiceName("unit-service")},
 			{new PlatformIdAdapter(),			 	uuid,					new PlatformId(uuid)},
+			{new PlatformNameAdapter(),			 	"unit-platform",		new PlatformName("unit-platform")},
+			{new PlatformChipsetNameAdapter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameAdapter(),			 		"unit-rack",			new RackName("unit-rack")},
 			{new RoutingInstanceNameAdapter(), 		"unit-vfr",				new RoutingInstanceName("unit-vfr")}
 
