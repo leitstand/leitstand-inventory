@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -178,8 +179,10 @@ public class ImageInfo extends ValueObject{
 		 * @param platforms the known platforms
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatforms(PlatformReference... platforms) {
-			return withPlatforms(asList(platforms));
+		public Builder withPlatforms(PlatformSettings.Builder... platforms) {
+			return withPlatforms(stream(platforms)
+								 .map(PlatformSettings.Builder::build)
+								 .collect(toList()));
 		}
 		
 		/**
@@ -187,13 +190,12 @@ public class ImageInfo extends ValueObject{
 		 * @param platforms the known platforms
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatforms(List<PlatformReference> platforms) {
+		public Builder withPlatforms(List<PlatformSettings> platforms) {
 			assertNotInvalidated(getClass(), image);
 			image.platforms = new LinkedList<>(platforms);
 			return this;
 		}
 		
-
 		/**
 		 * Sets the optional element name this image was built for.
 		 * An image can be created for a certain element. 
@@ -402,7 +404,7 @@ public class ImageInfo extends ValueObject{
 	@NotNull(message="{platform_chipset.required}")
 	private PlatformChipsetName platformChipset;
 	
-	private List<PlatformReference> platforms;
+	private List<PlatformSettings> platforms;
 
 	private String description;
 	
@@ -541,7 +543,7 @@ public class ImageInfo extends ValueObject{
 		return unmodifiableMap(checksums);
 	}
 	
-	public List<PlatformReference> getPlatforms() {
+	public List<PlatformSettings> getPlatforms() {
 		return unmodifiableList(platforms);
 	}
 	

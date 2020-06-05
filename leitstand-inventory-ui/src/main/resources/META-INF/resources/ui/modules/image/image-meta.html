@@ -22,51 +22,66 @@
  <ui-subtitle>Review image metadata</ui-subtitle>
  <ui-note>Image Metadata</ui-note>
 </ui-view-header>
-<ui-details class="image">
-	<ui-property>
-		<ui-label>Organization</ui-label>
-		<ui-value>{{organization}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Category</ui-label>
-		<ui-value>{{category}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Image Type</ui-label>
-		<ui-value>{{image_type}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Element Role</ui-label>
-		<ui-value>{{element_role}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Platform Name</ui-label>
-		<ui-value><a href="/ui/views/inventory/platform.html?platform={{platform_id}}">{{platform_name}}</a></ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Element</ui-label>
-		<ui-value default="*">{{element_name}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Image Name</ui-label>
-		<ui-value>{{image_name}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Image Version</ui-label>
-		<ui-value>{{image_version}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Extension</ui-label>
-		<ui-value>{{extension}}</ui-value>
-	</ui-property>
-	<ui-property>
-		<ui-label>Build Date</ui-label>
-		<ui-value>{{#date_build}}<ui-date readonly>{{.}}</ui-date>{{/date_build}}</ui-value>
-	</ui-property>
-	<!-- {{#checksum_list}} -->
-	<ui-property>
-		<ui-label>{{algorithm}}</ui-label>
-		<ui-property>{{value}}</ui-property>
-	</ui-property>
-	<!-- {{/checksum_list}} -->
-</ui-details>
+<ui-form>
+	<ui-group>
+		<ui-label>General Settings</ui-label>
+		<ui-input name="image_id" readonly>
+			<ui-label>Image ID</ui-label>
+			<ui-note>Image UUID (readonly).</ui-note>
+		</ui-input>
+		<ui-input name="organization">
+			<ui-label>Organization</ui-label>
+			<ui-note>The organization that issued the image</ui-note>
+		</ui-input>
+		<ui-input name="image_type">
+			<ui-label>Image Type</ui-label>
+			<ui-note>The image type (readonly)</ui-note>
+		</ui-input>		
+		<ui-input name="image_name">
+			<ui-label>Image Name</ui-label>
+			<ui-note>The unique image name.</ui-note>
+		</ui-input>
+		<ui-input name="image_version">
+			<ui-label>Image Version</ui-label>
+			<ui-note>Image version (readonly)</ui-note>
+		</ui-input>
+		<ui-input name="category">
+			<ui-label>Category</ui-label>
+			<ui-note>Optional image category.</ui-note>
+		</ui-input>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>Optional description of the image.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-group>
+		<ui-label>Element Role and Platform</ui-label>
+			<ui-note>The element role and the available platforms where this image can be deployed.</ui-note>
+			<ui-input name="element_role" readonly>
+				<ui-label>Element Role</ui-label>
+				<ui-value>Element role (readonly).</ui-value>
+			</ui-input>
+		
+			<ui-input name="platform_chipset">
+				<ui-label>Platform Chipset</ui-label>
+				<ui-note>The chipset this image is build for.</ui-note>
+			</ui-input>		
+			<!-- {{#platforms.length}} -->
+			<h3>Supported platforms</h3>
+			<table class="list">
+				<thead>
+					<tr>
+						<th class="text">Platform</th>
+						<th class="text">Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}">{{platform_name}}</a></td>
+						<td class="text">{{description}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<!-- {{/platforms.length}} -->
+	</ui-group>
+</ui-form>

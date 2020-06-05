@@ -50,7 +50,7 @@
 		<table class="list">
 			<thead>
 				<tr>
-					<th class="text">Platform</th>
+					<th class="text">Chipset</th>
 					<th class="text">Role</th>
 					<th class="text">Element</th>
 					<th class="text">Type</th>
@@ -62,8 +62,8 @@
 			<tbody>
 				<!--  {{#images}}-->
 				<tr>
-					<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}" title="Show platform details">{{platform_name}}</a></td>
-					<td class="text"><a href="/ui/views/inventory/role/role.html?role={{element_role}}" tirle="Show row details">{{element_role}}</a></td>
+					<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}" title="Show platform details">{{platform_chipset}}</a></td>
+					<td class="text"><a href="/ui/views/inventory/role/role.html?role={{element_role}}" tirle="Show element role details">{{element_role}}</a></td>
 					<td class="text">{{element_display_name}}</td>
 					<td class="text">{{image_type}}</td>
 					<td class="text">{{image_name}}</td>
@@ -73,14 +73,11 @@
 				<!--  {{/images}}-->
 			</tbody>
 		</table>
-		<ui-actions>
-			<ui-button title="Export listed images" target="_blank" small href="/api/v1/xport/images{{query_string}}">Export to file</ui-button>
-		</ui-actions>
 	</ui-group>
 	<!-- {{/images.length}} -->
 	<!-- {{^images.length}} -->
  	<ui-blankslate>
-		<ui-title>No images found</ui-title>
+		<ui-title>No images found.</ui-title>
 		<ui-note>No images have been registered in the resource inventory.</ui-note>
 	</ui-blankslate>
 	<!-- {{/images.length}} -->

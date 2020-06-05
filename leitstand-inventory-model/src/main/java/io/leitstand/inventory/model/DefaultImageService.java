@@ -49,6 +49,7 @@ import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PlatformId.platformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
+import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
@@ -97,7 +98,7 @@ import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.PlatformName;
-import io.leitstand.inventory.service.PlatformReference;
+import io.leitstand.inventory.service.PlatformSettings;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -333,10 +334,16 @@ public class DefaultImageService implements ImageService {
 
 	public ImageInfo imageInfo(Image image) {
 
-		List<PlatformReference> platforms = repository
-											.execute(findByChipset(image.getPlatformChipset()))
-											.stream()
-											.map(p -> new PlatformReference(p.getPlatformId(),p.getPlatformName()))
+		List<PlatformSettings> platforms = repository
+										   .execute(findByChipset(image.getPlatformChipset()))
+										   .stream()
+										   .map(p -> newPlatformSettings()
+												   	 .withPlatformId(p.getPlatformId())
+													 .withPlatformName(p.getPlatformName())
+													 .withModelName(p.getModel())
+													 .withVendorName(p.getModel())
+													 .withDescription(p.getDescription())
+													 .build())
 											.collect(toList());
 
 		
