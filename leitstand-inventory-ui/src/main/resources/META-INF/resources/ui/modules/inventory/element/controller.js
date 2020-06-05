@@ -359,7 +359,22 @@ const elementMgmtController = function(){
 const elementImagesController = function(){
 	const element = new Element({"scope":"images"});
 	return new Controller({
-		resource:element
+		resource:element,
+		viewModel:function(element){
+			element.upgrade_type=function(){
+				if(this.update_type == "MAJOR"){
+					return "Major upgrade";
+				}
+				if(this.update_type == "MINOR"){
+					return "Minor upgrade";
+				}
+				if(this.update_type == "PATCH"){
+					return "Patch";
+				}
+				return "Pre-Release";
+			}
+			return element;
+		}
 	});
 };
 
