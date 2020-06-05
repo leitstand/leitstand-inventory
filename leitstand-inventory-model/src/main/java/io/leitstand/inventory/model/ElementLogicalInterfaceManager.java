@@ -63,19 +63,15 @@ public class ElementLogicalInterfaceManager {
 	
 	private Repository repository;
 	
-	private ElementProvider elements;
-	
 	private Messages messages;
 	
 	private Event<ElementLogicalInterfaceEvent> event;
 	
 	@Inject
 	protected ElementLogicalInterfaceManager(@Inventory Repository repository,
-									 ElementProvider elements,
-									 Messages messages, 
-									 Event<ElementLogicalInterfaceEvent> event){
+									 		 Messages messages, 
+									 		 Event<ElementLogicalInterfaceEvent> event){
 		this.repository = repository;
-		this.elements = elements;
 		this.messages = messages;
 		this.event = event;
 	}

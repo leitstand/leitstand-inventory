@@ -102,7 +102,6 @@ import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
-import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
@@ -219,7 +218,6 @@ public class ForceRemoveElementIT extends InventoryIT{
 		// Add logical interfaces
 		transaction(()->{
 			ElementLogicalInterfaceManager iflManager = new ElementLogicalInterfaceManager(repository, 
-																						   elements, 
 																						   messages, 
 																						   event);
 			ElementLogicalInterfaceService iflService = new DefaultElementLogicalInterfaceService(elements, 

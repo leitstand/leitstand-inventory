@@ -69,7 +69,6 @@ public class ElementLogicalInterfaceManagerTest {
 		this.event = mock(Event.class);
 		
 		this.manager = new ElementLogicalInterfaceManager(repository, 
-														   elements, 
 														   messages, 
 														   event);
 		

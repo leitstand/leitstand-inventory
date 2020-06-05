@@ -45,14 +45,12 @@ import org.junit.rules.ExpectedException;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.ObjectUtil;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementManagementInterface;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementService;

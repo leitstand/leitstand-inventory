@@ -57,7 +57,6 @@ public class ElementRoleIT extends InventoryIT{
 		messageCaptor = ArgumentCaptor.forClass(Message.class);
 		messages.add(messageCaptor.capture());
 		ElementRoleManager manager = new ElementRoleManager(repository,
-															getDatabase(),
 															messages) ;
 		
 		service = new DefaultElementRoleService(provider,manager);

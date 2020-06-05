@@ -19,8 +19,6 @@ import static io.leitstand.commons.model.ByteArrayUtil.encodeBase36String;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
-import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
-import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.security.crypto.SecureHashes.sha256;
 import static java.util.Arrays.asList;
 
@@ -34,7 +32,6 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.PlatformChipsetName;
-import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.Version;
 
 public final class ImageInfoMother {

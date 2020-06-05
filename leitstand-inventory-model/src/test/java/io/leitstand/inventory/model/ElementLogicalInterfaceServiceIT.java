@@ -73,7 +73,6 @@ import io.leitstand.inventory.service.OperationalState;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
-import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 
@@ -106,7 +105,9 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		
 		Repository repository = new Repository(getEntityManager());
 		ElementProvider elements = new ElementProvider(repository);
-		ElementLogicalInterfaceManager manager = new ElementLogicalInterfaceManager(repository, elements, messages, event);
+		ElementLogicalInterfaceManager manager = new ElementLogicalInterfaceManager(repository, 
+																					messages, 
+																					event);
 		service = new DefaultElementLogicalInterfaceService(elements, manager);
 		
 		transaction(()->{

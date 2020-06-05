@@ -232,12 +232,12 @@ public class ElementImageServiceIT extends InventoryIT{
 										   										GROUP_NAME);
 								   		  return group;});
 			
-			elementService.storeElementSettings(settings);		
-			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
 													   () -> new Platform(PLATFORM_ID,
 															   			  PLATFORM_NAME,
 															   			  PLATFORM_CHIPSET));
+
+			elementService.storeElementSettings(settings);		
 			
 			
 			// Create base image
@@ -304,7 +304,6 @@ public class ElementImageServiceIT extends InventoryIT{
 	public void clearTestEnvironment() {
 		transaction(() -> {
 			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_image"));
-			
 		});
 		
 	}

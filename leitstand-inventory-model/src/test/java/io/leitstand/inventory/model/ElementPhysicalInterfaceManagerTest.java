@@ -22,7 +22,6 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOU
 import static io.leitstand.inventory.service.ReasonCode.IVT0350E_ELEMENT_IFP_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0353E_ELEMENT_IFP_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
-import static java.util.Collections.emptySet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

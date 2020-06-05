@@ -375,13 +375,13 @@ public class Image extends VersionableEntity{
 		super(id.toString());
 	}
 	
-	protected Image(ImageId id, 
+	protected Image(ImageId imageId, 
 					ImageType imageType,
 					ImageName imageName,
 					ElementRole role, 
 					PlatformChipsetName chipset,
 					Version version) {
-		super(id.toString());
+		super(imageId.toString());
 		this.imageType = imageType;
 		this.imageName = imageName;
 		this.imageState = CANDIDATE;
@@ -397,7 +397,10 @@ public class Image extends VersionableEntity{
 
 
 	public Version getImageVersion(){
-		return new Version(major,minor,patch,prerelease(prerelease));
+		return new Version(major,
+						   minor,
+						   patch,
+						   prerelease(prerelease));
 	}
 	
 	public ImageId getImageId() {
@@ -427,7 +430,6 @@ public class Image extends VersionableEntity{
 		this.imageType = imageType;
 	}
 	
-	
 	public ElementRole getElementRole() {
 		return role;
 	}
@@ -435,7 +437,6 @@ public class Image extends VersionableEntity{
 	public void setElementRole(ElementRole role) {
 		this.role = role;
 	}
-	
 	
 	public String getImageExtension() {
 		return ext;
