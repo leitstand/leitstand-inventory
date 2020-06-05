@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -381,7 +380,6 @@ public class ImageInfo extends ValueObject{
 	
 	private ElementName elementName;
 	
-	@NotNull(message="{extension.required}")
 	private String extension;
 	
 	@JsonbProperty
