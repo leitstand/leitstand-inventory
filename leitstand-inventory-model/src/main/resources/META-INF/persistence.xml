@@ -74,6 +74,7 @@
 		<class>io.leitstand.inventory.jpa.VlanTPIDConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformNameConverter</class>
+		<class>io.leitstand.inventory.jpa.PlatformChipsetNameConverter</class>
 		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>
 		<class>io.leitstand.commons.jpa.BooleanConverter</class>
 		<class>io.leitstand.commons.jpa.SerializableJsonObjectConverter</class>

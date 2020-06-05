@@ -32,6 +32,7 @@ import static io.leitstand.inventory.service.ElementServiceSubmission.newElement
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.OperationalState.UP;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
@@ -65,6 +66,7 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementServiceContext;
 import io.leitstand.inventory.service.ElementServiceSubmission;
 import io.leitstand.inventory.service.ElementServicesService;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.ServiceInfo;
@@ -79,6 +81,7 @@ public class ElementServicesServiceIT extends InventoryIT {
 	private static final ElementName ELEMENT_NAME = elementName("element");
 	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementServicesServiceIT.class.getSimpleName());
 	private static final PlatformName PLATFORM_NAME = platformName(ElementServicesServiceIT.class.getName());
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final ServiceName CONTAINER_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".container");
 	private static final ServiceName DAEMON_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".daemon");
@@ -133,7 +136,8 @@ public class ElementServicesServiceIT extends InventoryIT {
 	
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID,
-															   			  PLATFORM_NAME));
+															   			  PLATFORM_NAME,
+															   			  PLATFORM_CHIPSET));
 	
 			ElementRole role = repository.addIfAbsent(findRoleByName(ROLE_NAME),
 													  () -> new ElementRole(ROLE_NAME,

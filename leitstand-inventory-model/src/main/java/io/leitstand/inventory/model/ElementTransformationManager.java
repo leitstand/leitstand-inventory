@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.model.DefaultImageService.imageInfo;
 import static io.leitstand.inventory.model.Image.findDefaultImages;
 import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
 
@@ -30,6 +29,7 @@ import io.leitstand.inventory.service.ElementInstalledImageData;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementManagementInterface;
 import io.leitstand.inventory.service.ElementSettings;
+import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.visitor.ElementConfigVisitor;
 import io.leitstand.inventory.visitor.ElementImageVisitor;
 import io.leitstand.inventory.visitor.ElementSettingsVisitor;
@@ -47,6 +47,9 @@ public class ElementTransformationManager {
 
 	@Inject 
 	private ElementImageManager elementImages;
+	
+	@Inject
+	private ImageService images;
 	
 	@Inject
 	@Inventory
@@ -82,7 +85,7 @@ public class ElementTransformationManager {
 		if(imageVisitor != null) {
 			for(Image image : repository.execute(findDefaultImages(element.getElementRole(), 
 																   element.getPlatform()))) {
-				imageVisitor.visitImage(imageInfo(image));
+				imageVisitor.visitImage(images.getImage(image.getImageId()));
 			}
 		}
 	}

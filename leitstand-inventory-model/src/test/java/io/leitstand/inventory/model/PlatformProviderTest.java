@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
@@ -43,11 +44,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlatformProviderTest {
+	
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unitest");
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -87,7 +91,9 @@ public class PlatformProviderTest {
 
 	@Test
 	public void findOrCreatePlatform_returns_null_if_neither_id_or_name_is_specified() {
-		assertNull(provider.findOrCreatePlatform(null, null));
+		assertNull(provider.findOrCreatePlatform(null, 
+												 null,
+												 null));
 	}
 	
 	@Test
@@ -96,7 +102,9 @@ public class PlatformProviderTest {
 		PlatformName name = platformName("unitTest");
 		when(repository.execute(any(Query.class))).thenReturn(platform);
 		
-		assertSame(platform,provider.findOrCreatePlatform(null, name));
+		assertSame(platform,provider.findOrCreatePlatform(null, 
+														  name, 
+														  PLATFORM_CHIPSET));
 		
 		verify(repository,never()).add(any(Platform.class)); // Do not add an existing platform
 	}
@@ -108,7 +116,9 @@ public class PlatformProviderTest {
 		ArgumentCaptor<Platform> platformCaptor = ArgumentCaptor.forClass(Platform.class);
 		doNothing().when(repository).add(platformCaptor.capture());
 		
-		Platform platform = provider.findOrCreatePlatform(platformId, name);
+		Platform platform = provider.findOrCreatePlatform(platformId, 
+														  name,
+														  PLATFORM_CHIPSET);
 		
 		Platform created = platformCaptor.getValue();
 		assertSame(platform,created);
@@ -127,7 +137,8 @@ public class PlatformProviderTest {
 		PlatformProvider spy = spy(provider);
 		
 		Platform platform = spy.findOrCreatePlatform(platformId, 
-													 platformName);
+													 platformName,
+													 PLATFORM_CHIPSET);
 		
 		Platform created = platformCaptor.getValue();
 		assertSame(platform,created);
@@ -142,7 +153,9 @@ public class PlatformProviderTest {
 		PlatformName name = platformName("unittest");
 		when(repository.execute(any(Query.class))).thenReturn(platform);
 		
-		assertSame(platform,provider.findOrCreatePlatform(id, name));
+		assertSame(platform,provider.findOrCreatePlatform(id, 
+														  name,
+														  PLATFORM_CHIPSET));
 		
 		verify(repository,never()).add(any(Platform.class)); // Do not add an existing platform
 		

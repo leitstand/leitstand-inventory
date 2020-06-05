@@ -22,6 +22,8 @@ import static io.leitstand.inventory.service.IPvxPrefix.cidr;
 import static io.leitstand.inventory.service.InterfaceName.interfaceName;
 import static io.leitstand.inventory.service.MACAddress.macAddress;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
+import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0361I_ELEMENT_IFL_STORED;
 import static io.leitstand.inventory.service.RoutingInstanceName.routingInstance;
@@ -68,28 +70,30 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.OperationalState;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.testing.ut.LeitstandCoreMatchers;
 
 public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 
-	private static final ElementGroupId   GROUP_ID     = randomGroupId();
-	private static final ElementGroupType GROUP_TYPE   = groupType("pod");
-	private static final ElementGroupName GROUP_NAME   = groupName("ifl");
-	private static final ElementId 		  ELEMENT_ID   = randomElementId();
-	private static final ElementName 	  ELEMENT_NAME = elementName("ifl-tests");
-	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName("ifl-test");
-	private static final ElementAlias	  ELEMENT_ALIAS = elementAlias("ifl-element-alias");
-	private static final PlatformId		  PLATFORM_ID  = PlatformId.randomPlatformId();
-	private static final PlatformName	  PLATFORM_NAME = platformName("ifl-test");
-	private static final InterfaceName 	  IFP_NAME		= interfaceName("ifp-0/0/1");
-	private static final InterfaceName 	  IFP2_NAME		= interfaceName("ifp-0/0/2");
-	private static final InterfaceName	  IFL_NAME		= interfaceName("ifl-0/0/1/1");
-	private static final InterfaceName	  IFL2_NAME		= interfaceName("ifl-0/0/1/2");
-	private static final InterfaceName	  IFL3_NAME		= interfaceName("ifl-0/0/1/3");
-	private static final Bandwidth		  IFP_BANDWIDTH = bandwidth("10.000 Gbps");
-	private static final MACAddress		  IFP_MAC		= macAddress("00:11:22:33:44:55");
+	private static final ElementGroupId  	 GROUP_ID     	  = randomGroupId();
+	private static final ElementGroupType 	 GROUP_TYPE   	  = groupType("pod");
+	private static final ElementGroupName 	 GROUP_NAME   	  = groupName("ifl");
+	private static final ElementId 		  	 ELEMENT_ID   	  = randomElementId();
+	private static final ElementName 	  	 ELEMENT_NAME 	  = elementName("ifl-tests");
+	private static final ElementRoleName  	 ELEMENT_ROLE 	  = elementRoleName("ifl-test");
+	private static final ElementAlias	  	 ELEMENT_ALIAS 	  = elementAlias("ifl-element-alias");
+	private static final PlatformId		  	 PLATFORM_ID  	  = randomPlatformId();
+	private static final PlatformName	     PLATFORM_NAME 	  = platformName("ifl-test");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unit-chipset");
+	private static final InterfaceName 	  	 IFP_NAME		  = interfaceName("ifp-0/0/1");
+	private static final InterfaceName 	 	 IFP2_NAME		  = interfaceName("ifp-0/0/2");
+	private static final InterfaceName	  	 IFL_NAME		  = interfaceName("ifl-0/0/1/1");
+	private static final InterfaceName	  	 IFL2_NAME		  = interfaceName("ifl-0/0/1/2");
+	private static final InterfaceName	  	 IFL3_NAME		  = interfaceName("ifl-0/0/1/3");
+	private static final Bandwidth		  	 IFP_BANDWIDTH 	  = bandwidth("10.000 Gbps");
+	private static final MACAddress		  	 IFP_MAC		  = macAddress("00:11:22:33:44:55");
 	
 	private ElementLogicalInterfaceService service;
 	private Messages messages;
@@ -112,7 +116,9 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			ElementGroup group = repository.addIfAbsent(findElementGroupById(GROUP_ID), 
 														() -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
-													   () -> new Platform(PLATFORM_ID, PLATFORM_NAME));
+													   () -> new Platform(PLATFORM_ID, 
+															   			  PLATFORM_NAME, 
+															   			  PLATFORM_CHIPSET));
 			Element element = repository.addIfAbsent(findElementById(ELEMENT_ID), 
 													 () -> new Element(group,role,platform,ELEMENT_ID,ELEMENT_NAME));
 			element.setElementAlias(ELEMENT_ALIAS);

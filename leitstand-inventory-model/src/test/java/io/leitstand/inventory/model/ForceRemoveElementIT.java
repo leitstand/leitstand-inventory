@@ -48,6 +48,7 @@ import static io.leitstand.inventory.service.EnvironmentName.environmentName;
 import static io.leitstand.inventory.service.ModuleData.newModuleData;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
@@ -101,6 +102,7 @@ import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
@@ -156,7 +158,8 @@ public class ForceRemoveElementIT extends InventoryIT{
 	
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID, 
-															   			  platformName(getClass().getName())));
+															   			  platformName(getClass().getName()),
+															   			  platformChipsetName("unittest")));
 	
 			ElementRole role = repository.addIfAbsent(findRoleByName(ROLE_NAME),
 													  () -> new ElementRole(ROLE_NAME,

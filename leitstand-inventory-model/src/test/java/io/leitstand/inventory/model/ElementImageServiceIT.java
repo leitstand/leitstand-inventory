@@ -35,6 +35,7 @@ import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.Version.version;
@@ -74,6 +75,7 @@ import io.leitstand.inventory.service.ElementSettingsService;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
@@ -95,7 +97,7 @@ public class ElementImageServiceIT extends InventoryIT{
 	private static final ElementRoleName ELEMENT_ROLE = elementRoleName(ElementImageServiceIT.class.getSimpleName());
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ElementImageServiceIT.class.getSimpleName());
-	
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
@@ -177,7 +179,7 @@ public class ElementImageServiceIT extends InventoryIT{
 		image.setBuildDate(buildDate);
 		image.setPackages(packages);
 		image.setApplications(applications);
-		image.setPlatform(platform);
+		image.setPlatformChipset(PLATFORM_CHIPSET);
 		image.setImageState(CANDIDATE);
 		return image;
 	}
@@ -233,7 +235,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			elementService.storeElementSettings(settings);		
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
-													   () -> new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   () -> new Platform(PLATFORM_ID,
+															   			  PLATFORM_NAME,
+															   			  PLATFORM_CHIPSET));
 			
 			
 			// Create base image

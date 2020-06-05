@@ -18,12 +18,12 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
 import static io.leitstand.inventory.service.ImageName.imageName;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -42,7 +42,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.ElementConfig;
 import io.leitstand.inventory.service.ElementConfigName;
@@ -54,6 +53,7 @@ import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementManagementInterface;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ImageInfo;
+import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.visitor.ElementConfigVisitor;
 import io.leitstand.inventory.visitor.ElementImageVisitor;
 import io.leitstand.inventory.visitor.ElementSettingsVisitor;
@@ -71,6 +71,9 @@ public class ElementTransformationManagerTest {
 
 	@Mock 
 	private ElementImageManager elementImages;
+	
+	@Mock
+	private ImageService images;
 	
 	@Mock
 	private Repository repository;
@@ -167,12 +170,11 @@ public class ElementTransformationManagerTest {
 	@Test
 	public void visit_available_images() {
 		Image image = mock(Image.class);
-		Platform platform = mock(Platform.class);
-		when(image.getPlatform()).thenReturn(platform);		
+		when(image.getPlatformChipset()).thenReturn(platformChipsetName("unittest"));		
 		
 		when(image.getImageName()).thenReturn(imageName("UNITTEST"));
 
-		when(repository.execute(any(Query.class))).thenReturn(asList(image));
+		when(images.getImage(image.getImageId())).thenReturn(new ImageInfo());
 		
 		ImageVisitor visitor = mock(ImageVisitor.class);
 		when(transformation.visitDefaultImages()).thenReturn(visitor);

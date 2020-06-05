@@ -139,7 +139,9 @@ public class ElementSettingsManager {
 		element.setTags(settings.getTags());
 		element.setAdministrativeState(settings.getAdministrativeState());
 		element.setOperationalState(settings.getOperationalState());
-		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), settings.getPlatformName()));
+		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
+														   settings.getPlatformName(),
+														   null));
 		
 		repository.add(element);
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED, 
@@ -201,7 +203,8 @@ public class ElementSettingsManager {
 		}
 		
 		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
-														   settings.getPlatformName()));	
+														   settings.getPlatformName(),
+														   null));	
 
 		
 		if(isDifferent(settings.getElementName(), previousElementName)){

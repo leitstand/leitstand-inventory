@@ -27,6 +27,7 @@ import static io.leitstand.inventory.service.ElementManagementInterface.newEleme
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0100E_GROUP_NOT_FOUND;
@@ -74,9 +75,11 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	private static final ElementRoleName ROLE_B = ElementRoleName.valueOf(ElementSettingsServiceIT.class.getSimpleName()+".B");
 	
 	private static final Platform PLATFORM_A = new Platform(randomPlatformId(), 
-															platformName("ElementSettingsServiceIT_A"));
+															platformName("ElementSettingsServiceIT_A"),
+															platformChipsetName("unittest"));
 	private static final Platform PLATFORM_B = new Platform(randomPlatformId(), 
-															platformName("ElementSettingsServiceIT_B"));
+															platformName("ElementSettingsServiceIT_B"),
+															platformChipsetName("unittest"));
 
 	
 	private static final ElementRoleName UNKNOWN_ROLE = elementRoleName("unknown");

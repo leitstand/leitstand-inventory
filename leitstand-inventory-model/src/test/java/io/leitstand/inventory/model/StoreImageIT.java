@@ -59,7 +59,6 @@ public class StoreImageIT extends InventoryIT{
 		this.packages = new PackageVersionService(repository);
 		
 		service = new DefaultImageService(packages, 
-										  new PlatformProvider(repository),
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),

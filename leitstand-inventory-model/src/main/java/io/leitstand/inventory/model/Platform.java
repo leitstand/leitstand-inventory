@@ -30,7 +30,9 @@ import javax.persistence.UniqueConstraint;
 import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
+import io.leitstand.inventory.jpa.PlatformChipsetNameConverter;
 import io.leitstand.inventory.jpa.PlatformNameConverter;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 
@@ -45,6 +47,8 @@ import io.leitstand.inventory.service.PlatformName;
 				query="SELECT p FROM Platform p WHERE p.name=:name"),
 	@NamedQuery(name="Platform.findAll", 
 				query="SELECT p FROM Platform p ORDER BY p.name"),
+	@NamedQuery(name="Platform.findByChipset", 
+				query="SELECT p FROM Platform p WHERE p.chipset=:chipset ORDER BY p.name"),
 	@NamedQuery(name="Platform.findMatches", 
 				query="SELECT p FROM Platform p WHERE CAST(p.name as TEXT) REGEXP :filter OR p.vendor REGEXP :filter OR p.model REGEXP :filter ORDER BY p.name" ),	
 	@NamedQuery(name="Platform.findByElementGroupAndElementRole", 
@@ -93,9 +97,18 @@ public class Platform extends VersionableEntity{
 					   .getSingleResult();
 	}
 	
+	public static Query<List<Platform>> findByChipset(PlatformChipsetName platformChipset) {
+		return em -> em.createNamedQuery("Platform.findByChipset",Platform.class)
+					   .setParameter("chipset", platformChipset)
+					   .getResultList();
+	}
+	
 	@Convert(converter = PlatformNameConverter.class)
 	@Column(unique=true)
 	private PlatformName name;
+
+	@Convert(converter = PlatformChipsetNameConverter.class)
+	private PlatformChipsetName chipset;
 	private String vendor;
 	private String model;
 	private String description;	
@@ -107,9 +120,12 @@ public class Platform extends VersionableEntity{
 		// JPA
 	}
 	
-	public Platform(PlatformId platformId, PlatformName platformName) {
+	public Platform(PlatformId platformId, 
+					PlatformName platformName,
+					PlatformChipsetName platformChipset) {
 		super(platformId.toString());
 		this.name = platformName;
+		this.chipset = platformChipset;
 		this.rackUnits = 1;
 	}
 	
@@ -129,7 +145,6 @@ public class Platform extends VersionableEntity{
 		this.model = model;
 	}
 	
-	
 	public String getDescription() {
 		return description;
 	}
@@ -145,7 +160,6 @@ public class Platform extends VersionableEntity{
 	void setVendor(String vendor) {
 		this.vendor = vendor;
 	}
-
 	
 	void setRackUnits(int rackUnits) {
 		this.rackUnits = rackUnits;
@@ -165,6 +179,14 @@ public class Platform extends VersionableEntity{
 
 	public PlatformId getPlatformId() {
 		return PlatformId.valueOf(getUuid());
+	}
+	
+	public void setChipset(PlatformChipsetName chipset) {
+		this.chipset = chipset;
+	}
+
+	public PlatformChipsetName getChipset() {
+		return chipset;
 	}
 
 }

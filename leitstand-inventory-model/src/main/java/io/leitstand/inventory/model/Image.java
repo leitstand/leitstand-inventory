@@ -18,11 +18,8 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
-import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.util.ArrayList;
@@ -34,7 +31,6 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -54,6 +50,7 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.Version;
 @Entity
 @Table(schema="inventory", name="image")
@@ -62,7 +59,7 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.markElementImageSuperseded",
 			query="UPDATE Image d "+ 
 			      "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
-			      "WHERE d.platform=:platform "+
+			      "WHERE d.chipset=:chipset "+
 			      "AND d.role=:role "+
 			      "AND d.element=:element "+
 			      "AND d.imageType=:type "+
@@ -76,7 +73,7 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.restoreElementImageCandidates",
 		    query="UPDATE Image d "+ 
 		    		  "SET d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
-		    		  "WHERE d.platform=:platform "+
+		    		  "WHERE d.chipset=:chipset "+
 		    		  "AND d.role=:role "+
 		    		  "AND d.element=:element "+
 		    		  "AND d.imageType=:type "+
@@ -89,7 +86,7 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.markRoleImageSuperseded",
 			query="UPDATE Image d "+ 
 				  "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
-				  "WHERE d.platform=:platform "+
+				  "WHERE d.chipset=:chipset "+
 				  "AND d.role=:role "+
 				  "AND d.element IS NULL "+
 				  "AND d.imageType=:type "+
@@ -102,7 +99,7 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.restoreRoleImageCandidates",
 				query="UPDATE Image d "+ 
 					  "SET d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
-					  "WHERE d.platform=:platform "+
+					  "WHERE d.chipset=:chipset "+
 					  "AND d.role=:role "+
 					  "AND d.element IS NULL "+
 					  "AND d.imageType=:type "+
@@ -114,7 +111,7 @@ import io.leitstand.inventory.service.Version;
 					  "(d.major>:major))")
 @NamedQuery(name="Image.findElementRoleImage",
 		    query="SELECT d FROM Image d "+
-				  "WHERE d.platform=:platform "+
+				  "WHERE d.chipset=:chipset "+
 		    	  "AND d.role=:role "+
 				  "AND d.imageType=:type "+
 		    	  "AND d.major=:major "+
@@ -124,21 +121,20 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.element IS NULL")
 @NamedQuery(name="Image.findDefaultImage",
 			query="SELECT d FROM Image d "+
-				  "WHERE d.platform.vendor=:vendor "+
-				  "AND d.platform.model=:model "+
+				  "WHERE d.chipset=:chipset "+
 				  "AND d.role.name=:role "+
 				  "AND d.imageType=:type "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
 @NamedQuery(name="Image.findDefaultImages",
 			query="SELECT d FROM Image d "+
-				  "WHERE d.platform=:platform "+
+				  "WHERE d.chipset=:chipset "+
 				  "AND d.role=:role "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
 @NamedQuery(name="Image.findAvailableUpdates",
 			    query="SELECT d FROM Image d "+
-			    	  "WHERE d.platform=:platform "+
+			    	  "WHERE d.chipset=:chipset "+
 			    	  "AND d.imageState <> io.leitstand.inventory.service.ImageState.REVOKED " +
 			    	  "AND d.role.name=:role "+
 			    	  "AND d.imageType=:type "+
@@ -151,7 +147,7 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.findByElementAndImageTypeAndVersion", 
 			query="SELECT d FROM Image d "+
 				  "WHERE d.role=:role "+
-				  "AND d.platform=:platform "+
+				  "AND d.chipset=:chipset "+
 				  "AND d.imageType=:type "+
 				  "AND (d.element is NULL OR d.element=:element) "+
 				  "AND d.major=:major "+
@@ -177,7 +173,7 @@ public class Image extends VersionableEntity{
 		
 		if(image.getElement() != null) {
 			return em -> em.createNamedQuery("Image.markElementImageSuperseded",Image.class)
-						   .setParameter("platform", image.getPlatform())
+						   .setParameter("chipset", image.getPlatformChipset())
 						   .setParameter("role", image.getElementRole())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
@@ -188,7 +184,7 @@ public class Image extends VersionableEntity{
 						   .executeUpdate();
 		}
 		return em -> em.createNamedQuery("Image.markRoleImageSuperseded",Image.class)
-				   	   .setParameter("platform", image.getPlatform())
+				   	   .setParameter("chipset", image.getPlatformChipset())
 				   	   .setParameter("role", image.getElementRole())
 				   	   .setParameter("type", image.getImageType())
 				   	   .setParameter("major",image.getImageVersion().getMajorLevel())
@@ -202,7 +198,7 @@ public class Image extends VersionableEntity{
 	public static Update restoreCandidates(Image image) {
 		if(image.getElement() != null) {
 			return em -> em.createNamedQuery("Image.restoreElementImageCandidates",Image.class)
-						   .setParameter("platform", image.getPlatform())
+						   .setParameter("chipset", image.getPlatformChipset())
 						   .setParameter("role", image.getElementRole())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
@@ -213,7 +209,7 @@ public class Image extends VersionableEntity{
 						   .executeUpdate();
 		}
 		return em -> em.createNamedQuery("Image.restoreRoleImageCandidates",Image.class)
-					   .setParameter("platform", image.getPlatform())
+					   .setParameter("chipset", image.getPlatformChipset())
 					   .setParameter("role", image.getElementRole())
 					   .setParameter("type", image.getImageType())
 					   .setParameter("major",image.getImageVersion().getMajorLevel())
@@ -223,13 +219,13 @@ public class Image extends VersionableEntity{
 					   .executeUpdate();
 	}
 	
-	public static Query<Image> findElementRoleImage(Platform platform,
+	public static Query<Image> findElementRoleImage(Platform chipset,
 										     		ElementRole elementRole, 
 										     		ImageType imageType,
 										     		ImageName imageName,
 										     		Version version) {
 		return em -> em.createNamedQuery("Image.findElementRoleImage",Image.class)
-					   .setParameter("platform", platform)
+					   .setParameter("chipset", chipset)
 					   .setParameter("role", elementRole)
 					   .setParameter("type", imageType)
 					   .setParameter("major", version.getMajorLevel())
@@ -240,9 +236,9 @@ public class Image extends VersionableEntity{
 	}
 	
 	public static Query<List<Image>> findDefaultImages(ElementRole elementRole,
-													   Platform platform){
+													   Platform chipset){
 		return em -> em.createNamedQuery("Image.findDefaultImages",Image.class)
-					   .setParameter("platform",platform)
+					   .setParameter("chipset",chipset)
 					   .setParameter("role",elementRole)
 					   .getResultList();
 
@@ -257,7 +253,7 @@ public class Image extends VersionableEntity{
 	                                             Element element){
 		return em -> em.createNamedQuery("Image.findAvailableUpdates",
 										 Image.class)
-					   .setParameter("platform",platform)
+					   .setParameter("chipset",platform.getChipset())
 				       .setParameter("role", role.getRoleName())
 				       .setParameter("major",version.getMajorLevel())
 				       .setParameter("minor",version.getMinorLevel())
@@ -346,9 +342,7 @@ public class Image extends VersionableEntity{
 					 joinColumns=@JoinColumn(name="image_id"))
 	private List<Checksum> checksums = emptyList();
 	
-	@ManyToOne(cascade=PERSIST)
-	@JoinColumn(name="PLATFORM_ID")
-	private Platform platform;
+	private PlatformChipsetName chipset;
 	
 	@ManyToMany
 	@JoinTable(
@@ -385,14 +379,14 @@ public class Image extends VersionableEntity{
 					ImageType imageType,
 					ImageName imageName,
 					ElementRole role, 
-					Platform platform,
+					PlatformChipsetName chipset,
 					Version version) {
 		super(id.toString());
 		this.imageType = imageType;
 		this.imageName = imageName;
 		this.imageState = CANDIDATE;
 		this.role = role;
-		this.platform = platform;
+		this.chipset = chipset;
 		this.major = version.getMajorLevel();
 		this.minor = version.getMinorLevel();
 		this.patch = version.getPatchLevel();
@@ -502,20 +496,12 @@ public class Image extends VersionableEntity{
 		return applications;
 	}
 
-	public String getVendorName() {
-		return platform.getVendor();
-	}
-	
 	public String getBuildId() {
 		return buildId;
 	}
-	
-	public String getModelName() {
-		return platform.getModel();
-	}
 
-	public Platform getPlatform() {
-		return platform;
+	public PlatformChipsetName getPlatformChipset() {
+		return chipset;
 	}
 
 	public ImageState getImageState() {
@@ -538,8 +524,8 @@ public class Image extends VersionableEntity{
 		this.category = category;
 	}
 
-	public void setPlatform(Platform platform) {
-		this.platform = platform;
+	public void setPlatformChipset(PlatformChipsetName chipset) {
+		this.chipset = chipset;
 	}
 
 	public void setImageName(ImageName imageName) {
@@ -556,19 +542,6 @@ public class Image extends VersionableEntity{
 	
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getQualifiedName() {
-		return format("%s-%s-%s-%s-%s-%s-%s-%s.%s",
-					  getOrganization(),
-					  getCategory(),
-					  getElementRoleName(),
-					  getImageName(),
-					  getVendorName(),
-					  getModelName(),
-					  getImageType(),
-					  getImageVersion(),
-					  getImageExtension());	
 	}
 
 	public ElementRoleName getElementRoleName() {

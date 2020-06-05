@@ -25,6 +25,7 @@ import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static org.junit.Assert.assertEquals;
@@ -44,6 +45,7 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageState;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
@@ -52,6 +54,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 	
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ManageRoleBasedImagesIT.class.getName());
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
 	
 	private DefaultImageService service;
 	private Repository repository;
@@ -61,10 +64,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 	public void initTestEnvironment() {
 		repository = new Repository(getEntityManager());
 
-		PlatformProvider platforms = new PlatformProvider(repository);
-		
 		service = new DefaultImageService(mock(PackageVersionService.class), 
-										  platforms,
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),
@@ -73,7 +73,9 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		transaction(()->{
 
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   () -> new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   () -> new Platform(PLATFORM_ID,
+															   		      PLATFORM_NAME,
+															   		      PLATFORM_CHIPSET));
 			
 			repository.addIfAbsent(findRoleByName(new ElementRoleName("unit-element_type")), 
 								  ()-> new ElementRole(new ElementRoleName("unit-element_type"), DATA));
@@ -82,9 +84,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 							  .withImageId(randomImageId())
 							  .withBuildDate(new Date())
 							  .withElementRole(new ElementRoleName("unit-element_type"))
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
-							  .withOrganization("net.rtbrick")
+							  .withPlatformChipset(PLATFORM_CHIPSET)
+							  .withOrganization("io.leitstand")
 							  .withImageType(imageType("lxd"))
 							  .withImageName(ImageName.valueOf("JUNIT"))
 							  .withImageVersion(new Version(1,0,0))
@@ -106,9 +107,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 				  		 .withImageName(ImageName.valueOf("JUNIT"))
 				  		 .withBuildDate(new Date())
 				  		 .withElementRole(new ElementRoleName("unit-element_type"))
-				  		 .withPlatformId(PLATFORM_ID)
-				  		 .withPlatformName(PLATFORM_NAME)
-				  		 .withOrganization("net.rtbrick")
+				  		 .withPlatformChipset(PLATFORM_CHIPSET)
+				  		 .withOrganization("io.leitstand")
 				  		 .withImageType(imageType("lxd"))
 				  		 .withImageVersion(new Version(1,0,1))
 				  		 .build();
@@ -134,9 +134,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageVersion(new Version(2,0,0))
 		  		 		  .withBuildDate(new Date())
 		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
-		  		 		  .withPlatformId(PLATFORM_ID)
-		  		 		  .withPlatformName(PLATFORM_NAME)
-		  		 		  .withOrganization("net.rtbrick")
+		  		 		  .withPlatformChipset(PLATFORM_CHIPSET)
+		  		 		  .withOrganization("io.leitstand")
 		  		 		  .build();
 		transaction(()->{
 			service.storeImage(image);
@@ -169,9 +168,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageName(ImageName.valueOf("JUNIT"))
 		  		 		  .withImageVersion(new Version(1,0,1))
 		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
-		  		 		  .withPlatformId(PLATFORM_ID)
-		  		 		  .withPlatformName(PLATFORM_NAME)
-		  		 		  .withOrganization("net.rtbrick")
+		  		 		  .withPlatformChipset(PLATFORM_CHIPSET)
+		  		 		  .withOrganization("io.leitstand")
 		  		 		  .build();
 		transaction(()->{
 			service.storeImage(image);

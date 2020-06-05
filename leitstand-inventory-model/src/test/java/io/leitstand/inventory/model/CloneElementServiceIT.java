@@ -17,6 +17,7 @@ import static io.leitstand.inventory.service.MACAddress.macAddress;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.OperationalState.UP;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0306I_ELEMENT_CLONED;
@@ -50,6 +51,7 @@ import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 
@@ -64,6 +66,7 @@ public class CloneElementServiceIT extends InventoryIT {
 	private static final ElementAlias ELEMENT_ALIAS = elementAlias("source-alias");
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName("clone-platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
 	
 	private CloneElementService service;
 	private Event<ElementEvent> sink;
@@ -94,7 +97,8 @@ public class CloneElementServiceIT extends InventoryIT {
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
 													   () -> new Platform(PLATFORM_ID,
-															   			  PLATFORM_NAME));
+															   			  PLATFORM_NAME,
+															   			  PLATFORM_CHIPSET));
 			
 			Element element = repository.addIfAbsent(findElementById(ELEMENT_ID), 
 													 () -> new Element(group,

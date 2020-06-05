@@ -34,6 +34,7 @@ import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.prerelease;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
+import static io.leitstand.inventory.model.Platform.findByChipset;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleInfo.newElementRoleInfo;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
@@ -57,11 +58,9 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NO
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
 import static java.lang.String.format;
-import static java.util.EnumSet.allOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,6 +97,7 @@ import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.PlatformName;
+import io.leitstand.inventory.service.PlatformReference;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -124,10 +124,6 @@ public class DefaultImageService implements ImageService {
 	@Inject
 	private ElementProvider elements;
 	
-	
-	@Inject
-	private PlatformProvider platforms;
-	
 	@Inject
 	private Event<ImageEvent> sink;
 	
@@ -136,13 +132,11 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	DefaultImageService(PackageVersionService packages,
-						PlatformProvider platforms,
 						Repository repository,
 						DatabaseService db,
 						Messages messages,
 						Event<ImageEvent> sink){
 		this.packages = packages;
-		this.platforms = platforms;
 		this.repository = repository;
 		this.db = db;
 		this.messages =messages;
@@ -270,8 +264,6 @@ public class DefaultImageService implements ImageService {
 			imageApplications.add(app);
 		}
 		
-		Platform platform = platforms.findOrCreatePlatform(submission.getPlatformId(),
-														   submission.getPlatformName());
 		Image image = repository.execute(findImageById(submission.getImageId()));
 		boolean created = false;
 		if(image == null){
@@ -279,7 +271,7 @@ public class DefaultImageService implements ImageService {
 			repository.add(image);
 			created = true;
 		} 
-		image.setPlatform(platform);
+		image.setPlatformChipset(submission.getPlatformChipset());
 		image.setCategory(submission.getCategory());
 		image.setImageState(submission.getImageState());
 		image.setImageType(submission.getImageType());
@@ -303,7 +295,7 @@ public class DefaultImageService implements ImageService {
 		image.setElement(element);
 
 		messages.add(createMessage(IVT0202I_IMAGE_STORED, 
-				   				   image.getQualifiedName()));		
+				   				   image.getImageName()));		
 		if (created) {
 			fire(newImageAddedEvent(),
 				 submission);
@@ -339,7 +331,15 @@ public class DefaultImageService implements ImageService {
 		
 	}
 
-	public static ImageInfo imageInfo(Image image) {
+	public ImageInfo imageInfo(Image image) {
+
+		List<PlatformReference> platforms = repository
+											.execute(findByChipset(image.getPlatformChipset()))
+											.stream()
+											.map(p -> new PlatformReference(p.getPlatformId(),p.getPlatformName()))
+											.collect(toList());
+
+		
 		List<PackageVersionInfo> pkgVersions = new LinkedList<>();
 		for(Package_Version p : image.getPackages()){
 			pkgVersions.add(packageVersionInfo(p));
@@ -350,7 +350,6 @@ public class DefaultImageService implements ImageService {
 												  .map(Application::getName)
 												  .collect(toList());
 		
-		Platform platform = image.getPlatform();
 		
 		return newImageInfo()
 			   .withImageId(image.getImageId())
@@ -358,8 +357,8 @@ public class DefaultImageService implements ImageService {
 		   	   .withImageName(image.getImageName())
 		   	   .withImageState(image.getImageState())
 		   	   .withElementRole(image.getElementRoleName())
-		   	   .withPlatformId(platform.getPlatformId())
-		   	   .withPlatformName(platform.getPlatformName())
+		   	   .withPlatformChipset(image.getPlatformChipset())
+		   	   .withPlatforms(platforms)
 		   	   .withElementName(optional(image.getElement(), Element::getElementName))
 		   	   .withExtension(image.getImageExtension())
 		   	   .withImageVersion(image.getImageVersion())
@@ -369,10 +368,11 @@ public class DefaultImageService implements ImageService {
 		   	   .withApplications(applications)
 		   	   .withOrganization(image.getOrganization())
 		   	   .withCategory(image.getCategory())
-		   	   .withChecksums(image.getChecksums()
-		   				 		   .stream()
-		   				 		   .collect(toMap(c -> c.getAlgorithm().name(), 
-		   				 				   		  Checksum::getValue)))
+		   	   .withChecksums(image
+		   			   		  .getChecksums()
+		   				 	  .stream()
+		   				 	  .collect(toMap(c -> c.getAlgorithm().name(), 
+		   				 				   	 Checksum::getValue)))
 			   .build();
 		
 	}
@@ -405,7 +405,7 @@ public class DefaultImageService implements ImageService {
 		ImageInfo info = imageInfo(image);
 		repository.remove(image);
 		messages.add(createMessage(IVT0203I_IMAGE_REMOVED,
-								   image.getQualifiedName()));
+								   image.getImageName()));
 		fire(newImageRemovedEvent(),
 			 info);
 		return info;
@@ -442,7 +442,7 @@ public class DefaultImageService implements ImageService {
 						  					  		 Checksum::getValue)))
 				  .build());			
 		messages.add(createMessage(IVT0201I_IMAGE_STATE_UPDATED, 
-								   image.getQualifiedName(),
+								   image.getImageName(),
 								   state));
 		
 	}

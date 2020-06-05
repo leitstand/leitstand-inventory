@@ -58,7 +58,9 @@ import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.ServiceName;
 
@@ -100,6 +102,8 @@ public class StringScalarConverterTest {
 			{new ElementGroupTypeConverter(),	 		"unit-type",			new ElementGroupType("unit-type")},
 			{new ServiceNameConverter(),		 		"unit-service",			new ServiceName("unit-service")},
 			{new PlatformIdConverter(),			 		uuid,					new PlatformId(uuid)},
+			{new PlatformNameConverter(),			 	"unit-platform",		new PlatformName("unit-platform")},
+			{new PlatformChipsetNameConverter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameConverter(),			 		"unit-rack",			new RackName("unit-rack")},
 		};
 		return asList(converters);

@@ -119,7 +119,8 @@ public class DefaultPlatformService implements PlatformService{
 			Platform platform = repository.execute(findByPlatformId(settings.getPlatformId()));
 			if(platform == null) {
 				platform = new Platform(settings.getPlatformId(),
-										settings.getPlatformName());
+										settings.getPlatformName(),
+										settings.getPlatformChipset());
 				repository.add(platform);
 				created = true;
 			}

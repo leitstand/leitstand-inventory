@@ -36,6 +36,7 @@ import static io.leitstand.inventory.service.ImageState.NEW;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
@@ -53,7 +54,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -78,7 +78,6 @@ import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageRemovedEvent;
 import io.leitstand.inventory.event.ImageStateChangedEvent;
 import io.leitstand.inventory.event.ImageStoredEvent;
-import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementName;
@@ -87,7 +86,7 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageStatistics;
-import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
@@ -96,6 +95,7 @@ public class ImageServiceIT extends InventoryIT{
 
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ImageServiceIT.class.getSimpleName());
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
 	private static final ElementName ELEMENT_NAME = elementName("image-element");
 	private static final ElementGroupName GROUP_NAME = groupName("image_test");
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
@@ -118,7 +118,6 @@ public class ImageServiceIT extends InventoryIT{
 		PackageVersionService pkgVersions = new PackageVersionService(repository);
 		
 		service = new DefaultImageService(pkgVersions,
-										  new PlatformProvider(repository),
 										  repository,
 										  getDatabase(),
 										  messages,
@@ -154,7 +153,7 @@ public class ImageServiceIT extends InventoryIT{
 				  			  .withElementRole(elementRoleName("non-existent"))
 				  			  .withOrganization("io.leitstand")
 				  			  .withCategory("unittest")
-				  			  .withPlatformId(randomPlatformId())
+				  			  .withPlatformChipset(PLATFORM_CHIPSET)
 				  			  .build();
 		
 		
@@ -180,8 +179,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .build();
 		transaction(()->{
 			boolean created = service.storeImage(imageInfo);
@@ -205,8 +203,7 @@ public class ImageServiceIT extends InventoryIT{
 			assertTrue(storedImage.getApplications().isEmpty());
 			assertTrue(storedImage.getPackages().isEmpty());
 			assertTrue(storedImage.getChecksums().isEmpty());
-			assertEquals(PLATFORM_ID,storedImage.getPlatformId());
-			assertEquals(PLATFORM_NAME,storedImage.getPlatformName());
+			assertEquals(PLATFORM_CHIPSET,storedImage.getPlatformChipset());
 			assertNull(storedImage.getBuildId());
 			assertNull(storedImage.getBuildDate());
 			
@@ -225,8 +222,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 
@@ -275,8 +271,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 							  .withChecksums(checksums)	
@@ -318,8 +313,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 							  .withApplications(applicationName("app1"),
@@ -366,8 +360,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -413,8 +406,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -454,7 +446,7 @@ public class ImageServiceIT extends InventoryIT{
 							  .withElementRole(ELEMENT_ROLE)
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -476,7 +468,7 @@ public class ImageServiceIT extends InventoryIT{
 								 .withElementRole(ELEMENT_ROLE)
 								 .withOrganization("io.leitstand")
 								 .withCategory("unittest")
-								 .withPlatformName(PLATFORM_NAME)
+								 .withPlatformChipset(PLATFORM_CHIPSET)
 								 .withApplications(applicationName("app1"))
 								 .withPackages(newPackageVersionInfo()
 										 	   .withOrganization("io.leitstand")
@@ -512,7 +504,9 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID,
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -525,7 +519,7 @@ public class ImageServiceIT extends InventoryIT{
 									imageType("lxd"),
 									imageName("remove_bound_image"),
 									role,
-									platform,
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
 			image.setOrganization("leitstand.io");
 			repository.add(image);
@@ -556,7 +550,9 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID,
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -569,7 +565,7 @@ public class ImageServiceIT extends InventoryIT{
 									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
-									platform,
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
 			image.setOrganization("leitstand.io");
 			repository.add(image);
@@ -599,7 +595,9 @@ public class ImageServiceIT extends InventoryIT{
 																		   GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID, PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID, 
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -612,7 +610,7 @@ public class ImageServiceIT extends InventoryIT{
 									imageType("lxd"),
 									imageName("stats_active_image"),
 									role,
-									platform,
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
 			image.setOrganization("leitstand.io");
 			repository.add(image);

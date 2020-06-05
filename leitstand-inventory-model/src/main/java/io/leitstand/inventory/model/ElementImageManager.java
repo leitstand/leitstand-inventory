@@ -99,7 +99,7 @@ public class ElementImageManager {
 			}
 			
 			List<ElementAvailableUpdate> updates = new LinkedList<>();
-			for(Image update : repository.execute(findUpdates(image.getPlatform(),
+			for(Image update : repository.execute(findUpdates(element.getPlatform(),
 															  image.getImageType(), 
 															  image.getImageName(),
 															  image.getElementRole(), 
@@ -170,7 +170,7 @@ public class ElementImageManager {
 		}
 		
 		List<ElementAvailableUpdate> updates = new LinkedList<>();
-		for(Image update : repository.execute(findUpdates(image.getPlatform(),
+		for(Image update : repository.execute(findUpdates(element.getPlatform(),
 														  image.getImageType(), 
 														  image.getImageName(),
 														  image.getElementRole(),

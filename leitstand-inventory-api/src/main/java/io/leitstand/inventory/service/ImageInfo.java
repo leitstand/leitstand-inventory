@@ -163,27 +163,37 @@ public class ImageInfo extends ValueObject{
 		}
 		
 		/**
-		 * Sets the platform ID of the platform this image has been built for.
-		 * @param platformId the platform ID 
-		 * @return a reference to this builder to continue with object creation.
+		 * Sets the chipset for which this image is built.
+		 * @param platformChipset the chipset name
+		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatformId(PlatformId platformId) {
-			assertNotInvalidated(getClass(),image);
-			image.platformId = platformId;
+		public Builder withPlatformChipset(PlatformChipsetName platformChipset) {
+			assertNotInvalidated(getClass(), image);
+			image.platformChipset = platformChipset;
 			return this;
 		}
 
 		/**
-		 * Sets the platform name of the platform this image has been built for.
-		 * @param platformId the platform name 
-		 * @return a reference to this builder to continue with object creation.
+		 * Sets the known platforms this image can be installed on.
+		 * @param platforms the known platforms
+		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatformName(PlatformName platformName) {
-			assertNotInvalidated(getClass(),image);
-			image.platformName = platformName;
+		public Builder withPlatforms(PlatformReference... platforms) {
+			return withPlatforms(asList(platforms));
+		}
+		
+		/**
+		 * Sets the known platforms this image can be installed on.
+		 * @param platforms the known platforms
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withPlatforms(List<PlatformReference> platforms) {
+			assertNotInvalidated(getClass(), image);
+			image.platforms = new LinkedList<>(platforms);
 			return this;
 		}
 		
+
 		/**
 		 * Sets the optional element name this image was built for.
 		 * An image can be created for a certain element. 
@@ -244,6 +254,11 @@ public class ImageInfo extends ValueObject{
 			return this;
 		}
 
+		/**
+		 * Sets an optional image description.
+		 * @param description the description.
+		 * @return a reference to this builder to continue with object creation
+		 */
 		public Builder withDescription(String description) {
 			assertNotInvalidated(getClass(),image);
 			image.description = description;
@@ -280,7 +295,6 @@ public class ImageInfo extends ValueObject{
 			image.packages = Collections.unmodifiableList(new LinkedList<>(packages));
 			return this;
 		}
-		
 		
 		/**
 		 * Sets the available checksums for this image.
@@ -338,7 +352,6 @@ public class ImageInfo extends ValueObject{
 			}
 		}
 
-
 	}
 
 	@Valid
@@ -385,10 +398,11 @@ public class ImageInfo extends ValueObject{
 	@Valid
 	private List<ApplicationName> applications;
 	
-	private PlatformId platformId;
-	@NotNull(message="{platform_name.required}")
 	@Valid
-	private PlatformName platformName;
+	@NotNull(message="{platform_chipset.required}")
+	private PlatformChipsetName platformChipset;
+	
+	private List<PlatformReference> platforms;
 
 	private String description;
 	
@@ -495,20 +509,8 @@ public class ImageInfo extends ValueObject{
 		return unmodifiableList(applications);
 	}
 
-	/**
-	 * Returns the platform ID of the platform this image has been built for.
-	 * @return the platform ID 
-	 */
-	public PlatformId getPlatformId() {
-		return platformId;
-	}
-	
-	/**
-	 * Returns the platform name of the platform this image has been built for.
-	 * @return the platform name.
-	 */
-	public PlatformName getPlatformName() {
-		return platformName;
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
 	}
 		
 	/**
@@ -531,13 +533,16 @@ public class ImageInfo extends ValueObject{
 		return description;
 	}
 	
-	
 	/**
 	 * Return the image MD5 checksum or <code>null</code> if no MD5 checksum has been set.
 	 * @return the image MD5 checksum
 	 */
 	public Map<String,String> getChecksums() {
 		return unmodifiableMap(checksums);
+	}
+	
+	public List<PlatformReference> getPlatforms() {
+		return unmodifiableList(platforms);
 	}
 	
 	

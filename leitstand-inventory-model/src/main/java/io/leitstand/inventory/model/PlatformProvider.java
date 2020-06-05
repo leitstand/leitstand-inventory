@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 
@@ -79,7 +80,9 @@ public class PlatformProvider {
 		return platform;
 	}
 	
-	public Platform findOrCreatePlatform(PlatformId platformId, PlatformName platformName) {
+	public Platform findOrCreatePlatform(PlatformId platformId, 
+										 PlatformName platformName,
+										 PlatformChipsetName platformChipset) {
 		if(platformId != null) {
 			Platform platform = tryFetchPlatform(platformId);
 			if(platform != null) {
@@ -89,7 +92,9 @@ public class PlatformProvider {
 		if(platformName != null) {
 			if(platformId != null) {
 				// Platform does not exist. Create new platform.
-				Platform platform = new Platform(platformId,platformName);
+				Platform platform = new Platform(platformId,
+												 platformName,
+												 platformChipset);
 				repository.add(platform);
 				return platform;
 			}
