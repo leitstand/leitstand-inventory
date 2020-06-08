@@ -102,7 +102,7 @@ public class ElementImageManager {
 			for(Image update : repository.execute(findUpdates(element.getPlatform(),
 															  image.getImageType(), 
 															  image.getImageName(),
-															  image.getElementRole(), 
+															  element.getElementRole(), 
 															  image.getImageVersion(), 
 															  element))){
 				UpdateType type = updateType(image, update);
@@ -122,7 +122,6 @@ public class ElementImageManager {
 						  .withImageType(image.getImageType())
 						  .withImageState(image.getImageState())
 						  .withImageName(image.getImageName())
-						  .withElementRole(image.getElementRoleName())
 						  .withElementImageState(elementImage.getInstallationState())
 						  .withImageExtension(image.getImageExtension())
 						  .withImageVersion(image.getImageVersion())
@@ -175,7 +174,7 @@ public class ElementImageManager {
 		for(Image update : repository.execute(findUpdates(element.getPlatform(),
 														  image.getImageType(), 
 														  image.getImageName(),
-														  image.getElementRole(),
+														  element.getElementRole(),
 														  image.getImageVersion(),
 														  element))){
 			UpdateType type = updateType(image, update);
@@ -203,7 +202,6 @@ public class ElementImageManager {
 				   		  .withImageType(image.getImageType())
 				   		  .withImageState(image.getImageState())
 				   		  .withImageName(image.getImageName())
-				   		  .withElementRole(image.getElementRoleName())
 				   		  .withImageExtension(image.getImageExtension())
 						  .withElementImageState(elementImage.getInstallationState())
 				   		  .withImageVersion(image.getImageVersion())

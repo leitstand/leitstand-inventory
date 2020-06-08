@@ -163,17 +163,6 @@ public class ElementInstalledImageData extends ValueObject{
 		}
 		
 		/**
-		 * Sets the element type this image was built for.
-		 * @param elementRole - the element type the image was built for
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withElementRole(ElementRoleName elementRole){
-			assertNotInvalidated(getClass(), image);
-			image.elementRole = elementRole;
-			return this;
-		}
-		
-		/**
 		 * Sets the image type.
 		 * @param type - image type
 		 * @return a reference to this builder to continue object creation
@@ -288,8 +277,6 @@ public class ElementInstalledImageData extends ValueObject{
 	
 	private List<ElementAvailableUpdate> availableUpdates;
 	
-	private ElementRoleName elementRole;
-	
 	private ImageType imageType;
 	
 	private ImageName imageName;
@@ -367,14 +354,6 @@ public class ElementInstalledImageData extends ValueObject{
 		return imageName;
 	}
 	
-	
-	/**
-	 * Returns the element role.
-	 * @return the element role.
-	 */
-	public ElementRoleName getElementRole() {
-		return elementRole;
-	}
 	
 	/**
 	 * Returns the image id.

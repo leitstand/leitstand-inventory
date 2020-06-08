@@ -17,6 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
@@ -28,15 +29,21 @@ import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
@@ -50,15 +57,33 @@ import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
 
+@RunWith(Parameterized.class)
 public class ManageRoleBasedImagesIT extends InventoryIT{
 	
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ManageRoleBasedImagesIT.class.getName());
 	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
+	private static final ElementRoleName ROLE_A = elementRoleName("Role A");
+	private static final ElementRoleName ROLE_B = elementRoleName("Role B");
+	
+	@Parameters
+	public static Collection<Object[]> getParameters(){
+		return asList(new Object[][] {
+			{asList(ROLE_A)},
+			{asList(ROLE_A, ROLE_B)}
+		});
+	}
+	
+	
+	private List<ElementRoleName> roles;
 	
 	private DefaultImageService service;
 	private Repository repository;
 	private ImageInfo ref;
+	
+	public ManageRoleBasedImagesIT(List<ElementRoleName> roles) {
+		this.roles = roles;
+	}
 	
 	@Before
 	public void initTestEnvironment() {
@@ -77,13 +102,17 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 															   		      PLATFORM_NAME,
 															   		      PLATFORM_CHIPSET));
 			
-			repository.addIfAbsent(findRoleByName(new ElementRoleName("unit-element_type")), 
-								  ()-> new ElementRole(new ElementRoleName("unit-element_type"), DATA));
+			repository.addIfAbsent(findRoleByName(ROLE_A), 
+								  ()-> new ElementRole(ROLE_A, DATA));
+
+			repository.addIfAbsent(findRoleByName(ROLE_B), 
+								   ()-> new ElementRole(ROLE_B, DATA));
+
 			
 			ImageInfo image = newImageInfo()
 							  .withImageId(randomImageId())
 							  .withBuildDate(new Date())
-							  .withElementRole(new ElementRoleName("unit-element_type"))
+							  .withElementRoles(roles)
 							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withOrganization("io.leitstand")
 							  .withImageType(imageType("lxd"))
@@ -106,7 +135,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 				  		 .withImageState(CANDIDATE)
 				  		 .withImageName(ImageName.valueOf("JUNIT"))
 				  		 .withBuildDate(new Date())
-				  		 .withElementRole(new ElementRoleName("unit-element_type"))
+				  		 .withElementRoles(roles)
 				  		 .withPlatformChipset(PLATFORM_CHIPSET)
 				  		 .withOrganization("io.leitstand")
 				  		 .withImageType(imageType("lxd"))
@@ -133,7 +162,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageState(CANDIDATE)
 		  		 		  .withImageVersion(new Version(2,0,0))
 		  		 		  .withBuildDate(new Date())
-		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
+		  		 		  .withElementRoles(roles)
 		  		 		  .withPlatformChipset(PLATFORM_CHIPSET)
 		  		 		  .withOrganization("io.leitstand")
 		  		 		  .build();
@@ -167,7 +196,7 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		  		 		  .withImageType(imageType("lxd"))
 		  		 		  .withImageName(ImageName.valueOf("JUNIT"))
 		  		 		  .withImageVersion(new Version(1,0,1))
-		  		 		  .withElementRole(new ElementRoleName("unit-element_type"))
+		  		 		  .withElementRoles(roles)
 		  		 		  .withPlatformChipset(PLATFORM_CHIPSET)
 		  		 		  .withOrganization("io.leitstand")
 		  		 		  .build();

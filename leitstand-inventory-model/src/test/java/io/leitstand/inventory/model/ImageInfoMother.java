@@ -93,7 +93,7 @@ public final class ImageInfoMother {
 	public static ImageInfo newSpineImage(Version revision, PackageVersionInfo... packages){
 		ImageId id = new ImageId(UUID.randomUUID().toString());
 		return newImageInfo()
-			   .withElementRole(new ElementRoleName("SPINE"))
+			   .withElementRoles(new ElementRoleName("SPINE"))
 			   .withBuildDate(new Date())
 			   .withImageVersion(revision)
 			   .withImageId(id)
@@ -109,7 +109,7 @@ public final class ImageInfoMother {
 	public static ImageInfo newLeafImage(Version revision, PackageVersionInfo... packages){
 		ImageId id = new ImageId(UUID.randomUUID().toString());
 		return newImageInfo()
-			   .withElementRole(new ElementRoleName("LEAF"))
+			   .withElementRoles(new ElementRoleName("LEAF"))
 			   .withBuildDate(new Date())
 			   .withImageVersion(revision)
 			   .withImageId(id)

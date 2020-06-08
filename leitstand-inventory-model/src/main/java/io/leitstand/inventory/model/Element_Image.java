@@ -167,8 +167,8 @@ public class Element_Image {
 		return image.getImageType();
 	}
 
-	public ElementRole getElementRole() {
-		return image.getElementRole();
+	public List<ElementRole> getElementRoles() {
+		return image.getElementRoles();
 	}
 
 	public String getExtension() {

@@ -50,25 +50,31 @@
 		<table class="list">
 			<thead>
 				<tr>
-					<th class="text">Chipset</th>
-					<th class="text">Role</th>
-					<th class="text">Element</th>
-					<th class="text">Type</th>
 					<th class="text">Name</th>
-					<th class="text">Revision</th>
+					<th class="text">Type</th>
 					<th class="tiny">State</th>
+					<th class="text">Version</th>
+					<th class="text">Chipset</th>
+					<th class="text">Roles</th>
+					<th class="text">Element</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!--  {{#images}}-->
 				<tr>
-					<td class="text">{{platform_chipset}}</td>
-					<td class="text"><a href="/ui/views/inventory/role/role.html?role={{element_role}}" tirle="Show element role details">{{element_role}}</a></td>
-					<td class="text">{{element_display_name}}</td>
+					<td class="text"><a href="image-meta.html?image={{image_id}}" title="Show image details">{{image_name}}</a></td>
 					<td class="text">{{image_type}}</td>
-					<td class="text">{{image_name}}</td>
-					<td class="text"><a href="image-meta.html?image={{image_id}}" title="Show image revision details">{{revision}}</a></td>
 					<td><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="text">{{platform_chipset}}</td>
+					<td class="text">{{image_version}}</td>
+					<td class="text">
+					<!-- {{element_roles}} -->
+					<ul>
+					  <li><a href="/ui/views/inventory/role/role.html?role={{.}}" title="Show element role details">{{.}}</a></li>
+					</ul>
+					<!-- {{/element_roles}} -->
+					</td>
+					<td class="text">{{element_display_name}}</td>
 				</tr>
 				<!--  {{/images}}-->
 			</tbody>

@@ -20,12 +20,15 @@ import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -61,7 +64,7 @@ import io.leitstand.inventory.service.Version;
 			query="UPDATE Image d "+ 
 			      "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
 			      "WHERE d.chipset=:chipset "+
-			      "AND d.role=:role "+
+			      "AND :role MEMBER OF d.roles "+
 			      "AND d.element=:element "+
 			      "AND d.imageType=:type "+
 			      "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
@@ -75,7 +78,7 @@ import io.leitstand.inventory.service.Version;
 		    query="UPDATE Image d "+ 
 		    		  "SET d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
 		    		  "WHERE d.chipset=:chipset "+
-		    		  "AND d.role=:role "+
+		    		  "AND :role MEMBER OF d.roles "+
 		    		  "AND d.element=:element "+
 		    		  "AND d.imageType=:type "+
 		    		  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
@@ -87,8 +90,10 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.markRoleImageSuperseded",
 			query="UPDATE Image d "+ 
 				  "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
+				  "WHERE d IN (SELECT d FROM Image d "+
+				  "JOIN d.roles r "+
 				  "WHERE d.chipset=:chipset "+
-				  "AND d.role=:role "+
+				  "AND r IN :role "+
 				  "AND d.element IS NULL "+
 				  "AND d.imageType=:type "+
 				  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
@@ -96,12 +101,14 @@ import io.leitstand.inventory.service.Version;
 			      "(d.major=:major AND d.minor=:minor AND  d.patch=:patch AND d.prerelease IS NOT NULL AND d.prerelease is NOT NULL AND d.prerelease < :prerelease) OR "+
 				  "(d.major=:major AND d.minor=:minor AND  d.patch<:patch) OR "+
 				  "(d.major=:major AND d.minor<:minor) OR "+
-				  "(d.major<:major))")
+				  "(d.major<:major)))")
 @NamedQuery(name="Image.restoreRoleImageCandidates",
 				query="UPDATE Image d "+ 
 					  "SET d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
+					  "WHERE d IN (SELECT d FROM Image d "+
+					  "JOIN d.roles r "+
 					  "WHERE d.chipset=:chipset "+
-					  "AND d.role=:role "+
+					  "AND r IN :role "+
 					  "AND d.element IS NULL "+
 					  "AND d.imageType=:type "+
 					  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
@@ -109,11 +116,11 @@ import io.leitstand.inventory.service.Version;
 		    		  "(d.major=:major AND d.minor=:minor AND d.patch=:patch AND d.prerelease is NOT NULL AND d.prerelease > :prerelease) OR "+
 					  "(d.major=:major AND d.minor=:minor AND  d.patch>:patch) OR "+
 					  "(d.major=:major AND d.minor>:minor) OR "+
-					  "(d.major>:major))")
+					  "(d.major>:major)))")
 @NamedQuery(name="Image.findElementRoleImage",
 		    query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
-		    	  "AND d.role=:role "+
+		    	  "AND :role MEMBER OF d.roles "+
 				  "AND d.imageType=:type "+
 		    	  "AND d.major=:major "+
 				  "AND d.minor=:minor "+
@@ -123,21 +130,21 @@ import io.leitstand.inventory.service.Version;
 @NamedQuery(name="Image.findDefaultImage",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
-				  "AND d.role.name=:role "+
+				  "AND :role MEMBER OF d.roles "+
 				  "AND d.imageType=:type "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
 @NamedQuery(name="Image.findDefaultImages",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
-				  "AND d.role=:role "+
+				  "AND :role MEMBER OF d.roles "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
 @NamedQuery(name="Image.findAvailableUpdates",
 			    query="SELECT d FROM Image d "+
 			    	  "WHERE d.chipset=:chipset "+
 			    	  "AND d.imageState <> io.leitstand.inventory.service.ImageState.REVOKED " +
-			    	  "AND d.role.name=:role "+
+			    	  "AND :role MEMBER OF d.roles "+
 			    	  "AND d.imageType=:type "+
 			    	  "AND (d.element IS NULL OR d.element=:element) "+
 			   		  "AND ((d.major > :major) "+
@@ -147,7 +154,7 @@ import io.leitstand.inventory.service.Version;
 				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC")
 @NamedQuery(name="Image.findByElementAndImageTypeAndVersion", 
 			query="SELECT d FROM Image d "+
-				  "WHERE d.role=:role "+
+				  "WHERE :role MEMBER OF d.roles "+
 				  "AND d.chipset=:chipset "+
 				  "AND d.imageType=:type "+
 				  "AND (d.element is NULL OR d.element=:element) "+
@@ -175,7 +182,7 @@ public class Image extends VersionableEntity{
 		if(image.getElement() != null) {
 			return em -> em.createNamedQuery("Image.markElementImageSuperseded",Image.class)
 						   .setParameter("chipset", image.getPlatformChipset())
-						   .setParameter("role", image.getElementRole())
+						   .setParameter("role", image.getElementRoles())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
 						   .setParameter("major",image.getImageVersion().getMajorLevel())
@@ -186,7 +193,7 @@ public class Image extends VersionableEntity{
 		}
 		return em -> em.createNamedQuery("Image.markRoleImageSuperseded",Image.class)
 				   	   .setParameter("chipset", image.getPlatformChipset())
-				   	   .setParameter("role", image.getElementRole())
+				   	   .setParameter("role", image.getElementRoles())
 				   	   .setParameter("type", image.getImageType())
 				   	   .setParameter("major",image.getImageVersion().getMajorLevel())
 				   	   .setParameter("minor",image.getImageVersion().getMinorLevel())
@@ -200,7 +207,7 @@ public class Image extends VersionableEntity{
 		if(image.getElement() != null) {
 			return em -> em.createNamedQuery("Image.restoreElementImageCandidates",Image.class)
 						   .setParameter("chipset", image.getPlatformChipset())
-						   .setParameter("role", image.getElementRole())
+						   .setParameter("role", image.getElementRoles())
 						   .setParameter("element", image.getElement())
 						   .setParameter("type", image.getImageType())
 						   .setParameter("major",image.getImageVersion().getMajorLevel())
@@ -211,7 +218,7 @@ public class Image extends VersionableEntity{
 		}
 		return em -> em.createNamedQuery("Image.restoreRoleImageCandidates",Image.class)
 					   .setParameter("chipset", image.getPlatformChipset())
-					   .setParameter("role", image.getElementRole())
+					   .setParameter("role", image.getElementRoles())
 					   .setParameter("type", image.getImageType())
 					   .setParameter("major",image.getImageVersion().getMajorLevel())
 					   .setParameter("minor",image.getImageVersion().getMinorLevel())
@@ -255,7 +262,7 @@ public class Image extends VersionableEntity{
 		return em -> em.createNamedQuery("Image.findAvailableUpdates",
 										 Image.class)
 					   .setParameter("chipset",platform.getChipset())
-				       .setParameter("role", role.getRoleName())
+				       .setParameter("role", role)
 				       .setParameter("major",version.getMajorLevel())
 				       .setParameter("minor",version.getMinorLevel())
 				       .setParameter("patch",version.getPatchLevel())
@@ -314,9 +321,14 @@ public class Image extends VersionableEntity{
 	
 	private String category;
 	
-	@ManyToOne
-	@JoinColumn(name="elementrole_id")
-	private ElementRole role;
+	@ManyToMany
+	@JoinTable(
+		schema="INVENTORY",	
+		name="IMAGE_ELEMENTROLE",
+		joinColumns=@JoinColumn(name="IMAGE_ID",referencedColumnName="ID"),
+		inverseJoinColumns=@JoinColumn(name="ELEMENTROLE_ID",referencedColumnName="ID")
+	)
+	private List<ElementRole> roles;
 	
 	@ManyToOne
 	@JoinColumn(name="element_id")
@@ -365,8 +377,9 @@ public class Image extends VersionableEntity{
 	@JoinTable(
 			schema="INVENTORY",
 			name="IMAGE_PACKAGE_VERSION",
-			joinColumns=@JoinColumn(name="IMAGE_ID",referencedColumnName="ID")
-			)	
+			joinColumns=@JoinColumn(name="IMAGE_ID",referencedColumnName="ID"),
+			inverseJoinColumns=@JoinColumn(name="PACKAGE_VERSION_ID",referencedColumnName="ID")
+			)
 	private List<Package_Version> packages;
 	
 	protected Image(){
@@ -380,14 +393,14 @@ public class Image extends VersionableEntity{
 	protected Image(ImageId imageId, 
 					ImageType imageType,
 					ImageName imageName,
-					ElementRole role, 
+					List<ElementRole> roles, 
 					PlatformChipsetName chipset,
 					Version version) {
 		super(imageId.toString());
 		this.imageType = imageType;
 		this.imageName = imageName;
 		this.imageState = CANDIDATE;
-		this.role = role;
+		this.roles = roles;
 		this.chipset = chipset;
 		this.major = version.getMajorLevel();
 		this.minor = version.getMinorLevel();
@@ -432,12 +445,12 @@ public class Image extends VersionableEntity{
 		this.imageType = imageType;
 	}
 	
-	public ElementRole getElementRole() {
-		return role;
+	public List<ElementRole> getElementRoles() {
+		return unmodifiableList(roles);
 	}
 
-	public void setElementRole(ElementRole role) {
-		this.role = role;
+	public void setElementRoles(List<ElementRole> roles) {
+		this.roles = roles;
 	}
 	
 	public String getImageExtension() {
@@ -546,9 +559,12 @@ public class Image extends VersionableEntity{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public ElementRoleName getElementRoleName() {
-		return getElementRole().getRoleName();
+	
+	public List<ElementRoleName> getElementRoleNames(){
+		return getElementRoles()
+			   .stream()
+			   .map(ElementRole::getRoleName)
+			   .collect(toList());
 	}
 
 }

@@ -173,7 +173,7 @@ public class ElementImageServiceIT extends InventoryIT{
 		image.setOrganization(org);
 		image.setImageType(type);
 		image.setImageName(name);
-		image.setElementRole(role);
+		image.setElementRoles(asList(role));
 		image.setExtension(ext);
 		image.setImageVersion(revision);
 		image.setBuildDate(buildDate);

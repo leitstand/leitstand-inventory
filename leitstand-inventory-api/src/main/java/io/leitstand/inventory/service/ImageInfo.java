@@ -156,9 +156,18 @@ public class ImageInfo extends ValueObject{
 		 * @param elementRole the element role
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withElementRole(ElementRoleName elementRole){
+		public Builder withElementRoles(ElementRoleName... elementRole){
+			return withElementRoles(asList(elementRole));
+		}
+		
+		/**
+		 * Sets the mandatory element type this image was built for.
+		 * @param elementRole the element role
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withElementRoles(List<ElementRoleName> elementRoles){
 			assertNotInvalidated(getClass(), image);
-			image.elementRole = elementRole;
+			image.elementRoles = elementRoles;
 			return this;
 		}
 		
@@ -376,7 +385,7 @@ public class ImageInfo extends ValueObject{
 	@NotNull(message="{image_state.required}")
 	private ImageState imageState;
 	
-	private ElementRoleName elementRole;
+	private List<ElementRoleName> elementRoles;
 	
 	private ElementName elementName;
 	
@@ -425,11 +434,11 @@ public class ImageInfo extends ValueObject{
 	}
 	
 	/**
-	 * Returns the type of element this image was built for.
-	 * @return the type of element this image was built for
+	 * Returns the element roles this image can be installed on.
+	 * @return the element roles this image can be installed on.
 	 */
-	public ElementRoleName getElementRole() {
-		return elementRole;
+	public List<ElementRoleName> getElementRoles() {
+		return unmodifiableList(elementRoles);
 	}
 	
 	/**

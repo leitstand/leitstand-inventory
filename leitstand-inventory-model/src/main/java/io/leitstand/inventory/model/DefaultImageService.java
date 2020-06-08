@@ -216,11 +216,17 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public boolean storeImage(ImageInfo submission) {
-		ElementRole elementRole = repository.execute(findRoleByName(submission.getElementRole()));
-		if(elementRole == null){
-			throw new EntityNotFoundException(IVT0400E_ELEMENT_ROLE_NOT_FOUND, 
-											  submission.getElementRole());
+		List<ElementRole> elementRoles = new LinkedList<>();
+		
+		for(ElementRoleName roleName : submission.getElementRoles()) {
+			ElementRole elementRole = repository.execute(findRoleByName(roleName));
+			if(elementRole == null){
+				throw new EntityNotFoundException(IVT0400E_ELEMENT_ROLE_NOT_FOUND, 
+												  roleName);
+			}
+			elementRoles.add(elementRole);
 		}
+		
 		Element element = null;
 		ElementName elementName = submission.getElementName();
 		if(elementName != null){
@@ -273,7 +279,7 @@ public class DefaultImageService implements ImageService {
 		image.setImageState(submission.getImageState());
 		image.setImageType(submission.getImageType());
 		image.setImageName(submission.getImageName());
-		image.setElementRole(elementRole);
+		image.setElementRoles(elementRoles);
 		image.setExtension(submission.getExtension());
 		image.setImageVersion(submission.getImageVersion());
 		image.setBuildDate(submission.getBuildDate());
@@ -309,7 +315,7 @@ public class DefaultImageService implements ImageService {
 				  .withImageId(image.getImageId())
 				  .withOrganization(image.getOrganization())
 				  .withImageType(image.getImageType())
-				  .withElementRole(image.getElementRole())
+				  .withElementRoles(image.getElementRoles())
 				  .withImageName(image.getImageName())
 				  .withImageVersion(image.getImageVersion())
 				  .withImageExtension(image.getExtension())
@@ -359,7 +365,7 @@ public class DefaultImageService implements ImageService {
 		   	   .withImageType(image.getImageType())
 		   	   .withImageName(image.getImageName())
 		   	   .withImageState(image.getImageState())
-		   	   .withElementRole(image.getElementRoleName())
+		   	   .withElementRoles(image.getElementRoleNames())
 		   	   .withPlatformChipset(image.getPlatformChipset())
 		   	   .withPlatforms(platforms)
 		   	   .withElementName(optional(image.getElement(), Element::getElementName))
@@ -388,22 +394,14 @@ public class DefaultImageService implements ImageService {
 		}
 		long count = repository.execute(countImageReferences(image));
 		if(count > 0) {
-			LOG.fine(()->format("%s: Cannot remove %s image %s %s %s %s (%s) because it is referenced by %d elements.",
+			LOG.fine(()->format("%s: Cannot remove image %s (%s) because it is referenced from %d elements.",
 								IVT0204E_IMAGE_NOT_REMOVABLE.getReasonCode(),
-								image.getImageState(),
-								image.getElementRoleName(),
 								image.getImageName(),
-								image.getImageType(),
-								image.getImageVersion(),
 								image.getImageId(),
 								count));
 			throw new ConflictException(IVT0204E_IMAGE_NOT_REMOVABLE, 
 										image.getImageId(), 
-										image.getElementRoleName(), 
-										image.getImageName(), 
-										image.getImageType(), 
-										image.getImageVersion(), 
-										image.getImageState());
+										image.getImageName());
 		}
 		ImageInfo info = imageInfo(image);
 		repository.remove(image);
@@ -433,16 +431,17 @@ public class DefaultImageService implements ImageService {
 				  .withImageId(image.getImageId())
 				  .withOrganization(image.getOrganization())
 				  .withImageType(image.getImageType())
-				  .withElementRole(image.getElementRole().getRoleName())
+				  .withElementRoles(image.getElementRoleNames())
 				  .withImageName(image.getImageName())
 				  .withImageVersion(image.getImageVersion())
 				  .withImageExtension(image.getImageExtension())
 				  .withImageState(image.getImageState())
 				  .withPreviousState(prev)
-				  .withChecksums(image.getChecksums()
-						  			  .stream()
-						  			  .collect(toMap(c -> c.getAlgorithm().name(), 
-						  					  		 Checksum::getValue)))
+				  .withChecksums(image
+						  		 .getChecksums()
+						  		 .stream()
+						  		 .collect(toMap(c -> c.getAlgorithm().name(), 
+						  				  Checksum::getValue)))
 				  .build());			
 		messages.add(createMessage(IVT0201I_IMAGE_STATE_UPDATED, 
 								   image.getImageName(),

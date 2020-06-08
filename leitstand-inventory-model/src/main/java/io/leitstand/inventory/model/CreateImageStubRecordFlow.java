@@ -18,6 +18,9 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.service.ImageName.imageName;
+import static java.util.Arrays.asList;
+
+import java.util.Arrays;
 
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
@@ -63,7 +66,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 			image = new Image(installed.getImageId(), 
 							  installed.getImageType(),
 							  imageName,
-							  attachedElement.getElementRole(),
+							  asList(attachedElement.getElementRole()),
 							  attachedElement.getPlatform().getChipset(),
 							  installed.getImageVersion());
 			repository.add(image);
