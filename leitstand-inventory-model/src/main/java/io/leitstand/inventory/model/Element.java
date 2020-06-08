@@ -81,7 +81,7 @@ import io.leitstand.inventory.service.PlatformName;
 @NamedQuery(name="Element.findByElementNameOrTag", 
 			query="SELECT DISTINCT e FROM Element e JOIN e.tags t WHERE CAST(e.elementName AS TEXT) REGEXP :pattern  OR  CAST(e.elementAlias AS TEXT) REGEXP :pattern OR t LIKE :pattern ORDER by e.group.name ASC, e.elementName ASC")
 @NamedQuery(name="Element.findByManagementIP", 
-		    query="SELECT e FROM Element e JOIN e.managementInterfaces m WHERE m.hostname REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
+		    query="SELECT DISTINCT e FROM Element e JOIN e.managementInterfaces m WHERE m.hostname REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
 @NamedQuery(name="Element.findBySerialNumber", 
 			query="SELECT e FROM Element e WHERE e.serialNumber REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
 @NamedQuery(name="Element.findByAssetId", 
