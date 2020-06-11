@@ -46,7 +46,7 @@ public class Release extends VersionableEntity {
     }
     
     public static Query<List<Release>> findReleaseByName(String name){
-        return em -> em.createNamedQuery("Release.findByName",Release.class)
+        return em -> em.createNamedQuery("Release.findByNamePattern",Release.class)
                        .setParameter("name",name)
                        .getResultList();
     }
