@@ -16,19 +16,20 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
-import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -41,6 +42,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TypedQuery;
 
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Update;
@@ -49,6 +51,7 @@ import io.leitstand.inventory.jpa.ImageNameConverter;
 import io.leitstand.inventory.jpa.ImageStateConverter;
 import io.leitstand.inventory.jpa.ImageTypeConverter;
 import io.leitstand.inventory.jpa.PlatformChipsetNameConverter;
+import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
@@ -177,6 +180,63 @@ public class Image extends VersionableEntity{
 		return RELEASE.equals(version) ? null : version;
 	}
 	
+	public static Query<List<Image>> searchImages(String filter, 
+										 ElementRole role, 
+										 ImageType type, 
+										 ImageState state, 
+										 Version version, 
+										 int limit){
+		
+		return em -> {
+
+			Map<String,Object> params = new HashMap<>();
+			
+			String jpql = "SELECT i FROM Image i "+
+					      "WHERE CAST(i.imageName AS TEXT) REGEXP :name ";
+
+			if(role != null) {
+				jpql += "AND :role MEMBER OF i.roles ";
+				params.put("role",role);
+			}
+			
+			if(type != null) {
+				jpql += "AND i.imageType = :type ";
+				params.put("type",type);
+			}
+			
+			if(state != null) {
+				jpql += "AND i.imageState=:state ";
+				params.put("state",state);
+			}
+
+			if(version != null) {
+				jpql += "AND i.major=:major AND i.minor=:minor AND i.patch=:patch ";
+				params.put("major",version.getMajorLevel());
+				params.put("minor",version.getMinorLevel());
+				params.put("patch",version.getPatchLevel());
+				if(isNonEmptyString(version.getPreRelease())) {
+					jpql += "AND i.prerelease=:prerelease ";
+					params.put("prerelease",version.getPreRelease());
+				}
+			}
+			
+				
+			jpql += "ORDER BY i.imageName";
+			
+			TypedQuery<Image> query = em.createQuery(jpql,Image.class);
+			query.setParameter("name",filter);
+			for(Map.Entry<String, Object> param : params.entrySet()) {
+				query.setParameter(param.getKey(), param.getValue());
+			}
+			query.setMaxResults(limit);
+			
+			return query.getResultList();
+			
+		};
+		
+		
+	}
+ 	
 	public static Update markAllSuperseded(Image image) {
 		
 		if(image.getElement() != null) {
@@ -565,6 +625,13 @@ public class Image extends VersionableEntity{
 			   .stream()
 			   .map(ElementRole::getRoleName)
 			   .collect(toList());
+	}
+
+	public ElementName getElementName() {
+		if(element != null) {
+			return element.getElementName();
+		}
+		return null;
 	}
 
 }

@@ -16,8 +16,10 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class ImageReference {
@@ -36,9 +38,9 @@ public class ImageReference {
 			return this;
 		}
 		
-		public Builder withElementRole(ElementRoleName role){
+		public Builder withElementRoles(List<ElementRoleName> roles){
 			assertNotInvalidated(getClass(), image);
-			image.elementRole = role;
+			image.elementRoles = roles;
 			return this;
 		}
 		
@@ -98,7 +100,7 @@ public class ImageReference {
 
 	private ImageId imageId;
 	
-	private ElementRoleName elementRole;
+	private List<ElementRoleName> elementRoles;
 	
 	private ElementName elementName;
 
@@ -122,8 +124,8 @@ public class ImageReference {
 		return imageVersion;
 	}
 	
-	public ElementRoleName getElementRole() {
-		return elementRole;
+	public List<ElementRoleName> getElementRole() {
+		return unmodifiableList(elementRoles);
 	}
 	
 	public ElementName getElementName(){

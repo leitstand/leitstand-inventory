@@ -64,6 +64,8 @@ import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
+import io.leitstand.inventory.service.ReleaseId;
+import io.leitstand.inventory.service.ReleaseName;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceId;
 import io.leitstand.inventory.service.ServiceName;
@@ -113,8 +115,9 @@ public class StringScalarAdapterTest {
 			{new PlatformNameAdapter(),			 	"unit-platform",		new PlatformName("unit-platform")},
 			{new PlatformChipsetNameAdapter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameAdapter(),			 		"unit-rack",			new RackName("unit-rack")},
-			{new RoutingInstanceNameAdapter(), 		"unit-vfr",				new RoutingInstanceName("unit-vfr")}
-
+			{new ReleaseIdAdapter(),                uuid,				    new ReleaseId(uuid)},
+			{new ReleaseNameAdapter(),              "unit-release",         new ReleaseName("unit-release")},
+			{new RoutingInstanceNameAdapter(),      "unit-vfr",             new RoutingInstanceName("unit-vfr")},
 		};
 		return asList(adapters);
 	}

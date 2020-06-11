@@ -77,7 +77,6 @@ public class ImageInfo extends ValueObject{
 	public static boolean isUnrevokedImage(ImageInfo image) {
 		return image.getImageState() != REVOKED;
 	}
-
 	
 	/**
 	 * Returns a new builder to create an immutable <code>ImageInfo</code> instance.
@@ -438,6 +437,9 @@ public class ImageInfo extends ValueObject{
 	 * @return the element roles this image can be installed on.
 	 */
 	public List<ElementRoleName> getElementRoles() {
+	    if(elementRoles == null) {
+	        return emptyList();
+	    }
 		return unmodifiableList(elementRoles);
 	}
 	
@@ -551,6 +553,9 @@ public class ImageInfo extends ValueObject{
 	}
 	
 	public List<PlatformSettings> getPlatforms() {
+	    if(platforms == null) {
+	        return emptyList();
+	    }
 		return unmodifiableList(platforms);
 	}
 	

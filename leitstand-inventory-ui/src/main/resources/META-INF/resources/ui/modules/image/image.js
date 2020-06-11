@@ -39,23 +39,29 @@ export class Images extends Resource {
 	 * @param {string} [cfg.filter] - a filter to search for images for certain elements.
 	 */
 	load(params) {
-		let args = merge(this._cfg,params);
-		let path = "/api/v1/images";
+		const args = merge(this._cfg,params);
+		let uri = '/api/v1/images';
 		if(args.scope){
-			path+="/{{scope}}";
-		} else {
-			path+="?filter={{&filter}}"
-			if(args["image_version"]){
-				path+="&image_version={{&image_version}}"
-			}
-			if(args["image_type"]){
-				path+="&image_type={{&image_type}}";
-			}
-			if(args["image_state"]){
-				path+="&image_state={{&image_state}}";
-			}
+			uri+='/{{scope}}';
+		} 
+		let del  = '?';
+		if(args.filter){
+			uri += del+'filter={{&filter}}';
+			del = '&';
 		}
-		return this.json(path,args)
+		if(args.image_version){
+			uri += del+'image_version={{&image_version}}';
+			del = '&';
+		}
+		if(args.image_type){
+			uri += del+'image_type={{&image_type}}';
+			del = '&';
+		}
+		if(args.image_state){
+			uri += del+'image_state={{&image_state}}';
+			del = '&';
+		}
+		return this.json(uri,args)
 				   .GET();
 	}
 }

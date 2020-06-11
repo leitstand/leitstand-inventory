@@ -18,12 +18,10 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
-import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.inventory.event.ImageAddedEvent.newImageAddedEvent;
 import static io.leitstand.inventory.event.ImageRemovedEvent.newImageRemovedEvent;
 import static io.leitstand.inventory.event.ImageStateChangedEvent.newImageStateChangedEvent;
 import static io.leitstand.inventory.event.ImageStoredEvent.newImageStoredEvent;
-import static io.leitstand.inventory.jpa.ImageStateConverter.toImageState;
 import static io.leitstand.inventory.model.Application.findAll;
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
@@ -32,23 +30,15 @@ import static io.leitstand.inventory.model.Image.countImageReferences;
 import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
-import static io.leitstand.inventory.model.Image.prerelease;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
+import static io.leitstand.inventory.model.Image.searchImages;
 import static io.leitstand.inventory.model.Platform.findByChipset;
-import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementRoleInfo.newElementRoleInfo;
-import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
-import static io.leitstand.inventory.service.ImageId.imageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
-import static io.leitstand.inventory.service.ImageMetaData.newImageMetaData;
-import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageType.imageType;
-import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
-import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
@@ -67,6 +57,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -79,17 +70,13 @@ import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageEvent.ImageEventBuilder;
-import io.leitstand.inventory.jpa.ImageStateConverter;
-import io.leitstand.inventory.jpa.PlaneConverter;
 import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementRoleInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageMetaData;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
@@ -97,7 +84,6 @@ import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
-import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformSettings;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
@@ -146,71 +132,32 @@ public class DefaultImageService implements ImageService {
 	
 	@Override
 	public List<ImageReference> findImages(String filter, 
-										   ElementRoleName role, 
+										   ElementRoleName roleName, 
 										   ImageType type, 
 										   ImageState state, 
 										   Version version, 
 										   int limit) {
-		List<Object> arguments = new LinkedList<>();
-		
-		String sql = "SELECT i.uuid, i.tsbuild, i.state, i.type, i.name, i.chipset, i.major, i.minor, i.patch, i.prerelease, e.name, r.name "+
-		             "FROM inventory.image i "+
-				     "JOIN inventory.elementrole r "+
-		             "ON i.elementrole_id = r.id "+
-				     "LEFT OUTER JOIN inventory.element e "+
-		             "ON i.element_id = e.id "+
-				     "WHERE (r.name ~ ? OR e.name ~ ? OR i.name ~ ? OR i.chipset ~ ?) ";
-		
-		// Add the same filter expression four times, for vendor, model, role, element and image name
-		arguments.add(filter);
-		arguments.add(filter);
-		arguments.add(filter);
-		arguments.add(filter);
-		
-		if(role != null) {
-			sql += "AND r.name=? ";
-			arguments.add(role.toString());
+	
+		ElementRole role = null;
+		if(roleName != null) {
+			role = repository.execute(findRoleByName(roleName));
 		}
 		
-		if(type != null) {
-			sql += "AND i.type=? ";
-			arguments.add(type.toString());
-		}
-		
-		if(state != null) {
-			sql += "AND i.state=? ";
-			arguments.add(ImageStateConverter.toDbValue(state));
-		}
-
-		if(version != null) {
-			sql += "AND i.major=? AND i.minor=? AND i.patch=? ";
-			arguments.add(Integer.valueOf(version.getMajorLevel()));
-			arguments.add(Integer.valueOf(version.getMinorLevel()));
-			arguments.add(Integer.valueOf(version.getPatchLevel()));
-			if(isNonEmptyString(version.getPreRelease())) {
-				sql += "AND i.prerelease=?";
-				arguments.add(version.getPreRelease());
-			}
-		}
-		
-		
-		sql += "ORDER BY r.name, e.name, i.name";
-		
-		return db.executeQuery(prepare(sql,arguments),
-							   rs -> newImageReference()
-									 .withImageId(imageId(rs.getString(1)))
-									 .withBuildDate(rs.getTimestamp(2))
-								     .withImageState(toImageState(rs.getString(3)))
-									 .withImageType(imageType(rs.getString(4)))
-									 .withImageName(imageName(rs.getString(5)))
-									 .withPlatformChipset(platformChipsetName(rs.getString(6)))
-									 .withImageVersion(new Version(rs.getInt(7),
-											 					   rs.getInt(8),
-											 					   rs.getInt(9),
-											 					   prerelease(rs.getString(10))))
-									 .withElementName(elementName(rs.getString(11)))
-									 .withElementRole(elementRoleName(rs.getString(12)))
-									 .build());
+		return repository
+			   .execute(searchImages(filter, role, type, state, version, limit))
+			   .stream()
+			   .map(image ->  newImageReference()
+					   		  .withImageId(image.getImageId())
+					   		  .withBuildDate(image.getBuildDate())
+					   		  .withImageState(image.getImageState())
+					   		  .withImageType(image.getImageType())
+					   		  .withImageName(image.getImageName())
+					   		  .withPlatformChipset(image.getPlatformChipset())
+					   		  .withImageVersion(image.getImageVersion())
+					   		  .withElementName(image.getElementName())
+					   		  .withElementRoles(image.getElementRoleNames())
+					   		  .build())
+			   .collect(Collectors.toList());
 		
 	}
 
@@ -542,23 +489,18 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	@Override
-	public ImageMetaData getImageMetaData() {
-		List<ImageType> types = db.executeQuery(prepare("SELECT DISTINCT type FROM inventory.image ORDER BY type ASC"),
-												rs -> imageType(rs.getString(1)));
-								  
-		List<ElementRoleInfo> roles = db.executeQuery(prepare("SELECT name,plane FROM inventory.elementrole ORDER BY name,plane"), 
-													  rs -> newElementRoleInfo()
-															.withElementRole(ElementRoleName.valueOf(rs.getString(1)))
-						  									.withPlane(PlaneConverter.parse(rs.getString(2)))
-															.build());
-		List<PlatformName> platforms = db.executeQuery(prepare("SELECT name FROM inventory.platform ORDER BY name"), 
-													   rs -> platformName(rs.getString(1)));
-		
-		return newImageMetaData()
-			   .withPlatforms(platforms)
-			   .withElementRoles(roles)
-			   .withImageTypes(types)
-			   .build();
+	public List<ImageType> getImageTypes() {
+		return db.executeQuery(prepare("SELECT DISTINCT type FROM inventory.image ORDER BY type ASC"),
+									   rs -> imageType(rs.getString(1)));
+	}
+	
+	@Override
+	public List<Version> getImageVersions(ImageType type) {
+		return db.executeQuery(prepare("SELECT major, minor, patch, prerelease FROM inventory.image WHERE type=? ORDER BY major, minor, patch ASC",type.toString()),
+									   rs -> new Version(rs.getInt(1),
+											   			 rs.getInt(2),
+											   			 rs.getInt(3),
+											   			 rs.getString(4)));
 	}
 
 }

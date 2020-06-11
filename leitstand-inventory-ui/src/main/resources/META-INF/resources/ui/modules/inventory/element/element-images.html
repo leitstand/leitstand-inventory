@@ -56,7 +56,9 @@ Cached images can be activated immediately from an element-local cache.
 	<tr style="vertical-align:top">
 		<td>{{image_type}}</td>
 		<td><a class="{{image_state}}">{{image_state}}</a></td>
-		<td class="text"><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a></td>
+		<td class="text">
+			<a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a>
+		</td>
 		<td style="vertical-align: middle"><span class="{{element_image_state}}">{{element_image_state}}</span></td>
 		<td><ui-date readonly>{{date_installed}}</ui-date></td>
 	</tr>

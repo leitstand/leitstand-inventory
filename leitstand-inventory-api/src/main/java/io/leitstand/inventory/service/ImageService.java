@@ -42,6 +42,7 @@ public interface ImageService {
 						  ImageState state);
 	ImageStatistics getImageStatistics(ImageId id);
 	
-	ImageMetaData getImageMetaData();
+	List<ImageType> getImageTypes();
+	List<Version> getImageVersions(ImageType imageType);
 
 }

@@ -47,7 +47,6 @@ import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageMetaData;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
@@ -149,12 +148,18 @@ public class ImagesResource {
 		return success(messages);
 	}
 	
+	@GET
+	@Path("/_types")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+	public List<ImageType> getImageTypes() {
+		return service.getImageTypes();
+	}
 	
 	@GET
-	@Path("/metadata")
+	@Path("/_versions")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-	public ImageMetaData getImageMetadata() {
-		return service.getImageMetaData();
+	public List<Version> getImageVersions(@QueryParam("image_type") @Valid ImageType imageType) {
+		return service.getImageVersions(imageType);
 	}
 	
 }

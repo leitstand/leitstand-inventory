@@ -29,6 +29,7 @@
 		<class>io.leitstand.inventory.model.Package</class>
 		<class>io.leitstand.inventory.model.Package_Version</class>
 		<class>io.leitstand.inventory.model.Platform</class>
+		<class>io.leitstand.inventory.model.Release</class>
 		<class>io.leitstand.inventory.model.Service</class>
 		<class>io.leitstand.inventory.service.AddressInterface</class>
 		<class>io.leitstand.inventory.service.Bandwidth</class>
@@ -50,6 +51,7 @@
 		<class>io.leitstand.inventory.jpa.ImageTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.RackIdConverter</class>
 		<class>io.leitstand.inventory.jpa.RackNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ReleaseNameConverter</class>
 		<class>io.leitstand.inventory.jpa.RoutingInstanceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementConfigIdConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementConfigNameConverter</class>

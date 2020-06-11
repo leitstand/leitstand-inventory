@@ -40,7 +40,7 @@ public class ElementRoleName extends Scalar<String> {
 	private String value;
 	
 	public ElementRoleName(String role){
-		this.value = role;
+		this.value = role.toLowerCase();
 	}
 	
 	@Override

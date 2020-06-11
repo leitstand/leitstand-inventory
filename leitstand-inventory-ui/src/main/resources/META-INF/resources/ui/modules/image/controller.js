@@ -16,29 +16,43 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Metadata} from '/ui/modules/inventory/inventory.js';
 import {Images,Image} from './image.js';
+import {Select} from '/ui/js/ui-components.js';
+
+class ImageType extends Select {
+	
+	options(){
+		const images = new Images({'scope':'_types'});
+		return images
+			   .load()
+			   .then(types => ([{'value':'','label':'All types'}].concat(types.map(type => ({'value':type})))));
+		       
+	}
+}
+customElements.define('image-type',ImageType);
+
+class ImageVersion extends Select {
+	
+	options(){
+		const images = new Images({'scope':'_versions'});
+		return images
+			   .load()
+			   .then(types => ([{'value':'','label':'All versions'}].concat(types.map(type => ({'value':type})))));
+		       
+	}
+}
+customElements.define('image-version',ImageVersion);
 
 const imagesController = function(){
-	const images = new Metadata({"scope":"images"});
+	const images = new Images();
 	return new Controller({
 		resource:images,
-		viewModel:async function(settings){ //TODO Refactor with view migration
-			const viewModel = settings;
+		viewModel: function(images){ //TODO Refactor with view migration
+			const viewModel = {};
 			viewModel.filter = { "filter":this.location.param("filter"),
 								 "image_type":this.location.param("image_type"),
 								 "image_version":this.location.param("image_version"),
 								 "image_state":this.location.param("image_state")};
-			viewModel.image_types = [{"label":"All image types",
-							   		  "value":""},
-							   		 {"label":"ONL Images",
-							   		  "value":"ONL"},
-							   		 {"label":"LXC Images",
-							   		  "value":"LXC"}];
-
-	  		const images = new Images();
-	  		viewModel.images = await images.load(viewModel.filter);
-	  		viewModel.element_display_name = function(){
-	  			return this["element_name"] ? this["element_name"] : "*";
-	  		}
+	  		viewModel.images = images;
 	  		return viewModel;
 		},
 		buttons:{
