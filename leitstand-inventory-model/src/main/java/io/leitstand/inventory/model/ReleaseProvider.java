@@ -2,8 +2,9 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.Release.findReleaseById;
 import static io.leitstand.inventory.model.Release.findReleaseByName;
+import static io.leitstand.inventory.service.ReasonCode.*;
+
 import static java.lang.String.format;
-import static net.rtbrick.rbms.release.service.ReasonCode.REL0001E_RELEASE_NOT_FOUND;
 
 import java.util.logging.Logger;
 
@@ -12,8 +13,8 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.model.Repository;
-import net.rtbrick.rbms.release.service.ReleaseId;
-import net.rtbrick.rbms.release.service.ReleaseName;
+import io.leitstand.inventory.service.ReleaseId;
+import io.leitstand.inventory.service.ReleaseName;
 
 @Dependent
 public class ReleaseProvider {
@@ -35,9 +36,11 @@ public class ReleaseProvider {
     public Release fetchRelease(ReleaseId releaseId) {
         Release release = tryFetchRelease(releaseId);
         if(release == null) {
-            LOG.fine(() -> format("%s; Release %s not found",
-                     REL0001E_RELEASE_NOT_FOUND, releaseId));
-            throw new EntityNotFoundException(REL0001E_RELEASE_NOT_FOUND, releaseId);
+            LOG.fine(() -> format("%s: Release %s not found",
+                                  IVT0210E_RELEASE_NOT_FOUND, 
+                                  releaseId));
+            throw new EntityNotFoundException(IVT0210E_RELEASE_NOT_FOUND, 
+                                              releaseId);
         }
         return release;
     }
@@ -45,10 +48,13 @@ public class ReleaseProvider {
     public Release fetchRelease(ReleaseName releaseName) {
         Release release = tryFetchRelease(releaseName);
         if(release == null) {
-            LOG.fine(() -> format("%s; Release %s not found",
-                     REL0001E_RELEASE_NOT_FOUND, releaseName));
-            throw new EntityNotFoundException(REL0001E_RELEASE_NOT_FOUND, releaseName);
+            LOG.fine(() -> format("%s: Release %s not found",
+                                  IVT0210E_RELEASE_NOT_FOUND, 
+                                  releaseName));
+            throw new EntityNotFoundException(IVT0210E_RELEASE_NOT_FOUND, 
+                                              releaseName);
         }
-        return release;    }
+        return release;    
+    }
     
 }

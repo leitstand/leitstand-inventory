@@ -1,6 +1,6 @@
 package io.leitstand.inventory.model;
 
-import static net.rtbrick.rbms.release.service.ReleaseId.releaseId;
+import static io.leitstand.inventory.service.ReleaseId.releaseId;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import javax.persistence.Table;
 
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
-import net.rtbrick.rbms.release.service.ReleaseId;
-import net.rtbrick.rbms.release.service.ReleaseName;
-import net.rtbrick.rbms.release.service.ReleaseState;
+import io.leitstand.inventory.service.ReleaseId;
+import io.leitstand.inventory.service.ReleaseName;
+import io.leitstand.inventory.service.ReleaseState;
 
 @Entity
 @Table(schema="inventory", name="release")

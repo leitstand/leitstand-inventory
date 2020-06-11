@@ -63,6 +63,15 @@ public enum ReasonCode implements Reason{
 	
 	/** The image cannot be removed.*/
 	IVT0204E_IMAGE_NOT_REMOVABLE, 
+	
+	/** The release does not exist.*/
+	IVT0210E_RELEASE_NOT_FOUND,
+	
+	/** The release has been stored.*/
+	IVT0211I_RELEASE_STORED,
+	
+	/** The release contains ambiguous image references.*/
+	IVT0212I_AMBIGUOUS_IMAGE,
 
 	/** The requested element does not exist.*/
 	IVT0300E_ELEMENT_NOT_FOUND,
