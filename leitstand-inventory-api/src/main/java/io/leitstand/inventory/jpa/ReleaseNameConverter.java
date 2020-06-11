@@ -1,9 +1,11 @@
 package io.leitstand.inventory.jpa;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import io.leitstand.inventory.service.ReleaseName;
 
+@Converter
 public class ReleaseNameConverter implements AttributeConverter<ReleaseName, String>{
 
     @Override

@@ -1,10 +1,13 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
+import static javax.persistence.EnumType.STRING;
 
 import java.util.List;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -13,6 +16,7 @@ import javax.persistence.Table;
 
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
+import io.leitstand.inventory.jpa.ReleaseNameConverter;
 import io.leitstand.inventory.service.ReleaseId;
 import io.leitstand.inventory.service.ReleaseName;
 import io.leitstand.inventory.service.ReleaseState;
@@ -47,7 +51,9 @@ public class Release extends VersionableEntity {
                        .getResultList();
     }
     
+    @Convert(converter=ReleaseNameConverter.class)
     private ReleaseName name;
+    @Enumerated(STRING)
     private ReleaseState state;
     private String description;
     
