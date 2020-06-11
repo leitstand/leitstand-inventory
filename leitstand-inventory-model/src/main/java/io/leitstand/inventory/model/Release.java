@@ -26,7 +26,7 @@ import io.leitstand.inventory.service.ReleaseState;
 @NamedQuery(name="Release.findById",
             query="SELECT r FROM Release r WHERE r.uuid=:uuid")
 @NamedQuery(name="Release.findByName",
-            query="SELECT f FROM Release r WHERE r.name=:name")
+            query="SELECT r FROM Release r WHERE r.name=:name")
 @NamedQuery(name="Release.findByNamePattern",
             query="SELECT r FROM Release r WHERE CAST(r.name AS TEXT) REGEXP :name ORDER BY r.name")    
 public class Release extends VersionableEntity {
