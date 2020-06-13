@@ -367,7 +367,6 @@ public class ImageInfo extends ValueObject{
 	@NotNull(message="{image_id.required}")
 	private ImageId imageId = randomImageId();
 
-	@NotNull(message="{organization.required}")
 	private String organization;
 	
 	private String category;

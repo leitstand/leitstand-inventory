@@ -17,6 +17,8 @@ import {Controller,Menu} from '/ui/js/ui.js';
 import {Metadata} from '/ui/modules/inventory/inventory.js';
 import {Images,Image} from './image.js';
 import {Select} from '/ui/js/ui-components.js';
+import '/ui/modules/inventory/inventory-components.js';
+
 
 class ImageType extends Select {
 	
@@ -41,6 +43,7 @@ class ImageVersion extends Select {
 	}
 }
 customElements.define('image-version',ImageVersion);
+
 
 const imagesController = function(){
 	const images = new Images();

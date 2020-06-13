@@ -45,3 +45,18 @@ class ElementRoleSelector extends Select {
 
 }
 customElements.define("element-role",ElementRoleSelector);
+
+class InventoryPanel extends UIComponent {
+    renderDom(){
+        const panel = new Panel();
+        panel.load({'element_role':this.viewModel.getProperty('element_role'),
+                    'element_name':this.viewModel.getProperty('element_name'),
+                    'metric_name':this.getAttribute('metric')})
+             .then(panel => {
+                 this.innerHTML=`<iframe src="${panel.src}" width="${panel.width||'100%'}" height="${panel.height||'400px'}"></iframe>`;
+             })
+             .catch(e => console.log(e));
+    }
+}
+
+customElements.define("inventory-panel",InventoryPanel);

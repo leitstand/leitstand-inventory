@@ -371,17 +371,6 @@ export class Element extends Resource {
 					   .GET();
 		}
 		
-		if(this._cfg["scope"]=="metrics"){
-			if(!this._cfg["metric_scope"]){
-				this._cfg["metric_scope"] = "ELEMENT";
-			}
-			
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope={{metric_scope}}&fetch_mode=VISUALIZATION_CONFIG",
-							 this._cfg,
-							 params)
-					   .GET();
-		}
-		
 		// Don't use {{&scope}} in order to process all variables that are part of the specified scope.
 		return this.json(`/api/v1/elements/{{&element}}/${this._cfg['scope']}`,
 						 this._cfg,
@@ -474,13 +463,6 @@ export class ElementPhysicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		if(this._cfg.scope == "metrics"){
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope=IFP&fetch_mode=VISUALIZATION_CONFIG",
-							 this._cfg,
-							 params)
-					   .GET()
-		}
-		
 		return this.json("/api/v1/elements/{{&element}}/physical_interfaces",
 				  		 this._cfg,
 				  		 params)
@@ -498,13 +480,6 @@ export class ElementPhysicalInterface extends Resource {
 	}
 	
 	load(params){
-		if(this._cfg.scope == "metrics"){
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope=IFP&fetch_mode=VISUALIZATION_CONFIG",
-					  		 this._cfg,
-					  		 params)
-					   .GET()
-		}
-		
 		return this.json("/api/v1/elements/{{&element}}/physical_interfaces/{{&ifp_name}}/{{&scope}}",
 				  		 this._cfg,
 				  		 params)
@@ -559,5 +534,39 @@ export class Metadata extends Resource {
 	}
 }
 
+export class TimeSeries extends Resource {
+    
+    constructor(cfg){
+        super()
+        this._cfg = cfg;
+    }
+    
+    load(params){
+        if(params.metric_name){
+            return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}/{{metric_name}}",params)
+                       .GET();
+        }
+        return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}",params)
+                   .GET();
+    }
+    
+}
 
+export class Panel extends Resource {
+    
+    constructor(cfg){
+        super()
+        this._cfg = cfg;
+    }
+    
+    load(params){
+        if(params.metric_name){
+            return this.json("/api/v1/telemetry/panels/{{role}}/{{element_name}}/{{metric_name}}",params)
+                       .GET();
+        }
+        return this.json("/api/v1/telemetry/panels/{{role}}/{{element_name}}",params)
+                   .GET();
+    }
+    
+}
 	

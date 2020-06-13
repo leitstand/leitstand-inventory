@@ -1,10 +1,12 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.EnumType.STRING;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -59,9 +61,9 @@ public class Release extends VersionableEntity {
     
     @ManyToMany
     @JoinTable(schema="INVENTORY",
-                   name="release_image", 
-                   joinColumns= @JoinColumn(name="image_id", referencedColumnName="id"),
-                   inverseJoinColumns=@JoinColumn(name="release_id",referencedColumnName="id"))
+               name="release_image", 
+               joinColumns= @JoinColumn(name="release_id", referencedColumnName="id"),
+               inverseJoinColumns=@JoinColumn(name="image_id",referencedColumnName="id"))
     private List<Image> images;
     
     

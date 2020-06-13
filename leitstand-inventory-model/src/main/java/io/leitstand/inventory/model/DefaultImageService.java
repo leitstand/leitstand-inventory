@@ -496,7 +496,7 @@ public class DefaultImageService implements ImageService {
 	
 	@Override
 	public List<Version> getImageVersions(ImageType type) {
-		return db.executeQuery(prepare("SELECT major, minor, patch, prerelease FROM inventory.image WHERE type=? ORDER BY major, minor, patch ASC",type.toString()),
+		return db.executeQuery(prepare("SELECT DISTINCT major, minor, patch, prerelease FROM inventory.image WHERE type=? ORDER BY major, minor, patch ASC",type.toString()),
 									   rs -> new Version(rs.getInt(1),
 											   			 rs.getInt(2),
 											   			 rs.getInt(3),

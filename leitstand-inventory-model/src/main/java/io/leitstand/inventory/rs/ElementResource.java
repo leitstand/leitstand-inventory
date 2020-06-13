@@ -79,7 +79,7 @@ public class ElementResource {
 	@GET
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public List<ElementSettings> findElement(@QueryParam("filter") @DefaultValue("") String filter,
-											 @QueryParam("by") @DefaultValue(FILTER_BY_NAME_AND_TAG) String by,
+											 @QueryParam("by") @DefaultValue(FILTER_BY_NAME) String by,
 	                                         @QueryParam("offset") @DefaultValue("0") int offset,
 											 @QueryParam("limit")  @DefaultValue("100") int limit){
 		

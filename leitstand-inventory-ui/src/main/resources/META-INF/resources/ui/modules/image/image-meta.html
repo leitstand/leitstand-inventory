@@ -57,15 +57,14 @@
 	<ui-group>
 		<ui-label>Element Role and Platform</ui-label>
 		<ui-note>The element role and the available platforms where this image can be deployed.</ui-note>
-		<ui-input name="element_role" readonly>
-			<ui-label>Element Role</ui-label>
-			<ui-value>Element role (readonly).</ui-value>
-		</ui-input>
-	
-		<ui-input name="platform_chipset">
+		<ui-input name="platform_chipset" readonly disabled>
 			<ui-label>Platform Chipset</ui-label>
-			<ui-note>The chipset this image is build for.</ui-note>
+			<ui-note>The chipset this image is build for (readonly)</ui-note>
 		</ui-input>		
+        <element-role name="element_roles" multiple readonly disabled>
+            <ui-label>Element Roles</ui-label>
+            <ui-note>This image can be deployed on the selected element roles.</ui-note>
+        </element-role>
 	</ui-group>
 	<!-- {{#platforms.length}} -->
 	<ui-group>
