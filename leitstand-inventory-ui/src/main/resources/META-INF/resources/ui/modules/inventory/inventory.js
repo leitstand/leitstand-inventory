@@ -560,11 +560,23 @@ export class Panel extends Resource {
     }
     
     load(params){
-        if(params.metric_name){
-            return this.json("/api/v1/telemetry/panels/{{role}}/{{element_name}}/{{metric_name}}",params)
+        if(params.ifp_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?ifp_name={{&ifp_name}}",params)
                        .GET();
         }
-        return this.json("/api/v1/telemetry/panels/{{role}}/{{element_name}}",params)
+
+        if(params.ifl_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?ifl_name={{&ifl_name}}",params)
+                       .GET();
+        }
+
+        if(params.service_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?service_name={{service_name}}",params)
+                       .GET();
+        }
+
+        
+        return this.json("/api/v1/elements/{{element}}/panels/{{panel}}",params)
                    .GET();
     }
     
