@@ -63,7 +63,7 @@ public class ElementResource {
 
 	public static final String FILTER_BY_ASSET_ID = "assetid";
 	public static final String FILTER_BY_NAME = "name";
-	public static final String FILTER_BY_NAME_AND_TAG = "tag";
+	public static final String FILTER_BY_NAME_OR_TAG = "tag";
 	public static final String FILTER_BY_SERIAL_NUMBER = "serial";
 	public static final String FILTER_BY_MANAGEMENT_IP = "ip";
 	
@@ -79,14 +79,14 @@ public class ElementResource {
 	@GET
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT, IVT_ELEMENT_SETTINGS})
 	public List<ElementSettings> findElement(@QueryParam("filter") @DefaultValue("") String filter,
-											 @QueryParam("by") @DefaultValue(FILTER_BY_NAME) String by,
+											 @QueryParam("by") @DefaultValue(FILTER_BY_NAME_OR_TAG) String by,
 	                                         @QueryParam("offset") @DefaultValue("0") int offset,
 											 @QueryParam("limit")  @DefaultValue("100") int limit){
 		
 		switch(by) {
 			case FILTER_BY_NAME:
 				return service.findElementsByName(filter, offset, limit);
-			case FILTER_BY_NAME_AND_TAG:
+			case FILTER_BY_NAME_OR_TAG:
 				return service.findElementsByNameOrTag(filter, offset, limit);
 			case FILTER_BY_MANAGEMENT_IP:
 				return service.findElementsByManagementIP(filter, offset, limit);
@@ -95,7 +95,7 @@ public class ElementResource {
 			case FILTER_BY_ASSET_ID:
 				return service.findElementsByAssetId(filter, offset, limit);
 			default:{
-				LOG.fine(() -> String.format("Unknown filter criteria %s. Use default %s option instead.",by,FILTER_BY_NAME_AND_TAG));
+				LOG.fine(() -> String.format("Unknown filter criteria %s. Use default %s option instead.",by,FILTER_BY_NAME_OR_TAG));
 				return service.findElementsByNameOrTag(filter, offset, limit);
 			}
 		}
