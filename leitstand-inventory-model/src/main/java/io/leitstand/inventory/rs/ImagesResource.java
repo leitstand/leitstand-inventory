@@ -23,6 +23,7 @@ import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -52,6 +53,7 @@ import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
 import io.leitstand.security.auth.Scopes;
@@ -73,15 +75,20 @@ public class ImagesResource {
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public List<ImageReference> findImages(@QueryParam("filter") @DefaultValue("") String filter, 
 										   @QueryParam("element_role") @Valid ElementRoleName elementRole,
+										   @QueryParam("platform_chipset") @Valid PlatformChipsetName chipsetName,
 										   @QueryParam("image_type") ImageType type,
 										   @QueryParam("image_state") ImageState state,
 										   @QueryParam("image_version") @Valid Version version){
-			return service.findImages(filter, 
-							          elementRole,
-							    	  type,
-							    	  state,
-							    	  version,
-							    	  100);
+			return service.findImages(newQuery()
+			                          .filter(filter)
+			                          .imageState(state)
+			                          .imageType(type)
+			                          .imageVersion(version)
+			                          .roleName(elementRole)
+			                          .platformChipset(chipsetName)
+			                          .limit(100));
+			        
+			        
 	}
 	
 	@GET

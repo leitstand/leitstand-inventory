@@ -2,8 +2,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.Release.findReleaseById;
 import static io.leitstand.inventory.model.Release.findReleaseByName;
-import static io.leitstand.inventory.service.ReasonCode.*;
-
+import static io.leitstand.inventory.service.ReasonCode.IVT0210E_RELEASE_NOT_FOUND;
 import static java.lang.String.format;
 
 import java.util.logging.Logger;

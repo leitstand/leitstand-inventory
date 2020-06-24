@@ -18,8 +18,6 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.json.SerializableJsonObject.serializable;
 import static java.util.UUID.randomUUID;
 
-import java.util.UUID;
-
 import javax.json.JsonObject;
 import javax.persistence.Convert;
 import javax.persistence.Entity;

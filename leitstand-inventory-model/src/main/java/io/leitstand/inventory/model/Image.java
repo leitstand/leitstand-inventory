@@ -55,6 +55,7 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PlatformChipsetName;
@@ -137,6 +138,13 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.imageType=:type "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
+@NamedQuery(name="Image.findCandidateImages",
+            query="SELECT d FROM Image d "+
+                  "WHERE d.chipset=:chipset "+
+                  "AND :role MEMBER OF d.roles "+
+                  "AND d.imageType=:type "+
+                  "AND d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
+                  "AND d.element is null")
 @NamedQuery(name="Image.findDefaultImages",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
@@ -180,15 +188,15 @@ public class Image extends VersionableEntity{
 		return RELEASE.equals(version) ? null : version;
 	}
 	
-	public static Query<List<Image>> searchImages(String filter, 
-										 ElementRole role, 
-										 ImageType type, 
-										 ImageState state, 
-										 Version version, 
-										 int limit){
+	public static Query<List<Image>> searchImages(ElementRole role, ImageQuery querySpec){
 		
 		return em -> {
 
+		    ImageType type = querySpec.getImageType();
+		    ImageState state = querySpec.getImageState();
+		    Version version = querySpec.getImageVersion();
+		    PlatformChipsetName chipset = querySpec.getPlatformChipset();
+		    
 			Map<String,Object> params = new HashMap<>();
 			
 			String jpql = "SELECT i FROM Image i "+
@@ -208,6 +216,11 @@ public class Image extends VersionableEntity{
 				jpql += "AND i.imageState=:state ";
 				params.put("state",state);
 			}
+			
+			if(chipset != null) {
+			    jpql += "AND i.chipset=:chipset ";
+			    params.put("chipset", chipset);
+			}
 
 			if(version != null) {
 				jpql += "AND i.major=:major AND i.minor=:minor AND i.patch=:patch ";
@@ -224,18 +237,37 @@ public class Image extends VersionableEntity{
 			jpql += "ORDER BY i.imageName";
 			
 			TypedQuery<Image> query = em.createQuery(jpql,Image.class);
-			query.setParameter("name",filter);
+			query.setParameter("name",querySpec.getFilter());
 			for(Map.Entry<String, Object> param : params.entrySet()) {
 				query.setParameter(param.getKey(), param.getValue());
 			}
-			query.setMaxResults(limit);
+			query.setMaxResults(querySpec.getLimit());
 			
 			return query.getResultList();
 			
 		};
 		
-		
 	}
+	
+	public static Query<Image> findReleaseImage(ElementRole role,
+	                                            PlatformChipsetName chipset,
+	                                            ImageType imageType) {
+	    return em -> em.createNamedQuery("Image.findDefaultImage",Image.class)
+	                   .setParameter("role",role)
+	                   .setParameter("chipset",chipset)
+	                   .setParameter("type",imageType)
+	                   .getSingleResult();
+	}
+	
+	   public static Query<List<Image>> findCandidateImages(ElementRole role,
+                                                            PlatformChipsetName chipset,
+                                                            ImageType imageType) {
+	       return em -> em.createNamedQuery("Image.findCandidateImages",Image.class)
+	                      .setParameter("role",role)
+	                      .setParameter("chipset",chipset)
+	                      .setParameter("type",imageType)
+	                      .getResultList();
+	   }
  	
 	public static Update markAllSuperseded(Image image) {
 		

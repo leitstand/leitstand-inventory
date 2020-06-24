@@ -20,8 +20,6 @@ import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static java.util.Arrays.asList;
 
-import java.util.Arrays;
-
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
 import io.leitstand.inventory.service.ElementInstalledImageReference;

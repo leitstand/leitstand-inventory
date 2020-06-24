@@ -1,12 +1,10 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
-import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.EnumType.STRING;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;

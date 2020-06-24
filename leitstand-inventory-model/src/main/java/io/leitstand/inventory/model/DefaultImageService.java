@@ -78,13 +78,16 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformSettings;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -131,35 +134,34 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	@Override
-	public List<ImageReference> findImages(String filter, 
-										   ElementRoleName roleName, 
-										   ImageType type, 
-										   ImageState state, 
-										   Version version, 
-										   int limit) {
+	public List<ImageReference> findImages(ImageQuery query) {
 	
 		ElementRole role = null;
-		if(roleName != null) {
-			role = repository.execute(findRoleByName(roleName));
+		if(query.getElementRole() != null) {
+			role = repository.execute(findRoleByName(query.getElementRole()));
 		}
 		
 		return repository
-			   .execute(searchImages(filter, role, type, state, version, limit))
+			   .execute(searchImages(role,query))
 			   .stream()
-			   .map(image ->  newImageReference()
-					   		  .withImageId(image.getImageId())
-					   		  .withBuildDate(image.getBuildDate())
-					   		  .withImageState(image.getImageState())
-					   		  .withImageType(image.getImageType())
-					   		  .withImageName(image.getImageName())
-					   		  .withPlatformChipset(image.getPlatformChipset())
-					   		  .withImageVersion(image.getImageVersion())
-					   		  .withElementName(image.getElementName())
-					   		  .withElementRoles(image.getElementRoleNames())
-					   		  .build())
+			   .map(image ->  referenceOf(image))
 			   .collect(Collectors.toList());
 		
 	}
+
+    private ImageReference referenceOf(Image image) {
+        return newImageReference()
+        		   		  .withImageId(image.getImageId())
+        		   		  .withBuildDate(image.getBuildDate())
+        		   		  .withImageState(image.getImageState())
+        		   		  .withImageType(image.getImageType())
+        		   		  .withImageName(image.getImageName())
+        		   		  .withPlatformChipset(image.getPlatformChipset())
+        		   		  .withImageVersion(image.getImageVersion())
+        		   		  .withElementName(image.getElementName())
+        		   		  .withElementRoles(image.getElementRoleNames())
+        		   		  .build();
+    }
 
 	@Override
 	public boolean storeImage(ImageInfo submission) {
@@ -502,5 +504,34 @@ public class DefaultImageService implements ImageService {
 											   			 rs.getInt(3),
 											   			 rs.getString(4)));
 	}
+
+    @Override
+    public ImageReference getReleaseImage(ElementRoleName roleName, 
+                                          PlatformChipsetName chipset,
+                                          ImageType imageType) {
+        ElementRole role = repository.execute(ElementRole.findRoleByName(roleName));
+        if(role == null) {
+            LOG.fine(() -> format("%s: Element role %s not found.", ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND.getReasonCode(),roleName));
+            throw new EntityNotFoundException(ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND,roleName);
+        }
+        Image image = repository.execute(Image.findReleaseImage(role, chipset,imageType));
+        if(image == null) {
+            LOG.fine(() -> format("%s: No default image for role %s with chipset %s found.",
+                                  ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE.getReasonCode(),
+                                  roleName,
+                                  chipset));
+            throw new EntityNotFoundException( ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE,roleName,chipset);
+        }
+        
+        return referenceOf(image);
+    }
+
+    @Override
+    public List<ImageReference> getCandidateImages(ElementRoleName roleName, 
+                                                   PlatformChipsetName chipset, 
+                                                   ImageType imageType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static io.leitstand.inventory.service.ImagesExport.newImagesExport;
 import static java.lang.Integer.MAX_VALUE;
 
@@ -48,12 +49,13 @@ public class DefaultImageExportService implements ImageExportService {
 									 ImageState state,
 									 Version version) {
 		List<ImageInfo> images = new LinkedList<>();
-		for(ImageReference ref : imageService.findImages(filter, 
-														 elementRole, 
-														 type, 
-														 state, 
-														 version,
-														 MAX_VALUE)) {
+		for(ImageReference ref : imageService.findImages(newQuery()
+		                                                 .filter(filter)
+		                                                 .imageState(state)
+		                                                 .imageType(type)
+		                                                 .imageVersion(version)
+		                                                 .roleName(elementRole)
+		                                                 .limit(MAX_VALUE))) {
 			images.add(imageService.getImage(ref.getImageId()));
 		}
 		return newImagesExport()

@@ -16,9 +16,6 @@
 package io.leitstand.inventory.model;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +24,6 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.leitstand.commons.model.Query;

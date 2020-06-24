@@ -120,7 +120,7 @@ public class ImageReference {
 		return imageId;
 	}
 	
-	public Version getRevision() {
+	public Version getImageVersion() {
 		return imageVersion;
 	}
 	
