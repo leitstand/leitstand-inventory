@@ -73,6 +73,9 @@ public enum ReasonCode implements Reason{
 	/** The release has been stored.*/
 	IVT0211I_RELEASE_STORED,
 	
+	/** The release name is already in use.*/
+	IVT0212E_RELEASE_NAME_ALREADY_IN_USE,
+	
 	/** The release contains ambiguous image references.*/
 	IVT0212I_AMBIGUOUS_IMAGE,
 
