@@ -29,9 +29,11 @@ import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.P
 import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PRERELEASE;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
+import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
 import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalleImages;
+import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
 import static io.leitstand.inventory.service.ReasonCode.IVT0342I_ELEMENT_IMAGE_REMOVED;
@@ -49,6 +51,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import io.leitstand.commons.ConflictException;
+import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
@@ -123,6 +126,7 @@ public class ElementImageManager {
 						  .withImageState(image.getImageState())
 						  .withImageName(image.getImageName())
 						  .withElementImageState(elementImage.getInstallationState())
+						  .withZtp(elementImage.isZtp())
 						  .withImageExtension(image.getImageExtension())
 						  .withImageVersion(image.getImageVersion())
 						  .withChecksums(image.getChecksums().stream().collect(Collectors.toMap(c -> c.getAlgorithm().name(), Checksum::getValue)))
@@ -198,6 +202,7 @@ public class ElementImageManager {
 			   .withElementRole(element.getElementRoleName())
 			   .withImage(newElementInstalledImageData()
 					   	  .withImageId(image.getImageId())
+					   	  .withZtp(elementImage.isZtp())
 					   	  .withOrganization(image.getOrganization())
 				   		  .withImageType(image.getImageType())
 				   		  .withImageState(image.getImageState())
@@ -213,6 +218,7 @@ public class ElementImageManager {
 				   		  .withBuildDate(image.getBuildDate())
 				   		  .withPackages(packages)
 				   		  .withAvailableUpdates(updates))
+			              
 			   .build();
 			
 	}
@@ -301,5 +307,55 @@ public class ElementImageManager {
 	}
 
 
+    public void setZtpImage(Element element, ImageId imageId) {
+        Image image = repository.execute(findImageById(imageId));
+        if(image == null) {
+            throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageId);
+        }
+        boolean ztpSet = false;
+        for(Element_Image elementImage : repository.execute(findInstalledImages(element))){
+            if(elementImage.isZtp()) {
+               if(image.getImageId().equals(imageId)) {
+                   return; // No ZTP changes needed. We're done.
+               }
+               
+               if(elementImage.getInstallationState() == PULL) {
+                   // Remove PULL image if it is not longer the ZTP image.
+                   repository.remove(image);
+               } else {
+                   // Keep all other images but don't declare them as ZTP image.
+                   elementImage.setZtp(false);
+               }
+               continue; // process next image.
+            }
+            
+            if(elementImage.getImageId().equals(imageId)) {
+                elementImage.setZtp(true);
+                ztpSet = true; // ZTP image found.
+                // Still need to continue to process the remaining images to find old ZTP image that now needs to be set to false.
+            }
+        }
+        if(!ztpSet) {
+            // Create a PULL image for the ZTP image.
+            Element_Image ztpImage = new Element_Image(element,image);
+            ztpImage.setImageInstallationState(PULL); // Must be PULL because otherwise it would have been processed in the loop above.
+            ztpImage.setZtp(true); // This image shall be pulled via ZTP when doing an upgrade.
+            repository.add(ztpImage);
+        }
+    }
+
+    public void resetZtpImage(Element element) {
+        for(Element_Image image : repository.execute(findInstalledImages(element))){
+            if(image.isZtp()) {
+                if(image.getInstallationState() == PULL) {
+                    // A pull image is not needed anymore if it is not a ZTP image.
+                    repository.remove(image);
+                } else {
+                    image.setZtp(false);
+                }
+            }
+        }
+    }
+    
 
 }

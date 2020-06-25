@@ -95,4 +95,29 @@ public class DefaultElementImagesService implements ElementImagesService {
 		manager.removeInstalledImage(element,imageId);
 	}
 
+    @Override
+    public void setZtpImage(ElementId elementId, ImageId imageId) {
+        Element element = elements.fetchElement(elementId);
+        manager.setZtpImage(element,imageId);
+    }
+
+    @Override
+    public void setZtpImage(ElementName elementName, ImageId imageId) {
+        Element element = elements.fetchElement(elementName);
+        manager.setZtpImage(element,imageId);
+    }
+
+    @Override
+    public void resetZtpImage(ElementId elementId) {
+        Element element = elements.fetchElement(elementId);
+        manager.resetZtpImage(element);
+    }
+
+    @Override
+    public void resetZtpImage(ElementName elementName) {
+        Element element = elements.fetchElement(elementName);
+        manager.resetZtpImage(element);
+    }
+
+
 }

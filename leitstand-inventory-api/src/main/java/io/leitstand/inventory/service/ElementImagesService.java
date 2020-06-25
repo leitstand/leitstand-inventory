@@ -80,7 +80,34 @@ public interface ElementImagesService {
 	 */
 	void storeInstalledImages(ElementName name, List<ElementInstalledImageReference> images);
 
-	void removeInstalledImage(ElementId id, ImageId imageId);
+	void removeInstalledImage(ElementId elementId, ImageId imageId);
 	void removeInstalledImage(ElementName elementName, ImageId imageId);
+	
+	/**
+	 * Sets the image that shall be installed via ZTP on this element.
+	 * @param elementId the element ID
+	 * @param imageId the ZTP image ID.
+	 */
+	void setZtpImage(ElementId elementId, ImageId imageId);
+
+	   /**
+     * Sets the image that shall be installed via ZTP on this element.
+     * @param elementName the element name
+     * @param imageId the ZTP image ID.
+     */
+    void setZtpImage(ElementName elementName, ImageId imageId);
+
+	
+	/**
+	 * Removes ZTP information to fallback to the default ZTP configuration (i.e. deploy release image).
+	 * @param elementId the element ID
+	 */
+	void resetZtpImage(ElementId elementId);
+	
+	   /**
+     * Removes ZTP information to fallback to the default ZTP configuration (i.e. deploy release image).
+     * @param elementName the element name
+     */
+    void resetZtpImage(ElementName elementName);
 	
 }

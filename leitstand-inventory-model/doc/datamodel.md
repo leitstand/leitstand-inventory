@@ -484,12 +484,13 @@ This relation assigns an environment to its element.
 The `element_image` table stores which images are installed on the existing network elements.
 
 #### Columns
-| Column 	 | Type 		   | Description 					  |
-|:-----------|:------------|:---------------------------------|
-| ELEMENT_ID | INT8 		   | Reference to the element record. |
-| IMAGE_ID	 | INT8 		   | Reference to the image record.   |
-| STATE		 | VARCHAR(16) | Image installation state. 		  |
-| TSMODIFIED | TIMESTAMP   | Last-modification timestamp. 	  |
+| Column 	 | Type 		    | Description 					       |
+|:-----------|:-------------|:-------------------------------------|
+| ELEMENT_ID | INT8 		    | Reference to the element record.     |
+| IMAGE_ID	 | INT8 		    | Reference to the image record.       |
+| STATE		 | VARCHAR(16)  | Image installation state. 		       |
+| ZTP        | CHARACTER(1) | Whether this image is the ZTP image. |
+| TSMODIFIED | TIMESTAMP    | Last-modification timestamp. 	       |
 
 The following image installation states exists:
 - `ACTIVE`, the image is installed and currently active.

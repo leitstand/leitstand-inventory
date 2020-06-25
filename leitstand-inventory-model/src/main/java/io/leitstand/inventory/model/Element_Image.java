@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -35,6 +36,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 
+import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
 import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ImageId;
@@ -108,6 +110,9 @@ public class Element_Image {
 	@Column(name="state")
 	@Enumerated(STRING)
 	private ElementImageState imageState;
+	
+	@Convert(converter=BooleanConverter.class)
+	private boolean ztp;
 	
 	protected Element_Image(){
 		// JPA
@@ -194,6 +199,13 @@ public class Element_Image {
 	public boolean isActive() {
 		return imageState == ACTIVE;
 	}
-
+	
+	public boolean isZtp() {
+        return ztp;
+    }
+	
+	public void setZtp(boolean ztp) {
+        this.ztp = ztp;
+    }
 	
 }

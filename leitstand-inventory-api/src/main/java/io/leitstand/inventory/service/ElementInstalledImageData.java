@@ -243,6 +243,12 @@ public class ElementInstalledImageData extends ValueObject{
 			return this;
 		}
 		
+		public Builder withZtp(boolean ztp) {
+		    assertNotInvalidated(getClass() , image);
+		    image.ztp = ztp;
+		    return this;
+		}
+		
 		/**
 		 * Creates an immutable <code>ElementInstalledImageData</code> instance and invalidates this constructor.
 		 * Any further interaction with this builder raises an exception.
@@ -286,6 +292,8 @@ public class ElementInstalledImageData extends ValueObject{
 	private String organization;
 	
 	private String imageExtension;
+	
+	private boolean ztp;
 	
 	private ElementImageState elementImageState;
 	
@@ -404,4 +412,7 @@ public class ElementInstalledImageData extends ValueObject{
 		return unmodifiableMap(checksums);
 	}
 	
+	public boolean isZtp() {
+        return ztp;
+    }
 }
