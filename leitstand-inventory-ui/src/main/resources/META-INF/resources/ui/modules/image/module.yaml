@@ -35,14 +35,14 @@ menus:
     label: State
     title: Manage image state
     view: image-state.html
-  - item: image-apps
-    label: Applications
-    title: View supported applications
-    view: image-apps.html
-  - item: image-pkgs
-    label: Packages
-    title: View image packages
-    view: image-pkgs.html
+#   - item: image-apps
+#     label: Applications
+#     title: View supported applications
+#     view: image-apps.html
+#   - item: image-pkgs
+#     label: Packages
+#     title: View image packages
+#     view: image-pkgs.html
   - item: image-stats
     label: Utilization
     title: View image utilization statistics

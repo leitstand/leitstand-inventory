@@ -399,32 +399,6 @@ public class DefaultImageService implements ImageService {
 	}
 
 	@Override
-	public ImageInfo getImage(ImageType imageType, 
-							  ImageName imageName, 
-							  Version version, 
-							  ElementId elementId) {
-		Element element = elements.fetchElement(elementId);
-		Image image = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																			  imageType,
-																			  imageName,
-																			  version));
-		return imageInfo(image);
-	}
-
-	@Override
-	public ImageInfo getImage(ImageType imageType, 
-							  ImageName imageName, 
-							  Version version, 
-							  ElementName name) {
-		Element element = elements.fetchElement(name);
-		Image image = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																			  imageType, 
-																			  imageName,
-																			  version));
-		return imageInfo(image);
-	}
-
-	@Override
 	public RoleImages findRoleImages(ElementRoleName role) {
 		
 		List<RoleImage> images = db.executeQuery(prepare("SELECT DISTINCT i.name, i.type "+
@@ -524,14 +498,6 @@ public class DefaultImageService implements ImageService {
         }
         
         return referenceOf(image);
-    }
-
-    @Override
-    public List<ImageReference> getCandidateImages(ElementRoleName roleName, 
-                                                   PlatformChipsetName chipset, 
-                                                   ImageType imageType) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

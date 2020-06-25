@@ -20,18 +20,7 @@ import java.util.List;
 public interface ImageService {
 	List<ImageReference> findImages(ImageQuery query);
 	RoleImages findRoleImages(ElementRoleName role);
-	List<ImageReference> getCandidateImages(ElementRoleName roleName,
-	                                        PlatformChipsetName chipset,
-	                                        ImageType imageType);
 	ImageInfo getImage(ImageId id);
-	ImageInfo getImage(ImageType imageType, 
-					   ImageName imageName, 
-					   Version version, 
-					   ElementId elementId);
-	ImageInfo getImage(ImageType imageType, 
-					   ImageName imageName, 
-					   Version version, 
-					   ElementName elementName);
 	
 	ImageStatistics getImageStatistics(ImageId id);
 	

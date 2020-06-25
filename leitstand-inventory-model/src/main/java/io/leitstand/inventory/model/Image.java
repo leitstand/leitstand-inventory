@@ -138,13 +138,6 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.imageType=:type "+
 				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
 				  "AND d.element is null")
-@NamedQuery(name="Image.findCandidateImages",
-            query="SELECT d FROM Image d "+
-                  "WHERE d.chipset=:chipset "+
-                  "AND :role MEMBER OF d.roles "+
-                  "AND d.imageType=:type "+
-                  "AND d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
-                  "AND d.element is null")
 @NamedQuery(name="Image.findDefaultImages",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
@@ -259,16 +252,7 @@ public class Image extends VersionableEntity{
 	                   .getSingleResult();
 	}
 	
-	   public static Query<List<Image>> findCandidateImages(ElementRole role,
-                                                            PlatformChipsetName chipset,
-                                                            ImageType imageType) {
-	       return em -> em.createNamedQuery("Image.findCandidateImages",Image.class)
-	                      .setParameter("role",role)
-	                      .setParameter("chipset",chipset)
-	                      .setParameter("type",imageType)
-	                      .getResultList();
-	   }
- 	
+	
 	public static Update markAllSuperseded(Image image) {
 		
 		if(image.getElement() != null) {

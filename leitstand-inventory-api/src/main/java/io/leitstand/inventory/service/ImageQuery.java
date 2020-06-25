@@ -12,7 +12,7 @@ public class ImageQuery {
     private Version imageVersion;
     private PlatformChipsetName platformChipset;
     private String filter;
-    private int limit;
+    private int limit = 100;
     
     
     public ImageQuery roleName(ElementRoleName elementRole) {

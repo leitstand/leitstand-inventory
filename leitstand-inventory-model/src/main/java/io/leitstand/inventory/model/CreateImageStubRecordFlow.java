@@ -83,9 +83,9 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	@Override
 	public Image resume(Repository repository) {
 		return repository.execute(findByElementAndImageTypeAndVersion(element, 
-																	   installed.getImageType(), 
-																	   installed.getImageName(),
-																	   installed.getImageVersion()));
+																	  installed.getImageType(), 
+																	  installed.getImageName(),
+																	  installed.getImageVersion()));
 		
 		
 	}
