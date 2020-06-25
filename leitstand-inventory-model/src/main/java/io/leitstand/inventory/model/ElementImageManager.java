@@ -321,7 +321,7 @@ public class ElementImageManager {
                
                if(elementImage.getInstallationState() == PULL) {
                    // Remove PULL image if it is not longer the ZTP image.
-                   repository.remove(image);
+                   repository.remove(elementImage);
                } else {
                    // Keep all other images but don't declare them as ZTP image.
                    elementImage.setZtp(false);
