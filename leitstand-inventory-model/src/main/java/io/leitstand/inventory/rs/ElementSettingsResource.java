@@ -30,7 +30,6 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_AL
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -115,7 +114,7 @@ public class ElementSettingsResource{
 				return created(messages,"/elements/%s/settings",element);
 			}
 			return success(messages);
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			givenRollbackException(e)
 			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
 			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
@@ -141,7 +140,7 @@ public class ElementSettingsResource{
 				return created(messages,"/elements/%s/settings",element);
 			}
 			return success(messages);
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			givenRollbackException(e)
 			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
 			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
