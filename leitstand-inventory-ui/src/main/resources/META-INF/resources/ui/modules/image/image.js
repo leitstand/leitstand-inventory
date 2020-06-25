@@ -61,6 +61,10 @@ export class Images extends Resource {
 			uri += del+'image_state={{&image_state}}';
 			del = '&';
 		}
+        if(args.element_role){
+            uri += del+'element_role={{&element_role}}';
+            del = '&';
+        }
 		return this.json(uri,args)
 				   .GET();
 	}

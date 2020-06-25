@@ -315,7 +315,7 @@ public class ElementImageManager {
         boolean ztpSet = false;
         for(Element_Image elementImage : repository.execute(findInstalledImages(element))){
             if(elementImage.isZtp()) {
-               if(image.getImageId().equals(imageId)) {
+               if(elementImage.getImageId().equals(imageId)) {
                    return; // No ZTP changes needed. We're done.
                }
                
