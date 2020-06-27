@@ -58,7 +58,7 @@ import org.junit.Test;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
-import io.leitstand.inventory.service.ElementAvailableUpdate;
+import io.leitstand.inventory.service.ElementAvailableUpgrade;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
@@ -321,7 +321,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -343,7 +343,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -365,7 +365,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -387,7 +387,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -408,7 +408,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(2,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -428,7 +428,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(1,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 		});
@@ -447,7 +447,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertTrue(updates.isEmpty());
 		});
 	}
@@ -465,7 +465,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -487,7 +487,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -508,7 +508,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -529,7 +529,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -550,7 +550,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(2,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -570,7 +570,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertEquals(1,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 		});
@@ -589,7 +589,7 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpdates();
 			assertTrue(updates.isEmpty());
 		});
 	}

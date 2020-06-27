@@ -362,13 +362,13 @@ const elementImagesController = function(){
 		resource:element,
 		viewModel:function(element){
 			element.upgrade_type=function(){
-				if(this.update_type == "MAJOR"){
+				if(this.upgrade_type == "MAJOR"){
 					return "Major upgrade";
 				}
-				if(this.update_type == "MINOR"){
+				if(this.upgrade_type == "MINOR"){
 					return "Minor upgrade";
 				}
-				if(this.update_type == "PATCH"){
+				if(this.upgrade_type == "PATCH"){
 					return "Patch";
 				}
 				return "Pre-Release";

@@ -198,23 +198,23 @@ public class DefaultElementConfigService implements ElementConfigService {
 	}
 
 	@Override
-	public StoreElementConfigResult editElementConfig(ElementId elementId, 
-													  ElementConfigId configId,
-													  String comment) {
+	public StoreElementConfigResult restoreElementConfig(ElementId elementId, 
+													     ElementConfigId configId,
+													     String comment) {
 		Element element = elements.fetchElement(elementId);
-		return manager.editElementConfig(element,
-										 configId,
-										 comment);
+		return manager.restoreElementConfig(element,
+										    configId,
+										    comment);
 	}
 
 	@Override
-	public StoreElementConfigResult editElementConfig(ElementName elementName, 
-													  ElementConfigId configId,
-													  String comment) {
+	public StoreElementConfigResult restoreElementConfig(ElementName elementName, 
+													     ElementConfigId configId,
+													     String comment) {
 		Element element = elements.fetchElement(elementName);
-		return manager.editElementConfig(element,
-										 configId,
-										 comment);
+		return manager.restoreElementConfig(element,
+										    configId,
+										    comment);
 	}
 	
 	

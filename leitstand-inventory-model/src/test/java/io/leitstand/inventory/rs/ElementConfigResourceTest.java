@@ -63,50 +63,50 @@ public class ElementConfigResourceTest {
 	
 	@Test
 	public void send_created_response_when_restore_config_creates_a_new_config_for_an_element_identified_by_id() {
-		when(service.editElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(true);
 		
-		assertEquals(201,resource.editElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(201,resource.restoreElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	@Test
 	public void send_redirect_response_when_restore_config_refers_to_an_existing_config_for_an_element_identified_by_id() {
-		when(service.editElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(false);
 		
-		assertEquals(303,resource.editElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(303,resource.restoreElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	@Test
 	public void send_created_response_when_edit_config_creates_a_new_config_for_an_element_identified_by_id() {
-		when(service.editElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(true);
 		
-		assertEquals(201,resource.editElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(201,resource.restoreElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	@Test
 	public void send_redirect_response_when_edit_config_refers_to_an_existing_config_for_an_element_identified_by_id() {
-		when(service.editElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_ID, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(false);
 		
-		assertEquals(303,resource.editElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(303,resource.restoreElementConfig(ELEMENT_ID,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	@Test
 	public void send_created_response_when_edit_config_creates_a_new_config_for_an_element_identified_by_name() {
-		when(service.editElementConfig(ELEMENT_NAME, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_NAME, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(true);
 		
-		assertEquals(201,resource.editElementConfig(ELEMENT_NAME,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(201,resource.restoreElementConfig(ELEMENT_NAME,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	@Test
 	public void send_redirect_response_when_edit_config_refers_to_an_existing_config_for_an_element_identified_by_name() {
-		when(service.editElementConfig(ELEMENT_NAME, CONFIG_ID, COMMENT)).thenReturn(result);
+		when(service.restoreElementConfig(ELEMENT_NAME, CONFIG_ID, COMMENT)).thenReturn(result);
 		when(result.isCreated()).thenReturn(false);
 		
-		assertEquals(303,resource.editElementConfig(ELEMENT_NAME,CONFIG_ID,COMMENT).getStatus());
+		assertEquals(303,resource.restoreElementConfig(ELEMENT_NAME,CONFIG_ID,COMMENT).getStatus());
 	}
 	
 	

@@ -18,8 +18,6 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.commons.model.ObjectUtil.optional;
 
-import java.util.Date;
-
 import io.leitstand.commons.model.ValueObject;
 
 /**

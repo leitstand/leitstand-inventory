@@ -22,11 +22,11 @@ import static io.leitstand.inventory.model.Element_Image.findInstalledImage;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImages;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.findUpdates;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.newElementAvailableUpdate;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MAJOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MINOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PATCH;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PRERELEASE;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.newElementAvailableUpgrade;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MAJOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MINOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PATCH;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PRERELEASE;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
@@ -55,8 +55,8 @@ import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
-import io.leitstand.inventory.service.ElementAvailableUpdate;
-import io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType;
+import io.leitstand.inventory.service.ElementAvailableUpgrade;
+import io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType;
 import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ElementInstalledImage;
 import io.leitstand.inventory.service.ElementInstalledImageData;
@@ -101,16 +101,16 @@ public class ElementImageManager {
 				packages.add(packageVersionInfo(revision));
 			}
 			
-			List<ElementAvailableUpdate> updates = new LinkedList<>();
+			List<ElementAvailableUpgrade> updates = new LinkedList<>();
 			for(Image update : repository.execute(findUpdates(element.getPlatform(),
 															  image.getImageType(), 
 															  image.getImageName(),
 															  element.getElementRole(), 
 															  image.getImageVersion(), 
 															  element))){
-				UpdateType type = updateType(image, update);
+				UpgradeType type = updateType(image, update);
 				
-				updates.add(newElementAvailableUpdate()
+				updates.add(newElementAvailableUpgrade()
 						    .withImageId(update.getImageId())
 						    .withImageName(update.getImageName())
 						    .withImageState(update.getImageState())
@@ -149,8 +149,8 @@ public class ElementImageManager {
 		
 	}
 
-	private UpdateType updateType(Image image, Image update) {
-		UpdateType type = PRERELEASE;
+	private UpgradeType updateType(Image image, Image update) {
+		UpgradeType type = PRERELEASE;
 		if(update.getImageVersion().getMajorLevel() > image.getImageVersion().getMajorLevel()){
 			type = MAJOR;
 		}
@@ -174,16 +174,16 @@ public class ElementImageManager {
 			packages.add(packageVersionInfo(revision));
 		}
 		
-		List<ElementAvailableUpdate> updates = new LinkedList<>();
+		List<ElementAvailableUpgrade> updates = new LinkedList<>();
 		for(Image update : repository.execute(findUpdates(element.getPlatform(),
 														  image.getImageType(), 
 														  image.getImageName(),
 														  element.getElementRole(),
 														  image.getImageVersion(),
 														  element))){
-			UpdateType type = updateType(image, update);
+			UpgradeType type = updateType(image, update);
 			
-			updates.add(newElementAvailableUpdate()
+			updates.add(newElementAvailableUpgrade()
 					 	.withImageId(update.getImageId())
 					 	.withImageName(update.getImageName())
 					 	.withImageState(update.getImageState())

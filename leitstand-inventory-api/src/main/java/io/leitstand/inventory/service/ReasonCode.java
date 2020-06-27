@@ -130,6 +130,9 @@ public enum ReasonCode implements Reason{
 	/** Removed the config with all its revisions.*/
 	IVT0337I_ELEMENT_CONFIG_REMOVED,
 	
+	/** Configuration cannot be restored.*/
+    IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,
+    	
 	/** The service does not exist on the specified element.*/
 	IVT0320E_ELEMENT_SERVICE_NOT_FOUND,
 

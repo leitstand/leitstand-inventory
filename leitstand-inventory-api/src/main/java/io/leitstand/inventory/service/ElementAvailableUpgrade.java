@@ -16,9 +16,9 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MAJOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MINOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PATCH;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MAJOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MINOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PATCH;
 
 import java.util.Date;
 
@@ -28,30 +28,30 @@ import io.leitstand.commons.jsonb.IsoDateAdapter;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * A summary of an existing software update for a certain element.
+ * A summary of an existing software upgrade for a certain element.
  */
-public class ElementAvailableUpdate extends ValueObject {
+public class ElementAvailableUpgrade extends ValueObject {
 
 	/**
 	 * An enumeration of update types.
 	 */
-	public enum UpdateType {
-		/** A major software update.*/
+	public enum UpgradeType {
+		/** A major software upgrade.*/
 		MAJOR,
-		/** A minor software update.*/
+		/** A minor software upgrade.*/
 		MINOR,
-		/** A patch update*/
+		/** A patch upgrade*/
 		PATCH,
-		/** A pre-release update.*/
+		/** A pre-release upgrade.*/
 		PRERELEASE;
 		
 	}
 	
 	/**
-	 * Returns a builder for an immutable <code>ElementAvailableUpdate</code> instance.
-	 * @return a builder for an immutable <code>ElementAvailableUpdate</code> instance.
+	 * Returns a builder for an immutable <code>ElementAvailableUpgrade</code> instance.
+	 * @return a builder for an immutable <code>ElementAvailableUpgrade</code> instance.
 	 */
-	public static Builder newElementAvailableUpdate(){
+	public static Builder newElementAvailableUpgrade(){
 		return new Builder();
 	}
 	
@@ -60,7 +60,7 @@ public class ElementAvailableUpdate extends ValueObject {
 	 */
 	public static class Builder {
 		
-		private ElementAvailableUpdate update = new ElementAvailableUpdate();
+		private ElementAvailableUpgrade update = new ElementAvailableUpgrade();
 		
 		/** 
 		 * Sets the image id of the available update.
@@ -125,13 +125,13 @@ public class ElementAvailableUpdate extends ValueObject {
 		 * @param type the update type
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withUpdateType(UpdateType type){
+		public Builder withUpdateType(UpgradeType type){
 			assertNotInvalidated(getClass(),update);
-			update.updateType = type;
+			update.upgradeType = type;
 			return this;
 		}
 		
-		public ElementAvailableUpdate build(){
+		public ElementAvailableUpgrade build(){
 			try{
 				assertNotInvalidated(getClass(),update);
 				return update;
@@ -153,7 +153,7 @@ public class ElementAvailableUpdate extends ValueObject {
 	
 	private Version imageVersion;
 	
-	private UpdateType updateType;
+	private UpgradeType upgradeType;
 	
 	/**
 	 * Returns the id of the available update.
@@ -185,28 +185,28 @@ public class ElementAvailableUpdate extends ValueObject {
 	/**
 	 * Returns <code>true</code> when this update is a major update.
 	 * @return <code>true</code> when this update is a major update.
-	 * @see UpdateType#MAJOR
+	 * @see UpgradeType#MAJOR
 	 */
 	public boolean isMajorUpdate(){
-		return updateType == MAJOR;
+		return upgradeType == MAJOR;
 	}
 	
 	/**
 	 * Returns <code>true</code> when this update is a minor update.
 	 * @return <code>true</code> when this update is a minor update.
-	 * @see UpdateType#MINOR
+	 * @see UpgradeType#MINOR
 	 */
 	public boolean isMinorUpdate(){
-		return updateType == MINOR;
+		return upgradeType == MINOR;
 	}
 	
 	/**
 	 * Returns <code>true</code> when this update is a patch update.
 	 * @return <code>true</code> when this update is a patch update.
-	 * @see UpdateType#PATCH
+	 * @see UpgradeType#PATCH
 	 */
 	public boolean isPatch(){
-		return updateType == PATCH;
+		return upgradeType == PATCH;
 	}
 	
 	/**
@@ -216,8 +216,8 @@ public class ElementAvailableUpdate extends ValueObject {
 	 * @see #isMinorUpdate()
 	 * @see #isPatch()
 	 */
-	public UpdateType getUpdateType() {
-		return updateType;
+	public UpgradeType getUpdateType() {
+		return upgradeType;
 	}
 	
 	/**

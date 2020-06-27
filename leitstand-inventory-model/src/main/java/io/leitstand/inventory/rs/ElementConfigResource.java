@@ -174,13 +174,13 @@ public class ElementConfigResource {
 	}
 	
 	@POST
-	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/_edit")
-	public Response editElementConfig(@Valid @PathParam("element") ElementId elementId,
-									  @Valid @PathParam("config_id") ElementConfigId configId,
-									  @QueryParam("comment") String comment){
-		StoreElementConfigResult result = service.editElementConfig(elementId, 
-																	configId,
-																	comment);
+	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/_restore")
+	public Response restoreElementConfig(@Valid @PathParam("element") ElementId elementId,
+									     @Valid @PathParam("config_id") ElementConfigId configId,
+									     @QueryParam("comment") String comment){
+		StoreElementConfigResult result = service.restoreElementConfig(elementId, 
+																	   configId,
+																	   comment);
 		if(result.isCreated()) {
 			return created(result.getConfigId());
 		}
@@ -188,13 +188,13 @@ public class ElementConfigResource {
 	}
 	
 	@POST
-	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/_edit")
-	public Response editElementConfig(@Valid @PathParam("element") ElementName elementName,
-									  @Valid @PathParam("config_id") ElementConfigId configId,
-									  @QueryParam("comment") String comment){
-		StoreElementConfigResult result = service.editElementConfig(elementName, 
-																	configId,
-																	comment);
+	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/_restore")
+	public Response restoreElementConfig(@Valid @PathParam("element") ElementName elementName,
+									     @Valid @PathParam("config_id") ElementConfigId configId,
+									     @QueryParam("comment") String comment){
+		StoreElementConfigResult result = service.restoreElementConfig(elementName, 
+																	   configId,
+																	   comment);
 		if(result.isCreated()) {
 			return created(result.getConfigId());
 		}

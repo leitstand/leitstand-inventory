@@ -103,9 +103,9 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(ElementAvailableUpdate.Builder... updates){
+		public Builder withAvailableUpdates(ElementAvailableUpgrade.Builder... updates){
 			return withAvailableUpdates(stream(updates)
-									    .map(ElementAvailableUpdate.Builder::build)
+									    .map(ElementAvailableUpgrade.Builder::build)
 									    .collect(toList()));
 		}
 		
@@ -114,7 +114,7 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(ElementAvailableUpdate... updates){
+		public Builder withAvailableUpdates(ElementAvailableUpgrade... updates){
 			return withAvailableUpdates(asList(updates));
 		}
 
@@ -123,9 +123,9 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(List<ElementAvailableUpdate> updates) {
+		public Builder withAvailableUpdates(List<ElementAvailableUpgrade> updates) {
 			assertNotInvalidated(getClass(), image);
-			image.availableUpdates = unmodifiableList(new LinkedList<>(updates));
+			image.availableUpgrades = unmodifiableList(new LinkedList<>(updates));
 			return this;
 		}
 
@@ -281,7 +281,7 @@ public class ElementInstalledImageData extends ValueObject{
 	
 	private List<PackageVersionInfo> packages;
 	
-	private List<ElementAvailableUpdate> availableUpdates;
+	private List<ElementAvailableUpgrade> availableUpgrades;
 	
 	private ImageType imageType;
 	
@@ -334,8 +334,8 @@ public class ElementInstalledImageData extends ValueObject{
 	 * Returns an empty list if not software updates are available.
 	 * @return a list of available software updates.
 	 */
-	public List<ElementAvailableUpdate> getAvailableUpdates() {
-		return availableUpdates;
+	public List<ElementAvailableUpgrade> getAvailableUpgrades() {
+		return availableUpgrades;
 	}
 	
 	/**
