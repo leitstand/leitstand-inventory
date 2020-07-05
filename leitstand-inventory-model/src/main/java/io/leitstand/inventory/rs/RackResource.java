@@ -71,7 +71,6 @@ public class RackResource {
 		}
 		return service.findElementRackItem(elementName(element));
 	}
-
 	
 	@GET
 	@Scopes({IVT, IVT_RACK, IVT_READ})
