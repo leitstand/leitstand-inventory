@@ -41,17 +41,15 @@ const podsController = function() {
 					const elements = this.elements(".pod-elements").forEach(element => {
 						const groupId = element.getAttribute("data-group");
 						const groupElements = groups[groupId];
-						let activeElements = '';
-						let totalElements = '';
 						if(groupElements && groupElements.total){
-							totalElements = `<a href="pod/pod-elements.html?group=${groupId}" class="btn btn-sm btn-default" title="Show element list">${groupElements.total} in total</a>`
-							if(groupElements && groupElements.active){
-								activeElements = `<a href="topology/link-state.html?group=${groupId}" class="btn btn-sm btn-primary" title="Show link-state graph">${groupElements.active} active</a>`
-							}
+						    if(groupElements.total > 1){
+						        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">${groupElements.total} elements.</a>`);
+						    } else {
+		                        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">1 element.</a>`);
+						    }
 						} else {
-							totalElements = `<a href="pod/pod-elements.html?group=${groupId}">No elements.</a>`
+							element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">No elements.</a>`);
 						}
-						element.html(activeElements + " "+totalElements);
 					});
 				});
 		},
