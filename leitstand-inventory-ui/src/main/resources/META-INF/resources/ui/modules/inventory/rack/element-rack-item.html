@@ -21,8 +21,8 @@
 		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}">{{element_name}}</ui-breadcrumb>
 		<ui-breadcrumb>Location</ui-breadcrumb>
 	</ui-breadcrumbs>
-	<ui-title>Element Location</ui-title>
-	<ui-subtitle>Location of element {{element_name}}</ui-subtitle>
+	<ui-title>Location of {{element_name}}</ui-title>
+	<ui-subtitle>Location of element {{element_name}} {{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <ui-form scopesAllowed="ivt ivt.rack">
 	<!-- {{#rack}} -->

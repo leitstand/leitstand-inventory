@@ -443,6 +443,9 @@ const elementRackItemController = function(){
 		resource:element,
 		viewModel: async function(settings){
 			const racks = new Racks({'scope':'_findElement'});
+			racks.onNotFound = function(){
+			    // No action required
+			}
 			try {
 				const item = await racks.load(this.location.params);
 				settings.rack = item;
@@ -451,7 +454,7 @@ const elementRackItemController = function(){
 				// Item not found
 				return settings;
 			}
-		}
+		},
 	});
 }
 
