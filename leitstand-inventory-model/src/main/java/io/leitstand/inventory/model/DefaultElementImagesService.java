@@ -27,6 +27,8 @@ import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
+import io.leitstand.inventory.service.ImageReference;
+import io.leitstand.inventory.service.ImageType;
 
 @Service
 public class DefaultElementImagesService implements ElementImagesService {
@@ -117,6 +119,18 @@ public class DefaultElementImagesService implements ElementImagesService {
     public void resetZtpImage(ElementName elementName) {
         Element element = elements.fetchElement(elementName);
         manager.resetZtpImage(element);
+    }
+
+    @Override
+    public ImageReference getZtpImage(ElementId elementId) {
+        Element element = elements.fetchElement(elementId);
+        return manager.getZtpImage(element, imageType);
+    }
+
+    @Override
+    public ImageReference getZtpImage(ElementName elementName) {
+        Element element = elements.fetchElement(elementName);
+        return manager.getZtpImage(element, imageType);
     }
 
 

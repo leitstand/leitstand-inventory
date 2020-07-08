@@ -17,6 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
+import static io.leitstand.inventory.model.DefaultImageService.referenceOf;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImage;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImages;
@@ -63,6 +64,9 @@ import io.leitstand.inventory.service.ElementInstalledImageData;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ImageId;
+import io.leitstand.inventory.service.ImageInfo;
+import io.leitstand.inventory.service.ImageReference;
+import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 
 @Dependent
@@ -355,6 +359,18 @@ public class ElementImageManager {
                 }
             }
         }
+    }
+
+
+    public ImageReference getZtpImage(Element element) {
+        for(Element_Image image : repository.execute(findInstalledImages(element))) {
+            if(image.isZtp()) {
+                return referenceOf(image.getImage());
+            }
+        }
+        return null;
+        
+        
     }
     
 

@@ -27,7 +27,6 @@ import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countImageReferences;
-import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
@@ -72,7 +71,6 @@ import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageEvent.ImageEventBuilder;
 import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
-import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
@@ -149,18 +147,18 @@ public class DefaultImageService implements ImageService {
 		
 	}
 
-    private ImageReference referenceOf(Image image) {
+	protected static ImageReference referenceOf(Image image) {
         return newImageReference()
-        		   		  .withImageId(image.getImageId())
-        		   		  .withBuildDate(image.getBuildDate())
-        		   		  .withImageState(image.getImageState())
-        		   		  .withImageType(image.getImageType())
-        		   		  .withImageName(image.getImageName())
-        		   		  .withPlatformChipset(image.getPlatformChipset())
-        		   		  .withImageVersion(image.getImageVersion())
-        		   		  .withElementName(image.getElementName())
-        		   		  .withElementRoles(image.getElementRoleNames())
-        		   		  .build();
+        	   .withImageId(image.getImageId())
+        	   .withBuildDate(image.getBuildDate())
+        	   .withImageState(image.getImageState())
+        	   .withImageType(image.getImageType())
+        	   .withImageName(image.getImageName())
+        	   .withPlatformChipset(image.getPlatformChipset())
+        	   .withImageVersion(image.getImageVersion())
+        	   .withElementName(image.getElementName())
+        	   .withElementRoles(image.getElementRoleNames())
+        	   .build();
     }
 
 	@Override

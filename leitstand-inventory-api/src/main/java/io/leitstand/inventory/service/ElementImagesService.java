@@ -84,6 +84,22 @@ public interface ElementImagesService {
 	void removeInstalledImage(ElementName elementName, ImageId imageId);
 	
 	/**
+	 * Returns the image that shall be installed via ZTP.
+	 * Returns the release image if not ZTP image is specified for the element.
+	 * @param elementId the element ID
+	 * @return the ZTP image
+	 */
+	ImageReference getZtpImage(ElementId elementId);
+	
+	/**
+     * Returns the image that shall be installed via ZTP.
+     * Returns the release image if not ZTP image is specified for the element.
+     * @param elementName the element name
+     * @return the ZTP image
+     */
+	ImageReference getZtpImage(ElementName elementName);
+	
+	/**
 	 * Sets the image that shall be installed via ZTP on this element.
 	 * @param elementId the element ID
 	 * @param imageId the ZTP image ID.
