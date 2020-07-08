@@ -124,13 +124,13 @@ public class DefaultElementImagesService implements ElementImagesService {
     @Override
     public ImageReference getZtpImage(ElementId elementId) {
         Element element = elements.fetchElement(elementId);
-        return manager.getZtpImage(element, imageType);
+        return manager.getZtpImage(element);
     }
 
     @Override
     public ImageReference getZtpImage(ElementName elementName) {
         Element element = elements.fetchElement(elementName);
-        return manager.getZtpImage(element, imageType);
+        return manager.getZtpImage(element);
     }
 
 
