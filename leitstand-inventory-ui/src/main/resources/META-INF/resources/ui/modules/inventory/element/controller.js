@@ -254,15 +254,16 @@ const elementController = function(){
 			const form = this.element("ui-form");
 			form.addEventListener("click",(evt) => {
 				if(evt.target.nodeName === 'A'){
-					evt.preventDefault();
-					evt.stopPropagation();
-					const settings = this.getViewModel();
-					settings.platform_name = this.input("element-platform").unwrap().selected.label;
-					element.saveSettings(this.location.params,settings)
-						   .then(() => { this.navigate(evt.target.href)});
-
+					const platform = this.input("element-platform").unwrap();
+                    if(platform){
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        const settings = this.getViewModel();
+                        settings.platform_name = platform.selected.label;
+                        element.saveSettings(this.location.params,settings)
+                               .then(() => { this.navigate(evt.target.href)});                      
+                    }
 				}
-				
 			});
 		},
 		buttons:{
