@@ -80,6 +80,7 @@ public class DefaultPlatformService implements PlatformService{
 		return newPlatformSettings()
 			   .withPlatformId(platform.getPlatformId())
 			   .withPlatformName(platform.getPlatformName())
+			   .withPlatformChipset(platform.getChipset())
 			   .withVendorName(platform.getVendor())
 			   .withModelName(platform.getModel())
 			   .withDescription(platform.getDescription())
@@ -125,6 +126,7 @@ public class DefaultPlatformService implements PlatformService{
 				created = true;
 			}
 			platform.setPlatformName(settings.getPlatformName());
+			platform.setChipset(settings.getPlatformChipset());
 			platform.setVendor(settings.getVendorName());
 			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
