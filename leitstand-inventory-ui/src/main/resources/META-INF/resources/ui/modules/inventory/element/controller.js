@@ -273,8 +273,8 @@ const elementController = function(){
 				                     settings);
 			},
 			"remove-element":function(){
-				this.removeAttribute(this.location.param("element_id"));
-				params["force"] = this.input("force").value();
+			    const params = this.location.params;
+				params.force = this.input("force").value();
 				element.removeElement(params);
 			},
 			"add-mgmt":function(){
