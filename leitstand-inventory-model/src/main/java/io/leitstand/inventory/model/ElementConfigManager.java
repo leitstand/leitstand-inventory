@@ -86,7 +86,7 @@ public class ElementConfigManager {
 	private DatabaseService database;
 	private Messages messages;
 	private Event<ElementConfigEvent> event;
-	private UserName creator;
+	private UserContext creator;
 	
 	@Inject
 	protected ElementConfigManager(	@Inventory Repository repository, 
@@ -94,7 +94,7 @@ public class ElementConfigManager {
 									UserContext authenticated,
 									Event<ElementConfigEvent> event,
 									Messages messages){
-		this.creator = authenticated.getUserName();
+		this.creator = authenticated;
 		this.repository = repository;
 		this.database   = database;
 		this.event = event;
@@ -330,7 +330,7 @@ public class ElementConfigManager {
 									contentType,
 									contentHash,
 									configData,
-									creator);
+									creator.getUserName());
 		config.setComment(comment);
 		repository.add(config);
 		LOG.fine(() -> format("%s: Stored new %s configuration for element %s (%s)",
