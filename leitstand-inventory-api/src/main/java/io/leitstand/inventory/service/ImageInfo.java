@@ -446,7 +446,6 @@ public class ImageInfo extends ValueObject{
 	 * Returns the name of the element this image was built for or
 	 * <code>null</code> if this image was built for all elements of a certain element type.
 	 * @return the name of the element this image was built for or <code>null</code> if this image was not built for a certain element
-	 * @see #getElementRole()
 	 */
 	public ElementName getElementName(){
 		return elementName;

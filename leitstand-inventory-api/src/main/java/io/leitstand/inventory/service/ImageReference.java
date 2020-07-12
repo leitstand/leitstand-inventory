@@ -124,7 +124,7 @@ public class ImageReference {
 		return imageVersion;
 	}
 	
-	public List<ElementRoleName> getElementRole() {
+	public List<ElementRoleName> getElementRoles() {
 		return unmodifiableList(elementRoles);
 	}
 	
