@@ -41,7 +41,9 @@ import javax.persistence.Temporal;
 
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Update;
+import io.leitstand.inventory.jpa.AdministrativeStateConverter;
 import io.leitstand.inventory.jpa.OperationalStateConverter;
+import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.OperationalState;
 import io.leitstand.inventory.service.ServiceName;
 import io.leitstand.inventory.service.ServiceType;
@@ -108,8 +110,13 @@ public class Element_Service implements Serializable{
 	
 	@Column(name="opstate")
 	@Convert(converter=OperationalStateConverter.class)
-	private OperationalState state;
+	private OperationalState opState;
 
+	@Column(name="admstate")
+	@Convert(converter=AdministrativeStateConverter.class)
+	private AdministrativeState admState;
+
+	
 	@Temporal(TIMESTAMP)
 	private Date tsmodified;
 
@@ -141,7 +148,7 @@ public class Element_Service implements Serializable{
 	}
 	
 	public OperationalState getOperationalState() {
-		return state;
+		return opState;
 	}
 	
 	public ServiceType getServiceType() {
@@ -149,7 +156,7 @@ public class Element_Service implements Serializable{
 	}
 	
 	public void setOperationalState(OperationalState state) {
-		this.state = state;
+		this.opState = state;
 	}
 
 	public boolean isService(ServiceName name) {
@@ -208,5 +215,13 @@ public class Element_Service implements Serializable{
 	Element_ServiceContext getContext() {
 		return context;
 	}
+
+    public void setAdministrativeState(AdministrativeState state) {
+        this.admState = state;
+    }
+    
+    public AdministrativeState getAdministrativeState() {
+        return admState;
+    }
 	
 }

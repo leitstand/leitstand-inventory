@@ -81,7 +81,7 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service display name.
-		 * @param name - the display name
+		 * @param name the display name
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withDisplayName(String name){
@@ -91,8 +91,20 @@ public class ServiceInfo extends ValueObject {
 		}
 		
 		/**
+		 * Sets the administrative state of the service.
+		 * @param state the administrative state
+		 * @return a reference to this builder to continue object creation
+		 */
+	     public B withAdministrativeState(AdministrativeState state){
+	         assertNotInvalidated(getClass(), service);
+	         ((ServiceInfo)service).administrativeState = state;
+	         return (B) this;
+	     }
+		
+		
+		/**
 		 * Sets the operational state of the service.
-		 * @param state - the operational state
+		 * @param state the operational state
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withOperationalState(OperationalState state){
@@ -103,7 +115,7 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service type.
-		 * @param serviceType - the service type
+		 * @param serviceType the service type
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withServiceType(ServiceType serviceType) {
@@ -138,6 +150,7 @@ public class ServiceInfo extends ValueObject {
 		protected Builder() {
 			super(new ServiceInfo());
 		}
+
 	}
 	
 	private ElementId elementId;
@@ -151,6 +164,8 @@ public class ServiceInfo extends ValueObject {
 	private String displayName;
 	
 	private String description;
+	
+	private AdministrativeState administrativeState;
 	
 	private OperationalState operationalState;
 	
@@ -171,6 +186,10 @@ public class ServiceInfo extends ValueObject {
 	public String getDisplayName() {
 		return displayName;
 	}
+	
+	public AdministrativeState getAdministrativeState() {
+        return administrativeState;
+    }
 	
 	/**
 	 * Returns the operational state of the service.

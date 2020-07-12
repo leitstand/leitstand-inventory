@@ -97,6 +97,7 @@ public class ElementServicesManager {
 			services.add(newServiceInfo()
 						 .withServiceName(service.getServiceName())
 						 .withDisplayName(service.getDisplayName())
+						 .withAdministrativeState(service.getAdministrativeState())
 						 .withOperationalState(service.getOperationalState())
 						 .withServiceType(service.getServiceType())
 						 .build());
@@ -192,6 +193,7 @@ public class ElementServicesManager {
 			repository.add(service);
 			created = true;
 		}
+		service.setAdministrativeState(submission.getAdministrativeState());
 		service.setOperationalState(submission.getOperationalState());
 		service.setServiceContext(submission.getServiceContext());
 		service.setServiceContextType(submission.getServiceContextType());
@@ -306,6 +308,7 @@ public class ElementServicesManager {
 					   		.withServiceName(service.getServiceName())
 					   		.withDisplayName(service.getDisplayName())
 					   		.withDescription(service.getDescription())
+					   		.withAdministrativeState(service.getAdministrativeState())
 					   		.withOperationalState(service.getOperationalState())
 					   		.withServiceContextType(service.getServiceContextType())
 					   		.withServiceContext(service.getServiceContext())
