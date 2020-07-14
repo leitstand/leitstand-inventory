@@ -32,11 +32,11 @@
 			<ui-label>Element Alias</ui-label>
 			<ui-note>An optional unique element alias</ui-note>
 		</ui-input>
-		<ui-select name="element_role" bind="element.element_role" options="roles">
+		<element-role name="element_role" bind="element.element_role">
 			<ui-label>Element Role</ui-label>
 			<ui-note>Select the role of the element</ui-note>
-		</ui-select>
-		<element-platform name="platform" bind="element.platform" options="platforms">
+		</element-role>
+		<element-platform name="platform" bind="element.platform">
 			<ui-label>Hardware Platform</ui-label>
 			<ui-note>Select the hardware platform of the element</ui-note>
 		</element-platform>
@@ -44,6 +44,10 @@
 			<ui-label>Serial Number</ui-label>
 			<ui-note>The serial number of the element</ui-note>
 		</ui-input>
+		<ui-input name="asset_id" >
+			<ui-label>Asset ID</ui-label>
+			<ui-note>The asset identifier for this element</ui-note>
+		</ui-input>	
 		<ui-textarea name="description" bind="element.description">
 			<ui-label>Description</ui-label>
 			<ui-note>An optional description of the element</ui-note>

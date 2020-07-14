@@ -18,7 +18,11 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.model.Element_ContainerInterface.findIfcByName;
 import static io.leitstand.inventory.model.Element_LogicalInterface.findIflByName;
-import static io.leitstand.inventory.model.Element_LogicalInterface.findIflsOfElement;
+import static io.leitstand.inventory.model.Element_LogicalInterface.findIfls;
+import static io.leitstand.inventory.model.Element_LogicalInterface.findIflsByPrefix;
+import static io.leitstand.inventory.model.Element_LogicalInterface.findIflsByVlanId;
+import static io.leitstand.inventory.model.Element_LogicalInterface.removeIfls;
+import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpOfIfl;
 import static io.leitstand.inventory.service.ElementLogicalInterface.newLogicalInterface;
 import static io.leitstand.inventory.service.ElementLogicalInterfaceData.newElementLogicalInterfaceData;
 import static io.leitstand.inventory.service.ElementLogicalInterfaces.newLogicalInterfaces;
@@ -26,14 +30,15 @@ import static io.leitstand.inventory.service.PhysicalInterface.newPhysicalInterf
 import static io.leitstand.inventory.service.ReasonCode.IVT0360E_ELEMENT_IFL_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0361I_ELEMENT_IFL_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0362I_ELEMENT_IFL_REMOVED;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
-import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
+import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -52,11 +57,11 @@ import io.leitstand.inventory.service.PhysicalInterface;
 
 @Dependent
 public class ElementLogicalInterfaceManager {
+	
+	private static final Pattern INTEGER = compile("\\d+");
 	private static final Logger LOG = Logger.getLogger(ElementLogicalInterfaceManager.class.getName());
 	
 	private Repository repository;
-	
-	private ElementProvider elements;
 	
 	private Messages messages;
 	
@@ -64,11 +69,9 @@ public class ElementLogicalInterfaceManager {
 	
 	@Inject
 	protected ElementLogicalInterfaceManager(@Inventory Repository repository,
-									 ElementProvider elements,
-									 Messages messages, 
-									 Event<ElementLogicalInterfaceEvent> event){
+									 		 Messages messages, 
+									 		 Event<ElementLogicalInterfaceEvent> event){
 		this.repository = repository;
-		this.elements = elements;
 		this.messages = messages;
 		this.event = event;
 	}
@@ -97,11 +100,10 @@ public class ElementLogicalInterfaceManager {
 		
 		Set<PhysicalInterface> ifps = new TreeSet<>();
 		
-		for(Element_PhysicalInterface ifp : ifl.getContainerInterface().getPhysicalInterfaces()) {
+		for(Element_PhysicalInterface ifp : repository.execute(findIfpOfIfl(ifl))) {
 			ifps.add(newPhysicalInterfaceInfo()
 					 .withIfpName(ifp.getIfpName())
 					 .withMacAddress(ifp.getMacAddress())
-					 .withMtuSize(ifp.getMtuSize())
 					 .withOperationalState(ifp.getOperationalState())
 					 .withAdministrativeState(ifp.getAdministrativeState())
 					 .build());
@@ -111,6 +113,7 @@ public class ElementLogicalInterfaceManager {
 		
 		ElementLogicalInterfaceData data = newElementLogicalInterfaceData()
 										   .withInterfaceName(ifl.getInterfaceName())
+										   .withInterfaceAlias(ifl.getInterfaceAlias())
 										   .withRoutingInstance(ifl.getRoutingInstance())
 										   .withVlans(ifl.getVlans())
 										   .withOperationalState(ifl.getOperationalState())
@@ -126,58 +129,13 @@ public class ElementLogicalInterfaceManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withElementRole(element.getElementRoleName())
 			   .withLogicalInterface(data)
 			   .build();
 		
 		
 	}
 
-	public ElementLogicalInterfaces getLogicalInterfaces(Element element) {
-		List<ElementLogicalInterfaceData> ifls = new LinkedList<>();
-		for(Element_LogicalInterface ifl : repository.execute(findIflsOfElement(element))){
-
-			Set<PhysicalInterface> ifps = new TreeSet<>();
-			
-			for(Element_PhysicalInterface ifp : ifl.getContainerInterface().getPhysicalInterfaces()) {
-				ifps.add(newPhysicalInterfaceInfo()
-						 .withIfpName(ifp.getIfpName())
-						 .withIfpAlias(ifp.getIfpAlias())
-						 .withIfpClass(ifp.getIfpClass())
-						 .withMacAddress(ifp.getMacAddress())
-						 .withMtuSize(ifp.getMtuSize())
-						 .withOperationalState(ifp.getOperationalState())
-						 .withAdministrativeState(ifp.getAdministrativeState())
-						 .build());
-			}
-			
-			ifls.add(newElementLogicalInterfaceData()
-					 .withInterfaceName(ifl.getInterfaceName())
-					 .withAddressInterfaces(ifl.getAddressInterfaces())
-					 .withPhysicalInterfaces(ifps)
-					 .build());
-			
-		}
-		
-		return newLogicalInterfaces()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withLogicalInterface(ifls)
-			   .build();
-	}
-
-	public void storeLogicalInterfaces(Element element, List<ElementLogicalInterfaceSubmission> submissions){
-		repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
-		// FIXME Implement complete merge (add/update/remove interfaces)
-		for(ElementLogicalInterfaceSubmission submission : submissions){
-			storeLogicalInterface(element,submission);
-			
-		}
-	}
-	
 	
 	public boolean storeLogicalInterface(Element element, ElementLogicalInterfaceSubmission submission) {
 		Element_ContainerInterface ifc = getContainerInterface(element, 
@@ -194,6 +152,7 @@ public class ElementLogicalInterfaceManager {
 			created = true;
 		}
 		
+		ifl.setInterfaceAlias(submission.getInterfaceAlias());
 		ifl.setAddressInterfaces(submission.getAddresses());
 		ifl.setContainerInterface(ifc);
 		ifl.setRoutingInstance(submission.getRoutingInstance());
@@ -217,9 +176,6 @@ public class ElementLogicalInterfaceManager {
 	public void removeLogicalInterface(Element element, InterfaceName iflName) {
 		Element_LogicalInterface ifl = repository.execute(findIflByName(element,iflName));
 		if(ifl != null){
-			repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
-			Element_ContainerInterface ifc = ifl.getContainerInterface();
-			ifc.removeLogicalInterface(ifl);
 			repository.remove(ifl);
 			LOG.fine(() -> format("%s: Logical interface %s at %s removed.",
 					  			  IVT0362I_ELEMENT_IFL_REMOVED.getReasonCode(),
@@ -230,6 +186,56 @@ public class ElementLogicalInterfaceManager {
 									   iflName));
 		}
 		
+	}
+
+	public ElementLogicalInterfaces findLogicalInterfaces(Element element, 
+														  String filter, 
+														  int limit) {
+		
+		Set<Element_LogicalInterface> ifls = new TreeSet<>((a,b) -> a.getInterfaceName().compareTo(b.getInterfaceName()));
+		
+		ifls.addAll(repository.execute(findIfls(element, filter, limit)));
+		ifls.addAll(repository.execute(findIflsByPrefix(element, filter, limit)));
+		if(filter != null && INTEGER.matcher(filter).matches()) {
+			ifls.addAll(repository.execute(findIflsByVlanId(element, parseInt(filter), limit)));
+		}
+
+		
+		
+											   			   
+		
+		
+		return newLogicalInterfaces()
+			   .withGroupId(element.getGroupId())
+			   .withGroupType(element.getGroupType())
+			   .withGroupName(element.getGroupName())
+			   .withElementId(element.getElementId())
+			   .withElementName(element.getElementName())
+			   .withElementAlias(element.getElementAlias())
+			   .withElementRole(element.getElementRoleName())
+			   .withLogicalInterfaces(ifls
+					   				  .stream()
+					   				  .limit(limit)
+					   				  .map(ifl -> newElementLogicalInterfaceData()
+					   						  	  .withInterfaceName(ifl.getInterfaceName())
+					   						  	  .withInterfaceAlias(ifl.getInterfaceAlias())
+					   						  	  .withOperationalState(ifl.getOperationalState())
+					   						  	  .withAdministrativeState(ifl.getAdministrativeState())
+					   						  	  .withAddressInterfaces(ifl.getAddressInterfaces())
+					   						  	  .withRoutingInstance(ifl.getRoutingInstance())
+					   						  	  .withVlans(ifl.getVlans())
+					   						  	  .build())
+					   				  .collect(toList()))
+			   .build();
+		
+	}
+
+	public void removeLogicalInterfaces(Element element) {
+		int count = repository.execute(removeIfls(element));
+		LOG.fine(()->format("Removed %d logical interfaces of element %s (%s).", 
+							count, 
+							element.getElementName(), 
+							element.getElementId()));
 	}
 
 }

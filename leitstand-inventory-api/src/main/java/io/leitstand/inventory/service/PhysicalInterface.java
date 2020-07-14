@@ -40,8 +40,8 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 			return this;
 		}
 		
-		public Builder withIfpClass(String ifpClass) {
-			ifp.ifpClass = ifpClass;
+		public Builder withCategory(String category) {
+			ifp.category = category;
 			return this;
 		}
 		
@@ -61,11 +61,6 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 			return this;
 		}
 		
-		public Builder withMtuSize(int mtuSize) {
-			ifp.mtuSize = mtuSize;
-			return this;
-		}
-		
 		public PhysicalInterface build() {
 			try {
 				return ifp;
@@ -79,14 +74,11 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 	@JsonbProperty("ifp_name")
 	private InterfaceName ifpName;
 	
-	private String ifpClass;
+	private String category;
 	private String ifpAlias;
 	
 	@JsonbProperty("mac_address")
 	private MACAddress macAddress;
-	
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
 	
 	@JsonbProperty("operational_state")
 	private OperationalState operationalState;
@@ -111,16 +103,12 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 		return macAddress;
 	}
 	
-	public int getMtuSize() {
-		return mtuSize;
-	}
-
 	public String getIfpAlias() {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 	
 	@Override

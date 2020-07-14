@@ -18,36 +18,27 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
-import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.inventory.event.ImageAddedEvent.newImageAddedEvent;
 import static io.leitstand.inventory.event.ImageRemovedEvent.newImageRemovedEvent;
 import static io.leitstand.inventory.event.ImageStateChangedEvent.newImageStateChangedEvent;
 import static io.leitstand.inventory.event.ImageStoredEvent.newImageStoredEvent;
-import static io.leitstand.inventory.jpa.ImageStateConverter.toImageState;
 import static io.leitstand.inventory.model.Application.findAll;
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countImageReferences;
-import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
-import static io.leitstand.inventory.model.Image.findByImageId;
+import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
-import static io.leitstand.inventory.model.Image.prerelease;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
-import static io.leitstand.inventory.service.ElementName.elementName;
-import static io.leitstand.inventory.service.ElementRoleInfo.newElementRoleInfo;
-import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
-import static io.leitstand.inventory.service.ImageId.imageId;
+import static io.leitstand.inventory.model.Image.searchImages;
+import static io.leitstand.inventory.model.Platform.findByChipset;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
-import static io.leitstand.inventory.service.ImageMetaData.newImageMetaData;
-import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageType.imageType;
-import static io.leitstand.inventory.service.PlatformId.platformId;
-import static io.leitstand.inventory.service.PlatformName.platformName;
+import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
@@ -57,16 +48,15 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NO
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
 import static java.lang.String.format;
-import static java.util.EnumSet.allOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -79,25 +69,23 @@ import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageEvent.ImageEventBuilder;
-import io.leitstand.inventory.jpa.ImageStateConverter;
-import io.leitstand.inventory.jpa.PlaneConverter;
 import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
-import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
-import io.leitstand.inventory.service.ElementRoleInfo;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageMetaData;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
-import io.leitstand.inventory.service.PlatformName;
+import io.leitstand.inventory.service.PlatformChipsetName;
+import io.leitstand.inventory.service.PlatformSettings;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -124,10 +112,6 @@ public class DefaultImageService implements ImageService {
 	@Inject
 	private ElementProvider elements;
 	
-	
-	@Inject
-	private PlatformProvider platforms;
-	
 	@Inject
 	private Event<ImageEvent> sink;
 	
@@ -136,13 +120,11 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	DefaultImageService(PackageVersionService packages,
-						PlatformProvider platforms,
 						Repository repository,
 						DatabaseService db,
 						Messages messages,
 						Event<ImageEvent> sink){
 		this.packages = packages;
-		this.platforms = platforms;
 		this.repository = repository;
 		this.db = db;
 		this.messages =messages;
@@ -150,86 +132,48 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	@Override
-	public List<ImageReference> findImages(String filter, 
-										   ElementRoleName role, 
-										   ImageType type, 
-										   ImageState state, 
-										   Version version, 
-										   int limit) {
-		List<Object> arguments = new LinkedList<>();
-		
-		String sql = "SELECT d.uuid, d.tsbuild, d.state, d.type, d.name, d.major, d.minor, d.patch, d.prerelease, e.name, r.name, p.uuid, p.name "+
-		             "FROM inventory.image d "+
-				     "JOIN inventory.platform p "+
-		             "ON d.platform_id = p.id "+
-				     "JOIN inventory.elementrole r "+
-		             "ON d.elementrole_id = r.id "+
-				     "LEFT OUTER JOIN inventory.element e "+
-		             "ON d.element_id = e.id "+
-				     "WHERE (p.vendor ~ ? OR p.model ~ ? OR r.name ~ ? OR e.name ~ ? OR d.name ~ ?) ";
-		
-		// Add the same filter expression four times, for vendor, model, role, element and image name
-		arguments.add(filter);
-		arguments.add(filter);
-		arguments.add(filter);
-		arguments.add(filter);
-		arguments.add(filter);
-		
-		if(role != null) {
-			sql += "AND r.name=? ";
-			arguments.add(role.toString());
+	public List<ImageReference> findImages(ImageQuery query) {
+	
+		ElementRole role = null;
+		if(query.getElementRole() != null) {
+			role = repository.execute(findRoleByName(query.getElementRole()));
 		}
 		
-		if(type != null) {
-			sql += "AND d.type=? ";
-			arguments.add(type.name());
-		}
-		
-		if(state != null) {
-			sql += "AND d.state=? ";
-			arguments.add(ImageStateConverter.toDbValue(state));
-		}
-
-		if(version != null) {
-			sql += "AND d.major=? AND d.minor=? AND d.patch=? ";
-			arguments.add(Integer.valueOf(version.getMajorLevel()));
-			arguments.add(Integer.valueOf(version.getMinorLevel()));
-			arguments.add(Integer.valueOf(version.getPatchLevel()));
-			if(isNonEmptyString(version.getPreRelease())) {
-				sql += "AND d.prerelease=?";
-				arguments.add(version.getPreRelease());
-			}
-		}
-		
-		
-		sql += "ORDER BY r.name, e.name, p.vendor, d.name, p.model";
-		
-		return db.executeQuery(prepare(sql,arguments),
-							   rs -> newImageReference()
-									 .withImageId(imageId(rs.getString(1)))
-									 .withBuildDate(rs.getTimestamp(2))
-								     .withImageState(toImageState(rs.getString(3)))
-									 .withImageType(imageType(rs.getString(4)))
-									 .withImageName(imageName(rs.getString(5)))
-									 .withImageVersion(new Version(rs.getInt(6),
-											 					   rs.getInt(7),
-											 					   rs.getInt(8),
-											 					   prerelease(rs.getString(9))))
-									 .withElementName(elementName(rs.getString(10)))
-									 .withElementRole(elementRoleName(rs.getString(11)))
-									 .withPlatformId(platformId(rs.getString(12)))
-									 .withPlatformName(platformName(rs.getString(13)))
-									 .build());
+		return repository
+			   .execute(searchImages(role,query))
+			   .stream()
+			   .map(image ->  referenceOf(image))
+			   .collect(Collectors.toList());
 		
 	}
 
+	protected static ImageReference referenceOf(Image image) {
+        return newImageReference()
+        	   .withImageId(image.getImageId())
+        	   .withBuildDate(image.getBuildDate())
+        	   .withImageState(image.getImageState())
+        	   .withImageType(image.getImageType())
+        	   .withImageName(image.getImageName())
+        	   .withPlatformChipset(image.getPlatformChipset())
+        	   .withImageVersion(image.getImageVersion())
+        	   .withElementName(image.getElementName())
+        	   .withElementRoles(image.getElementRoleNames())
+        	   .build();
+    }
+
 	@Override
 	public boolean storeImage(ImageInfo submission) {
-		ElementRole elementRole = repository.execute(findRoleByName(submission.getElementRole()));
-		if(elementRole == null){
-			throw new EntityNotFoundException(IVT0400E_ELEMENT_ROLE_NOT_FOUND, 
-											  submission.getElementRole());
+		List<ElementRole> elementRoles = new LinkedList<>();
+		
+		for(ElementRoleName roleName : submission.getElementRoles()) {
+			ElementRole elementRole = repository.execute(findRoleByName(roleName));
+			if(elementRole == null){
+				throw new EntityNotFoundException(IVT0400E_ELEMENT_ROLE_NOT_FOUND, 
+												  roleName);
+			}
+			elementRoles.add(elementRole);
 		}
+		
 		Element element = null;
 		ElementName elementName = submission.getElementName();
 		if(elementName != null){
@@ -270,21 +214,19 @@ public class DefaultImageService implements ImageService {
 			imageApplications.add(app);
 		}
 		
-		Platform platform = platforms.findOrCreatePlatform(submission.getPlatformId(),
-														   submission.getPlatformName());
-		Image image = repository.execute(findByImageId(submission.getImageId()));
+		Image image = repository.execute(findImageById(submission.getImageId()));
 		boolean created = false;
 		if(image == null){
 			image = new Image(submission.getImageId());
 			repository.add(image);
 			created = true;
 		} 
-		image.setPlatform(platform);
+		image.setPlatformChipset(submission.getPlatformChipset());
 		image.setCategory(submission.getCategory());
 		image.setImageState(submission.getImageState());
 		image.setImageType(submission.getImageType());
 		image.setImageName(submission.getImageName());
-		image.setElementRole(elementRole);
+		image.setElementRoles(elementRoles);
 		image.setExtension(submission.getExtension());
 		image.setImageVersion(submission.getImageVersion());
 		image.setBuildDate(submission.getBuildDate());
@@ -303,7 +245,7 @@ public class DefaultImageService implements ImageService {
 		image.setElement(element);
 
 		messages.add(createMessage(IVT0202I_IMAGE_STORED, 
-				   				   image.getQualifiedName()));		
+				   				   image.getImageName()));		
 		if (created) {
 			fire(newImageAddedEvent(),
 				 submission);
@@ -320,7 +262,7 @@ public class DefaultImageService implements ImageService {
 				  .withImageId(image.getImageId())
 				  .withOrganization(image.getOrganization())
 				  .withImageType(image.getImageType())
-				  .withElementRole(image.getElementRole())
+				  .withElementRoles(image.getElementRoles())
 				  .withImageName(image.getImageName())
 				  .withImageVersion(image.getImageVersion())
 				  .withImageExtension(image.getExtension())
@@ -331,7 +273,7 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public ImageInfo getImage(ImageId id) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image == null){
 			throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,id);
 		}
@@ -339,7 +281,21 @@ public class DefaultImageService implements ImageService {
 		
 	}
 
-	public static ImageInfo imageInfo(Image image) {
+	public ImageInfo imageInfo(Image image) {
+
+		List<PlatformSettings> platforms = repository
+										   .execute(findByChipset(image.getPlatformChipset()))
+										   .stream()
+										   .map(p -> newPlatformSettings()
+												   	 .withPlatformId(p.getPlatformId())
+													 .withPlatformName(p.getPlatformName())
+													 .withModelName(p.getModel())
+													 .withVendorName(p.getVendor())
+													 .withDescription(p.getDescription())
+													 .build())
+											.collect(toList());
+
+		
 		List<PackageVersionInfo> pkgVersions = new LinkedList<>();
 		for(Package_Version p : image.getPackages()){
 			pkgVersions.add(packageVersionInfo(p));
@@ -350,16 +306,15 @@ public class DefaultImageService implements ImageService {
 												  .map(Application::getName)
 												  .collect(toList());
 		
-		Platform platform = image.getPlatform();
 		
 		return newImageInfo()
 			   .withImageId(image.getImageId())
 		   	   .withImageType(image.getImageType())
 		   	   .withImageName(image.getImageName())
 		   	   .withImageState(image.getImageState())
-		   	   .withElementRole(image.getElementRoleName())
-		   	   .withPlatformId(platform.getPlatformId())
-		   	   .withPlatformName(platform.getPlatformName())
+		   	   .withElementRoles(image.getElementRoleNames())
+		   	   .withPlatformChipset(image.getPlatformChipset())
+		   	   .withPlatforms(platforms)
 		   	   .withElementName(optional(image.getElement(), Element::getElementName))
 		   	   .withExtension(image.getImageExtension())
 		   	   .withImageVersion(image.getImageVersion())
@@ -369,43 +324,36 @@ public class DefaultImageService implements ImageService {
 		   	   .withApplications(applications)
 		   	   .withOrganization(image.getOrganization())
 		   	   .withCategory(image.getCategory())
-		   	   .withChecksums(image.getChecksums()
-		   				 		   .stream()
-		   				 		   .collect(toMap(c -> c.getAlgorithm().name(), 
-		   				 				   		  Checksum::getValue)))
+		   	   .withChecksums(image
+		   			   		  .getChecksums()
+		   				 	  .stream()
+		   				 	  .collect(toMap(c -> c.getAlgorithm().name(), 
+		   				 				   	 Checksum::getValue)))
 			   .build();
 		
 	}
 
 	@Override
 	public ImageInfo removeImage(ImageId id) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image == null){
 			return null;
 		}
 		long count = repository.execute(countImageReferences(image));
 		if(count > 0) {
-			LOG.fine(()->format("%s: Cannot remove %s image %s %s %s %s (%s) because it is referenced by %d elements.",
+			LOG.fine(()->format("%s: Cannot remove image %s (%s) because it is referenced from %d elements.",
 								IVT0204E_IMAGE_NOT_REMOVABLE.getReasonCode(),
-								image.getImageState(),
-								image.getElementRoleName(),
 								image.getImageName(),
-								image.getImageType(),
-								image.getImageVersion(),
 								image.getImageId(),
 								count));
 			throw new ConflictException(IVT0204E_IMAGE_NOT_REMOVABLE, 
 										image.getImageId(), 
-										image.getElementRoleName(), 
-										image.getImageName(), 
-										image.getImageType(), 
-										image.getImageVersion(), 
-										image.getImageState());
+										image.getImageName());
 		}
 		ImageInfo info = imageInfo(image);
 		repository.remove(image);
 		messages.add(createMessage(IVT0203I_IMAGE_REMOVED,
-								   image.getQualifiedName()));
+								   image.getImageName()));
 		fire(newImageRemovedEvent(),
 			 info);
 		return info;
@@ -413,7 +361,7 @@ public class DefaultImageService implements ImageService {
 
 	@Override
 	public void updateImageState(ImageId id, ImageState state) {
-		Image image = repository.execute(findByImageId(id));
+		Image image = repository.execute(findImageById(id));
 		if(image.getImageState() == state) {
 			return;
 		}
@@ -430,47 +378,22 @@ public class DefaultImageService implements ImageService {
 				  .withImageId(image.getImageId())
 				  .withOrganization(image.getOrganization())
 				  .withImageType(image.getImageType())
-				  .withElementRole(image.getElementRole().getRoleName())
+				  .withElementRoles(image.getElementRoleNames())
 				  .withImageName(image.getImageName())
 				  .withImageVersion(image.getImageVersion())
 				  .withImageExtension(image.getImageExtension())
 				  .withImageState(image.getImageState())
 				  .withPreviousState(prev)
-				  .withChecksums(image.getChecksums()
-						  			  .stream()
-						  			  .collect(toMap(c -> c.getAlgorithm().name(), 
-						  					  		 Checksum::getValue)))
+				  .withChecksums(image
+						  		 .getChecksums()
+						  		 .stream()
+						  		 .collect(toMap(c -> c.getAlgorithm().name(), 
+						  				  Checksum::getValue)))
 				  .build());			
 		messages.add(createMessage(IVT0201I_IMAGE_STATE_UPDATED, 
-								   image.getQualifiedName(),
+								   image.getImageName(),
 								   state));
 		
-	}
-
-	@Override
-	public ImageInfo getImage(ImageType imageType, 
-							  ImageName imageName, 
-							  Version version, 
-							  ElementId elementId) {
-		Element element = elements.fetchElement(elementId);
-		Image image = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																			  imageType,
-																			  imageName,
-																			  version));
-		return imageInfo(image);
-	}
-
-	@Override
-	public ImageInfo getImage(ImageType imageType, 
-							  ImageName imageName, 
-							  Version version, 
-							  ElementName name) {
-		Element element = elements.fetchElement(name);
-		Image image = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																			  imageType, 
-																			  imageName,
-																			  version));
-		return imageInfo(image);
 	}
 
 	@Override
@@ -540,21 +463,39 @@ public class DefaultImageService implements ImageService {
 	}
 	
 	@Override
-	public ImageMetaData getImageMetaData() {
-		List<ImageType> types = new ArrayList<>(allOf(ImageType.class));
-		List<ElementRoleInfo> roles = db.executeQuery(prepare("SELECT name,plane FROM inventory.elementrole ORDER BY name,plane"), 
-													  rs -> newElementRoleInfo()
-															.withElementRole(ElementRoleName.valueOf(rs.getString(1)))
-						  									.withPlane(PlaneConverter.parse(rs.getString(2)))
-															.build());
-		List<PlatformName> platforms = db.executeQuery(prepare("SELECT name FROM inventory.platform ORDER BY name"), 
-													   rs -> platformName(rs.getString(1)));
-		
-		return newImageMetaData()
-			   .withPlatforms(platforms)
-			   .withElementRoles(roles)
-			   .withImageTypes(types)
-			   .build();
+	public List<ImageType> getImageTypes() {
+		return db.executeQuery(prepare("SELECT DISTINCT type FROM inventory.image ORDER BY type ASC"),
+									   rs -> imageType(rs.getString(1)));
 	}
+	
+	@Override
+	public List<Version> getImageVersions(ImageType type) {
+		return db.executeQuery(prepare("SELECT DISTINCT major, minor, patch, prerelease FROM inventory.image WHERE type=? ORDER BY major, minor, patch ASC",type.toString()),
+									   rs -> new Version(rs.getInt(1),
+											   			 rs.getInt(2),
+											   			 rs.getInt(3),
+											   			 rs.getString(4)));
+	}
+
+    @Override
+    public ImageReference getReleaseImage(ElementRoleName roleName, 
+                                          PlatformChipsetName chipset,
+                                          ImageType imageType) {
+        ElementRole role = repository.execute(ElementRole.findRoleByName(roleName));
+        if(role == null) {
+            LOG.fine(() -> format("%s: Element role %s not found.", ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND.getReasonCode(),roleName));
+            throw new EntityNotFoundException(ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND,roleName);
+        }
+        Image image = repository.execute(Image.findReleaseImage(role, chipset,imageType));
+        if(image == null) {
+            LOG.fine(() -> format("%s: No default image for role %s with chipset %s found.",
+                                  ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE.getReasonCode(),
+                                  roleName,
+                                  chipset));
+            throw new EntityNotFoundException( ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE,roleName,chipset);
+        }
+        
+        return referenceOf(image);
+    }
 
 }

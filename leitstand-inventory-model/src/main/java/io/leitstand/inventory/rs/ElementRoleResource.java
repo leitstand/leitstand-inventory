@@ -18,6 +18,7 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
@@ -33,7 +34,6 @@ import java.net.URI;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -114,11 +114,13 @@ public class ElementRoleResource {
 				return noContent().build();
 			}
 			return ok(messages).build();
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			// Check whether role exist
-			service.getElementRole(role.getRoleName());
-			throw new UniqueKeyConstraintViolationException(IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE, 
-															key("role_name", role.getRoleName()));
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getElementRole(role.getRoleName()))
+			.thenThrow(new UniqueKeyConstraintViolationException(IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE, 
+																 key("role_name", role.getRoleName())));
+			throw e;
 		}
 	}
 	

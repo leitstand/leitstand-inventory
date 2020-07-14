@@ -41,9 +41,9 @@ public abstract class ElementInterfaceEvent extends ElementEvent{
 		}
 	}
 	
-	@JsonbProperty("op_state")
+	@JsonbProperty("opstate")
 	private OperationalState operationalState;
-	@JsonbProperty("adm_state")
+	@JsonbProperty("admstate")
 	private AdministrativeState administrativeState;
 	
 	public OperationalState getOperationalState() {

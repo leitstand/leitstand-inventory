@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -65,9 +64,27 @@ import io.leitstand.inventory.service.OperationalState;
 			query="UPDATE Element_PhysicalInterface p SET p.neighborElement=NULL, p.neighborElementIfpName=NULL WHERE p.neighborElement=:element")
 @NamedQuery(name="Element_PhysicalInterface.updateOperationalState",
 			query="UPDATE Element_PhysicalInterface p SET p.opState=:state WHERE p.element=:element")
+@NamedQuery(name="Element_PhysicalInterface.countLogicalInterfaces",
+			query="SELECT count(ifl) FROM Element_LogicalInterface ifl WHERE ifl.element=:element AND ifl.ifc=:ifc")
+@NamedQuery(name="Element_PhysicalInterface.findByLogicalInterface",
+			query="SELECT ifp FROM Element_PhysicalInterface ifp WHERE ifp.element=:element AND ifp.ifc=:ifc")
 public class Element_PhysicalInterface implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	public static Query<Long> countLogicalInterfaces(Element_PhysicalInterface ifp){
+		return em -> em.createNamedQuery("Element_PhysicalInterface.countLogicalInterfaces",Long.class)
+					   .setParameter("element", ifp.getElement())
+					   .setParameter("ifc", ifp.getContainerInterface())
+					   .getSingleResult();
+	}
+	
+	public static Query<List<Element_PhysicalInterface>> findIfpOfIfl(Element_LogicalInterface ifl){
+		return em -> em.createNamedQuery("Element_PhysicalInterface.findByLogicalInterface",Element_PhysicalInterface.class)
+					   .setParameter("element", ifl.getElement())
+					   .setParameter("ifc",ifl.getContainerInterface())
+					   .getResultList();
+	}
 	
 	public static Query<List<Element_PhysicalInterface>> findIfps(Element element){
 		return em -> em.createNamedQuery("Element_PhysicalInterface.findByElement",Element_PhysicalInterface.class)
@@ -110,25 +127,22 @@ public class Element_PhysicalInterface implements Serializable{
 	@Column(name="name")
 	private InterfaceName name;
 	
-	@Column(name="mtu_size")
-	private int mtuSize;
-	
 	@AttributeOverrides({
-		@AttributeOverride(name="value", column=@Column(name="bw_value")),
-		@AttributeOverride(name="unit", column=@Column(name="bw_unit"))
+		@AttributeOverride(name="value", column=@Column(name="bwvalue")),
+		@AttributeOverride(name="unit", column=@Column(name="bwunit"))
 	})
 	private Bandwidth type;
 	
 	@Convert(converter=OperationalStateConverter.class)
-	@Column(name="op_state")
+	@Column(name="opstate")
 	private OperationalState opState;
 	
 	@Convert(converter=AdministrativeStateConverter.class)
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	private AdministrativeState admState;
 	
 	@Convert(converter=MACAddressConverter.class)
-	@Column(name="mac_address")
+	@Column(name="macaddr")
 	private MACAddress mac;
 	
 	@Temporal(TIMESTAMP)
@@ -137,11 +151,10 @@ public class Element_PhysicalInterface implements Serializable{
 	@Temporal(TIMESTAMP)
 	private Date tsCreated;
 	
-	@Column(name="ifp_alias")
+	@Column(name="alias")
 	private String ifpAlias;
 	
-	@Column(name="ifp_class")
-	private String ifpClass;
+	private String category;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -170,7 +183,6 @@ public class Element_PhysicalInterface implements Serializable{
 		this.name  = name;
 		this.type    = type;
 		this.ifc = ifc;
-		this.mtuSize = 1500;
 		long now = System.currentTimeMillis();
 		this.tsCreated = new Date(now);
 		this.tsModified = new Date(now);
@@ -219,30 +231,14 @@ public class Element_PhysicalInterface implements Serializable{
 	}
 	
 
-	public Set<Element_LogicalInterface> getLogicalInterfaces() {
-		return ifc.getLogicalInterfaces();
-	}
-
 	public void setContainerInterface(Element_ContainerInterface containerInterface) {
-		if(this.ifc != null) {
-			this.ifc.removePhyiscalInterface(this);
-		}
 		this.ifc = containerInterface;
-		this.ifc.addPhysicalInterface(this);
 	}
 
 	public Element_ContainerInterface getContainerInterface() {
 		return ifc;
 	}
 
-	public void setMtuSize(int mtuSize) {
-		this.mtuSize = mtuSize;
-	}
-	
-	public int getMtuSize() {
-		return mtuSize;
-	}
-	
 	public boolean linkTo(Element element, InterfaceName ifpName) {
 		if(Objects.equals(this.neighborElement, element) && Objects.equals(this.neighborElementIfpName, ifpName)) {
 			return false;
@@ -283,12 +279,12 @@ public class Element_PhysicalInterface implements Serializable{
 		return ifpAlias;
 	}
 	
-	public void setIfpClass(String ifpClass) {
-		this.ifpClass = ifpClass;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 
 }

@@ -64,6 +64,7 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.OperationalState;
 import io.leitstand.inventory.service.Plane;
+import io.leitstand.inventory.service.PlatformName;
 
 @Entity
 @Table(schema="inventory", name="element")
@@ -76,7 +77,16 @@ import io.leitstand.inventory.service.Plane;
 @NamedQuery(name="Element.findByElementGroupAndElementRole",
 			query="SELECT e FROM Element e WHERE e.group=:group AND e.role=:role")
 @NamedQuery(name="Element.findByElementNamePattern", 
-			query="SELECT e FROM Element e WHERE CONCAT('',e.elementName) REGEXP :name  OR  CONCAT('',e.elementAlias) REGEXP :name  ORDER by e.group.name ASC, e.elementName ASC")
+			query="SELECT e FROM Element e WHERE CAST(e.elementName AS TEXT) REGEXP :name  OR  CAST(e.elementAlias AS TEXT) REGEXP :name  ORDER by e.group.name ASC, e.elementName ASC")
+@NamedQuery(name="Element.findByElementNameOrTag", 
+			query="SELECT DISTINCT e FROM Element e LEFT JOIN e.tags t WHERE CAST(e.elementName AS TEXT) REGEXP :pattern  OR  CAST(e.elementAlias AS TEXT) REGEXP :pattern OR t LIKE :pattern ORDER by e.group.name ASC, e.elementName ASC")
+@NamedQuery(name="Element.findByManagementIP", 
+		    query="SELECT DISTINCT e FROM Element e JOIN e.managementInterfaces m WHERE m.hostname REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
+@NamedQuery(name="Element.findBySerialNumber", 
+			query="SELECT e FROM Element e WHERE e.serialNumber REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
+@NamedQuery(name="Element.findByAssetId", 
+			query="SELECT e FROM Element e WHERE e.assetId REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
+
 @NamedQuery(name="Element.findByElementGroupAndPlane",
 			query="SELECT e FROM Element e WHERE e.group=:group AND e.role.plane=:plane")
 
@@ -101,6 +111,46 @@ public class Element extends VersionableEntity {
 														  int limit){
 		return em -> em.createNamedQuery("Element.findByElementNamePattern",Element.class)
 					   .setParameter("name", pattern)
+					   .setFirstResult(offset)
+					   .setMaxResults(limit)
+					   .getResultList();
+	}
+	
+	public static Query<List<Element>> findElementsByNameOrTag(String pattern, 
+			  												   int offset, 
+			  												   int limit){
+		return em -> em.createNamedQuery("Element.findByElementNameOrTag",Element.class)
+					   .setParameter("pattern", pattern)
+					   .setFirstResult(offset)
+					   .setMaxResults(limit)
+					   .getResultList();
+	}
+	
+	public static Query<List<Element>> findElementsBySerialNumber(String pattern, 
+																  int offset, 
+																  int limit){
+		return em -> em.createNamedQuery("Element.findBySerialNumber",Element.class)
+					   .setParameter("pattern", pattern)
+					   .setFirstResult(offset)
+					   .setMaxResults(limit)
+					   .getResultList();
+	}
+	
+	public static Query<List<Element>> findElementsByAssetId(String pattern, 
+															 int offset, 
+															 int limit){
+		return em -> em.createNamedQuery("Element.findByAssetId",Element.class)
+					   .setParameter("pattern", pattern)
+					   .setFirstResult(offset)
+					   .setMaxResults(limit)
+					   .getResultList();
+	}
+	
+	public static Query<List<Element>> findElementsByManagementIP(String pattern, 
+															      int offset, 
+															      int limit){
+		return em -> em.createNamedQuery("Element.findByManagementIP",Element.class)
+					   .setParameter("pattern", pattern)
 					   .setFirstResult(offset)
 					   .setMaxResults(limit)
 					   .getResultList();
@@ -134,7 +184,7 @@ public class Element extends VersionableEntity {
 	}
 	
 	
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	@Convert(converter=AdministrativeStateConverter.class)
 	private AdministrativeState admState;
 
@@ -158,7 +208,7 @@ public class Element extends VersionableEntity {
 	private Map<String,ElementManagementInterface> managementInterfaces;
 	
 	
-	@Column(name="op_state")
+	@Column(name="opstate")
 	@Convert(converter=OperationalStateConverter.class)
 	private OperationalState opState;
 	
@@ -177,7 +227,10 @@ public class Element extends VersionableEntity {
 	@Column(name="serial")
 	private String serialNumber;
 	
-	@Column(name="mgmt_mac")
+	@Column(name="assetid")
+	private String assetId;
+	
+	@Column(name="mgmtmac")
 	@Convert(converter=MACAddressConverter.class)
 	private MACAddress mgmtMacAddress;
 
@@ -398,6 +451,20 @@ public class Element extends VersionableEntity {
 		return elementAlias;
 	}
 
+	public void setAssetId(String assetId) {
+		this.assetId = assetId;
+	}
+	
+	public String getAssetId() {
+		return assetId;
+	}
 
+	public PlatformName getPlatformName() {
+		Platform platform = getPlatform();
+		if(platform != null) {
+			return platform.getPlatformName();
+		}
+		return null;
+	}
 	
 }

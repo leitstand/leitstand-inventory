@@ -14,28 +14,85 @@
  the License.
 -->
 <ui-view-header>
-	<ui-title>Logical Interfaces</ui-title>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb >Logical Interfaces</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Logical interfaces of {{element_name}}</ui-title>
 	<ui-subtitle>Logical interfaces of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<ui-form>
+<ui-filter name="filter">
+	<ui-label>Filter</ui-label>
+	<ui-note>Search for logical interfaces by name, alias, VLAN or IP prefixes.</ui-note>
+</ui-filter>
+<ui-group>
+<ui-label>Logical Interfaces</ui-label>
 <!-- {{#logical_interfaces.length}}  -->
 <table class="list">
 <thead>
+	<tr style="vertical-align: bottom">
+		<th class="text" rowspan="2">Interface</th>
+		<th class="text" rowspan="2">Alias</th>
+		<th rowspan="2" class="text">Instance</th>
+		<th rowspan="2" class="tiny">Adm.-State</th>
+		<th rowspan="2" class="tiny">Link State</th>
+		<th colspan="2">VLANs</th>
+		<th rowspan="2" class="text">Prefixes</th>
+	</tr>
 	<tr>
-		<th>Name</th>
-		<th>Administrative State</th>
-		<th>Link State</th>
+		<th class="tiny">TPID</th>
+		<th class="tiny">VID</th>
 	</tr>
 </thead>
 <tbody>
 <!-- {{#logical_interfaces}} -->
-	<tr>
-		<td><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{&ifl_name}}" title="Show details of {{&ifl_name}}">{{&ifl_name}}</a></td>
-		<td>{{administrative_state}}</td>
-		<td>{{operational_state}}</td>
+	<tr style="vertical-align:top">
+		<td class="text"><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{&ifl_name}}" title="Show details of {{&ifl_name}}">{{&ifl_name}}</a></td>
+		<td class="text">{{ifl_alias}}{{^ifl_alias}}-{{/ifl_alias}}</td>
+		<td class="text">{{routing_instance}}</td>
+		<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
+		<td colspan="2">
+		<!-- {{#vlans.length}} -->
+			<table>
+			<thead class="hidden">
+				<tr><th>TPID</th><th>VID</th></tr>
+			</thead>
+		<!-- {{#vlans}} -->
+			<tbody>
+			<tr>
+			<td class="tiny">{{#hex}}vlan_tpid{{/hex}}</td><td class="tiny">{{vlan_id}}</td>
+			</tr>
+			</tbody>
+		<!-- {{/vlans}} -->
+			</table>
+		<!-- {{/vlans.length}} -->
+		<!-- {{^vlans.length}} -->
+			No VLANs defined.
+		<!-- {{/vlans.length}} -->
+		</td>
+		<td class="text">
+			<!-- {{#addresses.length}} -->
+			<ul style="list-style-type: none">
+			<!-- {{#addresses}} -->
+				<li>{{address}}</li>
+			</ul>
+			<!-- {{/addresses}} -->
+			<!-- {{/addresses.length}} -->
+			<!-- {{^addresses.length}} -->
+			No IP prefix assigned.
+			<!-- {{/addresses.length}} -->
+		</td>
 	</tr>
 <!--  {{/logical_interfaces}} -->
 </tbody>
 </table>
+<ui-note class="right">{{logical_interfaces.length}} interface(s) found</ui-note>
+</ui-group>
 <!-- {{/logical_interfaces.length}}  -->
 <!-- {{^logical_interfaces}} -->
 <ui-blankslate>
@@ -43,3 +100,4 @@
 	<ui-note>No logical interfaces have been registered for this element</ui-note>
 </ui-blankslate>
 <!-- {{/logical_interfaces}} -->
+</ui-form>

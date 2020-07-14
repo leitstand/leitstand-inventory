@@ -103,9 +103,9 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(ElementAvailableUpdate.Builder... updates){
+		public Builder withAvailableUpdates(ElementAvailableUpgrade.Builder... updates){
 			return withAvailableUpdates(stream(updates)
-									    .map(ElementAvailableUpdate.Builder::build)
+									    .map(ElementAvailableUpgrade.Builder::build)
 									    .collect(toList()));
 		}
 		
@@ -114,7 +114,7 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(ElementAvailableUpdate... updates){
+		public Builder withAvailableUpdates(ElementAvailableUpgrade... updates){
 			return withAvailableUpdates(asList(updates));
 		}
 
@@ -123,9 +123,9 @@ public class ElementInstalledImageData extends ValueObject{
 		 * @param updates - the available updates
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withAvailableUpdates(List<ElementAvailableUpdate> updates) {
+		public Builder withAvailableUpdates(List<ElementAvailableUpgrade> updates) {
 			assertNotInvalidated(getClass(), image);
-			image.availableUpdates = unmodifiableList(new LinkedList<>(updates));
+			image.availableUpgrades = unmodifiableList(new LinkedList<>(updates));
 			return this;
 		}
 
@@ -159,17 +159,6 @@ public class ElementInstalledImageData extends ValueObject{
 		public Builder withImageVersion(Version version){
 			assertNotInvalidated(getClass(), image);
 			image.imageVersion = version;
-			return this;
-		}
-		
-		/**
-		 * Sets the element type this image was built for.
-		 * @param elementRole - the element type the image was built for
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withElementRole(ElementRoleName elementRole){
-			assertNotInvalidated(getClass(), image);
-			image.elementRole = elementRole;
 			return this;
 		}
 		
@@ -254,6 +243,12 @@ public class ElementInstalledImageData extends ValueObject{
 			return this;
 		}
 		
+		public Builder withZtp(boolean ztp) {
+		    assertNotInvalidated(getClass() , image);
+		    image.ztp = ztp;
+		    return this;
+		}
+		
 		/**
 		 * Creates an immutable <code>ElementInstalledImageData</code> instance and invalidates this constructor.
 		 * Any further interaction with this builder raises an exception.
@@ -286,9 +281,7 @@ public class ElementInstalledImageData extends ValueObject{
 	
 	private List<PackageVersionInfo> packages;
 	
-	private List<ElementAvailableUpdate> availableUpdates;
-	
-	private ElementRoleName elementRole;
+	private List<ElementAvailableUpgrade> availableUpgrades;
 	
 	private ImageType imageType;
 	
@@ -299,6 +292,8 @@ public class ElementInstalledImageData extends ValueObject{
 	private String organization;
 	
 	private String imageExtension;
+	
+	private boolean ztp;
 	
 	private ElementImageState elementImageState;
 	
@@ -339,8 +334,8 @@ public class ElementInstalledImageData extends ValueObject{
 	 * Returns an empty list if not software updates are available.
 	 * @return a list of available software updates.
 	 */
-	public List<ElementAvailableUpdate> getAvailableUpdates() {
-		return availableUpdates;
+	public List<ElementAvailableUpgrade> getAvailableUpgrades() {
+		return availableUpgrades;
 	}
 	
 	/**
@@ -369,14 +364,6 @@ public class ElementInstalledImageData extends ValueObject{
 	
 	
 	/**
-	 * Returns the element role.
-	 * @return the element role.
-	 */
-	public ElementRoleName getElementRole() {
-		return elementRole;
-	}
-	
-	/**
 	 * Returns the image id.
 	 * @return the image id.
 	 */
@@ -401,7 +388,7 @@ public class ElementInstalledImageData extends ValueObject{
 		return elementImageState == ACTIVE;
 	}
 	
-	public ElementImageState getElementImageInstallationState() {
+	public ElementImageState getElementImageState() {
 		return elementImageState;
 	}
 	
@@ -425,4 +412,7 @@ public class ElementInstalledImageData extends ValueObject{
 		return unmodifiableMap(checksums);
 	}
 	
+	public boolean isZtp() {
+        return ztp;
+    }
 }

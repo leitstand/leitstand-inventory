@@ -13,3 +13,82 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element-ifls.html?group={{group_id}}&element={{element_id}}" title="Show logical interfaces">Logical Interfaces</ui-breadcrumb>
+		<ui-breadcrumb >{{logical_interface.ifl_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Logical interface {{logical_interface.ifl_name}} on {{element_name}}</ui-title>
+	<ui-subtitle>Logical interface {{ifl_name}} of element {{element_name}} {{#element_alias}}({{.}}){{/element_alias}}.
+</ui-view-header>
+
+<!-- {{#logical_interface}} -->	
+<ui-details>
+	<ui-property>
+		<ui-label>Pod Name</ui-label>
+		<ui-value>{{pod_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Name</ui-label>
+		<ui-value>{{element_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Alias</ui-label>
+		<ui-value>{{element_alias}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Role</ui-label>
+		<ui-value>{{element_role}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Interface Name</ui-label>
+		<ui-value>{{ifl_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Interface Alias</ui-label>
+		<ui-value>{{ifl_alias}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Administrative State</ui-label>
+		<ui-value><span class="admin {{administrative_state}}">{{administrative_state}}</span></ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Operational State</ui-label>
+		<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>VLAN Tags</ui-label>
+		<ui-value>
+		<!-- {{#vlans.length}} -->
+			<ul style="list-style-type: none; margin-left:0;">
+				<!-- {{#vlans}} -->
+				<li><span style="color: #767676 ">TPID</span> {{#hex}}vlan_tpid{{/hex}} <span style="color: #767676 ">VID</span> {{vlan_id}} </li>
+				<!-- {{/vlans}} -->
+			</ul>
+		<!-- {{/vlans.length}} -->
+		<!-- {{^vlans.length}} -->
+		No VLANs defined.
+		<!-- {{/vlans.length}} -->
+		</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Prefixes</ui-label>
+		<ui-value>
+		<!-- {{#addresses.length}} -->
+		<ul style="list-style-type: none; margin-left:0;">
+		<!-- {{#addresses}} -->
+		<li>{{address}}</li>			
+		<!-- {{/addresses}} -->			
+		</ul>
+		<!-- {{/addresses.length}} -->
+		<!-- {{^addresses}} -->
+		No addresses assigned.
+		<!-- {{/addresses}} -->
+		</ui-value>
+	</ui-property>
+</ui-details>
+<!-- {{/logical_interface}} -->	

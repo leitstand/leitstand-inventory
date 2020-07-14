@@ -15,39 +15,37 @@
  */
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select} from '/ui/js/ui-components.js';
+import {Select,Control} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
-import {Metadata,Element,Pod,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
+import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
+import '../inventory-components.js';
 
-class PlatformSelector extends Select {
-	
-	options(){
-		const platforms = new Platforms();
-		return platforms.load()
-				 		.then(platforms => {
-				 					return platforms.map(platform => { 
-				 							return {"value":platform.platform_id,"label":platform.platform_name}
-				 					});
-				 				});
+class AdministrativeStateSelector extends Select {
+	constructor(){
+		super();
 	}
 	
-}
-customElements.define("element-platform",PlatformSelector);
-
-class ElementRoleSelector extends Select {
-
 	options(){
-		const roles = new Metadata({'scope':'roles'});
-		return roles.load()
-				 	.then(roles => {
-				 			return roles.map(role => { 
-				 							return {"value":role.role_name,"label":role.display_name}
-				 					});
-				 			});
+		return Promise.resolve([{"value" : "NEW", "label" : "New"},
+				  				{"value" : "ACTIVE", "label" : "Active"},
+				  				{"value" : "RETIRED", "label" : "Retired"}]);
 	}
-
 }
-customElements.define("element-role",ElementRoleSelector);
+customElements.define("element-administrative-state",AdministrativeStateSelector);
+
+class OperationalStateSelector extends Select {
+	constructor(){
+		super();
+	}
+	
+	options(){
+		return Promise.resolve([{"value" : "DOWN", "label" : "Down"},		
+								{"value" : "UP",  "label" : "Up"}, 
+								{"value" : "DETACHED", "label" : "Detached"}, 
+								{"value" : "MAINTENANCE", "label" : "Maintenance"}]);
+	}
+}
+customElements.define("element-operational-state",OperationalStateSelector);
 
 //TODO: Implement Rack Component!
 const elementRackController = function(){
@@ -227,26 +225,8 @@ const elementController = function(){
 	return new Controller({
 		resource:element,
 		viewModel:async function(settings){
-			
 			// The element settings are the basis for this view model.
 			const viewModel = settings;
-
-			// Add available administrative and operational states.
-			// Both transient again.
-			viewModel.administrative_states = this.transient([{"value" : "NEW",
-															   "label" : "New"},
-															  {"value" : "ACTIVE",
-															   "label" : "Active"},
-															  {"value" : "RETIRED",
-															   "label" : "Retired"}]);
-			viewModel.operational_states = this.transient([{"value" : "DOWN", 
-											 				"label" : "Down"},		
-											 			   {"value" : "UP", 
-											 			    "label" : "Up"}, 
-											 			   {"value" : "DETACHED", 
-											 			    "label" : "Detached"}, 
-											 			   {"value" : "MAINTENANCE", 
-											 			    "label" : "Maintenance"}]);
 			
 			// Translate map of management interfaces into an array to render the list of management interfaces.
 			viewModel.mgmt_interface_list = function() {
@@ -269,6 +249,23 @@ const elementController = function(){
 			}
 			return viewModel;
 		},
+		postRender:function(){
+			// Intercept all clicks on rendered links in order to save changes before leaving to "management interfaces" or "move to pod view";
+			const form = this.element("ui-form");
+			form.addEventListener("click",(evt) => {
+				if(evt.target.nodeName === 'A'){
+					const platform = this.input("element-platform").unwrap();
+                    if(platform){
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                        const settings = this.getViewModel();
+                        settings.platform_name = platform.selected.label;
+                        element.saveSettings(this.location.params,settings)
+                               .then(() => { this.navigate(evt.target.href)});                      
+                    }
+				}
+			});
+		},
 		buttons:{
 			"save-element":function(){
 				const settings = this.getViewModel();
@@ -277,13 +274,17 @@ const elementController = function(){
 				                     settings);
 			},
 			"remove-element":function(){
-				const params = this.location.params;
-				params["force"] = this.input("force").value();
+			    const params = this.location.params;
+				params.force = this.input("force").value();
 				element.removeElement(params);
 			},
 			"add-mgmt":function(){
-				this.navigate({"view" : "/ui/views/inventory/element/element-mgmt.html",
-							   "?" : this.location.params});
+				// Store view model to avoid loosing unsaved changes!
+				const settings = this.getViewModel();
+				settings.platform_name = this.input("element-platform").unwrap().selected.label;
+				element.saveSettings(this.location.params,settings)
+					   .then(() => { this.navigate({"view" : "/ui/views/inventory/element/element-mgmt.html",
+							   						"?" : this.location.params})});
 			}
 		},
 		onRemoved:function(){
@@ -360,56 +361,21 @@ const elementImagesController = function(){
 	const element = new Element({"scope":"images"});
 	return new Controller({
 		resource:element,
-		viewModel:function(settings){
-			settings.updateSummary = function(){
-				const major = 0;
-				const minor = 0;
-				const patch = 0;
-				if(this["available_updates"]){
-					this["available_updates"].forEach(function(update){
-						if(update["update_type"]=="MAJOR"){
-							major++;
-						}
-						if(update["update_type"]=="MINOR"){
-							minor++;
-						}
-						if(update["update_type"]=="PATCH"){
-							patch++;
-						}
-					});					
+		viewModel:function(element){
+			element.upgrade_type=function(){
+				if(this.upgrade_type == "MAJOR"){
+					return "Major upgrade";
 				}
-
-				return {"major":major,
-						"minor":minor,
-						"patch":patch, 
-						"updates": (major+minor+patch) > 0 };
-			};
-			return settings;
-		},
-	});
-};
-
-const elementImageController = function(){
-	const element = new Element({"scope":"images"});
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			settings.updatesAvailable = function(){
-				return this["available_updates"] && this["available_updates"].length > 0;
-			};
-			
-			settings.displayType = function(){
-				if(this["type"] == "MAJOR") return "Major ";
-				if(this["type"] == "MINOR") return "Minor ";
-				if(this["type"] == "PATCH") return "Patch ";
-				return "Pre-Release ";
-			};
-			
-			settings.state = function(){
-				return this["active"] ? "STARTED" : "CACHED";
+				if(this.upgrade_type == "MINOR"){
+					return "Minor upgrade";
+				}
+				if(this.upgrade_type == "PATCH"){
+					return "Patch";
+				}
+				return "Pre-Release";
 			}
-			return settings;
-		},
+			return element;
+		}
 	});
 };
 
@@ -420,29 +386,58 @@ const elementServicesController = function(){
 	});
 };
 
+class PodSelector extends Control{
+	renderDom(){
+		const groupId = this.viewModel.getProperty("group_id");
+		const pods = new Pods({'filter':this.location.param('filter')});
+		pods.load()
+		    .then(pods => {
+		    			    	
+		    	this.innerHTML=`<table class="list">
+		    			<thead>
+		    				<tr>
+								<th class="text">Pod</th>
+								<th class="text">Description</th>
+		    				</tr>
+		    			</thead>
+			    		<tbody>
+		    				${pods.map(pod => `<tr>
+		    									<td class="text">
+		    										<label>
+		    											<input type="radio" name="group_id" value="${pod.group_id}" data-group-name="${pod.group_name}"  ${ groupId == pod.group_id && 'checked' }>
+		    											&nbsp;${pod.group_name}
+		    										</label>
+		    									</td>
+		    									<td class="text">${pod.description}</td> 
+		    								  </tr>`)
+		    					  .reduce((a,b)=>a+b,'')}
+		    			</tbody>
+		    		</table>`;
+		    });
+		    
+		    
+		this.addEventListener('change',(evt)=>{
+			this.viewModel.setProperty("group_id",evt.target.value);
+			this.viewModel.setProperty("group_name",evt.target.getAttribute("data-group-name"));
+		});
+		
+	}
+}
+
+customElements.define('element-pod',PodSelector);
+
+
 const elementPodController = function(){
 	const element = new Element({"scope":"settings"});
 	return new Controller({
 		resource:element,
-		viewModel: function(settings){
-			// Load all existing pods
-			const podsLoader = new Pods({"filter":this.location.param("filter")});
-			this.attach(podsLoader);
-			const pods = podsLoader.load();
-			pods.forEach(pod => pod.group_id == settings.group_id ? pod.checked = "checked" : pod.checked ="");
-			settings.pods = pods;
-			// Add filter statement
-			settings.filter = filter;
-			return settings;
-		},
 		buttons: {
-			"filter-pods":function(){
+			"filter":function(){
 				const params = this.location.params;
 				params.filter = this.input("filter").value();
 				this.reload(params);
 			},
 			"move-element":function(){
-				this.updateViewModel({"group_id":this.input("group_id").value()});
 				element.saveSettings(this.location.params,this.getViewModel());
 			}
 		},
@@ -493,14 +488,38 @@ const elementIfpController = function(){
 const elementIflsController = function(){
 	const ifls = new ElementLogicalInterfaces();
 	return new Controller({
-		resource:ifls
+		resource:ifls,
+		viewModel:function(ifls){
+			ifls.filter = this.location.param("filter");
+			ifls.hex = function(){
+				return function(tpid){
+					return "0x"+this[tpid].toString(16).toUpperCase();
+				}
+			};
+			return ifls;
+		},
+		buttons:{
+			"filter":function(){
+				const params = this.location.params;
+				params.filter = this.input("filter").value();
+				this.reload(params);
+			}
+		}
 	});
 };
 
 const elementIflController = function(){
 	const ifl = new ElementLogicalInterface();
 	return new Controller({
-		resource:ifl
+		resource:ifl,
+		viewModel:function(ifl){
+			ifl.hex = function(){
+				return function(tpid){
+					return "0x"+this[tpid].toString(16).toUpperCase();
+				}
+			}
+			return ifl;
+		}
 	});
 };
 
@@ -529,12 +548,6 @@ const elementModuleController = function(){
 
 
 
-const elementImagesMenu = {
-	"master" : elementImagesController(),
-	"details" : {"element-image.html" : elementImageController() }
-};
-
-
 const modulesMenu = {
 	"master" :  elementModulesController(),
 	"details" : {"element-module.html" : elementModuleController()}
@@ -547,6 +560,16 @@ const elementMenu = {
 				 "confirm-remove-element.html" : elementController()}
 };
 
+const elementIfpsMenu = {
+	"master"  : elementIfpsController(),
+	"details" : { "element-ifp.html" : elementIfpController() }
+};
+
+const elementIflsMenu = {
+	"master"  : elementIflsController(),
+	"details" : { "element-ifl.html" : elementIflController() }
+};
+
 const elementRackMenu = {
 	"master" : elementRackController(),
 	"details" : {"new-element-location.html" : addElementLocationController(),
@@ -555,15 +578,13 @@ const elementRackMenu = {
 }
 	
 export const menu = new Menu({
-		"element.html" : elementMenu,
-		"element-ifls.html": elementIflsController(),
-		"element-ifps.html":elementIfpsController(),
-		"element-ifl.html": elementIflController(),
-		"element-ifp.html":elementIfpController(),
-		"element-location.html" : elementLocationController(),
-		"element-rack.html":elementRackMenu,
-		"element-modules.html" :modulesMenu,
-		"element-images.html" : elementImagesMenu,
-		"element-services.html":elementServicesController(),
-		"element-service.html":elementServiceController()
- 	});
+	"element.html": elementMenu,
+	"element-ifls.html": elementIflsMenu,
+	"element-ifps.html": elementIfpsMenu,
+	"element-location.html" : elementLocationController(),
+	"element-rack.html": elementRackMenu,
+	"element-modules.html": modulesMenu,
+	"element-images.html" : elementImagesController(),
+	"element-services.html": elementServicesController(),
+	"element-service.html": elementServiceController()
+});

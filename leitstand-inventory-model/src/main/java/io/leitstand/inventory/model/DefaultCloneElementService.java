@@ -24,6 +24,7 @@ import static io.leitstand.inventory.service.AdministrativeState.NEW;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.ReasonCode.IVT0306I_ELEMENT_CLONED;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -39,6 +40,25 @@ import io.leitstand.inventory.service.ElementName;
 @Service
 public class DefaultCloneElementService implements CloneElementService{
 
+	static class SequenceGenerator{
+		
+		private DatabaseService db;
+
+		SequenceGenerator(DatabaseService db){
+			this.db = db;
+		}
+		
+		Long acquireCloneId() {
+			// Acquire a new element ID
+			return db.getSingleResult(prepare("UPDATE leitstand.sequence "+
+					  					      "SET count = count + 1 "+ 
+											  "WHERE name = 'ID' "+
+											  "RETURNING count"),
+											  rs -> rs.getLong(1));
+		}
+		
+	}
+	
 	@Inject
 	private ElementProvider elements;
 	
@@ -51,6 +71,29 @@ public class DefaultCloneElementService implements CloneElementService{
 	
 	@Inject
 	private Event<ElementEvent> sink;
+	
+	private SequenceGenerator sequence;
+	
+	public DefaultCloneElementService() {
+		// CDI
+	}
+
+	protected DefaultCloneElementService(ElementProvider elements, 
+										 DatabaseService db, 
+										 SequenceGenerator sequence,
+										 Event<ElementEvent> sink, 
+										 Messages messages   ) {
+		this.elements = elements;
+		this.db = db;
+		this.sink = sink;
+		this.messages = messages;
+		this.sequence = sequence;
+	}
+
+	@PostConstruct
+	private void initDefaultSequence() {
+		this.sequence = new SequenceGenerator(db);
+	}
 	
 	@Override
 	public ElementId cloneElement(ElementId sourceElementId, 
@@ -72,22 +115,18 @@ public class DefaultCloneElementService implements CloneElementService{
 								   ElementCloneRequest request) {
 		
 		// In order to avoid streaming all data from the database to the server, the cloning is done via SQL
-		
-		// Acquire a new element ID
-		Long id = db.getSingleResult(prepare("UPDATE leitstand.sequence "+
-										     "SET count = count + 1"+ 
-										     "WHERE name = 'ID' "+
-										     "RETURNING count"),
-										     rs -> rs.getLong(1));
+		Long id = sequence.acquireCloneId();
+
 		
 		// Clone the element record
-		db.executeUpdate(prepare("INSERT INTO inventory.element (elementgroup_id, elementrole_id, platform_id, id, uuid, name, description, op_state, adm_state, mgmt_hostname, mgmt_mac, serial, location, rack_name, rack_position, modcount, tscreated, tsmodified)"+
-								 "SELECT elementgroup_id, elementrole_id, platform_id, ?, ?, ?, description, ?, ?, mgmt_hostname, ?, ?, location, rack_name, rack_position, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element (elementgroup_id, elementrole_id, platform_id, id, uuid, name, alias, description, opstate, admstate, mgmtmac, serial, modcount, tscreated, tsmodified)"+
+								 "SELECT elementgroup_id, elementrole_id, platform_id, ?, ?, ?, ?, description, ?, ?, ?, ?,  0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP "+
 								 "FROM inventory.element "+
 								 "WHERE id=?",
 								 id,
 								 request.getElementId(),
 								 request.getElementName(),
+								 request.getElementAlias(),
 								 operationalStateDbString(DOWN),
 								 administrativeStateDbString(NEW),
 								 request.getMgmtMacAddress(),
@@ -120,19 +159,21 @@ public class DefaultCloneElementService implements CloneElementService{
 								 source.getId()));
 		
 		// Copy installed images
-		db.executeUpdate(prepare("INSERT INTO inventory.element_image (element_id, image_id, image_state) "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_image (element_id, image_id, state) "+
 				 				 "SELECT ?, image_id, 'PULL' "+
 				 				 "FROM inventory.element_image "+
 				 				 "WHERE element_id = ? "+
-				 				 "AND image_state='ACTIVE'",
+				 				 "AND state='ACTIVE'",
 				 				 id,
 				 				 source.getId()));	
 		
 		// Copy environments
-		db.executeUpdate(prepare("INSERT INTO inventory.element_env (element_id, uuid, name, category, type, description, variables, tsmodified "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_env (element_id, uuid, name, category, type, description, variables, tsmodified) "+
 							     "SELECT ?, random_uuid(), name, category, type, description, variables, tsmodified "+
 								 "FROM inventory.element_env "+
-							     "WHERE element_id = ? "));
+							     "WHERE element_id = ? ",
+								  id,
+								  source.getId()));
 
 		
 		messages.add(createMessage(IVT0306I_ELEMENT_CLONED,
@@ -151,6 +192,7 @@ public class DefaultCloneElementService implements CloneElementService{
 				  .withMacAddress(source.getManagementInterfaceMacAddress())
 				  .withCloneElementId(request.getElementId())
 				  .withCloneElementName(request.getElementName())
+				  .withCloneElementAlias(request.getElementAlias())
 				  .withCloneSerialNumber(request.getSerialNumber())
 				  .withCloneMacAddress(request.getMgmtMacAddress())
 				  .build());

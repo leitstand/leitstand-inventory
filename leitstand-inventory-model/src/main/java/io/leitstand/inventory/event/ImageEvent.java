@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.event;
 
+import java.util.List;
 import java.util.Map;
 
 import io.leitstand.commons.model.ValueObject;
@@ -55,8 +56,8 @@ public class ImageEvent extends ValueObject{
 			return (B) this;
 		}
 		
-		public B withElementRole(ElementRoleName elementRole) {
-			((ImageEvent)instance).elementRole = elementRole;
+		public B withElementRoles(List<ElementRoleName> elementRoles) {
+			((ImageEvent)instance).elementRoles = elementRoles;
 			return (B) this;
 		}
 		
@@ -99,7 +100,7 @@ public class ImageEvent extends ValueObject{
 	private ImageName imageName;
 	private ImageType imageType;
 	private ImageState imageState;
-	private ElementRoleName elementRole;
+	private List<ElementRoleName> elementRoles;
 	private Version imageVersion;
 	private String organization;
 	private String imageExtension;
@@ -122,8 +123,8 @@ public class ImageEvent extends ValueObject{
 		return imageState;
 	}
 	
-	public ElementRoleName getElementRole() {
-		return elementRole;
+	public List<ElementRoleName> getElementRoles() {
+		return elementRoles;
 	}
 	
 	public Version getImageVersion() {

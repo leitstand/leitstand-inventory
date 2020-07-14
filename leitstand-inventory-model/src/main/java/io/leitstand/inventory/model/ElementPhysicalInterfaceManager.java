@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.event.ElementPhysicalInterfaceRemovedEvent.newPhysicalInterfaceRemovedEvent;
 import static io.leitstand.inventory.event.ElementPhysicalInterfaceStoredEvent.newPhysicalInterfaceStoredEvent;
+import static io.leitstand.inventory.model.Element_PhysicalInterface.countLogicalInterfaces;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpByName;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfps;
 import static io.leitstand.inventory.service.ElementPhysicalInterface.newPhysicalInterface;
@@ -32,11 +33,12 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0355W_ELEMENT_IFP_NEI
 import static io.leitstand.inventory.service.ReasonCode.IVT0356I_ELEMENT_IFP_NEIGHBOR_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0370I_ELEMENT_IFC_STORED;
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -103,15 +105,11 @@ public class ElementPhysicalInterfaceManager {
 		ElementPhysicalInterfaceData ifpData = newPhysicalInterfaceData()
 											  .withIfpName(ifp.getIfpName())
 											  .withIfpAlias(ifp.getIfpAlias())
-											  .withIfpClass(ifp.getIfpClass())
+											  .withCategory(ifp.getCategory())
 											  .withBandwidth(ifp.getBandwidth())
 											  .withMacAddress(ifp.getMacAddress())
 											  .withAdministrativeState(ifp.getAdministrativeState())
 											  .withOperationalState(ifp.getOperationalState())
-											  .withLogicalInterfaces(ifp.getLogicalInterfaces()
-				 												  	    .stream()
-				 												  		.map(Element_LogicalInterface::getInterfaceName)
-				 												  		.collect(toList()))
 											  .withNeighbor(ifp.getNeighbor())
 											  .build();
 		
@@ -132,19 +130,15 @@ public class ElementPhysicalInterfaceManager {
 			ifps.add(newPhysicalInterfaceData()
 					 .withIfpName(ifp.getIfpName())
 					 .withIfpAlias(ifp.getIfpAlias())
-					 .withIfpClass(ifp.getIfpClass())
+					 .withCategory(ifp.getCategory())
 					 .withBandwidth(ifp.getBandwidth())
 					 .withMacAddress(ifp.getMacAddress())
 					 .withAdministrativeState(ifp.getAdministrativeState())
 					 .withOperationalState(ifp.getOperationalState())
-					 .withLogicalInterfaces(ifp.getLogicalInterfaces()
-											   .stream()
-											   .map(Element_LogicalInterface::getInterfaceName)
-											   .collect(toList()))
 					 .withNeighbor(ifp.getNeighbor())
 					 .build());
 		}
-		ifps.sort((a,b)->a.getName().compareTo(b.getName()));
+		ifps.sort((a,b)->a.getIfpName().compareTo(b.getIfpName()));
 		return newPhysicalInterfaces()
 			   .withGroupId(element.getGroup().getGroupId())
 			   .withGroupName(element.getGroup().getGroupName())
@@ -192,10 +186,9 @@ public class ElementPhysicalInterfaceManager {
 		ifp.setMacAddress(submission.getMacAddress());
 		ifp.setAdministrativeState(submission.getAdministrativeState());
 		ifp.setOperationalState(submission.getOperationalState());
-		ifp.setMtuSize(submission.getMtuSize());
 		ifp.setContainerInterface(ifc);
 		ifp.setIfpAlias(submission.getIfpAlias());
-		ifp.setIfpClass(submission.getIfpClass());
+		ifp.setCategory(submission.getCategory());
 		if(submission.getNeighbor() != null ) {
 			Element neighborElement = elements.tryFetchElement(submission.getNeighbor().getElementName());
 			if(neighborElement != null) {
@@ -254,10 +247,21 @@ public class ElementPhysicalInterfaceManager {
 	}
 	
 	public void storePhysicalInterfaces(Element element, List<ElementPhysicalInterfaceSubmission> submissions) {
-		repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
+		Map<InterfaceName,Element_PhysicalInterface> ifps =  repository.execute(findIfps(element))
+																	   .stream()
+																	   .collect(toMap(Element_PhysicalInterface::getIfpName, identity()));
+		
+		// Add missing and update existing IFPs.
 		for(ElementPhysicalInterfaceSubmission submission : submissions){
 			storePhysicalInterface(element,submission);
+			ifps.remove(submission.getIfpName());
 		}
+		
+		// Remove all remaining IFPs.
+		for(Element_PhysicalInterface ifp : ifps.values()) {
+			removePhysicalInterface(ifp);
+		}
+
 	}
 
 	public void removePhysicalInterface(Element element, InterfaceName ifpName) {
@@ -265,47 +269,51 @@ public class ElementPhysicalInterfaceManager {
 		if(ifp == null){
 			return;
 		}
-		Element_ContainerInterface ifc = ifp.getContainerInterface();
-		if(ifc.getLogicalInterfaces().isEmpty()){
-			repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
-			ifc.removePhyiscalInterface(ifp);
-			if(ifc.getPhysicalInterfaces().isEmpty()){
-				repository.remove(ifc);
-			}
-			repository.remove(ifp);
-			LOG.fine(() -> format("%s: Physical interface %s at element %s removed", 
-								  IVT0352I_ELEMENT_IFP_REMOVED.getReasonCode(),
-								  ifpName,
-								  element.getElementName()));	
-			messages.add(createMessage(IVT0352I_ELEMENT_IFP_REMOVED, 
-									   element.getElementName(),
-									   ifpName));
-			event.fire(newPhysicalInterfaceRemovedEvent()
-					   .withGroupId(element.getGroupId())
-					   .withGroupName(element.getGroupName())
-					   .withGroupType(element.getGroupType())
-					   .withElementId(element.getElementId())
-					   .withElementName(element.getElementName())
-					   .withElementAlias(element.getElementAlias())
-					   .withElementRole(element.getElementRoleName())
-					   .withInterfaceName(ifp.getIfpName())
-					   .withOperationalState(ifp.getOperationalState())
-					   .withAdministrativeState(ifp.getAdministrativeState())
-					   .withNeighbor(ifp.getNeighbor())
-					   .build());
-			return;
+		removePhysicalInterface(ifp);
+	}
+
+	private void removePhysicalInterface(Element_PhysicalInterface ifp) {
+		Element element = ifp.getElement();
+		InterfaceName ifpName = ifp.getIfpName();
+		long iflCount = repository.execute(countLogicalInterfaces(ifp));
+		if(iflCount > 0) {
+			
+			LOG.fine(() -> format("%s: Cannot remove physical interface %s at element %s becasue of existing logical interfaces", 
+					  			  IVT0353E_ELEMENT_IFP_NOT_REMOVABLE.getReasonCode(),
+					  			  ifpName,
+					  			  element.getElementName()));
+
+			throw new ConflictException(IVT0353E_ELEMENT_IFP_NOT_REMOVABLE,
+								        "Cannot remove physical interface {0} because of {1} assigned logical interfaces.", 
+								        ifpName,
+								        iflCount);
+			
 		}
 		
-		LOG.fine(() -> format("%s: Cannot remove physical interface %s at element %s becasue of existing logical interfaces", 
-							  IVT0353E_ELEMENT_IFP_NOT_REMOVABLE.getReasonCode(),
+		Element_ContainerInterface ifc = ifp.getContainerInterface();
+		repository.remove(ifc);
+		repository.remove(ifp);
+		LOG.fine(() -> format("%s: Physical interface %s at element %s removed", 
+							  IVT0352I_ELEMENT_IFP_REMOVED.getReasonCode(),
 							  ifpName,
-							  element.getElementName()));
-		
-		throw new ConflictException(IVT0353E_ELEMENT_IFP_NOT_REMOVABLE,
-									"Cannot remove physical interface {0} because of {1} assigned logical interfaces.", 
-									ifpName,
-									ifc.getLogicalInterfaces().size());
-		
+							  element.getElementName()));	
+		messages.add(createMessage(IVT0352I_ELEMENT_IFP_REMOVED, 
+								   element.getElementName(),
+								   ifpName));
+		event.fire(newPhysicalInterfaceRemovedEvent()
+				   .withGroupId(element.getGroupId())
+				   .withGroupName(element.getGroupName())
+				   .withGroupType(element.getGroupType())
+				   .withElementId(element.getElementId())
+				   .withElementName(element.getElementName())
+				   .withElementAlias(element.getElementAlias())
+				   .withElementRole(element.getElementRoleName())
+				   .withInterfaceName(ifp.getIfpName())
+				   .withOperationalState(ifp.getOperationalState())
+				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withNeighbor(ifp.getNeighbor())
+				   .build());
+		return;
 	}
 
 	public void storePhysicalNeighborInterface(Element element, 

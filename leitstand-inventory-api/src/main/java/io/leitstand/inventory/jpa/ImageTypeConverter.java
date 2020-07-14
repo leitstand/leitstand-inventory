@@ -13,17 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.visitor;
+package io.leitstand.inventory.jpa;
 
-import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementName;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-public interface ElementTransformationService {
+import io.leitstand.inventory.service.ImageType;
 
-	<T> T apply(ElementId elementId,
-				ElementTransformation<T> transformation);
-	
-	<T> T apply(ElementName elementName,
-				ElementTransformation<T> transformation);
-	
+@Converter
+public class ImageTypeConverter implements AttributeConverter<ImageType, String>{
+
+	@Override
+	public String convertToDatabaseColumn(ImageType attribute) {
+		return ImageType.toString(attribute);
+	}
+
+	@Override
+	public ImageType convertToEntityAttribute(String dbData) {
+		return ImageType.valueOf(dbData);
+	}
+
 }

@@ -18,11 +18,10 @@
   	<ui-breadcrumb href="images.html">Images</ui-breadcrumb>
   	<ui-breadcrumb>{{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-breadcrumb>
   </ui-breadcrumbs>
-  <ui-title>{{platform_name}} {{element_role}} {{image_name}} {{image_type}} image {{revision}}</ui-title>
-  <ui-note>Image Packages</ui-note>
+  <ui-title>Image {{image_name}}</ui-title>
+  <ui-note>View packages shipped with this image</ui-note>
 </ui-view-header>
 <!--{{#packages}}-->
-<!-- TODO Implement custom package component? -->
 <div class="package">
 	<ol class="head">
 		<li><span>Organization</span><span>{{org}}</span></li>

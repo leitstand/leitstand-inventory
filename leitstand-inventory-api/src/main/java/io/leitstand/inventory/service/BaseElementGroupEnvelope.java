@@ -25,6 +25,7 @@ import io.leitstand.commons.model.ValueObject;
 
 public class BaseElementGroupEnvelope extends ValueObject {
 
+	@SuppressWarnings("unchecked")
 	public static class BaseElementGroupEnvelopeBuilder<T extends BaseElementGroupEnvelope,B extends BaseElementGroupEnvelopeBuilder<T,B>>{
 		
 		protected T object;

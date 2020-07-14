@@ -14,7 +14,14 @@
  the License.
 -->
 <ui-view-header>
-	<ui-title>Element Services</ui-title>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Services</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Services on {{element_name}}</ui-title>
 	<ui-subtitle>Services deployed on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <!-- {{#services.length}} -->
@@ -22,7 +29,8 @@
 	<thead>
 		<tr>
 			<th class="small text">Name</th>
-			<th class="tiny">State</th>
+			<th class="tiny">Adm.-State</th>
+			<th class="tiny">Op.-State</th>
 			<th class="tiny">Type</th>
 			<th class="text">Description</th>
 		</tr>
@@ -31,7 +39,8 @@
 		<!-- {{#services}}  -->
 		<tr>
 			<td class="text"><a href="element-service.html?group={{group_id}}&element={{element_id}}&service_name={{service_name}}" title="Show service details">{{display_name}}</a></td>
-			<td><a href="element-events.html?group={{group_id}}&element={{element_id}}" class="{{operational_state}}" title="Show element log events">{{operational_state}}</a></td>
+			<td><span class="{{administrative_state}}">{{administrative_state}}</span></td>
+			<td><span class="{{operational_state}}">{{operational_state}}</span></td>
 			<td><span class="type">{{service_type}}</span></td>
 			<td class="text">{{description}}</td>					
 		</tr>

@@ -25,6 +25,34 @@ const podsController = function() {
 			return {"pods"	: items,
 				    "filter" : filter};
 		},
+		postRender:function(){
+			const pods = new Pods({'scope':'_statistics'});
+			pods.load()
+				.then(stats => {
+					const groups = {};
+					stats.forEach(stat => {
+						let active = 0;
+						for(const state in stat.active_elements){
+							active += stat.active_elements[state];
+						}
+						const total = active + stat.new_elements + stat.retired_elements;
+						groups[stat.group_id] = {active:active,total:total};
+					});
+					const elements = this.elements(".pod-elements").forEach(element => {
+						const groupId = element.getAttribute("data-group");
+						const groupElements = groups[groupId];
+						if(groupElements && groupElements.total){
+						    if(groupElements.total > 1){
+						        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">${groupElements.total} elements.</a>`);
+						    } else {
+		                        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">1 element.</a>`);
+						    }
+						} else {
+							element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">No elements.</a>`);
+						}
+					});
+				});
+		},
 		buttons:{
 			"filter-pods":function(){
 				this.reload({"filter":this.input("filter").value()});
@@ -56,13 +84,13 @@ const addPodController = function(){
 	const pods = new Pods();
 	return new Controller({
 		resource:pods,
+		viewModel:function(){
+			return {};
+		},
 		buttons:{
 			"create-group":function(){
-				const group = {"group_name":this.input("group_name").value(),
-							   "description":this.input("description").value() };
-				
 				pods.createPod(this.location.params,
-							   group);
+							   this.getViewModel());
 			}
 		},
 		onSuccess:function(){
@@ -77,13 +105,33 @@ const elementsController = function() {
 	return new Controller({
 		resource:elements,
 		viewModel:function(items){
-			const filter = this.location.param("filter");
-			return {"elements"	: items,
-					"filter" : filter};
+			const by = this.location.param("by") || "name";
+			return { "elements"	: items,
+					 "filter" : this.location.params,
+					 "render_description":function(){
+						return by == "name" || by == "ntag";
+					 },
+					 "render_serial":function(){
+						return by == "serial";
+				 	 },
+					 "render_assetid":function(){
+						return by == "assetid";
+					 },
+					 "render_mgmt_ip":function(){
+						return by == "ip";
+					 },
+					 "management_interface_list":function(){
+						 const ifcs = [];
+						 for(const ifc in this.mgmt_interfaces){
+							 ifcs.push(this.mgmt_interfaces[ifc]);
+						 }
+						 return ifcs;
+					 }};
 		},
 		buttons:{
 			"filter":function(){
-				this.reload({"filter":this.input("filter").value()});
+				this.reload({"filter":this.input("filter").value(),
+							 "by":this.input("by").value()});
 			}
 		}
 	});

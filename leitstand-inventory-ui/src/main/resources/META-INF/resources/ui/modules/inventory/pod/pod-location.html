@@ -15,8 +15,8 @@
 -->
 <ui-view-header>
 	<ui-breadcrumbs>
-		<ui-breadcrumb href="pods.html">Pods</ui-breadcrumb>
-		<ui-breadcrumb href="link-state.html?group={{group_id}}">Link-State Graph</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/toplogy/link-state.html?group={{group_id}}">Link-State Graph</ui-breadcrumb>
 		<ui-breadcrumb>Location</ui-breadcrumb>
 	</ui-breadcrumbs>
 	<ui-title>Location</ui-title>
@@ -27,7 +27,8 @@
 		<ui-label>Location</ui-label>
 		<ui-input name="location">
 			<ui-label>Location</ui-label>
-			<ui-note>The location of the central office.</ui-note>
+			<ui-note>The address of the central office.</ui-note>
+			<ui-button name="lookup">Lookup address</ui-button>	
 		</ui-input>
 		<pod-location id="map" bind="geolocation"></pod-location>
 		<div class="row">

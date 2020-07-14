@@ -15,36 +15,50 @@
  */
 package io.leitstand.inventory.model;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
-import io.leitstand.inventory.jpa.VlanIdConverter;
-import io.leitstand.inventory.service.VlanId;
+import io.leitstand.inventory.jpa.VlanIDConverter;
+import io.leitstand.inventory.jpa.VlanTPIDConverter;
+import io.leitstand.inventory.service.VlanID;
+import io.leitstand.inventory.service.VlanTPID;
 
 @Embeddable
 class Element_LogicalInterface_Vlan {
 
-	@Convert(converter=VlanIdConverter.class)
-	private VlanId vlanId;
-	private int tag;
+	
+	private int vlan;
+	
+	@Convert(converter=VlanIDConverter.class)
+	@Column(name="vid")
+	private VlanID vlanId;
+	
+	@Convert(converter=VlanTPIDConverter.class)
+	@Column(name="tpid")
+	private VlanTPID vlanTpid;
 
 	protected Element_LogicalInterface_Vlan() {
 		// JPA
 	}
 	
-	public Element_LogicalInterface_Vlan(VlanId vlanId, int tag) {
+	public Element_LogicalInterface_Vlan(int vlan,VlanTPID vlanTpid, VlanID vlanId) {
+		this.vlan = vlan;
+		this.vlanTpid = vlanTpid;
 		this.vlanId = vlanId;
-		this.tag = tag;
 	}
 	
-	public int getTag() {
-		return tag;
+	public int getVlan() {
+		return vlan;
 	}
 	
-	public VlanId getVlanId() {
+	public VlanID getVlanId() {
 		return vlanId;
 	}
-	
+
+	public VlanTPID getVlanTpid() {
+		return vlanTpid;
+	}
 	
 }
 

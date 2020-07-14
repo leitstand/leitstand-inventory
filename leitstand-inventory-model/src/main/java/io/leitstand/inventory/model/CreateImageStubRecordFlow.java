@@ -16,11 +16,14 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
-import static io.leitstand.inventory.service.ImageId.randomImageId;
+import static io.leitstand.inventory.model.Image.findImageById;
+import static io.leitstand.inventory.service.ImageName.imageName;
+import static java.util.Arrays.asList;
 
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
+import io.leitstand.inventory.service.ImageName;
 
 /**
  * Attempts to create a stub record for a reported but unknown {@link Image}.
@@ -36,9 +39,9 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	 * @param element - the element that has reported the unknown image
 	 * @param data - the data of the unknown image.
 	 */
-	CreateImageStubRecordFlow(Element element, ElementInstalledImageReference data) {
+	CreateImageStubRecordFlow(Element element, ElementInstalledImageReference image) {
 		this.element = element;
-		this.installed = data;
+		this.installed = image;
 	}
 	
 	/**
@@ -50,18 +53,19 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	public void transaction(Repository repository) {
 		// Merge the existing element entity to this transaction.
 		Element attachedElement = repository.merge(element);
-		Image image = repository.execute(findByElementAndImageTypeAndVersion(attachedElement, 
-																			  installed.getImageType(), 
-																			  installed.getImageName(),
-																			  installed.getImageVersion()));
+		Image image = repository.execute(findImageById(installed.getImageId()));
+		
+		ImageName imageName = installed.getImageName();
+		if(imageName == null) {
+			imageName = imageName(element.getElementRoleName()+"_"+element.getPlatformName()+"_"+installed.getImageType()+"_"+installed.getImageVersion());
+		}
 		
 		if(image == null) {
-			image = new Image(randomImageId(), 
-							  "net.rtbrick",
+			image = new Image(installed.getImageId(), 
 							  installed.getImageType(),
-							  installed.getImageName(),
-							  attachedElement.getElementRole(),
-							  attachedElement.getPlatform(),
+							  imageName,
+							  asList(attachedElement.getElementRole()),
+							  attachedElement.getPlatform().getChipset(),
 							  installed.getImageVersion());
 			repository.add(image);
 		}
@@ -79,9 +83,9 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	@Override
 	public Image resume(Repository repository) {
 		return repository.execute(findByElementAndImageTypeAndVersion(element, 
-																	   installed.getImageType(), 
-																	   installed.getImageName(),
-																	   installed.getImageVersion()));
+																	  installed.getImageType(), 
+																	  installed.getImageName(),
+																	  installed.getImageVersion()));
 		
 		
 	}

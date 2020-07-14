@@ -54,11 +54,15 @@ import io.leitstand.inventory.service.IPv6Prefix;
 import io.leitstand.inventory.service.IPvxPrefix;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
+import io.leitstand.inventory.service.ReleaseName;
 import io.leitstand.inventory.service.ServiceName;
 
 @RunWith(Parameterized.class)
@@ -87,6 +91,7 @@ public class StringScalarConverterTest {
 			{new EnvironmentNameConverter(),	 		"unit-env",				new EnvironmentName("unit-env")},
 			{new ImageIdConverter(),  			 		uuid,		 			new ImageId(uuid)},
 			{new ImageNameConverter(),  		 		"unit-image",			new ImageName("unit-image")},
+			{new ImageTypeConverter(),  		 		"unit-type",			new ImageType("unit-type")},
 			{new InterfaceNameConverter(),		 		"unit-0/0/0",			new InterfaceName("unit-0/0/0")},
 			{new IPv4PrefixConverter(),			 		"10.0.0/8",				new IPv4Prefix("10.0.0/8")},
 			{new IPv6PrefixConverter(),			 		"10.0.0/8",				new IPv6Prefix("10.0.0/8")},
@@ -98,7 +103,10 @@ public class StringScalarConverterTest {
 			{new ElementGroupTypeConverter(),	 		"unit-type",			new ElementGroupType("unit-type")},
 			{new ServiceNameConverter(),		 		"unit-service",			new ServiceName("unit-service")},
 			{new PlatformIdConverter(),			 		uuid,					new PlatformId(uuid)},
+			{new PlatformNameConverter(),			 	"unit-platform",		new PlatformName("unit-platform")},
+			{new PlatformChipsetNameConverter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameConverter(),			 		"unit-rack",			new RackName("unit-rack")},
+			{new ReleaseNameConverter(),                "unit-release",         new ReleaseName("unit-release")},
 		};
 		return asList(converters);
 	}

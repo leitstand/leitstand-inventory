@@ -31,6 +31,10 @@ public class IPvxPrefix extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	public static IPvxPrefix cidr(String prefix) {
+		return valueOf(prefix);
+	}
+	
 	/**
 	 * Creates a <code>CidrAddress</code> from the specified string
 	 * @param address an IP address in CIDR notation

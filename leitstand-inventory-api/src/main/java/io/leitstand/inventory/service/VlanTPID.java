@@ -15,13 +15,33 @@
  */
 package io.leitstand.inventory.service;
 
-/**
- * An enumeration of available authentication modes.
- */
-public enum ElementAuthenticationMode {
+import javax.json.bind.annotation.JsonbTypeAdapter;
+
+import io.leitstand.commons.model.Scalar;
+import io.leitstand.inventory.jsonb.VlanTPIDAdapter;
+
+@JsonbTypeAdapter(VlanTPIDAdapter.class)
+public class VlanTPID extends Scalar<Integer>{
+
+	private static final long serialVersionUID = 1L;
+
+	public static VlanTPID vlanTPID(int tpid) {
+		return valueOf(tpid);
+	}
 	
-	/**
-	 * Router must authenticate each requests using HMAC_SHA256 algorithm.
-	 */
-	HMAC_SHA256
+	public static VlanTPID valueOf(int tpid) {
+		return new VlanTPID(tpid);
+	}
+	
+	private int value;
+	
+	public VlanTPID(int tpid) {
+		this.value = tpid;
+	}
+	
+	@Override
+	public Integer getValue() {
+		return value;
+	}
+
 }

@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.model.ObjectUtil.asSet;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
@@ -23,6 +24,7 @@ import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
+import static io.leitstand.inventory.service.ElementManagementInterface.newElementManagementInterface;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0303E_ELEMENT_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.isEmptyList;
@@ -96,6 +98,13 @@ public class ElementServiceIT extends InventoryIT {
 									   	Element element = new Element(group,role,ACTIVE_ELEMENT_ID,ACTIVE_ELEMENT_NAME);
 									   	element.setAdministrativeState(AdministrativeState.ACTIVE);
 									   	element.setDescription("Active Element");
+									   	element.setAssetId("asset-1");
+									   	element.setTags(asSet("test-tag"));
+									   	element.setSerialNumber("serial-123");
+									   	element.setElementManagementInterfaces(asSet(newElementManagementInterface()
+									   											     .withName("SSH")
+									   											     .withHostname("192.168.0.1")
+									   											     .build()));
 									   	return element;
 								   });
 
@@ -123,16 +132,45 @@ public class ElementServiceIT extends InventoryIT {
 	public void return_empty_list_if_no_matching_elements_exist() {
 		
 		transaction(()-> {
-			List<ElementSettings> elements = service.findElements("unknown_elements", 0, 100);
+			List<ElementSettings> elements = service.findElementsByName("unknown_name", 0, 100);
 			assertThat(elements,isEmptyList());
 		});
+
+		transaction(()-> {
+			List<ElementSettings> elements = service.findElementsByNameOrTag("unknown_name_or_tag", 0, 100);
+			assertThat(elements,isEmptyList());
+		});
+		
+		transaction(()-> {
+			List<ElementSettings> elements = service.findElementsBySerialNumber("unknown_serial", 0, 100);
+			assertThat(elements,isEmptyList());
+		});
+		
+		
+		transaction(()-> {
+			List<ElementSettings> elements = service.findElementsByAssetId("unknown_assetid", 0, 100);
+			assertThat(elements,isEmptyList());
+		});
+		
+		
+		transaction(()-> {
+			List<ElementSettings> elements = service.findElementsByManagementIP("unknown_ip", 0, 100);
+			assertThat(elements,isEmptyList());
+		});
+		
+		
+		transaction(()-> {
+			List<ElementSettings> elements = service.findElementsByName("unknown_element", 0, 100);
+			assertThat(elements,isEmptyList());
+		});
+	
 	}
 	
 	@Test
 	public void find_elements_by_name_pattern() {
 		
 		transaction(()->{
-			List<ElementSettings> elements = service.findElements(".*_ACTIVE", 0, 100);
+			List<ElementSettings> elements = service.findElementsByName(".*_ACTIVE", 0, 100);
 			assertEquals(GROUP_ID, elements.get(0).getGroupId());
 			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
 			assertEquals(GROUP_NAME, elements.get(0).getGroupName());
@@ -144,6 +182,74 @@ public class ElementServiceIT extends InventoryIT {
 		
 	}
 
+	@Test
+	public void find_elements_by_tag_pattern() {
+		
+		transaction(()->{
+			List<ElementSettings> elements = service.findElementsByNameOrTag("test-tag", 0, 100);
+			assertEquals(GROUP_ID, elements.get(0).getGroupId());
+			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
+			assertEquals(GROUP_NAME, elements.get(0).getGroupName());
+			assertEquals(ACTIVE_ELEMENT_ID, elements.get(0).getElementId());
+			assertEquals(ACTIVE_ELEMENT_NAME, elements.get(0).getElementName());
+			assertEquals(ROLE_NAME, elements.get(0).getElementRole());
+			assertEquals("Active Element", elements.get(0).getDescription());
+		});
+		
+	}
+	
+	@Test
+	public void find_elements_by_serial_number() {
+		
+		transaction(()->{
+			List<ElementSettings> elements = service.findElementsBySerialNumber("serial-123", 0, 100);
+			assertEquals(GROUP_ID, elements.get(0).getGroupId());
+			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
+			assertEquals(GROUP_NAME, elements.get(0).getGroupName());
+			assertEquals(ACTIVE_ELEMENT_ID, elements.get(0).getElementId());
+			assertEquals(ACTIVE_ELEMENT_NAME, elements.get(0).getElementName());
+			assertEquals(ROLE_NAME, elements.get(0).getElementRole());
+			assertEquals("Active Element", elements.get(0).getDescription());
+			assertEquals("serial-123",elements.get(0).getSerialNumber());
+		});
+		
+	}
+	
+	@Test
+	public void find_elements_by_asset_id() {
+		
+		transaction(()->{
+			List<ElementSettings> elements = service.findElementsByAssetId("asset-1", 0, 100);
+			assertEquals(GROUP_ID, elements.get(0).getGroupId());
+			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
+			assertEquals(GROUP_NAME, elements.get(0).getGroupName());
+			assertEquals(ACTIVE_ELEMENT_ID, elements.get(0).getElementId());
+			assertEquals(ACTIVE_ELEMENT_NAME, elements.get(0).getElementName());
+			assertEquals(ROLE_NAME, elements.get(0).getElementRole());
+			assertEquals("Active Element", elements.get(0).getDescription());
+			assertEquals("asset-1",elements.get(0).getAssetId());
+		});
+		
+	}
+	
+	@Test
+	public void find_elements_by_mgmt_IP() {
+		
+		transaction(()->{
+			List<ElementSettings> elements = service.findElementsByManagementIP("192.168.*", 0, 100);
+			assertEquals(GROUP_ID, elements.get(0).getGroupId());
+			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
+			assertEquals(GROUP_NAME, elements.get(0).getGroupName());
+			assertEquals(ACTIVE_ELEMENT_ID, elements.get(0).getElementId());
+			assertEquals(ACTIVE_ELEMENT_NAME, elements.get(0).getElementName());
+			assertEquals(ROLE_NAME, elements.get(0).getElementRole());
+			assertEquals("Active Element", elements.get(0).getDescription());
+			assertEquals("asset-1",elements.get(0).getAssetId());
+		});
+		
+	}
+	
+	
 	@Test
 	public void cannot_remove_active_element_by_id() {
 		exception.expect(ConflictException.class);
@@ -208,5 +314,67 @@ public class ElementServiceIT extends InventoryIT {
 		});
 	}
 	
+	@Test
+	public void cannot_force_remove_active_element_by_id() {
+		exception.expect(ConflictException.class);
+		exception.expect(reason(IVT0303E_ELEMENT_NOT_REMOVABLE));
+		
+		transaction(()->{
+			service.forceRemoveElement(ACTIVE_ELEMENT_ID);
+		});
+	}
+
+	@Test
+	public void cannot_force_remove_active_element_by_name() {
+		exception.expect(ConflictException.class);
+		exception.expect(reason(IVT0303E_ELEMENT_NOT_REMOVABLE));
+		
+		transaction(()->{
+			service.forceRemoveElement(ACTIVE_ELEMENT_NAME);
+		});
+	}
 	
+	@Test
+	public void force_remove_retired_element_by_id() {
+		transaction(()->{
+			service.forceRemoveElement(RETIRED_ELEMENT_ID);
+		});
+		
+		transaction(() -> {
+			assertNull(repository.execute(findElementById(RETIRED_ELEMENT_ID)));
+		});
+	}
+	
+	@Test
+	public void force_remove_new_element_by_id() {
+		transaction(()->{
+			service.forceRemoveElement(NEW_ELEMENT_ID);
+		});
+		
+		transaction(() -> {
+			assertNull(repository.execute(findElementById(NEW_ELEMENT_ID)));
+		});
+	}
+	
+	@Test
+	public void force_remove_retired_element_by_name() {
+		transaction(()->{
+			service.forceRemoveElement(RETIRED_ELEMENT_NAME);
+		});
+		
+		transaction(() -> {
+			assertNull(repository.execute(findElementByName(RETIRED_ELEMENT_NAME)));
+		});
+	}
+	
+	@Test
+	public void force_remove_new_element_by_name() {
+		transaction(()->{
+			service.removeElement(NEW_ELEMENT_NAME);
+		});
+		
+		transaction(() -> {
+			assertNull(repository.execute(findElementByName(NEW_ELEMENT_NAME)));
+		});
+	}
 }

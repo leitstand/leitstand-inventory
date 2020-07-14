@@ -19,9 +19,9 @@
 					   title="Show list of all element configurations">Element Configurations</ui-breadcrumb>
 		<ui-breadcrumb href="element-config-history.html?group={{group_id}}&element={{element_id}}&config={{config_name}}"
 					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
-		<ui-breadcrumb>Element Configuration Revisons Comparator</ui-breadcrumb>
+		<ui-breadcrumb>Diff</ui-breadcrumb>
 	</ui-bread-crumbs>
-	<ui-title>Element Configuration Revisons Comparator</ui-title>
+	<ui-title>{{element_name}} {{config_name}} diff</ui-title>
 	<ui-subtitle>Compare {{source.config_name}} changes between <ui-date readonly>{{source.date_modified}}</ui-date> and <ui-date readonly>{{target.date_modified}}</ui-date>  </ui-subtitle>
 </ui-view-header>
 <config-diff source="source" target="target"></config-diff>

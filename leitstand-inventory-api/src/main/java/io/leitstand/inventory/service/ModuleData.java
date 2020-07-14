@@ -256,7 +256,7 @@ public class ModuleData extends ValueObject {
 	private ModuleName parentModule;
 	@JsonbProperty("fru")
 	private boolean fieldReplaceableUnit;
-	@JsonbProperty("adm_state")
+	@JsonbProperty("admstate")
 	private AdministrativeState administrativeState;
 	private String description;
 

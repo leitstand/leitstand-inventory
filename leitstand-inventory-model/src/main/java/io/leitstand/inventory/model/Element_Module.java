@@ -103,45 +103,45 @@ public class Element_Module extends AbstractEntity{
 	@Convert(converter=ModuleNameConverter.class)
 	private ModuleName name;
 	
-	@Column(name="module_class")
+	@Column(name="moduleclass")
 	private String moduleClass;
 	
 	@Column(name="serial", unique=true)
 	private String serialNumber;
 	
-	@Column(name="asset_id")
+	@Column(name="assetid")
 	private String assetId;
 	
-	@Column(name="hardware_rev")
+	@Column(name="hwrev")
 	private String hardwareRevision;
 	
-	@Column(name="software_rev")
+	@Column(name="swrev")
 	private String softwareRevision;
 	
-	@Column(name="firmware_rev")
+	@Column(name="fwrev")
 	private String firmwareRevision;
 	
-	@Column(name="mfc_name")
+	@Column(name="mfcname")
 	private String manufacturerName;
 	
-	@Column(name="vendor_type") 
+	@Column(name="vendortype") 
 	private String vendorType;
 	
-	@Column(name="model_name")
+	@Column(name="modelname")
 	private String modelName;
 	
 	@Column(name="location")
 	private String location;
 	
 	@Convert(converter=AdministrativeStateConverter.class)
-	@Column(name="adm_state")
+	@Column(name="admstate")
 	private AdministrativeState administrativeState;
 
 	@Convert(converter=BooleanConverter.class)
 	private boolean fru;
 	
 	@Temporal(TIMESTAMP)
-	@Column(name="mfc_date")
+	@Column(name="mfcdate")
 	private Date dateManufactured;
 	
 	private String description;

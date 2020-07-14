@@ -19,7 +19,11 @@ import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.event.ElementOperationalStateChangedEvent.newElementOperationalStateChangedEvent;
 import static io.leitstand.inventory.event.ElementRemovedEvent.newElementRemovedEvent;
+import static io.leitstand.inventory.model.Element.findElementsByAssetId;
+import static io.leitstand.inventory.model.Element.findElementsByManagementIP;
 import static io.leitstand.inventory.model.Element.findElementsByName;
+import static io.leitstand.inventory.model.Element.findElementsByNameOrTag;
+import static io.leitstand.inventory.model.Element.findElementsBySerialNumber;
 import static io.leitstand.inventory.model.Element_Config.removeAllConfigurations;
 import static io.leitstand.inventory.model.Element_ContainerInterface.removeIfcs;
 import static io.leitstand.inventory.model.Element_DnsRecordSet.removeDnsRecordSets;
@@ -71,10 +75,7 @@ public class ElementManager {
 		//CDI
 	}
 
-	public List<ElementSettings> findElements(String filter, int offset, int items) {
-		return unmodifiableList(repository.executeMapListItem(findElementsByName(filter,offset,items),
-															  ElementSettingsManager::settingsOf));
-	}
+
 
 	public void remove(Element element) {
 		if(element.isActive()){
@@ -219,6 +220,47 @@ public class ElementManager {
 					  .withPreviousState(old)
 					  .build());
 		}
+	}
+
+	public List<ElementSettings> filterElementsByName(String filter, int offset, int items) {
+		return unmodifiableList(repository.
+								executeMapListItem(findElementsByName(filter,
+																	  offset,
+																	  items),
+								ElementSettingsManager::settingsOf));
+	
+	}
+
+	public List<ElementSettings> filterElementsByNameOrTag(String filter, int offset, int items) {
+		return unmodifiableList(repository.
+				executeMapListItem(findElementsByNameOrTag(filter,
+													  offset,
+													  items),
+				ElementSettingsManager::settingsOf));
+	}
+
+	public List<ElementSettings> filterElementsByAssetId(String filter, int offset, int items) {
+		return unmodifiableList(repository.
+				executeMapListItem(findElementsByAssetId(filter,
+													     offset,
+													     items),
+				ElementSettingsManager::settingsOf));	
+	}
+
+	public List<ElementSettings> filterElementsBySerialNumber(String filter, int offset, int items) {
+		return unmodifiableList(repository.
+				executeMapListItem(findElementsBySerialNumber(filter,
+													  		  offset,
+													  		  items),
+				ElementSettingsManager::settingsOf));
+	}
+
+	public List<ElementSettings> filterElementsByManagementIP(String filter, int offset, int items) {
+		return unmodifiableList(repository.
+				executeMapListItem(findElementsByManagementIP(filter,
+													  		  offset,
+													  		  items),
+				ElementSettingsManager::settingsOf));	
 	}
 
 }

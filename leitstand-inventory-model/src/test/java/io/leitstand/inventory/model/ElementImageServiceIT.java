@@ -19,7 +19,7 @@ import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
-import static io.leitstand.inventory.model.Image.findElementRoleImage;
+import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Platform.findByPlatformId;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
@@ -33,8 +33,9 @@ import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
-import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.Version.version;
@@ -57,7 +58,7 @@ import org.junit.Test;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
-import io.leitstand.inventory.service.ElementAvailableUpdate;
+import io.leitstand.inventory.service.ElementAvailableUpgrade;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
@@ -74,12 +75,20 @@ import io.leitstand.inventory.service.ElementSettingsService;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
 
 public class ElementImageServiceIT extends InventoryIT{
 
+	private static final ImageId IMAGE_200 = randomImageId();
+	private static final ImageId IMAGE_110 = randomImageId();
+	private static final ImageId IMAGE_101 = randomImageId();
+	private static final ImageId IMAGE_100 = randomImageId();
+
+	
+	
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupName GROUP_NAME = groupName(ElementImageServiceIT.class.getSimpleName());
 	private static final ElementGroupType GROUP_TYPE = groupType("pod");
@@ -88,65 +97,65 @@ public class ElementImageServiceIT extends InventoryIT{
 	private static final ElementRoleName ELEMENT_ROLE = elementRoleName(ElementImageServiceIT.class.getSimpleName());
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ElementImageServiceIT.class.getSimpleName());
-	
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_200)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_200)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("2.0.0"))
 																				   .withElementImageState(CACHED)
 																				   .build();
 	
 	private static final ElementInstalledImageReference ACTIVE_MINOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_110)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_MINOR_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_110)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.1.0"))
 																				   .withElementImageState(CACHED)
 																				   .build();
 
 	private static final ElementInstalledImageReference ACTIVE_PATCH_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_101)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
 	private static final ElementInstalledImageReference CACHED_PATCH_UPGRADE_REF = newElementInstalledImageReference()
-																				   .withImageType(LXC)
+																				   .withImageId(IMAGE_101)	
+																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
 																				   .withImageVersion(version("1.0.1"))
 																				   .withElementImageState(CACHED)
 																				   .build();
 	
 	private static final ElementInstalledImageReference ACTIVE_BASE_REF = newElementInstalledImageReference()
-																		  .withImageType(LXC)
+																		  .withImageId(IMAGE_100)
+																		  .withImageType(imageType("lxd"))
 																		  .withImageName(imageName("JUNIT"))
 																		  .withImageVersion(version("1.0.0"))
 																		  .withElementImageState(ACTIVE)
 																		  .build();
 
-	private static final ElementInstalledImageReference CACHED_BASE_REF = newElementInstalledImageReference()
-																		  .withImageType(LXC)
-																		  .withImageName(imageName("JUNIT"))
-																		  .withImageVersion(version("1.0.0"))
-																		  .withElementImageState(CACHED)
-																		  .build();
-	
 	
 	private static Image newImage(ImageId imageId, 
 								  String org, 
@@ -164,13 +173,13 @@ public class ElementImageServiceIT extends InventoryIT{
 		image.setOrganization(org);
 		image.setImageType(type);
 		image.setImageName(name);
-		image.setElementRole(role);
+		image.setElementRoles(asList(role));
 		image.setExtension(ext);
 		image.setImageVersion(revision);
 		image.setBuildDate(buildDate);
 		image.setPackages(packages);
 		image.setApplications(applications);
-		image.setPlatform(platform);
+		image.setPlatformChipset(PLATFORM_CHIPSET);
 		image.setImageState(CANDIDATE);
 		return image;
 	}
@@ -223,91 +232,78 @@ public class ElementImageServiceIT extends InventoryIT{
 										   										GROUP_NAME);
 								   		  return group;});
 			
-			elementService.storeElementSettings(settings);		
-			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
-													   () -> new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   () -> new Platform(PLATFORM_ID,
+															   			  PLATFORM_NAME,
+															   			  PLATFORM_CHIPSET));
+
+			elementService.storeElementSettings(settings);		
 			
 			
 			// Create base image
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														LXC,
-														imageName("JUNIT"),
-														new Version(1,0,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		LXC,
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,0,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_100),
+  								   () ->  newImage(IMAGE_100, 
+  										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,0,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
 			// Create patch upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														LXC,
-														imageName("JUNIT"),
-														new Version(1,0,1)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		LXC, 
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,0,1), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
-			
+			repository.addIfAbsent(findImageById(IMAGE_101),
+								   () ->  newImage(IMAGE_101, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,0,1), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
 			// Create minor upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														LXC,
-														imageName("JUNIT"),
-														new Version(1,1,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		LXC,
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(1,1,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_110),
+								   () ->  newImage(IMAGE_110, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(1,1,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
+			
 			
 			// Create major upgrade
-			repository.addIfAbsent(findElementRoleImage(platform, 
-														role, 
-														LXC,
-														imageName("JUNIT"),
-														new Version(2,0,0)),
-														() ->  newImage(randomImageId(), 
-																		"net.rtbrick", 
-																		LXC,
-																		imageName("JUNIT"),
-																		role, 
-																		platform, 
-																		"test", 
-																		new Version(2,0,0), 
-																		new Date(), 
-																		new LinkedList<>(),
-																		new LinkedList<>()));
+			repository.addIfAbsent(findImageById(IMAGE_200),
+								   () ->  newImage(IMAGE_200, 
+										   		  "leitstand.io", 
+												  imageType("lxd"),
+												  imageName("JUNIT"),
+												  role, 
+												  platform, 
+												  "test", 
+												  new Version(2,0,0), 
+												  new Date(), 
+												  new LinkedList<>(),
+												  new LinkedList<>()));
+			
 			
 		});
+
 	}
 	
 	@After
 	public void clearTestEnvironment() {
 		transaction(() -> {
 			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_image"));
-			
 		});
 		
 	}
@@ -323,9 +319,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -345,9 +341,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -367,9 +363,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -389,9 +385,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -410,9 +406,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(2,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -430,9 +426,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(1,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 		});
@@ -449,9 +445,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertTrue(updates.isEmpty());
 		});
 	}
@@ -467,9 +463,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -489,9 +485,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -510,9 +506,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -531,9 +527,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(2, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(3,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -552,9 +548,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(2,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 			assertTrue(updates.get(1).isMinorUpdate());
@@ -572,9 +568,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertEquals(1,updates.size());
 			assertTrue(updates.get(0).isMajorUpdate());
 		});
@@ -591,9 +587,9 @@ public class ElementImageServiceIT extends InventoryIT{
 			assertEquals(1, installedImages.getImages().size());
 			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
-			assertEquals(LXC,installedImage.getImageType());
+			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
-			List<ElementAvailableUpdate> updates = installedImage.getAvailableUpdates();
+			List<ElementAvailableUpgrade> updates = installedImage.getAvailableUpgrades();
 			assertTrue(updates.isEmpty());
 		});
 	}

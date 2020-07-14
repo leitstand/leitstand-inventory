@@ -13,12 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.visitor;
+package io.leitstand.inventory.jsonb;
 
-import io.leitstand.inventory.service.ElementInstalledImage;
+import javax.json.bind.adapter.JsonbAdapter;
 
-public interface ElementImageVisitor {
+import io.leitstand.inventory.service.ReleaseName;
 
-	void visitElementImage(ElementInstalledImage image);
-	
+public class ReleaseNameAdapter implements JsonbAdapter<ReleaseName,String> {
+
+	@Override
+	public String adaptToJson(ReleaseName obj) throws Exception {
+		return ReleaseName.toString(obj);
+	}
+
+	@Override
+	public ReleaseName adaptFromJson(String obj) throws Exception {
+		return ReleaseName.valueOf(obj);
+	}
+
 }

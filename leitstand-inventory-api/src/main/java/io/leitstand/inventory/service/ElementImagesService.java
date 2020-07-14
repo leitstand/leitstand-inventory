@@ -80,37 +80,50 @@ public interface ElementImagesService {
 	 */
 	void storeInstalledImages(ElementName name, List<ElementInstalledImageReference> images);
 
+	void removeInstalledImage(ElementId elementId, ImageId imageId);
+	void removeInstalledImage(ElementName elementName, ImageId imageId);
+	
 	/**
-	 * Adds the specified images to the list of <em>cached</em> images on the element. 
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element id
-	 * @param images - add cached images
+	 * Returns the image that shall be installed via ZTP.
+	 * Returns the release image if not ZTP image is specified for the element.
+	 * @param elementId the element ID
+	 * @return the ZTP image
 	 */
-	void addCachedImages(ElementId id, List<ElementInstalledImageReference> images);
+	ImageReference getZtpImage(ElementId elementId);
+	
+	/**
+     * Returns the image that shall be installed via ZTP.
+     * Returns the release image if not ZTP image is specified for the element.
+     * @param elementName the element name
+     * @return the ZTP image
+     */
+	ImageReference getZtpImage(ElementName elementName);
+	
+	/**
+	 * Sets the image that shall be installed via ZTP on this element.
+	 * @param elementId the element ID
+	 * @param imageId the ZTP image ID.
+	 */
+	void setZtpImage(ElementId elementId, ImageId imageId);
 
-	/**
-	 * Adds the specified images to the list of <em>cached</em> images on the element. 
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param name - the element name
-	 * @param images - all images installed on the element.
-	 */
-	void addCachedImages(ElementName name, List<ElementInstalledImageReference> images);
+	   /**
+     * Sets the image that shall be installed via ZTP on this element.
+     * @param elementName the element name
+     * @param imageId the ZTP image ID.
+     */
+    void setZtpImage(ElementName elementName, ImageId imageId);
+
 	
 	/**
-	 * Removes the specified images from the list of <em>cached</em> images.
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element id
-	 * @param images - all images installed on the element.
+	 * Removes ZTP information to fallback to the default ZTP configuration (i.e. deploy release image).
+	 * @param elementId the element ID
 	 */
-	void removeCachedImages(ElementId id, List<ElementInstalledImageReference> images);
+	void resetZtpImage(ElementId elementId);
 	
-	
-	/**
-	 * Removes the specified images from the list of <em>cached</em> images.
-	 * Cached images are inactive, but could be activated instantly.
-	 * @param id - the element name
-	 * @param images - all images installed on the element.
-	 */
-	void removeCachedImages(ElementName name, List<ElementInstalledImageReference> images);
+	   /**
+     * Removes ZTP information to fallback to the default ZTP configuration (i.e. deploy release image).
+     * @param elementName the element name
+     */
+    void resetZtpImage(ElementName elementName);
 	
 }

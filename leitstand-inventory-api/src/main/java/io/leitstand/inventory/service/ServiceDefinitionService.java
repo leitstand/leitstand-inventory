@@ -18,8 +18,5 @@ package io.leitstand.inventory.service;
 import java.util.List;
 
 public interface ServiceDefinitionService {
-
 	List<ServiceDefinition> getServices();
-
-	
 }

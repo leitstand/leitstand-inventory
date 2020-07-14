@@ -15,7 +15,8 @@
  */
 package io.leitstand.inventory.service;
 
-import javax.json.bind.annotation.JsonbProperty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -29,6 +30,11 @@ public class ServiceDefinition extends ValueObject {
 	public static class Builder {
 		
 		private ServiceDefinition info = new ServiceDefinition();
+
+		public Builder withServiceId(ServiceId id){
+			info.serviceId = id;
+			return this;
+		}
 		
 		public Builder withServiceName(ServiceName name){
 			info.serviceName = name;
@@ -63,16 +69,18 @@ public class ServiceDefinition extends ValueObject {
 		
 	}
 	
-	@JsonbProperty("service_name")
+	@Valid
+	@NotNull(message="{service_id.required}")
+	private ServiceId serviceId;
+
+	@Valid
+	@NotNull(message="{service_name.required}")
 	private ServiceName serviceName;
 	
-	@JsonbProperty("display_name")
 	private String displayName;
 	
-	@JsonbProperty("service_type")
 	private ServiceType serviceType;
 	
-	@JsonbProperty
 	private String description;
 	
 	public ServiceName getServiceName() {

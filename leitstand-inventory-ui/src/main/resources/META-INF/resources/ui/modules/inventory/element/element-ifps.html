@@ -14,10 +14,19 @@
  the License.
 -->
 <ui-view-header>
-	<ui-title>Physical Interfaces</ui-title>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb>Physical Interfaces</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Physical interfaces of {{element_name}}</ui-title>
 	<ui-subtitle>Physical interfaces of element {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <!-- {{#physical_interfaces.length}} -->
+<ui-group>
+<ui-label>Physcial Interfaces</ui-label>
 <table class="list">
 <thead>
 	<tr>
@@ -52,6 +61,8 @@
 <!--  {{/physical_interfaces}} -->
 </tbody>
 </table>
+<ui-note class="right">{{physical_interfaces.length}} physical interfaces found.</ui-note>
+</ui-group>
 <!-- {{/physical_interfaces.length}} -->
 <!-- {{^physical_interfaces}} -->
 <ui-blankslate>

@@ -18,6 +18,7 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
+import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -29,7 +30,6 @@ import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -48,7 +48,7 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
-@Scopes({IVT, IVT_IMAGE})
+@Scopes({IVT, IVT_IMAGE, IVT_ELEMENT})
 
 @Path("/elements")
 @Consumes(APPLICATION_JSON)
@@ -63,82 +63,67 @@ public class ElementImageResource{
 	private Messages messages;
 	
 	@GET
-	@Path("/{id:"+UUID_PATTERN+"}/images/{image_id}")
+	@Path("/{element:"+UUID_PATTERN+"}/images/{image}")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 
-	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("id") ElementId id, 
-	                                                                  @Valid @PathParam("image_id") ImageId imageId){
-		return service.getElementInstalledImage(id,imageId);
+	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("element") ElementId elementId, 
+	                                                      @Valid @PathParam("image") ImageId imageId){
+		return service.getElementInstalledImage(elementId,
+												imageId);
 	}
 	
 	@GET
-	@Path("/{name}/images/{image_id}")
+	@Path("/{element}/images/{image}")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("name") ElementName name, 
-	                                                                  @Valid @PathParam("image_id") ImageId imageId){
-		return service.getElementInstalledImage(name,imageId);
+	public ElementInstalledImage getElementInstalledImage(@Valid @PathParam("element") ElementName elementName, 
+	                                                      @Valid @PathParam("image") ImageId imageId){
+		return service.getElementInstalledImage(elementName,imageId);
 	}
 	
 	@GET
-	@Path("/{id:"+UUID_PATTERN+"}/images")
+	@Path("/{element:"+UUID_PATTERN+"}/images")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("id") ElementId id){
-		return service.getElementInstalledImages(id);
+	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("element") ElementId elementId){
+		return service.getElementInstalledImages(elementId);
 	}
 
 	@GET
-	@Path("/{name}/images")
+	@Path("/{element}/images")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("name") ElementName name){
-		return service.getElementInstalledImages(name);
+	public ElementInstalledImages getElementInstalledImages(@Valid @PathParam("element") ElementName elementName){
+		return service.getElementInstalledImages(elementName);
 	}
 	
 	@PUT
-	@Path("/{id:"+UUID_PATTERN+"}/images")
-	public Response storeInstalledImages(@Valid @PathParam("id") ElementId id, 
-	                                       @Valid List<ElementInstalledImageReference> images){
-		service.storeInstalledImages(id, images);
+	@Path("/{element:"+UUID_PATTERN+"}/images")
+	public Response storeInstalledImages(@Valid @PathParam("element") ElementId elementId, 
+	                                     @Valid List<ElementInstalledImageReference> images){
+		service.storeInstalledImages(elementId, images);
 		return success(messages);
 	}
 	
 	@PUT
-	@Path("/{name}/images")
-	public Response storeInstalledImages(@Valid @PathParam("name") ElementName name, 
-	                                       @Valid List<ElementInstalledImageReference> images){
-		service.storeInstalledImages(name, images);
+	@Path("/{element}/images")
+	public Response storeInstalledImages(@Valid @PathParam("element") ElementName elementName, 
+	                                     @Valid List<ElementInstalledImageReference> images){
+		service.storeInstalledImages(elementName, images);
 		return success(messages);
 	}
 	
-	@POST
-	@Path("/{id:"+UUID_PATTERN+"}/images")
-	public Response storeCachedImages(@Valid @PathParam("id") ElementId id, 
-	                                  @Valid List<ElementInstalledImageReference> images){
-		service.addCachedImages(id, images);
-		return success(messages);
-	}
-	
-	@POST
-	@Path("/{name}/images")
-	public Response storeCachedImages(@Valid @PathParam("name") ElementName name, 
-	                                  @Valid List<ElementInstalledImageReference> images){
-		service.addCachedImages(name, images);
-		return success(messages);
-	}
-
 	@DELETE
-	@Path("/{id:"+UUID_PATTERN+"}/images")
-	public Response removeCachedImages(@Valid @PathParam("id") ElementId id, 
-	                                   @Valid List<ElementInstalledImageReference> images){
-		service.removeCachedImages(id, images);
+	@Path("/{element:"+UUID_PATTERN+"}/images/{image:"+UUID_PATTERN+"}")
+	public Response removeInstalledImage(@Valid @PathParam("element") ElementId elementId, 
+										 @Valid @PathParam("image") ImageId imageId){
+		service.removeInstalledImage(elementId, imageId);
 		return success(messages);
 
 	}
 	
 	@DELETE
-	@Path("/{name}/images")
-	public Response removeCachedImages(@Valid @PathParam("name") ElementName name, 
-	                                   @Valid List<ElementInstalledImageReference> images){
-		service.removeCachedImages(name, images);
+	@Path("/{name}/images/{image:"+UUID_PATTERN+"}")
+	public Response removeCachedImages(@Valid @PathParam("name") ElementName elementName, 
+	                                   @Valid @PathParam("image") ImageId imageId){
+		service.removeInstalledImage(elementName, imageId);
 		return success(messages);
 	}
 	

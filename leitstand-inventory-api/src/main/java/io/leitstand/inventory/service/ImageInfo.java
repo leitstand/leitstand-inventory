@@ -77,7 +77,6 @@ public class ImageInfo extends ValueObject{
 	public static boolean isUnrevokedImage(ImageInfo image) {
 		return image.getImageState() != REVOKED;
 	}
-
 	
 	/**
 	 * Returns a new builder to create an immutable <code>ImageInfo</code> instance.
@@ -156,31 +155,51 @@ public class ImageInfo extends ValueObject{
 		 * @param elementRole the element role
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withElementRole(ElementRoleName elementRole){
+		public Builder withElementRoles(ElementRoleName... elementRole){
+			return withElementRoles(asList(elementRole));
+		}
+		
+		/**
+		 * Sets the mandatory element type this image was built for.
+		 * @param elementRole the element role
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withElementRoles(List<ElementRoleName> elementRoles){
 			assertNotInvalidated(getClass(), image);
-			image.elementRole = elementRole;
+			image.elementRoles = elementRoles;
 			return this;
 		}
 		
 		/**
-		 * Sets the platform ID of the platform this image has been built for.
-		 * @param platformId the platform ID 
-		 * @return a reference to this builder to continue with object creation.
+		 * Sets the chipset for which this image is built.
+		 * @param platformChipset the chipset name
+		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatformId(PlatformId platformId) {
-			assertNotInvalidated(getClass(),image);
-			image.platformId = platformId;
+		public Builder withPlatformChipset(PlatformChipsetName platformChipset) {
+			assertNotInvalidated(getClass(), image);
+			image.platformChipset = platformChipset;
 			return this;
 		}
 
 		/**
-		 * Sets the platform name of the platform this image has been built for.
-		 * @param platformId the platform name 
-		 * @return a reference to this builder to continue with object creation.
+		 * Sets the known platforms this image can be installed on.
+		 * @param platforms the known platforms
+		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withPlatformName(PlatformName platformName) {
-			assertNotInvalidated(getClass(),image);
-			image.platformName = platformName;
+		public Builder withPlatforms(PlatformSettings.Builder... platforms) {
+			return withPlatforms(stream(platforms)
+								 .map(PlatformSettings.Builder::build)
+								 .collect(toList()));
+		}
+		
+		/**
+		 * Sets the known platforms this image can be installed on.
+		 * @param platforms the known platforms
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public Builder withPlatforms(List<PlatformSettings> platforms) {
+			assertNotInvalidated(getClass(), image);
+			image.platforms = new LinkedList<>(platforms);
 			return this;
 		}
 		
@@ -244,6 +263,11 @@ public class ImageInfo extends ValueObject{
 			return this;
 		}
 
+		/**
+		 * Sets an optional image description.
+		 * @param description the description.
+		 * @return a reference to this builder to continue with object creation
+		 */
 		public Builder withDescription(String description) {
 			assertNotInvalidated(getClass(),image);
 			image.description = description;
@@ -280,7 +304,6 @@ public class ImageInfo extends ValueObject{
 			image.packages = Collections.unmodifiableList(new LinkedList<>(packages));
 			return this;
 		}
-		
 		
 		/**
 		 * Sets the available checksums for this image.
@@ -338,14 +361,12 @@ public class ImageInfo extends ValueObject{
 			}
 		}
 
-
 	}
 
 	@Valid
 	@NotNull(message="{image_id.required}")
 	private ImageId imageId = randomImageId();
 
-	@NotNull(message="{organization.required}")
 	private String organization;
 	
 	private String category;
@@ -362,11 +383,10 @@ public class ImageInfo extends ValueObject{
 	@NotNull(message="{image_state.required}")
 	private ImageState imageState;
 	
-	private ElementRoleName elementRole;
+	private List<ElementRoleName> elementRoles;
 	
 	private ElementName elementName;
 	
-	@NotNull(message="{extension.required}")
 	private String extension;
 	
 	@JsonbProperty
@@ -385,10 +405,11 @@ public class ImageInfo extends ValueObject{
 	@Valid
 	private List<ApplicationName> applications;
 	
-	private PlatformId platformId;
-	@NotNull(message="{platform_name.required}")
 	@Valid
-	private PlatformName platformName;
+	@NotNull(message="{platform_chipset.required}")
+	private PlatformChipsetName platformChipset;
+	
+	private List<PlatformSettings> platforms;
 
 	private String description;
 	
@@ -411,18 +432,20 @@ public class ImageInfo extends ValueObject{
 	}
 	
 	/**
-	 * Returns the type of element this image was built for.
-	 * @return the type of element this image was built for
+	 * Returns the element roles this image can be installed on.
+	 * @return the element roles this image can be installed on.
 	 */
-	public ElementRoleName getElementRole() {
-		return elementRole;
+	public List<ElementRoleName> getElementRoles() {
+	    if(elementRoles == null) {
+	        return emptyList();
+	    }
+		return unmodifiableList(elementRoles);
 	}
 	
 	/**
 	 * Returns the name of the element this image was built for or
 	 * <code>null</code> if this image was built for all elements of a certain element type.
 	 * @return the name of the element this image was built for or <code>null</code> if this image was not built for a certain element
-	 * @see #getElementRole()
 	 */
 	public ElementName getElementName(){
 		return elementName;
@@ -495,20 +518,8 @@ public class ImageInfo extends ValueObject{
 		return unmodifiableList(applications);
 	}
 
-	/**
-	 * Returns the platform ID of the platform this image has been built for.
-	 * @return the platform ID 
-	 */
-	public PlatformId getPlatformId() {
-		return platformId;
-	}
-	
-	/**
-	 * Returns the platform name of the platform this image has been built for.
-	 * @return the platform name.
-	 */
-	public PlatformName getPlatformName() {
-		return platformName;
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
 	}
 		
 	/**
@@ -531,13 +542,19 @@ public class ImageInfo extends ValueObject{
 		return description;
 	}
 	
-	
 	/**
 	 * Return the image MD5 checksum or <code>null</code> if no MD5 checksum has been set.
 	 * @return the image MD5 checksum
 	 */
 	public Map<String,String> getChecksums() {
 		return unmodifiableMap(checksums);
+	}
+	
+	public List<PlatformSettings> getPlatforms() {
+	    if(platforms == null) {
+	        return emptyList();
+	    }
+		return unmodifiableList(platforms);
 	}
 	
 	

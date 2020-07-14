@@ -16,6 +16,7 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static io.leitstand.inventory.service.AdministrativeState.UP;
 
 import javax.json.JsonObject;
 import javax.json.bind.annotation.JsonbProperty;
@@ -43,6 +44,12 @@ public class ElementServiceSubmission extends ValueObject {
 			assertNotInvalidated(getClass(), service);
 			service.serviceType = type;
 			return this;
+		}
+		
+		public Builder withAdministrativeState(AdministrativeState state) {
+		    assertNotInvalidated(getClass(), service);
+		    service.administrativeState = state;
+		    return this;
 		}
 		
 		public Builder withOperationalState(OperationalState state) {
@@ -103,6 +110,7 @@ public class ElementServiceSubmission extends ValueObject {
 	@NotNull(message="{operational_state.required}")
 	private OperationalState operationalState;
 	
+	private AdministrativeState administrativeState = UP;
 	
 	public JsonObject getServiceContext() {
 		return serviceContext;
@@ -123,6 +131,10 @@ public class ElementServiceSubmission extends ValueObject {
 	public OperationalState getOperationalState() {
 		return operationalState;
 	}
+	
+	public AdministrativeState getAdministrativeState() {
+        return administrativeState;
+    }
 	
 	public String getServiceContextType() {
 		return serviceContextType;

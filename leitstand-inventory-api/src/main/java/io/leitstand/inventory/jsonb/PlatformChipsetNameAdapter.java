@@ -13,10 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.visitor;
+package io.leitstand.inventory.jsonb;
 
-public interface ElementTransformation<T> extends ElementVisitor {
+import javax.json.bind.adapter.JsonbAdapter;
 
-	T getResult();
-	
+import io.leitstand.inventory.service.PlatformChipsetName;
+
+public class PlatformChipsetNameAdapter implements JsonbAdapter<PlatformChipsetName,String> {
+
+	@Override
+	public String adaptToJson(PlatformChipsetName obj) throws Exception {
+		return PlatformChipsetName.toString(obj);
+	}
+
+	@Override
+	public PlatformChipsetName adaptFromJson(String obj) throws Exception {
+		return PlatformChipsetName.valueOf(obj);
+	}
+
 }

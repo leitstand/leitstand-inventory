@@ -184,28 +184,28 @@ public interface ElementConfigService {
 												     ElementConfigName configName);
 
 	/**
-     * Creates a new candidate configuration from a superseded or the currently active configuration.
+     * Creates a new candidate configuration from a superseded configuration.
 	 * Overrides existing candidate configurations.
 	 * @param elementName the element ID
 	 * @param configId the id of the configuration to be restored
 	 * @param comment an optional comment why the config is restored.
 	 * @return a reference to the created configuration
 	 */
-	StoreElementConfigResult editElementConfig(ElementId elementId,
+	StoreElementConfigResult restoreElementConfig(ElementId elementId,
 											   ElementConfigId configId,
 											   String comment);
 
 	/**
-     * Creates a new candidate configuration from a superseded or the currently active configuration.
+     * Creates a new candidate configuration from a superseded configuration.
 	 * Overrides existing candidate configurations.
 	 * @param elementName the element name
 	 * @param configId the id of the configuration to be restored
 	 * @param comment an optional comment why the config is restored
 	 * @return a reference to the created configuration
 	 */
-	StoreElementConfigResult editElementConfig(ElementName elementName,
-											   ElementConfigId configId,
-											   String comment);
+	StoreElementConfigResult restoreElementConfig(ElementName elementName,
+	                                              ElementConfigId configId,
+	                                              String comment);
 	
 	/**
 	 * Updates the comment of an existing configuration.

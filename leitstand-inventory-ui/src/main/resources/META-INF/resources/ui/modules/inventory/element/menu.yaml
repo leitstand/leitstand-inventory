@@ -7,8 +7,10 @@ extensions:
     after: pod
   menus:
   - menu: element
-    label: "{{element_name}}"
-    title: Manage an element in the network
+    label: Element
+    title: Element settings
+    entity: "{{element_role}} {{element_name}}"
+    expand: auto
     scopesAllowed:
       - ivt
       - ivt.read
@@ -37,15 +39,15 @@ extensions:
       label: Physical Interfaces  
       title: View all physical interfaces of the element
       view: element-ifps.html
-    - item: element-images
-      label: Images
-      title: View all images available on the element
-      view: element-images.html
+    - item: element-ifls
+      label: Logical Interfaces  
+      title: Inspect logical interfaces of this element.
+      view: element-ifls.html
     - item: element-services
       label: Services
       title: View all servces installed on the element
       view: element-services.html
-    - item: element-tools
-      label: Tools
-      title: See all available tools for this element
-      view: element-tools.html
+    - item: element-images
+      label: Images
+      title: View all images available on the element
+      view: element-images.html

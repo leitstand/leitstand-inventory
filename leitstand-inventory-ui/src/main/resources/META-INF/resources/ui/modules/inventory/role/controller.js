@@ -27,19 +27,6 @@ const rolesController = function() {
 const roleController = function() {
 	const role = new Role();
 	return new Controller({resource:role,
-					 viewModel:function(settings){//TODO Refactor when porting to UI components.
-						 settings.planes=[{"plane":"DATA",
-									    "display_name":"Data Plane",
-									    "selected":(settings.plane == "DATA" ? "selected" : "")},
-									   {"plane":"CONTROL",
-										"display_name":"Control Plane",
-										 "selected":(settings.plane == "CONTROL" ? "selected" : "")},
-										{"plane":"MANAGEMENT",
-										 "display_name":"Management Plane",
-										 "selected":(settings.plane == "MANAGEMENT" ? "selected" : "")}];
-						settings["check-manageable"]=settings.manageable ? "checked" : ""; 
-						return settings;
-					 },
 					 buttons:{
 						"save":function(){
 							 const settings = this.updateViewModel({

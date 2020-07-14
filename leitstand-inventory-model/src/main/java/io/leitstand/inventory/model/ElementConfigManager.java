@@ -42,6 +42,7 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0331I_ELEMENT_CONFIG_
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
+import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configCreated;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configUpdated;
 import static io.leitstand.security.auth.UserName.userName;
@@ -57,6 +58,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.MessageFactory;
@@ -70,6 +72,7 @@ import io.leitstand.inventory.service.ElementConfigName;
 import io.leitstand.inventory.service.ElementConfigReference;
 import io.leitstand.inventory.service.ElementConfigRevisions;
 import io.leitstand.inventory.service.ElementConfigs;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.StoreElementConfigResult;
 import io.leitstand.security.auth.UserContext;
 import io.leitstand.security.auth.UserName;
@@ -83,7 +86,7 @@ public class ElementConfigManager {
 	private DatabaseService database;
 	private Messages messages;
 	private Event<ElementConfigEvent> event;
-	private UserName creator;
+	private UserContext creator;
 	
 	@Inject
 	protected ElementConfigManager(	@Inventory Repository repository, 
@@ -91,7 +94,7 @@ public class ElementConfigManager {
 									UserContext authenticated,
 									Event<ElementConfigEvent> event,
 									Messages messages){
-		this.creator = authenticated.getUserName();
+		this.creator = authenticated;
 		this.repository = repository;
 		this.database   = database;
 		this.event = event;
@@ -225,7 +228,7 @@ public class ElementConfigManager {
 		Element_Config config = repository.execute(findActiveConfig(element,configName));
 		
 		if(config == null) {
-			LOG.fine(() -> format("%s: No active %s configuration for element found.",
+			LOG.fine(() -> format("%s: No active %s configuration for element %s found.",
 								  IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,
 								  configName,
 								  element.getElementName()));
@@ -327,7 +330,7 @@ public class ElementConfigManager {
 									contentType,
 									contentHash,
 									configData,
-									creator);
+									creator.getUserName());
 		config.setComment(comment);
 		repository.add(config);
 		LOG.fine(() -> format("%s: Stored new %s configuration for element %s (%s)",
@@ -445,15 +448,23 @@ public class ElementConfigManager {
 					    	  count,
 					    	  configName,
 					    	  element.getElementName()));	
-		messages.add(MessageFactory.createMessage(IVT0337I_ELEMENT_CONFIG_REMOVED, element.getElementName(),configName));
+		messages.add(createMessage(IVT0337I_ELEMENT_CONFIG_REMOVED, element.getElementName(),configName));
 		
 		return count;
 	}
 
-	public StoreElementConfigResult editElementConfig(Element element, 
+	public StoreElementConfigResult restoreElementConfig(Element element, 
 													  ElementConfigId configId, 
 													  String comment) {
 		Element_Config config = findConfig(element, configId);
+		if(config.getConfigState() != ConfigurationState.SUPERSEDED) {
+		    LOG.fine(() -> format("%s: Cannot restore %s %s configuration. Only superseded configurations are restorable.",
+		                          IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE.getReasonCode(),
+		                          config.getConfigState(),
+		                          config.getName()));
+		    
+		    throw new ConflictException(IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,config.getName(),config.getConfigState());
+		}
 		return storeElementConfig(element, 
 								  config.getName(), 
 								  MediaType.valueOf(config.getContentType()), 

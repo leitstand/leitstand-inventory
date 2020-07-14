@@ -18,8 +18,6 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.commons.model.ObjectUtil.optional;
 
-import java.util.Date;
-
 import io.leitstand.commons.model.ValueObject;
 
 /**
@@ -38,6 +36,7 @@ public class ServiceInfo extends ValueObject {
 	/**
 	 * The builder to create an immutable <code>ElementServiceData</code> instance.
 	 */
+	@SuppressWarnings("unchecked")
 	public static class BaseServiceBuilder<T extends ServiceInfo, B extends BaseServiceBuilder<T,B>> {
 		
 		protected T service;
@@ -82,7 +81,7 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service display name.
-		 * @param name - the display name
+		 * @param name the display name
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withDisplayName(String name){
@@ -92,19 +91,20 @@ public class ServiceInfo extends ValueObject {
 		}
 		
 		/**
-		 * Sets the last modification timestamp of the service inventory record
-		 * @param date - the last modification date
+		 * Sets the administrative state of the service.
+		 * @param state the administrative state
 		 * @return a reference to this builder to continue object creation
 		 */
-		public B withDateModified(Date date){
-			assertNotInvalidated(getClass(), service);
-			((ServiceInfo)service).dateModified = new Date(date.getTime());
-			return (B) this;
-		}
+	     public B withAdministrativeState(AdministrativeState state){
+	         assertNotInvalidated(getClass(), service);
+	         ((ServiceInfo)service).administrativeState = state;
+	         return (B) this;
+	     }
+		
 		
 		/**
 		 * Sets the operational state of the service.
-		 * @param state - the operational state
+		 * @param state the operational state
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withOperationalState(OperationalState state){
@@ -115,7 +115,7 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service type.
-		 * @param serviceType - the service type
+		 * @param serviceType the service type
 		 * @return a reference to this builder to continue object creation
 		 */
 		public B withServiceType(ServiceType serviceType) {
@@ -150,6 +150,7 @@ public class ServiceInfo extends ValueObject {
 		protected Builder() {
 			super(new ServiceInfo());
 		}
+
 	}
 	
 	private ElementId elementId;
@@ -164,9 +165,9 @@ public class ServiceInfo extends ValueObject {
 	
 	private String description;
 	
-	private OperationalState operationalState;
+	private AdministrativeState administrativeState;
 	
-	private Date dateModified;
+	private OperationalState operationalState;
 	
 	private ServiceType serviceType;
 	
@@ -186,20 +187,16 @@ public class ServiceInfo extends ValueObject {
 		return displayName;
 	}
 	
+	public AdministrativeState getAdministrativeState() {
+        return administrativeState;
+    }
+	
 	/**
 	 * Returns the operational state of the service.
 	 * @return the operational state
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
-	}
-	
-	/**
-	 * Returns the last modification date of the service inventory record.
-	 * @return the last modification date.
-	 */
-	public Date getDateModified(){
-		return new Date(dateModified.getTime());
 	}
 	
 	/**

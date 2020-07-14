@@ -97,8 +97,8 @@ public class ElementServicesManager {
 			services.add(newServiceInfo()
 						 .withServiceName(service.getServiceName())
 						 .withDisplayName(service.getDisplayName())
+						 .withAdministrativeState(service.getAdministrativeState())
 						 .withOperationalState(service.getOperationalState())
-						 .withDateModified(service.getDateModified())
 						 .withServiceType(service.getServiceType())
 						 .build());
 			
@@ -132,38 +132,38 @@ public class ElementServicesManager {
 		
 		
 		String sql = "WITH RECURSIVE HIERARCHY (servicecontext_id, element_id, element_uuid, element_name, service_id, service_type,service_name, "+
-		                                       "service_op_state, service_display_name, "+
-				                               "parent_servicecontext_id, level)"+ 
+		                                       "service_opstate, service_display_name, "+
+				                               "parent_id, level)"+ 
 					 "AS ( "+
 					 "SELECT servicecontext_id, element_id, element_uuid, element_name, service_id, service_type, service_name,"+
-		                    "service_op_state, service_display_name, "+
-				            "parent_servicecontext_id, 1 "+
+		                    "service_opstate, service_display_name, "+
+				            "parent_id, 1 "+
 					 "FROM inventory.service_context "+
 					 "WHERE element_uuid=? AND service_name=? "+
 					 "UNION ALL "+
 					 "SELECT c.servicecontext_id, c.element_id, c.element_uuid, c.element_name, c.service_id, c.service_type, c.service_name, "+
-	                        "c.service_op_state, c.service_display_name,"+
-			                "c.parent_servicecontext_id, level + 1 "+
+	                        "c.service_opstate, c.service_display_name,"+
+			                "c.parent_id, level + 1 "+
 					 "FROM   inventory.service_context c "+ 
 					 "JOIN 	 HIERARCHY h "+
-					 "ON 	 c.servicecontext_id = h.parent_servicecontext_id "+
+					 "ON 	 c.servicecontext_id = h.parent_id "+
 					 ") "+
-					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_op_state "+
+					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_opstate "+
 					 "FROM   HIERARCHY ctx "+
 					 "WHERE  level < 10 "+ // Circuit breaker, if someone has accidentally stored a circular service dependency
 					 "ORDER BY level"; // Order the result by level to get a proper order of the service hierarchy.
 		
 		List<ServiceInfo> services = datasource.executeQuery(prepare(sql,
-																				 element.getElementId().toString(),
-																				 name.toString()),
-						  												 rs ->  newServiceInfo()
-						  												 		.withElementId(elementId(rs.getString(1)))
-						  													   	.withElementName(elementName(rs.getString(2)))
-						  													   	.withServiceType(ServiceTypeConverter.parse(rs.getString(3)))
-						  													   	.withServiceName(serviceName(rs.getString(4)))
-						  													   	.withDisplayName(rs.getString(5))
-						  													   	.withOperationalState(toOperationalState(rs.getString(6)))
-																				.build());
+																	 element.getElementId().toString(),
+																	 name.toString()),
+						  									 rs ->  newServiceInfo()
+						  											.withElementId(elementId(rs.getString(1)))
+						  											.withElementName(elementName(rs.getString(2)))
+						  											.withServiceType(ServiceTypeConverter.parse(rs.getString(3)))
+						  											.withServiceName(serviceName(rs.getString(4)))
+						  											.withDisplayName(rs.getString(5))
+						  											.withOperationalState(toOperationalState(rs.getString(6)))
+																	.build());
 		return newElementServiceStack()
 			   .withGroupId(group.getGroupId())
 			   .withGroupName(group.getGroupName())
@@ -185,7 +185,7 @@ public class ElementServicesManager {
 			Service serviceDef = repository.execute(findService(submission.getServiceName()));
 			if(serviceDef == null){
 				serviceDef = transaction.run(action -> { Service newServiceDef = new Service(submission.getServiceType(),
-																							   submission.getServiceName());
+																							 submission.getServiceName());
 														 action.add(newServiceDef);}, 
 											  resume -> resume.execute(findService(submission.getServiceName())));
 			}
@@ -193,6 +193,7 @@ public class ElementServicesManager {
 			repository.add(service);
 			created = true;
 		}
+		service.setAdministrativeState(submission.getAdministrativeState());
 		service.setOperationalState(submission.getOperationalState());
 		service.setServiceContext(submission.getServiceContext());
 		service.setServiceContextType(submission.getServiceContextType());
@@ -307,6 +308,7 @@ public class ElementServicesManager {
 					   		.withServiceName(service.getServiceName())
 					   		.withDisplayName(service.getDisplayName())
 					   		.withDescription(service.getDescription())
+					   		.withAdministrativeState(service.getAdministrativeState())
 					   		.withOperationalState(service.getOperationalState())
 					   		.withServiceContextType(service.getServiceContextType())
 					   		.withServiceContext(service.getServiceContext())

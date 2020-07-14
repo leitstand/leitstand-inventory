@@ -30,6 +30,7 @@ public class DnsZoneSettings extends ValueObject {
 		return new Builder();
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected static class DnsZoneSettingsBuilder<T extends DnsZoneSettings,B extends DnsZoneSettingsBuilder<T,B>>  {
 		
 		protected T zone;

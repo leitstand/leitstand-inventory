@@ -18,8 +18,10 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static javax.persistence.GenerationType.TABLE;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,14 +30,16 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 
 import io.leitstand.commons.model.Query;
-import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.service.Version;
 
 @Entity
@@ -59,7 +63,7 @@ import io.leitstand.inventory.service.Version;
 				  "AND p.minor=:minor "+
 				  "AND p.patch=:patch "+
 				  "AND p.prerelease=:prerelease")
-public class Package_Version extends VersionableEntity {
+public class Package_Version implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -85,6 +89,18 @@ public class Package_Version extends VersionableEntity {
 					   .getSingleResult();
 	}
 
+	@Id
+	@TableGenerator(name = "Entity.Sequence",
+				    schema="leitstand",
+				    table = "sequence", 
+				    initialValue = 1, 
+				    allocationSize = 100, 
+				    pkColumnName = "name", 
+				    pkColumnValue = "id", 
+				    valueColumnName = "count")
+	@GeneratedValue(strategy=TABLE, generator="Entity.Sequence")
+	private Long id;
+	
 	@ManyToOne
 	@JoinColumn(name="package_id", nullable=false)
 	private Package pkg;

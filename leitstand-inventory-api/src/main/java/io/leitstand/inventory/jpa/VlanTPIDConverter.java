@@ -13,24 +13,29 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.service;
+package io.leitstand.inventory.jpa;
 
-public enum ServiceContextState {
-	ACTIVE,
-	COLD_STANDBY,
-	HOT_STANDBY,
-	INACTIVE;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-	public static ServiceContextState parse(String s) {
-		if("A".equals(s)){
-			return ACTIVE;
+import io.leitstand.inventory.service.VlanTPID;
+@Converter(autoApply=true)
+public class VlanTPIDConverter implements AttributeConverter<VlanTPID, Integer> {
+
+	@Override
+	public Integer convertToDatabaseColumn(VlanTPID attribute) {
+		if(attribute == null) {
+			return null;
 		}
-		if("C".equals(s)){
-			return COLD_STANDBY;
-		}
-		if("H".equals(s)){
-			return HOT_STANDBY;
-		}
-		return INACTIVE;
+		return attribute.getValue();
 	}
+
+	@Override
+	public VlanTPID convertToEntityAttribute(Integer dbData) {
+		if(dbData == null) {
+			return null;
+		}
+		return new VlanTPID(dbData);
+	}
+
 }

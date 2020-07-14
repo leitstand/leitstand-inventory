@@ -32,11 +32,14 @@ public class OperationalState extends Scalar<String>{
 
 	public static final OperationalState UP = new OperationalState("UP");
 	public static final OperationalState DOWN = new OperationalState("DOWN");
+	public static final OperationalState FAILED = new OperationalState("FAILED");
 	public static final OperationalState STARTED = new OperationalState("STARTED");
 	public static final OperationalState PARTIAL = new OperationalState("PARTIAL");
 	public static final OperationalState STOPPED = new OperationalState("STOPPED");
 	public static final OperationalState MAINTENANCE = new OperationalState("MAINTENANCE");
 	public static final OperationalState OPERATIONAL = new OperationalState("OPERATIONAL");
+	/** @deprecated use FAILED instead.*/
+	@Deprecated
 	public static final OperationalState MALFUNCTION = new OperationalState("MALFUNCTION");
 	public static final OperationalState UNKNOWN = new OperationalState("UNKNOWN");
 	public static final OperationalState DETACHED = new OperationalState("DETACHED");

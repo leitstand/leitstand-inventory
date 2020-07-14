@@ -15,7 +15,10 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.inventory.service.ServiceId.serviceId;
+
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -28,6 +31,7 @@ import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.ServiceNameConverter;
 import io.leitstand.inventory.jpa.ServiceTypeConverter;
+import io.leitstand.inventory.service.ServiceId;
 import io.leitstand.inventory.service.ServiceName;
 import io.leitstand.inventory.service.ServiceType;
 
@@ -72,6 +76,7 @@ public class Service extends VersionableEntity{
 	}
 	
 	public Service(ServiceType type, ServiceName name){
+		super(UUID.randomUUID().toString());
 		this.type = type;
 		this.name = name;
 		this.displayName = name.toString();
@@ -89,6 +94,10 @@ public class Service extends VersionableEntity{
 		this.description = description;
 	}
 	
+	public ServiceId getServiceId() {
+		return serviceId(getUuid());
+	}
+	
 	public ServiceName getServiceName() {
 		return name;
 	}
@@ -103,5 +112,6 @@ public class Service extends VersionableEntity{
 	public ServiceType getServiceType(){
 		return type;
 	}
+
 	
 }

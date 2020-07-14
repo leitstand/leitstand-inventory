@@ -32,7 +32,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import io.leitstand.commons.ConflictException;
-import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.ElementRoleSettings;
@@ -44,8 +43,6 @@ public class ElementRoleManager  {
 	
 	private Repository repository;
 	
-	private DatabaseService db; 
-	
 	private Messages messages;
 	
 	protected ElementRoleManager() {
@@ -54,18 +51,17 @@ public class ElementRoleManager  {
 	
 	@Inject
 	protected ElementRoleManager(@Inventory Repository repository,
-								 @Inventory DatabaseService db,
 								 Messages messages) {
 		this.repository = repository;
-		this.db = db;
 		this.messages = messages;
 	}
 	
 	public List<ElementRoleSettings> getElementRoles() {
-		return repository.execute(findRoles())
-						 .stream()
-						 .map(role -> roleSettings(role))
-						 .collect(toList());
+		return repository
+			   .execute(findRoles())
+			   .stream()
+			   .map(role -> roleSettings(role))
+			   .collect(toList());
 	}
 
 	private ElementRoleSettings roleSettings(ElementRole role) {

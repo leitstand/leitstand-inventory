@@ -22,8 +22,6 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOU
 import static io.leitstand.inventory.service.ReasonCode.IVT0350E_ELEMENT_IFP_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0353E_ELEMENT_IFP_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,9 +35,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.event.Event;
 
@@ -99,12 +95,9 @@ public class ElementPhysicalInterfaceManagerTest {
 	
 	@Test
 	public void cannot_remove_physical_interface_with_associated_logical_interfaces() {
-		when(repository.execute(any(Query.class))).thenReturn(ifp);
+		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(1L);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
 		when(ifp.getContainerInterface()).thenReturn(ifc);
-		Set<Element_LogicalInterface> ifls = new HashSet<>(asList(mock(Element_LogicalInterface.class),
-			    											  	  mock(Element_LogicalInterface.class)));
-		when(ifc.getLogicalInterfaces()).thenReturn(ifls);
 		
 		exception.expect(ConflictException.class);
 		exception.expect(reason(IVT0353E_ELEMENT_IFP_NOT_REMOVABLE));
@@ -114,10 +107,10 @@ public class ElementPhysicalInterfaceManagerTest {
 	
 	@Test
 	public void remove_physical_interface_without_associated_logical_interfaces() {
-		when(repository.execute(any(Query.class))).thenReturn(ifp);
+		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(0L);
+		when(ifp.getElement()).thenReturn(element);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
 		when(ifp.getContainerInterface()).thenReturn(ifc);
-		when(ifc.getLogicalInterfaces()).thenReturn(emptySet());
 		manager.removePhysicalInterface(element, IFP_NAME);
 		
 		verify(repository).remove(ifc);

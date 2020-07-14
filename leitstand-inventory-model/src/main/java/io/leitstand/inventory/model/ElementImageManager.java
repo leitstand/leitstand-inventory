@@ -16,33 +16,35 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
+import static io.leitstand.commons.model.ObjectUtil.optional;
+import static io.leitstand.inventory.model.DefaultImageService.referenceOf;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImage;
 import static io.leitstand.inventory.model.Element_Image.findInstalledImages;
-import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
+import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.findUpdates;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.newElementAvailableUpdate;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MAJOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.MINOR;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PATCH;
-import static io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType.PRERELEASE;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.newElementAvailableUpgrade;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MAJOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MINOR;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PATCH;
+import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PRERELEASE;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
+import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
-import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
 import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalleImages;
+import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0342I_ELEMENT_IMAGE_REMOVED;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -50,39 +52,27 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import io.leitstand.commons.ConflictException;
-import io.leitstand.commons.UnprocessableEntityException;
+import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
-import io.leitstand.inventory.service.ElementAvailableUpdate;
-import io.leitstand.inventory.service.ElementAvailableUpdate.UpdateType;
+import io.leitstand.inventory.service.ElementAvailableUpgrade;
+import io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType;
 import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ElementInstalledImage;
 import io.leitstand.inventory.service.ElementInstalledImageData;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ImageId;
-import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageInfo;
+import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
-import io.leitstand.inventory.service.Version;
 
 @Dependent
 public class ElementImageManager {
 
 	private static final Logger LOG = Logger.getLogger(ElementImageManager.class.getName());
-	
-	private static Comparator<? super ElementInstalledImageReference> INSTALLED_ELEMENT_COMPARATOR = (a,b)->{
-			int key = a.getImageType().compareTo(b.getImageType());
-			if(key != 0) {
-				return key;
-			}
-			key = a.getImageName().compareTo(b.getImageName());
-			if(key != 0) {
-				return key;
-			}
-			return a.getImageVersion().compareTo(b.getImageVersion());
-		};
 	
 	private Repository repository;
 	private Messages messages;
@@ -115,17 +105,19 @@ public class ElementImageManager {
 				packages.add(packageVersionInfo(revision));
 			}
 			
-			List<ElementAvailableUpdate> updates = new LinkedList<>();
-			for(Image update : repository.execute(findUpdates(image.getPlatform(),
+			List<ElementAvailableUpgrade> updates = new LinkedList<>();
+			for(Image update : repository.execute(findUpdates(element.getPlatform(),
 															  image.getImageType(), 
 															  image.getImageName(),
-															  image.getElementRole(), 
+															  element.getElementRole(), 
 															  image.getImageVersion(), 
 															  element))){
-				UpdateType type = updateType(image, update);
+				UpgradeType type = updateType(image, update);
 				
-				updates.add(newElementAvailableUpdate()
+				updates.add(newElementAvailableUpgrade()
 						    .withImageId(update.getImageId())
+						    .withImageName(update.getImageName())
+						    .withImageState(update.getImageState())
 							.withImageVersion(update.getImageVersion())
 							.withBuildDate(update.getBuildDate())
 							.withUpdateType(type)
@@ -137,8 +129,8 @@ public class ElementImageManager {
 						  .withImageType(image.getImageType())
 						  .withImageState(image.getImageState())
 						  .withImageName(image.getImageName())
-						  .withElementRole(image.getElementRoleName())
 						  .withElementImageState(elementImage.getInstallationState())
+						  .withZtp(elementImage.isZtp())
 						  .withImageExtension(image.getImageExtension())
 						  .withImageVersion(image.getImageVersion())
 						  .withChecksums(image.getChecksums().stream().collect(Collectors.toMap(c -> c.getAlgorithm().name(), Checksum::getValue)))
@@ -161,8 +153,8 @@ public class ElementImageManager {
 		
 	}
 
-	private UpdateType updateType(Image image, Image update) {
-		UpdateType type = PRERELEASE;
+	private UpgradeType updateType(Image image, Image update) {
+		UpgradeType type = PRERELEASE;
 		if(update.getImageVersion().getMajorLevel() > image.getImageVersion().getMajorLevel()){
 			type = MAJOR;
 		}
@@ -186,17 +178,19 @@ public class ElementImageManager {
 			packages.add(packageVersionInfo(revision));
 		}
 		
-		List<ElementAvailableUpdate> updates = new LinkedList<>();
-		for(Image update : repository.execute(findUpdates(image.getPlatform(),
+		List<ElementAvailableUpgrade> updates = new LinkedList<>();
+		for(Image update : repository.execute(findUpdates(element.getPlatform(),
 														  image.getImageType(), 
 														  image.getImageName(),
-														  image.getElementRole(),
+														  element.getElementRole(),
 														  image.getImageVersion(),
 														  element))){
-			UpdateType type = updateType(image, update);
+			UpgradeType type = updateType(image, update);
 			
-			updates.add(newElementAvailableUpdate()
+			updates.add(newElementAvailableUpgrade()
 					 	.withImageId(update.getImageId())
+					 	.withImageName(update.getImageName())
+					 	.withImageState(update.getImageState())
 					 	.withImageVersion(update.getImageVersion())
 					 	.withBuildDate(update.getBuildDate())
 						.withUpdateType(type)
@@ -212,11 +206,11 @@ public class ElementImageManager {
 			   .withElementRole(element.getElementRoleName())
 			   .withImage(newElementInstalledImageData()
 					   	  .withImageId(image.getImageId())
+					   	  .withZtp(elementImage.isZtp())
 					   	  .withOrganization(image.getOrganization())
 				   		  .withImageType(image.getImageType())
 				   		  .withImageState(image.getImageState())
 				   		  .withImageName(image.getImageName())
-				   		  .withElementRole(image.getElementRoleName())
 				   		  .withImageExtension(image.getImageExtension())
 						  .withElementImageState(elementImage.getInstallationState())
 				   		  .withImageVersion(image.getImageVersion())
@@ -228,39 +222,36 @@ public class ElementImageManager {
 				   		  .withBuildDate(image.getBuildDate())
 				   		  .withPackages(packages)
 				   		  .withAvailableUpdates(updates))
+			              
 			   .build();
 			
 	}
 	
 	public void storeInstalledImages(Element element, List<ElementInstalledImageReference> refs) {
-		Map<ElementInstalledImageReference,Element_Image> images = new TreeMap<>(INSTALLED_ELEMENT_COMPARATOR);
+		Map<ImageId,Element_Image> images = new HashMap<>();
 		for(Element_Image image : repository.execute(findInstalledImages(element))){
-			ElementInstalledImageReference installed = newElementInstalledImageReference()
-													   .withImageType(image.getImageType())
-													   .withImageName(image.getImageName())
-													   .withImageVersion(image.getImageVersion())
-													   .build();
-			images.put(installed,image);
+			images.put(image.getImageId(),image);
 		}
 		
 		for(ElementInstalledImageReference installed : refs){
-			Element_Image image = images.remove(installed);
+			Element_Image image = images.remove(installed.getImageId());
 			if(image != null) {
 				image.setImageInstallationState(imageInstallationState(installed));
 				continue;
 			}
-			Image artefact = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																					 installed.getImageType(), 
-																					 installed.getImageName(),
-																					 installed.getImageVersion()));
+			Image artefact = repository.execute(findImageById(installed.getImageId()));
 			if(artefact == null){
-				LOG.warning(() -> format("%s: %s %s in group %s attempted to register image %s-%s-%s which is unknown to the inventory!",
+				
+				
+				LOG.warning(() -> format("%s: %s %s in %s %s attempted to register image %s (%s) which is unknown to the inventory!",
 										 IVT0340W_ELEMENT_IMAGE_NOT_FOUND.getReasonCode(),
 										 element.getElementRoleName(),
 										 element.getElementName(),
-										 element.getGroup().getGroupName(),
+										 element.getGroupType(),
+										 element.getGroupName(),
+										 installed.getImageId(),
 										 installed.getImageType(),
-										 installed.getImageName(),
+										 optional(installed, ElementInstalledImageReference::getImageName,"no name specified"),
 										 installed.getImageVersion()));
 				messages.add(createMessage(IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
 						  				   element.getElementName(),
@@ -292,105 +283,95 @@ public class ElementImageManager {
 		return installed.isActive() ? ACTIVE : CACHED;
 	}
 
-	
-	public void removeInstalledImage(Element element, 
-									 ImageType type, 
-									 ImageName name,
-									 Version version) {
-		Element_Image installed = repository.execute(findInstalledImage(element, 
-																		type,
-																		name,
-																		version));
-		if(installed == null) {
+
+	public void removeInstalledImage(Element element, ImageId imageId) {
+		Element_Image image = repository.execute(findInstalledImage(element, imageId));
+		if(image == null) {
 			return;
 		}
-		
-		if(installed.isActive()) {
+		if(image.isActive()) {
+			LOG.fine(() -> format("%s: Active image %s (%s) cannot be removed from element %s (%s)",
+								  IVT0341E_ELEMENT_IMAGE_ACTIVE.getReasonCode(),
+								  image.getImageName(),
+								  image.getImageId(),
+								  element.getElementName(),
+								  element.getElementId()));
 			throw new ConflictException(IVT0341E_ELEMENT_IMAGE_ACTIVE, 
-										installed.getImageType(),
-										installed.getImageVersion());
+										element.getElementName(), 
+										image.getImageName(), 
+										image.getImageId());
 		}
 		
-		repository.remove(installed);
+		messages.add(createMessage(IVT0342I_ELEMENT_IMAGE_REMOVED, 
+								   element.getElementName(), 
+								   image.getImageName(),
+								   image.getImageId()));
+		repository.remove(image);
 		
 	}
 
-	public void storeCachedImages(Element element, List<ElementInstalledImageReference> refs) {
-		Map<ElementInstalledImageReference,Element_Image> images = new TreeMap<>(INSTALLED_ELEMENT_COMPARATOR);
-		for(Element_Image image : repository.execute(findInstalledImages(element))){
-			ElementInstalledImageReference installed = newElementInstalledImageReference()
-					   								   .withImageType(image.getImageType())
-					   								   .withImageName(image.getImageName())
-					   								   .withImageVersion(image.getImageVersion())
-					   								   .build();
-			images.put(installed, image);
-		}
-		
-		for(ElementInstalledImageReference installed : refs){
-			if(installed.isActive()) {
-				throw new UnprocessableEntityException(IVT0341E_ELEMENT_IMAGE_ACTIVE, 
-													   installed.getImageType(),
-													   installed.getImageName(),
-													   installed.getImageVersion());
-			}
-		
-			Image artefact = repository.execute(findByElementAndImageTypeAndVersion(element, 
-																					 installed.getImageType(), 
-																					 installed.getImageName(),
-																					 installed.getImageVersion()));
-			if(artefact == null){
-				LOG.warning(() -> format("%s: %s %s in group %s attempted to register image %s-%s-%s which is unknown to the inventory!",
-										 IVT0340W_ELEMENT_IMAGE_NOT_FOUND.getReasonCode(),
-										 element.getElementRoleName(),
-										 element.getElementName(),
-										 element.getGroup().getGroupName(),
-										 installed.getImageType(),
-										 installed.getImageName(),
-										 installed.getImageVersion()));
-				messages.add(createMessage(IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
-		  				   				  element.getElementName(),
-		  				   				  format("%s-%s-%s",
-		  				   						  installed.getImageType(), 
-		  				   						  installed.getImageName(), 
-		  				   						  installed.getImageVersion())));
-				continue; // With next entry.
-			}
-			
-			Element_Image image = images.get(installed);
-			if(image != null) {
-				continue;
-			}
-					
-			image = new Element_Image(element,artefact);
-			image.setImageInstallationState(CACHED);
-			repository.add(image);
-		}
-	}
 
-	public void removeCachedImages(Element element, List<ElementInstalledImageReference> refs) {
-		Map<ElementInstalledImageReference,Element_Image> images = new HashMap<>();
-		for(Element_Image image : repository.execute(findInstalledImages(element))){
-			ElementInstalledImageReference installed = newElementInstalledImageReference()
-					   								   .withImageType(image.getImageType())
-					   								   .withImageName(image.getImageName())
-					   								   .withImageVersion(image.getImageVersion())
-					   								   .withElementImageState(image.getInstallationState())
-					   								   .build();
-			images.put(installed,image);
-		}
-		
-		for(ElementInstalledImageReference installed : refs){
-			Element_Image image = images.remove(installed);
-			if(image == null){
-				continue; // Already removed
-			}
-			if(image.isActive()) {
-				throw new ConflictException(IVT0341E_ELEMENT_IMAGE_ACTIVE, 
-											installed.getImageType(),
-											installed.getImageVersion());
-			}
-			repository.remove(image);
-		}
-	}
+    public void setZtpImage(Element element, ImageId imageId) {
+        Image image = repository.execute(findImageById(imageId));
+        if(image == null) {
+            throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageId);
+        }
+        boolean ztpSet = false;
+        for(Element_Image elementImage : repository.execute(findInstalledImages(element))){
+            if(elementImage.isZtp()) {
+               if(elementImage.getImageId().equals(imageId)) {
+                   return; // No ZTP changes needed. We're done.
+               }
+               
+               if(elementImage.getInstallationState() == PULL) {
+                   // Remove PULL image if it is not longer the ZTP image.
+                   repository.remove(elementImage);
+               } else {
+                   // Keep all other images but don't declare them as ZTP image.
+                   elementImage.setZtp(false);
+               }
+               continue; // process next image.
+            }
+            
+            if(elementImage.getImageId().equals(imageId)) {
+                elementImage.setZtp(true);
+                ztpSet = true; // ZTP image found.
+                // Still need to continue to process the remaining images to find old ZTP image that now needs to be set to false.
+            }
+        }
+        if(!ztpSet) {
+            // Create a PULL image for the ZTP image.
+            Element_Image ztpImage = new Element_Image(element,image);
+            ztpImage.setImageInstallationState(PULL); // Must be PULL because otherwise it would have been processed in the loop above.
+            ztpImage.setZtp(true); // This image shall be pulled via ZTP when doing an upgrade.
+            repository.add(ztpImage);
+        }
+    }
+
+    public void resetZtpImage(Element element) {
+        for(Element_Image image : repository.execute(findInstalledImages(element))){
+            if(image.isZtp()) {
+                if(image.getInstallationState() == PULL) {
+                    // A pull image is not needed anymore if it is not a ZTP image.
+                    repository.remove(image);
+                } else {
+                    image.setZtp(false);
+                }
+            }
+        }
+    }
+
+
+    public ImageReference getZtpImage(Element element) {
+        for(Element_Image image : repository.execute(findInstalledImages(element))) {
+            if(image.isZtp()) {
+                return referenceOf(image.getImage());
+            }
+        }
+        return null;
+        
+        
+    }
+    
 
 }

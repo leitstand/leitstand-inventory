@@ -69,7 +69,6 @@ public class ElementLogicalInterfaceManagerTest {
 		this.event = mock(Event.class);
 		
 		this.manager = new ElementLogicalInterfaceManager(repository, 
-														   elements, 
 														   messages, 
 														   event);
 		
@@ -87,7 +86,6 @@ public class ElementLogicalInterfaceManagerTest {
 		
 		manager.removeLogicalInterface(element, iflName);
 		
-		verify(ifc).removeLogicalInterface(ifl);
 		verify(repository).remove(ifl);
 	}
 	

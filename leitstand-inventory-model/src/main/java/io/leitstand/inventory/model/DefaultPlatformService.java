@@ -80,6 +80,7 @@ public class DefaultPlatformService implements PlatformService{
 		return newPlatformSettings()
 			   .withPlatformId(platform.getPlatformId())
 			   .withPlatformName(platform.getPlatformName())
+			   .withPlatformChipset(platform.getChipset())
 			   .withVendorName(platform.getVendor())
 			   .withModelName(platform.getModel())
 			   .withDescription(platform.getDescription())
@@ -119,11 +120,13 @@ public class DefaultPlatformService implements PlatformService{
 			Platform platform = repository.execute(findByPlatformId(settings.getPlatformId()));
 			if(platform == null) {
 				platform = new Platform(settings.getPlatformId(),
-										settings.getPlatformName());
+										settings.getPlatformName(),
+										settings.getPlatformChipset());
 				repository.add(platform);
 				created = true;
 			}
 			platform.setPlatformName(settings.getPlatformName());
+			platform.setChipset(settings.getPlatformChipset());
 			platform.setVendor(settings.getVendorName());
 			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
@@ -132,13 +135,11 @@ public class DefaultPlatformService implements PlatformService{
 			return created;
 		} finally {
 			messages.add(createMessage(IVT0901I_PLATFORM_STORED, 
-									   settings.getVendorName(),
-									   settings.getModelName()));
+									   settings.getPlatformName()));
 			
-			LOG.fine(() -> format("%s: Platform %s %s stored (%s)",
+			LOG.fine(() -> format("%s: Platform %s stored (%s)",
 								  IVT0901I_PLATFORM_STORED.getReasonCode(),
-								  settings.getVendorName(),
-								  settings.getModelName(),
+								  settings.getPlatformName(),
 								  settings.getPlatformId()));
 			
 		}
@@ -164,26 +165,22 @@ public class DefaultPlatformService implements PlatformService{
 			if(count == 0) {
 				repository.remove(platform);
 				messages.add(createMessage(IVT0902I_PLATFORM_REMOVED, 
-										   platform.getVendor(),
-										   platform.getModel()));
-				LOG.fine(()->format("%s: Platform %s %s removed (%s)", 
+										   platform.getPlatformName()));
+				LOG.fine(()->format("%s: Platform %s removed (%s)", 
 									IVT0902I_PLATFORM_REMOVED.getReasonCode(),
-									platform.getVendor(),
-									platform.getModel(),
+									platform.getPlatformName(),	
 									platform.getPlatformId()));
 				return;
 			}
 			
-			LOG.fine(()->format("%s: Platform %s %s cannot be removed (%s) because of %d existing elements.", 
+			LOG.fine(()->format("%s: Platform %s cannot be removed (%s) because of %d existing elements.", 
 							    IVT0903E_PLATFORM_NOT_REMOVABLE.getReasonCode(),
-							    platform.getVendor(),
-							    platform.getModel(),
+							    platform.getPlatformName(),
 							    platform.getPlatformId(),
 							    count));
 			
 			throw new ConflictException(IVT0903E_PLATFORM_NOT_REMOVABLE,
-										platform.getVendor(), 
-										platform.getModel(), 
+										platform.getPlatformName(), 
 										count);
 		}
 	}

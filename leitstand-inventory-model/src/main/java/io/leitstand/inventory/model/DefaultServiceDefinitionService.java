@@ -39,6 +39,7 @@ public class DefaultServiceDefinitionService implements ServiceDefinitionService
 		return repository.execute(findAllServices())
 						 .stream()
 						 .map(service -> newServiceDefinition()
+								 		 .withServiceId(service.getServiceId())
 								 		 .withServiceName(service.getServiceName())
 								 		 .withDisplayName(service.getDisplayName())
 								 		 .withDescription(service.getDescription())

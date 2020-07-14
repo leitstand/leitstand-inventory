@@ -27,7 +27,6 @@ import static io.leitstand.inventory.event.ElementRoleChangedEvent.newElementRol
 import static io.leitstand.inventory.service.ElementGroupSettings.newElementGroupSettings;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
-import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.ReasonCode.IVT0301I_ELEMENT_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
 import static java.lang.String.format;
@@ -72,6 +71,7 @@ public class ElementSettingsManager {
 			   .withOperationalState(element.getOperationalState())
 			   .withPlane(element.getElementRole().getPlane())
 			   .withSerialNumber(element.getSerialNumber())
+			   .withAssetId(element.getAssetId())
 			   .withManagementInterfaceMacAddress(element.getManagementInterfaceMacAddress())
 			   .withManagementInterfaces(element.getManagementInterfaces())
 			   .withDescription(element.getDescription())
@@ -133,12 +133,15 @@ public class ElementSettingsManager {
 		element.setElementAlias(settings.getElementAlias());
 		element.setDescription(settings.getDescription());
 		element.setSerialNumber(settings.getSerialNumber());
+		element.setAssetId(settings.getAssetId());
 		element.setManagementInterfaceMacAddress(settings.getManagementInterfaceMacAddress());
 		element.setElementManagementInterfaces(settings.getManagementInterfaces().values());
 		element.setTags(settings.getTags());
 		element.setAdministrativeState(settings.getAdministrativeState());
 		element.setOperationalState(settings.getOperationalState());
-		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), settings.getPlatformName()));
+		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
+														   settings.getPlatformName(),
+														   null));
 		
 		repository.add(element);
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED, 
@@ -173,6 +176,7 @@ public class ElementSettingsManager {
 		OperationalState previousOperationalState = element.setOperationalState(settings.getOperationalState());
 		element.setDescription(settings.getDescription());
 		element.setSerialNumber(settings.getSerialNumber());
+		element.setAssetId(settings.getAssetId());
 		element.setElementManagementInterfaces(settings.getManagementInterfaces().values());
 		element.setManagementInterfaceMacAddress(settings.getManagementInterfaceMacAddress());
 		element.setTags(settings.getTags());
@@ -199,7 +203,8 @@ public class ElementSettingsManager {
 		}
 		
 		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
-														   settings.getPlatformName()));	
+														   settings.getPlatformName(),
+														   null));	
 
 		
 		if(isDifferent(settings.getElementName(), previousElementName)){
@@ -307,7 +312,5 @@ public class ElementSettingsManager {
 		}
 		
 	}
-
-	
 	
 }

@@ -22,14 +22,14 @@
 		<ui-label>Filter</ui-label>
 		<ui-note>Search for images by adding a regular expression to filter for image name, element role or platform name.</ui-note>
 		<ui-options>
-			<ui-select name="image_type" bind="filter.image_type" options="image_types">
+			<image-type name="image_type" bind="filter.image_type">
 				<ui-label>Image Type</ui-label>
 				<ui-note>Filter image list by the selected image type.</ui-note>
-			</ui-select>
-			<ui-input name="image_version" bind="filter.image_version">
+			</image-type>
+			<image-version name="image_version" bind="filter.image_version">
 				<ui-label>Image Version</ui-label>
 				<ui-note>Filter image list by the entered image version</ui-note>
-			</ui-input>
+			</image-version>
 			<ui-radio name="image_state" bind="filter.image_state" value="CANDIDATE">
 				<ui-label>Show candidate images only</ui-label>
 				<ui-note>Check this option to show candidate images only.</ui-note>
@@ -39,8 +39,8 @@
 				<ui-note>Check this option to show release images only.</ui-note>
 			</ui-radio>
 			<ui-radio name="image_state" bind="filter.image_state" value="" default>
-				<ui-label>Show all image types</ui-label>
-				<ui-note>Check this option to search for all images types.</ui-note>
+				<ui-label>Show all image states</ui-label>
+				<ui-note>Check this option to search for all images states.</ui-note>
 			</ui-radio>
 		</ui-options>
 	</ui-filter>
@@ -50,37 +50,40 @@
 		<table class="list">
 			<thead>
 				<tr>
-					<th class="text">Platform</th>
-					<th class="text">Role</th>
-					<th class="text">Element</th>
-					<th class="text">Type</th>
 					<th class="text">Name</th>
-					<th class="text">Revision</th>
 					<th class="tiny">State</th>
+					<th class="text">Type</th>
+					<th class="text">Chipset</th>
+					<th class="text">Version</th>
+					<th class="text">Roles</th>
+					<th class="text">Element</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!--  {{#images}}-->
 				<tr>
-					<td class="text"><a href="/ui/views/inventory/platform/platform.html?platform={{platform_id}}" title="Show platform details">{{platform_name}}</a></td>
-					<td class="text"><a href="/ui/views/inventory/role/role.html?role={{element_role}}" tirle="Show row details">{{element_role}}</a></td>
-					<td class="text">{{element_display_name}}</td>
-					<td class="text">{{image_type}}</td>
-					<td class="text">{{image_name}}</td>
-					<td class="text"><a href="image-meta.html?image={{image_id}}" title="Show image revision details">{{revision}}</a></td>
-					<td><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="text top"><a href="image-meta.html?image={{image_id}}" title="Show image details" style="display:inline-block; overflow: hidden; width: 100%">{{image_name}}</a></td>
+					<td class="top"><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="text top">{{image_type}}</td>
+					<td class="text top">{{platform_chipset}}</td>
+					<td class="text top">{{image_version}}</td>
+					<td class="text top">
+					<!-- {{#element_roles}} -->
+					<ul style="list-style-type: none;">
+					  <li><a href="/ui/views/inventory/role/role.html?role={{.}}" title="Show element role details">{{.}}</a></li>
+					</ul>
+					<!-- {{/element_roles}} -->
+					</td>
+					<td class="text top">{{element_name}}{{^element_name}}*{{/element_name}}</td>
 				</tr>
 				<!--  {{/images}}-->
 			</tbody>
 		</table>
-		<ui-actions>
-			<ui-button title="Export listed images" target="_blank" small href="/api/v1/xport/images{{query_string}}">Export to file</ui-button>
-		</ui-actions>
 	</ui-group>
 	<!-- {{/images.length}} -->
 	<!-- {{^images.length}} -->
  	<ui-blankslate>
-		<ui-title>No images found</ui-title>
+		<ui-title>No images found.</ui-title>
 		<ui-note>No images have been registered in the resource inventory.</ui-note>
 	</ui-blankslate>
 	<!-- {{/images.length}} -->

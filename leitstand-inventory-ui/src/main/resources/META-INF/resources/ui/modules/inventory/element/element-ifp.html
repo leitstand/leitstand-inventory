@@ -13,26 +13,80 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-		<ui-property>
-			<ui-label>Neighbor Interface Name</ui-label>
-			<ui-value>
-		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show physical interfaces of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a>
-		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a>
-			</ui-value>
-		</ui-property>
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html" title="Show pod elements">Elements</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="/ui/views/inventory/element/element-ifps.html?group={{group_id}}&element={{element_id}}" title="Show physical interfaces">Physical Interfaces</ui-breadcrumb>
+		<ui-breadcrumb >{{physical_interface.ifp_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Physical interface {{physical_interface.ifp_name}} on {{element_name}}</ui-title>
+	<ui-subtitle>Physical interface {{ifp_name}} of element {{element_name}} {{#element_alias}}({{.}}){{/element_alias}}.
+</ui-view-header>
+
+<inventory-panel panel="ifp"></inventory-panel>
+
+<!-- {{#physical_interface}} -->	
+<ui-details>
+	<ui-property>
+		<ui-label>Pod Name</ui-label>
+		<ui-value>{{pod_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Name</ui-label>
+		<ui-value>{{element_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Alias</ui-label>
+		<ui-value>{{element_alias}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Element Role</ui-label>
+		<ui-value>{{element_role}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Interface Name</ui-label>
+		<ui-value>{{ifp_name}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Interface Alias</ui-label>
+		<ui-value>{{ifp_alias}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>MAC address</ui-label>
+		<ui-value>{{mac_address}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Category</ui-label>
+		<ui-value>{{category}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Bandwidth</ui-label>
+		<ui-value>{{bandwidth}}</ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Administrative State</ui-label>
+		<ui-value><span class="admin {{administrative_state}}">{{administrative_state}}</span></ui-value>
+	</ui-property>
+	<ui-property>
+		<ui-label>Link State</ui-label>
+		<ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
+	</ui-property>
+
+	<ui-property>
+		<ui-label>Neighbor Interface </ui-label>
+		<ui-value>
+		<!-- {{#neighbor}}  -->
+			<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show physical interfaces of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a>
+			<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show details of {{&ifp_name}}">{{&ifp_name}}</a>
+		<!-- {{/neighbor}}  -->
+		<!-- {{^neighbor}}  -->
+		Not specified.
 		<!-- {{/neighbor}}  -->
 		
-		<!-- {{#ifl_names.length}} -->
-		<ui-property>
-			<ui-label>Logical interfaces</ui-label>
-			<ui-value>
-				<ol>
-					<!-- {{#ifl_names}} -->
-					<li><a href="element-ifl.html?group={{group_id}}&element={{element_id}}&ifl_name={{.}}" title="Show details of {{.}}">{{.}}</a></li>			
-					<!-- {{/ifl_names}} -->
-				</ol>
-			</ui-value>
-		</ui-property>
-		<!-- {{/ifl_names.length}} -->
+		</ui-value>
+	</ui-property>
+<!-- {{/physical_interface}} -->	
 </ui-details>
-<!-- {{/physical_interface}}  -->

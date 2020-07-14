@@ -13,24 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.visitor;
+package io.leitstand.inventory.jsonb;
 
-public interface ElementVisitor {
-	
-	default ElementSettingsVisitor visitElementSettings() {
-		return null;
+import javax.json.bind.adapter.JsonbAdapter;
+
+import io.leitstand.inventory.service.VlanTPID;
+
+public class VlanTPIDAdapter implements JsonbAdapter<VlanTPID,Integer> {
+
+	@Override
+	public VlanTPID adaptFromJson(Integer v) throws Exception {
+		if(v == null){
+			return null;
+		}
+		return new VlanTPID(v);
 	}
 
-	default ElementConfigVisitor visitElementConfigs() {
-		return null;
+	@Override
+	public Integer adaptToJson(VlanTPID v) throws Exception {
+		if(v == null){
+			return null;
+		}
+		return v.getValue();
 	}
-	
-	default ElementImageVisitor visitElementImages() {
-		return null;
-	}
-	
-	default ImageVisitor visitDefaultImages() {
-		return null;
-	}
-	
+
 }

@@ -41,7 +41,7 @@ public class ImageName extends Scalar<String>{
 	}
 	
 	@NotNull(message="{image_name.required}")
-	@Pattern(message="{image_name.invalid}", regexp="\\p{Print}{1,64}")
+	@Pattern(message="{image_name.invalid}", regexp="\\p{Print}{1,128}")
 	private String value;	
 	
 	public ImageName(String value) {

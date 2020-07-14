@@ -29,6 +29,7 @@
 		<class>io.leitstand.inventory.model.Package</class>
 		<class>io.leitstand.inventory.model.Package_Version</class>
 		<class>io.leitstand.inventory.model.Platform</class>
+		<class>io.leitstand.inventory.model.Release</class>
 		<class>io.leitstand.inventory.model.Service</class>
 		<class>io.leitstand.inventory.service.AddressInterface</class>
 		<class>io.leitstand.inventory.service.Bandwidth</class>
@@ -47,8 +48,10 @@
 		<class>io.leitstand.inventory.jpa.EnvironmentNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageIdConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ImageTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.RackIdConverter</class>
 		<class>io.leitstand.inventory.jpa.RackNameConverter</class>
+		<class>io.leitstand.inventory.jpa.ReleaseNameConverter</class>
 		<class>io.leitstand.inventory.jpa.RoutingInstanceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementConfigIdConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementConfigNameConverter</class>
@@ -69,9 +72,11 @@
 		<class>io.leitstand.inventory.jpa.ServiceContextStateConverter</class>
 		<class>io.leitstand.inventory.jpa.ServiceNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ServiceTypeConverter</class>
-		<class>io.leitstand.inventory.jpa.VlanIdConverter</class>
+		<class>io.leitstand.inventory.jpa.VlanIDConverter</class>
+		<class>io.leitstand.inventory.jpa.VlanTPIDConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformNameConverter</class>
+		<class>io.leitstand.inventory.jpa.PlatformChipsetNameConverter</class>
 		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>
 		<class>io.leitstand.commons.jpa.BooleanConverter</class>
 		<class>io.leitstand.commons.jpa.SerializableJsonObjectConverter</class>

@@ -28,11 +28,19 @@
 <ui-label>Racks</ui-label>
 <table class="list">
 	<thead>
-		<tr><th>Rack</th><th>Location</th><th>Description</th></tr>
+		<tr>
+			<th class="text">Rack</th>
+			<th class="text">Location</th>
+			<th class="text">Description</th>
+		</tr>
 	</thead>
 	<tbody>
 		<!--{{#racks}}-->
-		<tr><td><a href="rack.html?group={{group_id}}&rack={{rack_name}}">{{rack_name}}</a></td><td>{{location}}</td><td>{{description}}</td></tr>
+		<tr>
+		  <td class="text"><a href="rack.html?group={{group_id}}&rack={{rack_name}}">{{rack_name}}</a></td>
+		  <td class="text">{{location}}</td>
+		  <td class="text">{{description}}</td>
+		</tr>
 		<!--{{/racks}}-->
 	</tbody>
 </table>

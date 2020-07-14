@@ -56,12 +56,18 @@ import io.leitstand.inventory.service.IPv6Prefix;
 import io.leitstand.inventory.service.IPvxPrefix;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
+import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.MACAddress;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
+import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
+import io.leitstand.inventory.service.ReleaseId;
+import io.leitstand.inventory.service.ReleaseName;
 import io.leitstand.inventory.service.RoutingInstanceName;
+import io.leitstand.inventory.service.ServiceId;
 import io.leitstand.inventory.service.ServiceName;
 
 @RunWith(Parameterized.class)
@@ -93,6 +99,7 @@ public class StringScalarAdapterTest {
 			{new EnvironmentNameAdapter(),	 		"unit-env",				new EnvironmentName("unit-env")},
 			{new ImageIdAdapter(),  			 	uuid,		 			new ImageId(uuid)},
 			{new ImageNameAdapter(),  		 		"unit-image",			new ImageName("unit-image")},
+			{new ImageTypeAdapter(),  		 		"unit-type",			new ImageType("unit-type")},
 			{new InterfaceNameAdapter(),		 	"unit-0/0/0",			new InterfaceName("unit-0/0/0")},
 			{new IPv4PrefixAdapter(),			 	"10.0.0/8",				new IPv4Prefix("10.0.0/8")},
 			{new IPv6PrefixAdapter(),			 	"10.0.0/8",				new IPv6Prefix("10.0.0/8")},
@@ -102,11 +109,15 @@ public class StringScalarAdapterTest {
 			{new ElementGroupIdAdapter(),	 	 	uuid,					new ElementGroupId(uuid)},
 			{new ElementGroupNameAdapter(),	 		"unit-group",			new ElementGroupName("unit-group")},
 			{new ElementGroupTypeAdapter(),	 		"unit-type",			new ElementGroupType("unit-type")},
+			{new ServiceIdAdapter(),		 		uuid,					new ServiceId(uuid)},
 			{new ServiceNameAdapter(),		 		"unit-service",			new ServiceName("unit-service")},
 			{new PlatformIdAdapter(),			 	uuid,					new PlatformId(uuid)},
+			{new PlatformNameAdapter(),			 	"unit-platform",		new PlatformName("unit-platform")},
+			{new PlatformChipsetNameAdapter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameAdapter(),			 		"unit-rack",			new RackName("unit-rack")},
-			{new RoutingInstanceNameAdapter(), 		"unit-vfr",				new RoutingInstanceName("unit-vfr")}
-
+			{new ReleaseIdAdapter(),                uuid,				    new ReleaseId(uuid)},
+			{new ReleaseNameAdapter(),              "unit-release",         new ReleaseName("unit-release")},
+			{new RoutingInstanceNameAdapter(),      "unit-vfr",             new RoutingInstanceName("unit-vfr")},
 		};
 		return asList(adapters);
 	}

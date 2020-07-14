@@ -63,6 +63,21 @@ public enum ReasonCode implements Reason{
 	
 	/** The image cannot be removed.*/
 	IVT0204E_IMAGE_NOT_REMOVABLE, 
+	
+	/** The image cannot be removed.*/
+    IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE, 
+    
+	/** The release does not exist.*/
+	IVT0210E_RELEASE_NOT_FOUND,
+	
+	/** The release has been stored.*/
+	IVT0211I_RELEASE_STORED,
+	
+	/** The release name is already in use.*/
+	IVT0212E_RELEASE_NAME_ALREADY_IN_USE,
+	
+	/** The release contains ambiguous image references.*/
+	IVT0212I_AMBIGUOUS_IMAGE,
 
 	/** The requested element does not exist.*/
 	IVT0300E_ELEMENT_NOT_FOUND,
@@ -115,6 +130,9 @@ public enum ReasonCode implements Reason{
 	/** Removed the config with all its revisions.*/
 	IVT0337I_ELEMENT_CONFIG_REMOVED,
 	
+	/** Configuration cannot be restored.*/
+    IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,
+    	
 	/** The service does not exist on the specified element.*/
 	IVT0320E_ELEMENT_SERVICE_NOT_FOUND,
 
@@ -189,6 +207,9 @@ public enum ReasonCode implements Reason{
 
 	/** The image is currently active on the element and the requested action therefore cannot be executed.*/
 	IVT0341E_ELEMENT_IMAGE_ACTIVE, 
+
+	/** The image has been removed from the element.*/
+	IVT0342I_ELEMENT_IMAGE_REMOVED, 
 	
 	/** The package revision does already exist.*/
 	IVT0511E_PACKAGE_VERSION_EXISTS, 
@@ -213,6 +234,9 @@ public enum ReasonCode implements Reason{
 	
 	/** Platform cannot be removed because of existing elements on that platform*/
 	IVT0903E_PLATFORM_NOT_REMOVABLE,
+	
+	/** The specified platform name conflicts with the name of another platform.*/
+	IVT0904E_PLAFORM_NAME_ALREADY_IN_USE,
 	
 	/** The requested DNS zone does not exist.*/
 	IVT0950E_DNS_ZONE_NOT_FOUND,

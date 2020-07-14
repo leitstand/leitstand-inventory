@@ -16,8 +16,10 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class ImageReference {
@@ -36,27 +38,15 @@ public class ImageReference {
 			return this;
 		}
 		
-		public Builder withElementRole(ElementRoleName role){
+		public Builder withElementRoles(List<ElementRoleName> roles){
 			assertNotInvalidated(getClass(), image);
-			image.elementRole = role;
+			image.elementRoles = roles;
 			return this;
 		}
 		
 		public Builder withElementName(ElementName name){
 			assertNotInvalidated(getClass(), image);
 			image.elementName = name;
-			return this;
-		}
-		
-		public Builder withPlatformId(PlatformId platformId) {
-			assertNotInvalidated(getClass(), image);
-			image.platformId = platformId;
-			return this;
-		}
-		
-		public Builder withPlatformName(PlatformName platformName) {
-			assertNotInvalidated(getClass(), image);
-			image.platformName = platformName;
 			return this;
 		}
 		
@@ -84,6 +74,12 @@ public class ImageReference {
 			return this;
 		}
 		
+		public Builder withPlatformChipset(PlatformChipsetName chipset){
+			assertNotInvalidated(getClass(), image);
+			image.platformChipset = chipset;
+			return this;			
+		}
+		
 		public Builder withBuildDate(Date date){
 			assertNotInvalidated(getClass(), image);
 			if(date != null) {
@@ -104,13 +100,10 @@ public class ImageReference {
 
 	private ImageId imageId;
 	
-	private ElementRoleName elementRole;
+	private List<ElementRoleName> elementRoles;
 	
 	private ElementName elementName;
 
-	private PlatformId platformId;
-	private PlatformName platformName;
-	
 	private ImageName imageName;
 	
 	private ImageType imageType;
@@ -121,16 +114,18 @@ public class ImageReference {
 	
 	private Date buildDate;
 	
+	private PlatformChipsetName platformChipset;
+	
 	public ImageId getImageId() {
 		return imageId;
 	}
 	
-	public Version getRevision() {
+	public Version getImageVersion() {
 		return imageVersion;
 	}
 	
-	public ElementRoleName getElementRole() {
-		return elementRole;
+	public List<ElementRoleName> getElementRoles() {
+		return unmodifiableList(elementRoles);
 	}
 	
 	public ElementName getElementName(){
@@ -141,12 +136,8 @@ public class ImageReference {
 		return buildDate;
 	}
 
-	public PlatformId getPlatformId() {
-		return platformId;
-	}
-	
-	public PlatformName getPlatformName() {
-		return platformName;
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
 	}
 	
 	public ImageName getImageName() {

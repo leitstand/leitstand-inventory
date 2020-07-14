@@ -46,7 +46,12 @@ public class PlatformSettings extends ValueObject {
 			settings.platformName = platformName;
 			return this;
 		}
-
+		
+		public Builder withPlatformChipset(PlatformChipsetName platformChipset) {
+			assertNotInvalidated(getClass(),settings);
+			settings.platformChipset = platformChipset;
+			return this;
+		}
 		
 		public Builder withVendorName(String vendorName) {
 			assertNotInvalidated(getClass(), settings);
@@ -92,6 +97,9 @@ public class PlatformSettings extends ValueObject {
 	@NotNull(message="{platform_name.required}")
 	private PlatformName platformName;
 	
+	@NotNull(message="{platform_chipset.required}")
+	private PlatformChipsetName platformChipset;
+	
 	@NotNull(message="{vendor_name.required}")
 	private String vendorName;
 	
@@ -112,6 +120,10 @@ public class PlatformSettings extends ValueObject {
 	
 	public PlatformName getPlatformName() {
 		return platformName;
+	}
+	
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
 	}
 	
 	public String getVendorName() {

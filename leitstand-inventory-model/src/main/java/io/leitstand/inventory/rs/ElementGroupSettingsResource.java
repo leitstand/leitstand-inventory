@@ -18,6 +18,7 @@ package io.leitstand.inventory.rs;
 import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
@@ -30,7 +31,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.noContent;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -42,7 +42,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
@@ -85,10 +84,18 @@ public class ElementGroupSettingsResource {
 	
 	@POST
 	public Response storeElementGroup(ElementGroupSettings settings) {
-		service.storeElementGroupSettings(settings);
-		return created("/%s/%/settings",
-					   settings.getGroupType(),
-					   settings.getGroupId());
+		try {
+			service.storeElementGroupSettings(settings);
+			return created("/%s/%s/settings",
+						   settings.getGroupType(),
+						   settings.getGroupId());
+		} catch (Exception e) {
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getGroupSettings(settings.getGroupType(), settings.getGroupName()))	
+			.thenThrow(new UniqueKeyConstraintViolationException(IVT0103E_GROUP_NAME_ALREADY_IN_USE,
+						 										 key("group_name", settings.getGroupName())));
+			throw e;
+		}
 	}
 
 	@PUT
@@ -109,8 +116,12 @@ public class ElementGroupSettingsResource {
 							   settings.getGroupId());	
 			}
 			return success(messages);
-		} catch (PersistenceException e) {
-			throw resolveRootCause(e, settings.getGroupType(), settings.getGroupName());
+		} catch (Exception e) {
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getGroupSettings(settings.getGroupType(), settings.getGroupName()))	
+			.thenThrow(new UniqueKeyConstraintViolationException(IVT0103E_GROUP_NAME_ALREADY_IN_USE,
+						 										 key("group_name", settings.getGroupName())));
+			throw e;
 		}
 	}
 
@@ -132,19 +143,4 @@ public class ElementGroupSettingsResource {
 		return success(messages);
 	}
 	
-	private PersistenceException resolveRootCause(PersistenceException p,
-										          ElementGroupType groupType, 
-										          ElementGroupName groupName) {
-		try { 
-			// A unique key constraint violation occurred if an element with the given name exists.
-			service.getGroupSettings(groupType,
-									 groupName);
-			throw new UniqueKeyConstraintViolationException(IVT0103E_GROUP_NAME_ALREADY_IN_USE,
-															key("group_name", groupName) );
-		} catch(EntityNotFoundException e) {
-			// Element does not exist. Continue with original exception
-			throw p;
-		}
-	}
-
 }

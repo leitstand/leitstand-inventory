@@ -22,11 +22,11 @@ class Diff extends UIElement {
 	connectedCallback(){
 
 		try{
-		let source = this._viewModel.getProperty(this.getAttribute('source'));
-		let target = this._viewModel.getProperty(this.getAttribute('target'));
+		const source = this.viewModel.getProperty(this.getAttribute('source'));
+		const target = this.viewModel.getProperty(this.getAttribute('target'));
 		if(source && target){
 
-			let read = function(c){
+			const read = function(c){
 				if(c && c.content_type=='application/json'){
 					return JSON.stringify(c.config,null,' ');
 				}
@@ -36,12 +36,12 @@ class Diff extends UIElement {
 			source.content = read(source);
 			target.content = read(target);
 			
-			let diff = JsDiff.diffLines(source.content,
-					target.content)
+			const diff = JsDiff.diffLines(source.content,
+										  target.content)
 					.map(part => `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">${part.value||''}</span>`)
 					.reduce((a,b)=>a+b);
 			this.innerHTML=`<div id="comparator">
-								<div class="row">
+								<div style="display:block; margin-bottom: 5px;">
 									<div class="cell column one-half" >
 									<h3 style="color: black; background-color: #ffd6cc; padding-left: 1em;"><ui-date readonly>${source.date_modified}</ui-date></h3>
 										<ui-code>${source.content}</ui-code>
@@ -50,8 +50,9 @@ class Diff extends UIElement {
 										<h3 style="color: black; background-color: lime; padding-left: 1em;" ><ui-date readonly>${target.date_modified}</ui-date></h3>
 										<ui-code>${target.content}</ui-code>
 									</div>
+									<div style="clear:both"></div>
 								</div>
-								<div class="row">
+								<div>
 									<div class="single-column cell" style="clear:both;">
 										<h3 style="color: black; background-color: #cedaed; padding-left: 1em; margin-top: 10px">Diff</h3>
 										<code id="diff" class="hl"><pre>${diff}</pre></code>
@@ -62,24 +63,26 @@ class Diff extends UIElement {
 								Click on a listing to enlarge.
 							</p>`;
 			hljs.highlightBlock(this.querySelector('#diff'));
-			this.addEventListener('click',function(evt){
-				let div = this.eventSource().up('div');
+			this.addEventListener('click',(evt) => {
+				const div = this.controller.element(evt.target).up('div');
 				if(div.css.contains('cell')){
 					if(div.style.width=='100%'){
-						this.elements('#comparator div.cell').forEach(function(element){
+						this.controller.elements('#comparator div.cell').forEach(function(element){
 							element.css.remove('hidden');
 						});
 						div.style.width=null;
 					} else {
-						this.elements('#comparator div.cell').forEach(function(element){
+						this.controller.elements('#comparator div.cell').forEach(function(element){
 							element.css.add('hidden');
 						});
 						div.css.remove('hidden');
 						div.style.width='100%';
-					}				
+					}
+					evt.stopPropagation();
+					evt.preventDefault()
 				}
 				
-			}.bind(this._page));
+			});
 
 		}
 		}catch(e){
@@ -90,18 +93,20 @@ class Diff extends UIElement {
 
 class Editor extends Control {
 	connectedCallback(){
-		let config = this._viewModel.getProperty(this._binding);
-		let editorpanel = document.createElement('div');
+		const config = this.viewModel.getProperty(this.binding);
+		const editorpanel = document.createElement('div');
 		if(this.hasAttribute('style')){
 			editorpanel.setAttribute('style',this.getAttribute('style'));
 		}
-		let options = {'mode':'code'};
-	    let editor = new JSONEditor(editorpanel, options);
-	    editor.set(config);
+		const options = {'mode':'code'};
+	    const editor = new JSONEditor(editorpanel, options);
+	    if(config){
+	    	editor.set(config);
+	    }
 		this.appendChild(editorpanel);
-		this.form.addEventListener('UIPreExecuteAction',function(){
-			this._viewModel.setProperty(this._binding,editor.get());
-		}.bind(this));
+		this.form.addEventListener('UIPreExecuteAction',(evt) => {
+			this.viewModel.setProperty(this.binding,editor.get());
+		});
 	}
 	
 }
@@ -113,9 +118,15 @@ const elementConfigsController = function(){
 	const configs = new Element({scope:"configs"});
 	return new Controller({
 		resource: configs,
+		viewModel:function(configs){
+			configs.filter = this.location.param("filter");
+			return configs;
+		},
 		buttons: {
 			"filter" : function(){
-				this.error("Not yet implemented!");
+				const params = this.location.params;
+				const filter = this.input("filter").value();
+				this.reload(Object.assign(params,{"filter":filter}));
 			}
 		}
 	});
@@ -170,21 +181,40 @@ const elementConfigController = function(){
 			// Extract config-id from redirect location
 			const params = this.location.params;
 			params.config=location.substring(location.lastIndexOf('/')+1);
-			this.navigate({"view":"/ui/views/inventory/config/element-config.html",
-						   "?":params});
+			this.navigate({"view":"element-config.html",
+						   "?":this.location.params});
 		},
 		onRedirect: function(location){
 			// Extract config-id from redirect location
 			const params = this.location.params;
 			params.config=location.substring(location.lastIndexOf('/')+1);
-			this.navigate({"view":"/ui/views/inventory/config/element-config.html",
+			this.navigate({"view":"element-config.html",
 						   "?":params});
 		},
 		onSuccess: function(){
-			this.navigate({"view":"/ui/views/inventory/config/element-config-history.html",
+			this.navigate({"view":"element-config-history.html",
 						   "?": {"group":this.location.param("group"),
 							     "element":this.location.param("element"),
 							     "config":this.getViewModel("config_name")}})
+		}
+	});
+};
+
+
+const addElementConfigController = function(){
+	const element = new Element({scope:"settings"});
+	return new Controller({
+		resource: element,
+		buttons: {
+			"save-config":function(){
+				const config = this.getViewModel("config");
+				element.saveConfig(Object.assign(this.location.params,config.config_name),
+								   config);
+			}
+		},
+		onSuccess : function(){
+			this.navigate({"view":"element-configs.html",
+						   "?": this.location.params});
 		}
 	});
 };
@@ -226,11 +256,15 @@ const elementConfigHistoryController = function(){
 		buttons:{
 			compare: function(){
 				const params = this.location.params;
-				params.a = this.elememt("input[name='a']:checked").value();
-				params.b = this.radio("input[name='b']:checked").value();
+				params.a = this.element("input[name='a']:checked").value();
+				params.b = this.element("input[name='b']:checked").value();
 				this.navigate({"view":"/ui/views/inventory/config/element-config-history-compare.html",
 							   "?":params});
 			}
+		},
+		onNotFound: function(location){
+			this.navigate({"view":"element-configs.html",
+						   "?":this.location.params});
 		}
 	});
 };
@@ -243,6 +277,7 @@ const configsMenu = {
 				"confirm-remove.html" : elementConfigController(),
 				"confirm-restore.html" : elementConfigController(),
 				"confirm-edit.html" : elementConfigController(),
+				"add-config.html" : addElementConfigController(),
 				"element-config-history-compare.html":elementConfigHistoryCompareController()}
 };
 	

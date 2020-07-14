@@ -15,8 +15,10 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
@@ -24,6 +26,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static io.leitstand.inventory.service.ReasonCode.IVT0904E_PLAFORM_NAME_ALREADY_IN_USE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -41,6 +44,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
@@ -100,14 +104,25 @@ public class PlatformResource {
 												   "platform", 
 												   platformId, 
 												   settings.getPlatformId());
-		}		
-		if(service.storePlatform(settings)) {
-			
-			return created(messages,
-						   "%s", 
-						   settings.getPlatformId());
+		} 		
+		try {
+			if(service.storePlatform(settings)) {
+				
+				return created(messages,
+							   "%s", 
+							   settings.getPlatformId());
+			}
+			return success(messages);
+		} catch (Exception e) {
+			// Check whether role exist
+			givenRollbackException(e)
+			.whenEntityExists(() -> service.getPlatform(settings.getPlatformName()))
+			.thenThrow(new UniqueKeyConstraintViolationException(IVT0904E_PLAFORM_NAME_ALREADY_IN_USE,
+													    		 key("platform_name", settings.getPlatformName())));
+			throw e;
 		}
-		return success(messages);
+		
+		
 	}
 	
 	

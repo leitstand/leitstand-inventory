@@ -39,7 +39,7 @@ public class HeartbeatWatchDogService {
 	
 	public void markDetachedSwitches() {
 		Date overdue = new Date(currentTimeMillis() - SECONDS.toMillis(180));
-		int count = db.executeUpdate(prepare("UPDATE inventory.element SET op_state='DETACHED' WHERE op_state='UP' AND tsmodified < ?", overdue));
+		int count = db.executeUpdate(prepare("UPDATE inventory.element SET opstate='DETACHED' WHERE opstate='UP' AND tsmodified < ?", overdue));
 		LOG.fine(() -> format("%d overdue elements declared detached!",count));
 	}
 	

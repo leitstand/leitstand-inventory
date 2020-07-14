@@ -16,12 +16,6 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
-
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -54,7 +48,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		 */
 		public Builder withIfpName(InterfaceName name){
 			assertNotInvalidated(getClass(), data);
-			data.name = name;
+			data.ifpName = name;
 			return this;
 		}
 		
@@ -64,9 +58,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 			return this;
 		}
 
-		public Builder withIfpClass(String ifpClass) {
+		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), data);
-			data.ifpClass = ifpClass;
+			data.category = category;
 			return this;
 		}
 		
@@ -78,17 +72,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		public Builder withBandwidth(Bandwidth bandwidth) {
 			assertNotInvalidated(getClass(), data);
 			data.bandwidth = bandwidth;
-			return this;
-		}
-		
-		/**
-		 * Sets the configured MTU size
-		 * @param mtuSize - the MTU size
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withMtuSize(int mtuSize) {
-			assertNotInvalidated(getClass(), data);
-			data.mtuSize = mtuSize;
 			return this;
 		}
 		
@@ -126,26 +109,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Sets the names of all logical interfaces defined on top of this physical interface.
-		 * @param ifcs - the logical interface names
-		 * @return a reference to this builder to continue with object creation
-		 */
-		public Builder withLogicalInterfaces(InterfaceName... ifcs){
-			return withLogicalInterfaces(asList(ifcs));
-		}
-
-		/**
-		 * Sets the names of all logical interfaces defined on top of this physical interface.
-		 * @param ifcs - the logical interface names
-		 * @return a reference to this builder to continue with object creation
-		 */
-		public Builder withLogicalInterfaces(Collection<InterfaceName> ifcs){
-			assertNotInvalidated(getClass(), data);
-			data.logicalInterfaces = unmodifiableSet(new TreeSet<>(ifcs));
-			return this;
-		}
-		
-		/**
 		 * Sets the neighbor interface of this physical interface.
 		 * @param neighbor - the neighbor interface
 		 * @return a reference to this builder to continue with object creation
@@ -181,8 +144,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	}
 	
 	
-	@JsonbProperty("ifp_name")
-	private InterfaceName name;
+	private InterfaceName ifpName;
 	
 	@JsonbProperty("bandwidth")
 	private Bandwidth bandwidth;
@@ -194,14 +156,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	@JsonbProperty("administrative_state")
 	private AdministrativeState administrativeState;
 	
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
-	
-	@JsonbProperty("ifl_names")
-	private Set<InterfaceName> logicalInterfaces;
-	
 	private String ifpAlias;
-	private String ifpClass;
+	private String category;
 	
 	private ElementPhysicalInterfaceNeighbor neighbor;
 	
@@ -217,8 +173,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	 * Returns the physical interface name.
 	 * @return the physical interface name.
 	 */
-	public InterfaceName getName(){
-		return name;
+	public InterfaceName getIfpName(){
+		return ifpName;
 	}
 	
 	/**
@@ -246,23 +202,6 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	}
 	
 	/**
-	 * Returns the names of all logical interfaces defined on this physical interface.
-	 * Returns an empty set, if no logical interfaces exist on this physical interface.
-	 * @return the logical interface names.
-	 */
-	public Set<InterfaceName> getLogicalInterfaces(){
-		return unmodifiableSet(logicalInterfaces);
-	}
-	
-	/**
-	 * Returns the configured MTU size.
-	 * @return the MTU size
-	 */
-	public int getMtuSize() {
-		return mtuSize;
-	}
-	
-	/**
 	 * Returns the bandwidth of the physical interface.
 	 * @return the bandwidth
 	 */
@@ -274,7 +213,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 }

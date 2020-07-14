@@ -17,6 +17,8 @@ import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Metadata,Platforms,Element,Rack} from '/ui/modules/inventory/inventory.js';
 import {Control} from '/ui/js/ui-components.js';
+import '../inventory-components.js';
+
 
 class PodLocation extends Control {
 	
@@ -39,7 +41,7 @@ class PodLocation extends Control {
 	                style: new ol.style.Style({
 	                    image: new ol.style.Icon({
 	                      scale: 0.2,
-	                      src: '/images/pod.png'
+	                      src: '/ui/modules/inventory/pod/pod.png'
 	                    })
 	                })			                
 	             })
@@ -81,16 +83,6 @@ const addElementController = function(){
 	const pod = new Pod({"scope":"settings"});
 	return new Controller({
 		resource:pod,
-		viewModel:async function(pod){
-			const roles = new Metadata({"scope":"roles"});
-			const platforms = new Platforms();
-			pod.roles = await roles.load();
-			pod.roles = pod.roles.map(role => ({"value":role.role_name,"label":role.display_name}));
-			pod.platforms = await platforms.load();
-			pod.platforms = pod.platforms.map(platform => ({"value":`[${platform.vendor_name}][${platform.model_name}]`,
-															"label":`${platform.vendor_name} ${platform.model_name}`}));
-			return pod;
-		},
 		buttons:{
 			"add-element":function(){
 				const element = new Element({"scope":"settings"});
@@ -103,17 +95,10 @@ const addElementController = function(){
 				submission.group_name = this.getViewModel("group_name");
 				submission.operational_state = "DOWN";
 				submission.administrative_state="NEW";
-
-				const platform = this.input("platform").value();
-				const segments = /\[(.*)\]\[(.*)\]/.exec(platform);
-				const vendorName = segments[1];
-				const modelName  = segments[2];
-				submission.platform = {
-						"model_name":modelName,
-						"vendor_name":vendorName
-				};
-				
-				//FIXME Select multivalue field
+				const settings = this.getViewModel();
+				const platform = this.input("element-platform").unwrap();
+				settings.platform_id = platform.selected.value;
+				settings.platform_name = platform.selected.label;
 				element.createElement(this.location.params,
 									  submission);
 			}
@@ -139,7 +124,7 @@ const podController = function(){
 				pod.removePod(this.location.params);
 			}
 		},
-		onRemoved:function(){
+		onSuccess:function(){
 			this.navigate({"view":"/ui/views/inventory/pods.html"});	
 		}
 	});
@@ -155,23 +140,21 @@ const podLocationController = function(){
 				pod.saveSettings(this.location.params,
 				                 this.getViewModel());
 			},
-			"lookup":function(){
+			"lookup":async function(){
 
 				const location = this.getViewModel("location");
 				if(location){
-					let coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
-					coord.onLoaded = this.newEventHandler(function(matches){
-						// Attempt to resove geolocation of given address...
-						if(matches && matches.length > 0){
-							this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
-																 "longitude":parseFloat(matches[0].lon)}});
-						} else {
-							this.updateViewModel({"geolocation":null});
-						}
-						// ... and update view.
-						this.renderView();
-					});
-					coord.load();
+					const coord = new Json("https://nominatim.openstreetmap.org?format=json&q="+location);
+					const matches = await coord.load();
+					// Attempt to resolve geolocation of given address...
+					if(matches && matches.length > 0){
+						this.updateViewModel({"geolocation":{"latitude":parseFloat(matches[0].lat),
+															 "longitude":parseFloat(matches[0].lon)}});
+					} else {
+						this.updateViewModel({"geolocation":null});
+					}
+					// ... and update view.
+					this.renderView();
 					
 				} else {
 					// Remove geolocation from view model...

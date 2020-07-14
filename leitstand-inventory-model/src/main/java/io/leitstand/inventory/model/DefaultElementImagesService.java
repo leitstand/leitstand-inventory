@@ -27,6 +27,8 @@ import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
+import io.leitstand.inventory.service.ImageReference;
+import io.leitstand.inventory.service.ImageType;
 
 @Service
 public class DefaultElementImagesService implements ElementImagesService {
@@ -84,27 +86,52 @@ public class DefaultElementImagesService implements ElementImagesService {
 	}
 
 	@Override
-	public void addCachedImages(ElementId id, List<ElementInstalledImageReference> images) {
+	public void removeInstalledImage(ElementId id,ImageId imageId) {
 		Element element = elements.fetchElement(id);
-		manager.storeCachedImages(element,images);
+		manager.removeInstalledImage(element,imageId);
 	}
 
 	@Override
-	public void addCachedImages(ElementName name, List<ElementInstalledImageReference> images) {
+	public void removeInstalledImage(ElementName name, ImageId imageId) {
 		Element element = elements.fetchElement(name);
-		manager.storeCachedImages(element, images);
+		manager.removeInstalledImage(element,imageId);
 	}
 
-	@Override
-	public void removeCachedImages(ElementId id, List<ElementInstalledImageReference> images) {
-		Element element = elements.fetchElement(id);
-		manager.removeCachedImages(element,images);
-	}
+    @Override
+    public void setZtpImage(ElementId elementId, ImageId imageId) {
+        Element element = elements.fetchElement(elementId);
+        manager.setZtpImage(element,imageId);
+    }
 
-	@Override
-	public void removeCachedImages(ElementName name, List<ElementInstalledImageReference> images) {
-		Element element = elements.fetchElement(name);
-		manager.removeCachedImages(element,images);
-	}
+    @Override
+    public void setZtpImage(ElementName elementName, ImageId imageId) {
+        Element element = elements.fetchElement(elementName);
+        manager.setZtpImage(element,imageId);
+    }
+
+    @Override
+    public void resetZtpImage(ElementId elementId) {
+        Element element = elements.fetchElement(elementId);
+        manager.resetZtpImage(element);
+    }
+
+    @Override
+    public void resetZtpImage(ElementName elementName) {
+        Element element = elements.fetchElement(elementName);
+        manager.resetZtpImage(element);
+    }
+
+    @Override
+    public ImageReference getZtpImage(ElementId elementId) {
+        Element element = elements.fetchElement(elementId);
+        return manager.getZtpImage(element);
+    }
+
+    @Override
+    public ImageReference getZtpImage(ElementName elementName) {
+        Element element = elements.fetchElement(elementName);
+        return manager.getZtpImage(element);
+    }
+
 
 }

@@ -16,9 +16,6 @@
 package io.leitstand.inventory.model;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +24,6 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.leitstand.commons.model.Query;
@@ -62,12 +58,6 @@ public class Element_ContainerInterface implements Serializable {
 	@Column(name="name")
 	private InterfaceName name;
 	
-	@OneToMany(mappedBy="ifc")
-	private Set<Element_PhysicalInterface> physicalInterfaces;
-	
-	@OneToMany(mappedBy="ifc")
-	private Set<Element_LogicalInterface> logicalInterfaces;
-	
 	protected Element_ContainerInterface() {
 		// No instances allowed.
 	}
@@ -75,8 +65,6 @@ public class Element_ContainerInterface implements Serializable {
 	public Element_ContainerInterface(Element element, InterfaceName name){
 		this.element = element;
 		this.name = name;
-		this.physicalInterfaces = new LinkedHashSet<>();
-		this.logicalInterfaces = new LinkedHashSet<>();
 	}
 	
 	public Element getElement() {
@@ -87,28 +75,4 @@ public class Element_ContainerInterface implements Serializable {
 		return name;
 	}
 
-	public Set<Element_LogicalInterface> getLogicalInterfaces() {
-		return Collections.unmodifiableSet(logicalInterfaces);
-	}
-	
-	public Set<Element_PhysicalInterface> getPhysicalInterfaces() {
-		return Collections.unmodifiableSet(physicalInterfaces);
-	}
-
-	public void removePhyiscalInterface(Element_PhysicalInterface ifp) {
-		physicalInterfaces.remove(ifp);
-	}
-
-	public void addPhysicalInterface(Element_PhysicalInterface ifp) {
-		physicalInterfaces.add(ifp);
-	}
-
-	public void removeLogicalInterface(Element_LogicalInterface ifl) {
-		logicalInterfaces.remove(ifl);
-	}
-	
-	public void addLogicalInterface(Element_LogicalInterface ifl){
-		logicalInterfaces.add(ifl);
-	}
-	
 }

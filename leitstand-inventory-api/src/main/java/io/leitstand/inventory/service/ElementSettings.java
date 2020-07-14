@@ -76,6 +76,12 @@ public class ElementSettings extends BaseElementEnvelope{
 			return this;
 		}
 		
+		public Builder withAssetId(String assetId) {
+			assertNotInvalidated(getClass(), object);
+			object.assetId = assetId;
+			return this;
+		}
+		
 		public Builder withManagementInterfaceMacAddress(MACAddress address) {
 			assertNotInvalidated(getClass(), object);
 			object.managementInterfaceMacAddress = address;
@@ -131,8 +137,6 @@ public class ElementSettings extends BaseElementEnvelope{
 			return this;
 		}
 
-
-		
 	}
 	
 	@JsonbProperty("mgmt_interfaces")
@@ -143,6 +147,7 @@ public class ElementSettings extends BaseElementEnvelope{
 	@JsonbProperty("mgmt_mac")
 	private MACAddress managementInterfaceMacAddress;
 	private String serialNumber;
+	private String assetId;
 
 	
 	@JsonbProperty
@@ -217,6 +222,10 @@ public class ElementSettings extends BaseElementEnvelope{
 
 	public ElementManagementInterface getManagementInterface(String name) {
 		return managementInterfaces.get(name);
+	}
+	
+	public String getAssetId() {
+		return assetId;
 	}
 	
 }

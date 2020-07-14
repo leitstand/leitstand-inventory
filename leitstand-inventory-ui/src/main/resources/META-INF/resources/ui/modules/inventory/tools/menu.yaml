@@ -1,0 +1,23 @@
+provider: leitstand.io
+controller: controller.js
+description: Element tools.
+extensions:
+- extend:
+    module: inventory
+    menu: element
+    after: element-services
+  items:
+  - item: element-tools
+    label: Tools
+    title: See all available tools for this element
+    view: element-tools.html
+- extend:
+    module: inventory
+  menus:
+  - menu: element-tools
+    label: Tools
+    category: tools
+    query:
+      group: "{{group_id}}"
+      element: "{{element_id}}"
+   

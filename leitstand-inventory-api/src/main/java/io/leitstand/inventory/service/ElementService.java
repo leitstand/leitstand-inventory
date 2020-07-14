@@ -24,7 +24,7 @@ public interface ElementService {
 
 	/**
 	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
-	 * The filter expression is a POSIX regular expression and applied to the element name and all element tags.
+	 * The filter expression is a POSIX regular expression and applied to the element name and element alias.
 	 * <p>
 	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
 	 * The list is sorted by the element name in ascending order.
@@ -35,19 +35,104 @@ public interface ElementService {
 	 * @return an immutable list that contains the element settings of all matching elements or 
 	 * 		   an empty list if no matches were found.
 	 */
-	List<ElementSettings> findElements(String filter, int offset, int items);
+	List<ElementSettings> findElementsByName(String filter, int offset, int items);
 	
+	/**
+	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
+	 * The filter expression is a POSIX regular expression and applied to the element name, element alias and all element tags.
+	 * <p>
+	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
+	 * The list is sorted by the element name in ascending order.
+	 * </p>
+	 * @param filter a regular expression to filter elements by the element name, element alias or element tags.
+	 * @param offset the search offset
+	 * @param items the number of items to be returned at maximum
+	 * @return an immutable list that contains the element settings of all matching elements or 
+	 * 		   an empty list if no matches were found.
+	 */
+	List<ElementSettings> findElementsByNameOrTag(String filter, int offset, int items);
+
+	/**
+	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
+	 * The filter expression is a POSIX regular expression and applied to the element name, element alias and all element tags.
+	 * <p>
+	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
+	 * The list is sorted by the element name in ascending order.
+	 * </p>
+	 * @param filter a regular expression to filter elements by the assigned asset ID
+	 * @param offset the search offset
+	 * @param items the number of items to be returned at maximum
+	 * @return an immutable list that contains the element settings of all matching elements or 
+	 * 		   an empty list if no matches were found.
+	 */
+	List<ElementSettings> findElementsByAssetId(String filter, int offset, int items);
+	
+	/**
+	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
+	 * The filter expression is a POSIX regular expression and applied to the serial number of an element.
+	 * <p>
+	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
+	 * The list is sorted by the element name in ascending order.
+	 * </p>
+	 * @param filter a regular expression to filter elements by the assigned serial number
+	 * @param offset the search offset
+	 * @param items the number of items to be returned at maximum
+	 * @return an immutable list that contains the element settings of all matching elements or 
+	 * 		   an empty list if no matches were found.
+	 */
+	List<ElementSettings> findElementsBySerialNumber(String filter, int offset, int items);
+	
+	/**
+	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
+	 * The filter expression is a POSIX regular expression and applied to the management IP address or the management interface DNS name of the element.
+	 * <p>
+	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
+	 * The list is sorted by the element name in ascending order.
+	 * </p>
+	 * @param filter a regular expression to filter elements by management IP address / hostname
+	 * @param offset the search offset
+	 * @param items the number of items to be returned at maximum
+	 * @return an immutable list that contains the element settings of all matching elements or 
+	 * 		   an empty list if no matches were found.
+	 */
+	List<ElementSettings> findElementsByManagementIP(String filter, int offset, int items);
+
+	/**
+	 * Removes the specified element.
+	 * Only inactive elements are removable.
+	 * This operation reports an error if sub-resources like services, modules, interfaces or configurations are assigned to this element.
+	 * Use {@link #forceRemoveElement(ElementId)} to remove an element and assigned element resources.
+	 * @param elementId the element ID.
+	 * @see #forceRemoveElement(ElementId)
+	 */
 	void removeElement(ElementId elementId);
 
+	/**
+	 * Removes the specified element.
+	 * Only inactive elements are removable.
+	 * This operation reports an error if sub-resources like services, modules, interfaces or configurations are assigned to this element.
+	 * Use {@link #forceRemoveElement(ElementName)} to remove an element and assigned element resources.
+	 * @param elementName the element name
+	 * @see #forceRemoveElement(ElementName)
+	 */
 	void removeElement(ElementName elementName);
 	
 	void updateElementOperationalState(ElementId id, OperationalState state);
 	
 	void updateElementOperationalState(ElementName name, OperationalState state);
 
-
+	/**
+	 * Removes the specified element and its assigned resources.
+	 * Only inactive elements are removable.
+	 * @param elementId the element ID
+	 */
 	void forceRemoveElement(ElementId elementId);
 
+	/**
+	 * Removes the specified element and its assigned resources.
+	 * Only inactive elements are removable.
+	 * @param elementId the element name
+	 */
 	void forceRemoveElement(ElementName elementName);
 	
 }

@@ -16,6 +16,7 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.json.SerializableJsonObject.serializable;
+import static java.util.UUID.randomUUID;
 
 import javax.json.JsonObject;
 import javax.persistence.Convert;
@@ -68,7 +69,7 @@ public class Element_ServiceContext extends VersionableEntity {
 	private Element_Service service;
 	
 	@ManyToOne
-	@JoinColumn(name="parent_servicecontext_id")
+	@JoinColumn(name="parent_id")
 	private Element_ServiceContext parent;
 	
 	public Element_ServiceContext(){
@@ -76,6 +77,7 @@ public class Element_ServiceContext extends VersionableEntity {
 	}
 
 	public Element_ServiceContext(Element_Service service) {
+		super(randomUUID().toString());
 		this.service = service;
 		this.element = service.getElement();
 	}

@@ -33,9 +33,10 @@ import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.NEW;
-import static io.leitstand.inventory.service.ImageType.LXC;
+import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.Plane.DATA;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
@@ -44,6 +45,7 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0203I_IMAGE_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0204E_IMAGE_NOT_REMOVABLE;
 import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND;
+import static io.leitstand.testing.ut.LeitstandCoreMatchers.hasSizeOf;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +55,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -78,7 +79,6 @@ import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageRemovedEvent;
 import io.leitstand.inventory.event.ImageStateChangedEvent;
 import io.leitstand.inventory.event.ImageStoredEvent;
-import io.leitstand.inventory.service.ApplicationName;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementName;
@@ -87,7 +87,7 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageStatistics;
-import io.leitstand.inventory.service.ImageType;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.Version;
@@ -96,6 +96,7 @@ public class ImageServiceIT extends InventoryIT{
 
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
 	private static final PlatformName PLATFORM_NAME = platformName(ImageServiceIT.class.getSimpleName());
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
 	private static final ElementName ELEMENT_NAME = elementName("image-element");
 	private static final ElementGroupName GROUP_NAME = groupName("image_test");
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
@@ -118,7 +119,6 @@ public class ImageServiceIT extends InventoryIT{
 		PackageVersionService pkgVersions = new PackageVersionService(repository);
 		
 		service = new DefaultImageService(pkgVersions,
-										  new PlatformProvider(repository),
 										  repository,
 										  getDatabase(),
 										  messages,
@@ -146,15 +146,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void raise_entity_not_found_exception_when_role_does_not_exist() {
 		ImageInfo imageInfo = newImageInfo()
 				  			  .withImageId(randomImageId())
-				  			  .withImageType(LXC)
+				  			  .withImageType(imageType("lxd"))
 				  			  .withImageName(imageName("store_image_metadata"))
 				  			  .withImageState(NEW)
 				  			  .withImageVersion(new Version(1,0,0))
 				  			  .withExtension("tar.gz")
-				  			  .withElementRole(elementRoleName("non-existent"))
+				  			  .withElementRoles(asList(elementRoleName("non-existent")))
 				  			  .withOrganization("io.leitstand")
 				  			  .withCategory("unittest")
-				  			  .withPlatformId(randomPlatformId())
+				  			  .withPlatformChipset(PLATFORM_CHIPSET)
 				  			  .build();
 		
 		
@@ -172,16 +172,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_metadata() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .build();
 		transaction(()->{
 			boolean created = service.storeImage(imageInfo);
@@ -196,17 +195,17 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
-			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
+			assertEquals(ELEMENT_ROLE,storedImage.getElementRoles().get(0));
+			assertThat(storedImage.getElementRoles(),hasSizeOf(1));
 			assertEquals("tar.gz",storedImage.getExtension());
 			assertEquals("io.leitstand",storedImage.getOrganization());
 			assertEquals("unittest",storedImage.getCategory());
 			assertTrue(storedImage.getApplications().isEmpty());
 			assertTrue(storedImage.getPackages().isEmpty());
 			assertTrue(storedImage.getChecksums().isEmpty());
-			assertEquals(PLATFORM_ID,storedImage.getPlatformId());
-			assertEquals(PLATFORM_NAME,storedImage.getPlatformName());
+			assertEquals(PLATFORM_CHIPSET,storedImage.getPlatformChipset());
 			assertNull(storedImage.getBuildId());
 			assertNull(storedImage.getBuildDate());
 			
@@ -217,16 +216,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_metadata_with_build_info() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 
@@ -244,9 +242,10 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
-			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
+			assertEquals(ELEMENT_ROLE,storedImage.getElementRoles().get(0));
+			assertThat(storedImage.getElementRoles(),hasSizeOf(1));
 			assertEquals("tar.gz",storedImage.getExtension());
 			assertEquals("io.leitstand",storedImage.getOrganization());
 			assertEquals("unittest",storedImage.getCategory());
@@ -267,16 +266,15 @@ public class ImageServiceIT extends InventoryIT{
 		
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 							  .withChecksums(checksums)	
@@ -292,9 +290,10 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
-			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
+			assertEquals(ELEMENT_ROLE,storedImage.getElementRoles().get(0));
+			assertThat(storedImage.getElementRoles(),hasSizeOf(1));
 			assertEquals("tar.gz",storedImage.getExtension());
 			assertEquals("io.leitstand",storedImage.getOrganization());
 			assertEquals("unittest",storedImage.getCategory());
@@ -310,16 +309,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void store_image_with_applications() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("store_image_metadata_with_build_info"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withBuildId(UUID.randomUUID().toString())
 							  .withBuildDate(new Date())
 							  .withApplications(applicationName("app1"),
@@ -338,9 +336,10 @@ public class ImageServiceIT extends InventoryIT{
 			assertEquals(imageInfo.getImageId(),storedImage.getImageId());
 			assertEquals(imageName("store_image_metadata_with_build_info"),storedImage.getImageName());
 			assertEquals(NEW,storedImage.getImageState());
-			assertEquals(LXC,storedImage.getImageType());
+			assertEquals(imageType("lxd"),storedImage.getImageType());
 			assertEquals(new Version(1,0,0),storedImage.getImageVersion());
-			assertEquals(ELEMENT_ROLE,storedImage.getElementRole());
+			assertEquals(ELEMENT_ROLE,storedImage.getElementRoles().get(0));
+			assertThat(storedImage.getElementRoles(),hasSizeOf(1));
 			assertEquals("tar.gz",storedImage.getExtension());
 			assertEquals("io.leitstand",storedImage.getOrganization());
 			assertEquals("unittest",storedImage.getCategory());
@@ -358,16 +357,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void remove_image_with_applications_and_package_revisions() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("remove_image_with_applications_and_package_revisions"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -405,16 +403,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void update_image_state() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("update_image_state"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformId(PLATFORM_ID)
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -446,15 +443,15 @@ public class ImageServiceIT extends InventoryIT{
 	public void rename_image() {
 		ImageInfo imageInfo = newImageInfo()
 							  .withImageId(randomImageId())
-							  .withImageType(LXC)
+							  .withImageType(imageType("lxd"))
 							  .withImageName(imageName("rename_image"))
 							  .withImageState(NEW)
 							  .withImageVersion(new Version(1,0,0))
 							  .withExtension("tar.gz")
-							  .withElementRole(ELEMENT_ROLE)
+							  .withElementRoles(asList(ELEMENT_ROLE))
 							  .withOrganization("io.leitstand")
 							  .withCategory("unittest")
-							  .withPlatformName(PLATFORM_NAME)
+							  .withPlatformChipset(PLATFORM_CHIPSET)
 							  .withApplications(applicationName("app1"))
 							  .withPackages(newPackageVersionInfo()
 									  		.withOrganization("io.leitstand")
@@ -468,15 +465,15 @@ public class ImageServiceIT extends InventoryIT{
 		
 		ImageInfo renamedImage = newImageInfo()
 								 .withImageId(imageInfo.getImageId())
-								 .withImageType(LXC)
+								 .withImageType(imageType("lxd"))
 								 .withImageName(imageName("renamed_image"))
 								 .withImageState(NEW)
 								 .withImageVersion(new Version(1,0,0))
 								 .withExtension("tar.gz")
-								 .withElementRole(ELEMENT_ROLE)
+								 .withElementRoles(asList(ELEMENT_ROLE))
 								 .withOrganization("io.leitstand")
 								 .withCategory("unittest")
-								 .withPlatformName(PLATFORM_NAME)
+								 .withPlatformChipset(PLATFORM_CHIPSET)
 								 .withApplications(applicationName("app1"))
 								 .withPackages(newPackageVersionInfo()
 										 	   .withOrganization("io.leitstand")
@@ -512,7 +509,9 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID,
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -522,12 +521,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("remove_bound_image"),
-									role,
-									platform,
+									asList(role),
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			repository.add(new Element_Image(element, image));
 		});
@@ -556,7 +555,9 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID,PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID,
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -566,12 +567,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("stats_active_image"),
-									role,
-									platform,
+									asList(role),
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			Element_Image ei = new Element_Image(element, image);
 			ei.setImageInstallationState(ACTIVE);
@@ -599,7 +600,9 @@ public class ImageServiceIT extends InventoryIT{
 																		   GROUP_NAME));
 			
 			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
-													   ()->new Platform(PLATFORM_ID, PLATFORM_NAME));
+													   ()->new Platform(PLATFORM_ID, 
+															   			PLATFORM_NAME,
+															   			PLATFORM_CHIPSET));
 			
 			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
@@ -609,12 +612,12 @@ public class ImageServiceIT extends InventoryIT{
 															 		   ELEMENT_NAME));
 
 			Image image = new Image(imageId,
-									"io.leitstand",
-									ImageType.LXC,
+									imageType("lxd"),
 									imageName("stats_active_image"),
-									role,
-									platform,
+									asList(role),
+									PLATFORM_CHIPSET,
 									new Version(1,0,0));
+			image.setOrganization("leitstand.io");
 			repository.add(image);
 			Element_Image ei = new Element_Image(element, image);
 			ei.setImageInstallationState(CACHED);

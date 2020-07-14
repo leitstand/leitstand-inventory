@@ -307,7 +307,7 @@ export class Elements extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements?filter={{&filter}}",
+		return this.json("/api/v1/elements?filter={{&filter}}&by={{by}}",
 						 this._cfg,
 						 params)
 				   .GET();
@@ -357,19 +357,15 @@ export class Element extends Resource {
 					   .GET();
 		}
 		
-		if(this._cfg["scope"]=="modules"){
-			return this.json("/api/v1/elements/{{&element}}/modules/{{&module_name}}",
+		if(this._cfg["scope"]=="configs"){
+			return this.json("/api/v1/elements/{{&element}}/{{&scope}}?filter={{filter}}",
 							 this._cfg,
 							 params)
 					   .GET();
 		}
-		
-		if(this._cfg["scope"]=="metrics"){
-			if(!this._cfg["metric_scope"]){
-				this._cfg["metric_scope"] = "ELEMENT";
-			}
-			
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope={{metric_scope}}&fetch_mode=VISUALIZATION_CONFIG",
+
+		if(this._cfg["scope"]=="modules"){
+			return this.json("/api/v1/elements/{{&element}}/modules/{{&module_name}}",
 							 this._cfg,
 							 params)
 					   .GET();
@@ -467,13 +463,6 @@ export class ElementPhysicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		if(this._cfg.scope == "metrics"){
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope=IFP&fetch_mode=VISUALIZATION_CONFIG",
-							 this._cfg,
-							 params)
-					   .GET()
-		}
-		
 		return this.json("/api/v1/elements/{{&element}}/physical_interfaces",
 				  		 this._cfg,
 				  		 params)
@@ -491,13 +480,6 @@ export class ElementPhysicalInterface extends Resource {
 	}
 	
 	load(params){
-		if(this._cfg.scope == "metrics"){
-			return this.json("/api/v1/elements/{{&element}}/metrics?metric_scope=IFP&fetch_mode=VISUALIZATION_CONFIG",
-					  		 this._cfg,
-					  		 params)
-					   .GET()
-		}
-		
 		return this.json("/api/v1/elements/{{&element}}/physical_interfaces/{{&ifp_name}}/{{&scope}}",
 				  		 this._cfg,
 				  		 params)
@@ -514,7 +496,7 @@ export class ElementLogicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements/{{&element}}/logical_interfaces",
+		return this.json("/api/v1/elements/{{&element}}/logical_interfaces?filter={{&filter}}",
 				  		 this._cfg,
 				  		 params)
 				   .GET()
@@ -552,5 +534,51 @@ export class Metadata extends Resource {
 	}
 }
 
+export class TimeSeries extends Resource {
+    
+    constructor(cfg){
+        super()
+        this._cfg = cfg;
+    }
+    
+    load(params){
+        if(params.metric_name){
+            return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}/{{metric_name}}",params)
+                       .GET();
+        }
+        return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}",params)
+                   .GET();
+    }
+    
+}
 
+export class Panel extends Resource {
+    
+    constructor(cfg){
+        super()
+        this._cfg = cfg;
+    }
+    
+    load(params){
+        if(params.ifp_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?ifp_name={{&ifp_name}}",params)
+                       .GET();
+        }
+
+        if(params.ifl_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?ifl_name={{&ifl_name}}",params)
+                       .GET();
+        }
+
+        if(params.service_name){
+            return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?service_name={{service_name}}",params)
+                       .GET();
+        }
+
+        
+        return this.json("/api/v1/elements/{{element}}/panels/{{panel}}",params)
+                   .GET();
+    }
+    
+}
 	

@@ -18,8 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.model.ByteArrayUtil.encodeBase36String;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
-import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
-import static io.leitstand.inventory.service.PlatformName.platformName;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.security.crypto.SecureHashes.sha256;
 import static java.util.Arrays.asList;
 
@@ -32,9 +31,12 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.PackageVersionInfo;
+import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.Version;
 
 public final class ImageInfoMother {
+	
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
 	
 	private static final String DUMMY_MD5 = "DUMMY";
 	
@@ -51,49 +53,53 @@ public final class ImageInfoMother {
 		return checksums;
 	}
 	
-	public static final PackageVersionInfo FOO_100 = newPackageVersionInfo().withOrganization("net.rtbrick")
-																			  .withPackageName("foo")
-																			  .withPackageVersion(new Version(1,0,0))
-																			  .withBuildDate(new Date())
-																			  .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo100"))))
-																			  .withPackageExtension("so")
-																			  .build();
-	public static final PackageVersionInfo FOO_101 = newPackageVersionInfo().withOrganization("net.rtbrick")
-																			  .withPackageName("foo")
-																			  .withPackageVersion(new Version(1,0,1))
-																			  .withBuildDate(new Date())
-																			  .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo101"))))
-																			  .withPackageExtension("so")
-																			  .build();
+	public static final PackageVersionInfo FOO_100 = newPackageVersionInfo()
+													 .withOrganization("net.rtbrick")
+													 .withPackageName("foo")
+													 .withPackageVersion(new Version(1,0,0))
+													 .withBuildDate(new Date())
+													 .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo100"))))
+													 .withPackageExtension("so")
+													 .build();
 	
-	public static final PackageVersionInfo BAR_100 = newPackageVersionInfo().withOrganization("net.rtbrick")
-			  																  .withPackageName("bar")
-			  																  .withPackageVersion(new Version(1,0,0))
-			  																  .withBuildDate(new Date())
-			  																  .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickbar100"))))
-			  																  .withPackageExtension("so")
-			  																  .build();
+	public static final PackageVersionInfo FOO_101 = newPackageVersionInfo()
+													 .withOrganization("net.rtbrick")
+													 .withPackageName("foo")
+													 .withPackageVersion(new Version(1,0,1))
+													 .withBuildDate(new Date())
+													 .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo101"))))
+													 .withPackageExtension("so")
+													 .build();
+	
+	public static final PackageVersionInfo BAR_100 = newPackageVersionInfo()
+													 .withOrganization("net.rtbrick")
+			  										 .withPackageName("bar")
+			  										 .withPackageVersion(new Version(1,0,0))
+			  										 .withBuildDate(new Date())
+			  										 .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickbar100"))))
+			  										 .withPackageExtension("so")
+			  										 .build();
 
-	public static final PackageVersionInfo BAR_200 = newPackageVersionInfo().withOrganization("net.rtbrick")
-																			  .withPackageName("bar")
-																			  .withPackageVersion(new Version(2,0,0))
-																			  .withBuildDate(new Date())
-																			  .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo100"))))
-																			  .withPackageExtension("so")
-																			  .build();
+	public static final PackageVersionInfo BAR_200 = newPackageVersionInfo()
+													 .withOrganization("net.rtbrick")
+													 .withPackageName("bar")
+													 .withPackageVersion(new Version(2,0,0))
+													 .withBuildDate(new Date())
+													 .withChecksums(checksum(encodeBase36String(sha256().hash("netrtrbrickfoo100"))))
+													 .withPackageExtension("so")
+													 .build();
 	
 
 	public static ImageInfo newSpineImage(Version revision, PackageVersionInfo... packages){
 		ImageId id = new ImageId(UUID.randomUUID().toString());
 		return newImageInfo()
-			   .withElementRole(new ElementRoleName("SPINE"))
+			   .withElementRoles(new ElementRoleName("SPINE"))
 			   .withBuildDate(new Date())
 			   .withImageVersion(revision)
 			   .withImageId(id)
 			   .withChecksums(md5(DUMMY_MD5))
 			   .withPackages(asList(packages))
-			   .withPlatformId(randomPlatformId())
-			   .withPlatformName(platformName("unittest"))
+			   .withPlatformChipset(PLATFORM_CHIPSET)
 			   .withExtension("tar.gz")
 			   .build();
 		
@@ -102,16 +108,16 @@ public final class ImageInfoMother {
 
 	public static ImageInfo newLeafImage(Version revision, PackageVersionInfo... packages){
 		ImageId id = new ImageId(UUID.randomUUID().toString());
-		return newImageInfo().withElementRole(new ElementRoleName("LEAF"))
-								  .withBuildDate(new Date())
-								  .withImageVersion(revision)
-								  .withImageId(id)
-								  .withChecksums(md5(DUMMY_MD5))
-								  .withPackages(asList(packages))
-								  .withPlatformId(randomPlatformId())
-								  .withPlatformName(platformName("unittest"))
-								  .withExtension("tar.gz")
-								  .build();
+		return newImageInfo()
+			   .withElementRoles(new ElementRoleName("LEAF"))
+			   .withBuildDate(new Date())
+			   .withImageVersion(revision)
+			   .withImageId(id)
+			   .withChecksums(md5(DUMMY_MD5))
+			   .withPackages(asList(packages))
+			   .withPlatformChipset(PLATFORM_CHIPSET)
+			   .withExtension("tar.gz")
+			   .build();
 		
 	}
 	

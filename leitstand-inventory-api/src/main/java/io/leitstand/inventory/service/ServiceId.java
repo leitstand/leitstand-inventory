@@ -15,29 +15,43 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+import io.leitstand.commons.model.Patterns;
 import io.leitstand.commons.model.Scalar;
-import io.leitstand.inventory.jsonb.VlanIdAdapter;
+import io.leitstand.inventory.jsonb.ServiceIdAdapter;
 
-@JsonbTypeAdapter(VlanIdAdapter.class)
-public class VlanId extends Scalar<Integer> {
+@JsonbTypeAdapter(ServiceIdAdapter.class)
+public class ServiceId extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
-
-	private Integer value;
 	
-	public VlanId(int vlanId) {
-		this(Integer.valueOf(vlanId));
+	public static ServiceId serviceId(String name) {
+		return valueOf(name);
 	}
 	
-	public VlanId(Integer vlanId) {
-		this.value = vlanId;
+	public static ServiceId valueOf(String name) {
+		return fromString(name,ServiceId::new);
+	}
+
+	@NotNull(message="{service_id.required}")
+	@Pattern(regexp=UUID_PATTERN ,message="{service_id.invalid}" )
+	private String value;
+	
+	public ServiceId(String name){
+		this.value = name;
 	}
 	
 	@Override
-	public Integer getValue() {
+	public String getValue() {
 		return value;
 	}
+
+
+
 
 }

@@ -20,25 +20,24 @@ import static io.leitstand.inventory.model.ImageInfoMother.BAR_200;
 import static io.leitstand.inventory.model.ImageInfoMother.FOO_100;
 import static io.leitstand.inventory.model.ImageInfoMother.FOO_101;
 import static io.leitstand.inventory.model.ImageInfoMother.newLeafImage;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import javax.enterprise.event.Event;
-import javax.inject.Provider;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageService;
@@ -47,6 +46,9 @@ import io.leitstand.inventory.service.Version;
 
 public class StoreImageIT extends InventoryIT{
 
+	private static final ElementRoleName LEAF = elementRoleName("LEAF");
+	private static final ElementRoleName SPINE = elementRoleName("SPINE");
+	
 	private ImageService service;
 	private PackageVersionService packages;
 	private ImageInfo image;
@@ -57,45 +59,53 @@ public class StoreImageIT extends InventoryIT{
 		this.packages = new PackageVersionService(repository);
 		
 		service = new DefaultImageService(packages, 
-										  new PlatformProvider(repository),
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),
 										  mock(Event.class));
-		addElementRole(repository, new ElementRoleName("LEAF"));
-		addElementRole(repository, new ElementRoleName("SPINE"));
-	}
+		transaction(() -> {
+			repository.addIfAbsent(findRoleByName(LEAF), () -> {
+				return new ElementRole(LEAF,DATA);
+			});
 
-	private void addElementRole(Repository repository, ElementRoleName name) {
-		ElementRole type = repository.execute(findRoleByName(name));
-		if(type == null) {
-			type = new ElementRole(name,DATA);
-			repository.add(type);
-		}
+			repository.addIfAbsent(findRoleByName(SPINE), () -> {
+				return new ElementRole(SPINE,DATA);
+			});
+		});
+		
 	}
 	
 	@Test
 	public void create_new_container_image_and_new_package(){
-		image = ImageInfoMother.newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
-		service.storeImage(image);
+		image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
+		transaction( () -> {
+			boolean created = service.storeImage(image);
+			assertTrue(created);
+		});
 	}
 	
 	@Test
 	public void create_new_container_image_referring_to_existing_packages(){
-		packages.storePackageVersion(FOO_101);
-		packages.storePackageVersion(BAR_200);
+		transaction(()->{
+			packages.storePackageVersion(FOO_101);
+			packages.storePackageVersion(BAR_200);
+		});
 		transaction(()->{
 			image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
-			service.storeImage(image);
+			boolean created = service.storeImage(image);
+			assertTrue(created);
 		});
 	}
 	
 	@Test
 	public void create_new_container_image_adding_new_package_revision_to_existing_package(){
-		packages.storePackageVersion(FOO_100);
+		transaction(() -> {
+			packages.storePackageVersion(FOO_100);
+		});
 		transaction(()->{
-			image = ImageInfoMother.newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
-			service.storeImage(image);
+			image = newLeafImage(new Version(1,0,0),FOO_101,BAR_200);
+			boolean created = service.storeImage(image);
+			assertTrue(created);
 		});
 	}
 	
@@ -103,7 +113,7 @@ public class StoreImageIT extends InventoryIT{
 	public void verify_created_container_image(){
 		transaction(()->{
 			ImageInfo restored = service.getImage(image.getImageId());
-			Assert.assertNotNull(restored);
+			assertNotNull(restored);
 			assertEquals(image.getImageId(),restored.getImageId());
 
 			List<PackageVersionInfo> packages = image.getPackages();

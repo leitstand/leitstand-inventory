@@ -13,20 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.leitstand.inventory.visitor;
+package io.leitstand.inventory.jpa;
 
-import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageState;
-import io.leitstand.inventory.service.ImageType;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-public interface ImageVisitor {
-	void visitImage(ImageInfo image);
-	
-	default ImageState getImageState() {
-		return null;
+import io.leitstand.inventory.service.PlatformChipsetName;
+
+@Converter
+public class PlatformChipsetNameConverter implements AttributeConverter<PlatformChipsetName, String> {
+
+	@Override
+	public String convertToDatabaseColumn(PlatformChipsetName platformId) {
+		return PlatformChipsetName.toString(platformId);
 	}
 	
-	default ImageType getImageType() {
-		return null;
+	@Override
+	public PlatformChipsetName convertToEntityAttribute(String platformId) {
+		return PlatformChipsetName.valueOf(platformId);
 	}
+
+	
+
 }

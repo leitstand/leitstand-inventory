@@ -15,12 +15,34 @@
 -->
 <ui-view-header>
 	<ui-title>Elements</ui-title>
-	<ui-subtitle>Overview of all existing elements.</ui-subtitle>
+	<ui-subtitle>Overview of all registered elements.</ui-subtitle>
 </ui-view-header>
 <ui-form>
-	<ui-filter name="filter" placeholder="Enter a regular expression">
-		<ui-label>Filter</ui-label>
-		<ui-note>Filter elements by their name or alias.</ui-note>
+	<ui-filter name="filter" bind="filter.filter" placeholder="Enter a regular expression">
+		<ui-label>Expression</ui-label>
+		<ui-options>
+			<ui-note>Select the property to filter elements for.</ui-note>
+			<ui-radio name="by" bind="filter.by" value="name">
+				<ui-label>Name</ui-label>
+				<ui-note>Filter elements by element name and element alias</ui-note>
+			</ui-radio>
+			<ui-radio name="by" bind="filter.by" value="ip">
+				<ui-label>Management IP address / hostname</ui-label>
+				<ui-note>Filter elements by management IP address or hostname</ui-note>
+			</ui-radio>
+			<ui-radio name="by" bind="filter.by" value="tag" default>
+				<ui-label>Tag</ui-label>
+				<ui-note>Filter elements by element name and tags.</ui-note>
+			</ui-radio>
+			<ui-radio name="by" bind="filter.by" value="serial">
+				<ui-label>Serial number</ui-label>
+				<ui-note>Filter elements by serial number.</ui-note>
+			</ui-radio>
+			<ui-radio name="by" bind="filter.by" value="assetid">
+				<ui-label>Asset ID</ui-label>
+				<ui-note>Filter elements by asset ID.</ui-note>
+			</ui-radio>
+		</ui-options>
 	</ui-filter>
 	<!--  {{#elements.length}} -->
 	<ui-group>
@@ -31,28 +53,63 @@
 					<th class="text">Pod</th>
 					<th class="text">Element</th>
 					<th class="text">Alias</th>
+					<th class="tiny">Adm.-State</th>
 					<th class="text">Tags</th>
+					<!-- {{#render_description}} -->	
 					<th class="text">Description</th>
+					<!-- {{/render_description}} -->	
+					<!-- {{#render_serial}} -->	
+					<th class="text">Serial Number</th>
+					<!-- {{/render_serial}} -->	
+					<!-- {{#render_assetid}} -->	
+					<th class="text">Asset ID</th>
+					<!-- {{/render_assetid}} -->
+					<!-- {{#render_mgmt_ip}} -->	
+					<th class="text">Management Interfaces</th>
+					<!-- {{/render_mgmt_ip}} -->		
 				</tr>
 			</thead>
 			<tbody>
 				<!--  {{#elements}} -->
-				<tr>
+				<tr style="vertical-align:top">
 					<td class="text"><a href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show {{group_type}} details">{{group_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_alias}}</a></td>
-					<td class="text"><a href="/ui/views/inventory/pod/pod-alerts.html?group={{group_id}}" title="Show alerts" class="hidden btn btn-sm btn-danger">Alerts<span class="counter"></span></a><ol class="tags">{{#tags}}<li class="tag">{{.}}</li>{{/tags}}</ol></td>
+					<td class=><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+					<td class="text"><ol class="tags">
+					<!-- {{#tags}}  -->
+						<li>{{.}}</li>
+					<!-- {{/tags}} -->
+					</ol></td>
+					<!-- {{#render_description}} -->	
 					<td class="text">{{description}}</td>
+					<!-- {{/render_description}} -->	
+					<!-- {{#render_serial}} -->	
+					<td class="text">{{serial_number}}</td>
+					<!-- {{/render_serial}} -->	
+					<!-- {{#render_assetid}} -->	
+					<td class="text">{{asset_id}}</td>
+					<!-- {{/render_assetid}} -->
+					<!-- {{#render_mgmt_ip}} -->	
+					<td class="text">
+						<ul style="list-style-type: square; margin-left: 15px;">
+						<!-- {{#management_interface_list}} -->
+						<li>{{mgmt_name}} {{mgmt_hostname}}</li>
+						<!-- {{/management_interface_list}} -->
+						</ul>
+					</td>
+					<!-- {{/render_mgmt_ip}} -->	
 				</tr>
 				<!-- {{/elements}} -->
 			</tbody>
 		</table>
+		<ui-note class="right">{{elements.length}} element(s) found.</ui-note>
 	</ui-group>
 	<!-- {{/elements.length}} -->
 	<!-- {{^elements}}        -->
 	<ui-blankslate>
-		<ui-title>No elements found</ui-title>
-		<ui-note>Please amend the filter expression to search for other elements.</ui-note>
+		<ui-title>No elements found.</ui-title>
+		<ui-note>Please amend the filter expression to search for other elements or add a new element to an existing pod.</ui-note>
 	</ui-blankslate>
 	<!-- {{/elements}} -->
 </ui-form>

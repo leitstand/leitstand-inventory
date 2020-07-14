@@ -47,21 +47,15 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 			return this;
 		}
 		
-		public Builder withIfpClass(String ifpClass) {
+		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), submission);
-			submission.ifpClass = ifpClass;
+			submission.category = category;
 			return this;
 		}
 		
 		public Builder withBandwidth(Bandwidth bandwidth) {
 			assertNotInvalidated(getClass(), submission);
 			submission.bandwidth = bandwidth;
-			return this;
-		}
-		
-		public Builder withMtuSize(int mtuSize) {
-			assertNotInvalidated(getClass(), submission);
-			submission.mtuSize = mtuSize;
 			return this;
 		}
 		
@@ -111,29 +105,20 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 
-	@JsonbProperty("ifp_name")
 	private InterfaceName ifpName;
 	
 	private String ifpAlias;
 	
-	private String ifpClass;
+	private String category;
 
-	@JsonbProperty("bandwidth")
 	private Bandwidth bandwidth;
 
-	@JsonbProperty("mtu_size")
-	private int mtuSize;
-	
-	@JsonbProperty("mac_address")
 	private MACAddress macAddress;
 	
-	@JsonbProperty("operational_state")
 	private OperationalState operationalState;
 	
-	@JsonbProperty("administrative_state")
 	private AdministrativeState administrativeState;
 	
-	@JsonbProperty("ifc_name")
 	private InterfaceName ifcName;
 	
 	private ElementPhysicalInterfaceNeighbor neighbor;
@@ -173,8 +158,8 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	 * @return the container interface name.
 	 */
 	public InterfaceName getIfcName() {
-		if(ifcName == null && ifpName != null) {
-			return new InterfaceName(ifpName+"/0");
+		if(ifcName == null) {
+			return ifpName;
 		}
 		return ifcName;
 	}
@@ -188,27 +173,19 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 	/**
-	 * Returns the adminstrative state of the physical interface.
+	 * Returns the administrative state of the physical interface.
 	 * @return the administrative state
 	 */
 	public AdministrativeState getAdministrativeState() {
 		return administrativeState;
 	}
 	
-	/**
-	 * Returns the configure MTU size.
-	 * @return the MTU size.
-	 */
-	public int getMtuSize() {
-		return mtuSize;
-	}
-
 	public String getIfpAlias() {
 		return ifpAlias;
 	}
 	
-	public String getIfpClass() {
-		return ifpClass;
+	public String getCategory() {
+		return category;
 	}
 	
 	public ElementPhysicalInterfaceNeighbor getNeighbor() {

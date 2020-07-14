@@ -171,6 +171,6 @@ public interface ElementPhysicalInterfaceService {
 	 * @param opState - the operational state
 	 */
 	void updatePhysicalInterfaceOperationalState(ElementName name, InterfaceName ifpName, OperationalState opState);
-	
+
 	
 }
