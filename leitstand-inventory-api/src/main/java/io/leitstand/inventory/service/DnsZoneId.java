@@ -23,6 +23,7 @@ import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import io.leitstand.commons.model.Patterns;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsZoneIdAdapter;
 
