@@ -51,7 +51,7 @@ import io.leitstand.inventory.service.ServiceType;
 @Entity
 @Table(schema="inventory", name="element_service")
 @NamedQuery(name="Element_Service.updateOperationalState",
-			query="UPDATE Element_Service s SET s.state=:state WHERE s.element=:element")
+			query="UPDATE Element_Service s SET s.opState=:state WHERE s.element=:element")
 @NamedQuery(name="Element_Service.findServices",
 			query="SELECT s FROM Element_Service s WHERE s.element=:element")
 @NamedQuery(name="Element_Service.removeAll",
