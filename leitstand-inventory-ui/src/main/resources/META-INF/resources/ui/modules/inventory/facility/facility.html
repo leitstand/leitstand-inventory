@@ -1,0 +1,54 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+	<ui-breadcrumbs>
+		<ui-breadcrumb href="facilities.html">Facilities</ui-breadcrumb>
+		<ui-breadcrumb>{{facility_name}}</ui-breadcrumb>
+	</ui-breadcrumbs>
+	<ui-title>Facility {{facility_name}}</ui-title>
+	<ui-subtitle>Manage facility settings.</ui-subtitle>
+</ui-view-header>
+<div>
+<ui-form scopesAllowed="ivt ivt.facility">
+	<ui-group>
+		<ui-label>Facility Settings</ui-label>
+		<ui-input name="facility_name">
+			<ui-label>Facility Name</ui-label>
+			<ui-note>The name of the facility</ui-note>
+		</ui-input>
+		<ui-select name="facility_type">
+			<ui-label>Facility Type</ui-label>
+			<ui-note>Select the type of this facility</ui-note>
+			<ui-options>
+				<ui-option value="DC">Data Center</ui-option>
+				<ui-option value="CO">Central Office</ui-option>
+				<ui-option value="SC">Street Cabinet</ui-option>
+			</ui-options>
+		</ui-select>
+		<ui-textarea name="description">
+			<ui-label>Description</ui-label>
+			<ui-note>An optional rack description or additional comments.</ui-note>
+		</ui-textarea>
+	</ui-group>
+	<ui-group>
+		<ui-label>Location</ui-label>
+		<facility-location id="map" bind="geolocation"></facility-location>
+	</ui-group>
+	<ui-actions>
+		<ui-button name="save-facility" primary>Save facility</ui-button>
+		<ui-button href="confirm-remove.html?facility={{facility_id}}" danger>Remove facility</ui-button>
+	</ui-actions>
+</ui-form>

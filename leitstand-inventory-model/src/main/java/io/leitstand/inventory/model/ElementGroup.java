@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.model.ObjectUtil.optional;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSortedSet;
 import static javax.persistence.CascadeType.PERSIST;
@@ -26,14 +27,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -46,7 +46,8 @@ import io.leitstand.inventory.jpa.ElementGroupTypeConverter;
 import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
-import io.leitstand.inventory.service.Geolocation;
+import io.leitstand.inventory.service.FacilityId;
+import io.leitstand.inventory.service.FacilityName;
 import io.leitstand.inventory.service.Plane;
 
 @Entity
@@ -151,12 +152,10 @@ public class ElementGroup extends VersionableEntity {
 	@OneToMany(mappedBy="group", cascade=PERSIST)
 	private List<Element> elements;
 	
-	private String location;
-	@AttributeOverrides({
-		@AttributeOverride(name="longitude", column=@Column(name="geolon")),
-		@AttributeOverride(name="latitude",column=@Column(name="geolat"))
-	})
-	private Geolocation geolocation;
+	@ManyToOne
+	@JoinColumn(name="facility_id")
+	private Facility facility;
+	
 	
 	@ElementCollection
 	@CollectionTable(schema="inventory", 
@@ -234,25 +233,26 @@ public class ElementGroup extends VersionableEntity {
 		return new ElementGroupId(getUuid());
 	}
 
-	public String getLocation() {
-		return location;
+	public Facility getFacility() {
+		return facility;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setFacility(Facility facility) {
+		this.facility = facility;
 	}
-
+	
 	public void setTags(Set<String> tags) {
 		this.tags.clear();
 		this.tags.addAll(tags);
 	}
-	
-	public void setGeolocation(Geolocation geolocation) {
-		this.geolocation = geolocation;
+
+	public FacilityId getFacilityId() {
+		return optional(facility, Facility::getFacilityId);
 	}
-	
-	public Geolocation getGeolocation() {
-		return geolocation;
+
+	public FacilityName getFacilityName() {
+		return optional(facility, Facility::getFacilityName);
 	}
+
 	
 }

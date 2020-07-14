@@ -18,8 +18,8 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.model.Platform.countElements;
 import static io.leitstand.inventory.model.Platform.findAll;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
-import static io.leitstand.inventory.model.Platform.findByPlatformName;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
+import static io.leitstand.inventory.model.Platform.findPlatformByName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0901I_PLATFORM_STORED;
@@ -84,14 +84,13 @@ public class DefaultPlatformService implements PlatformService{
 			   .withVendorName(platform.getVendor())
 			   .withModelName(platform.getModel())
 			   .withDescription(platform.getDescription())
-			   .withHalfRackSize(platform.isHalfRackSize())
 			   .withRackUnits(platform.getHeight())
 			   .build();
 	}
 
 	@Override
 	public PlatformSettings getPlatform(PlatformName name) {
-		Platform platform = repository.execute(findByPlatformName(name));
+		Platform platform = repository.execute(findPlatformByName(name));
 		if(platform == null) {
 			LOG.fine(() -> format("%s: Platform %s not found!",
 								  IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
@@ -103,7 +102,7 @@ public class DefaultPlatformService implements PlatformService{
 	
 	@Override
 	public PlatformSettings getPlatform(PlatformId platformId) {
-		Platform platform = repository.execute(findByPlatformId(platformId));
+		Platform platform = repository.execute(findPlatformById(platformId));
 		if(platform == null) {
 			LOG.fine(() -> format("%s: Platform %s not found!",
 								  IVT0900E_PLATFORM_NOT_FOUND.getReasonCode(),
@@ -117,7 +116,7 @@ public class DefaultPlatformService implements PlatformService{
 	public boolean storePlatform(PlatformSettings settings) {
 		try {
 			boolean created = false;
-			Platform platform = repository.execute(findByPlatformId(settings.getPlatformId()));
+			Platform platform = repository.execute(findPlatformById(settings.getPlatformId()));
 			if(platform == null) {
 				platform = new Platform(settings.getPlatformId(),
 										settings.getPlatformName(),
@@ -130,7 +129,6 @@ public class DefaultPlatformService implements PlatformService{
 			platform.setVendor(settings.getVendorName());
 			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
-			platform.setHalfRack(settings.isHalfRackSize());
 			platform.setRackUnits(settings.getRackUnits());
 			return created;
 		} finally {
@@ -148,14 +146,14 @@ public class DefaultPlatformService implements PlatformService{
 
 	@Override
 	public void removePlatform(PlatformId platformId) {
-		Platform platform = repository.execute(findByPlatformId(platformId));
+		Platform platform = repository.execute(findPlatformById(platformId));
 		removePlatform(platform);
 		
 	}
 
 	@Override
 	public void removePlatform(PlatformName platformName) {
-		Platform platform = repository.execute(findByPlatformName(platformName));
+		Platform platform = repository.execute(findPlatformByName(platformName));
 		removePlatform(platform);
 	}
 	

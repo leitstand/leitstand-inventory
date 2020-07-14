@@ -18,7 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.ApplicationName.applicationName;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
@@ -508,7 +508,7 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_TYPE, 
 																		  				 GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   ()->new Platform(PLATFORM_ID,
 															   			PLATFORM_NAME,
 															   			PLATFORM_CHIPSET));
@@ -517,6 +517,7 @@ public class ImageServiceIT extends InventoryIT{
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
 													 () -> new Element(group, 
 															 		   role, 
+															 		   platform,
 															 		   randomElementId(), 
 															 		   ELEMENT_NAME));
 
@@ -554,15 +555,15 @@ public class ImageServiceIT extends InventoryIT{
 																		  				 GROUP_TYPE, 
 																		  				 GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   ()->new Platform(PLATFORM_ID,
 															   			PLATFORM_NAME,
 															   			PLATFORM_CHIPSET));
 			
-			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
 													 () -> new Element(group, 
 															 		   role, 
+															 		   platform,
 															 		   randomElementId(), 
 															 		   ELEMENT_NAME));
 
@@ -599,15 +600,15 @@ public class ImageServiceIT extends InventoryIT{
 																		   GROUP_TYPE, 
 																		   GROUP_NAME));
 			
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID),
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID),
 													   ()->new Platform(PLATFORM_ID, 
 															   			PLATFORM_NAME,
 															   			PLATFORM_CHIPSET));
 			
-			
 			Element element = repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
 													 () -> new Element(group, 
-															 		   role, 
+															 		   role,
+															 		   platform,
 															 		   randomElementId(), 
 															 		   ELEMENT_NAME));
 

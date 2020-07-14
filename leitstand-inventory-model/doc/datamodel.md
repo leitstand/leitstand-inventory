@@ -681,68 +681,6 @@ The table has three unique constraints:
 - `UUID`, the element group ID must be unique for all element groups.
 - `NAME`, the element group name must be unique for all element groups.
 
-### `elementgroup_rack` Table
-The `elementgroup_rack` describes the racks that contain the elements of an element group.
-
-#### Columns
-| Column 		  | Type 		  | Description 							   |
-|:----------------|:--------------|:---------------------------------------|
-| ID 			  | INT8 		  | Sequential number as primary key.	   | 
-| NAME			  | VARCHAR(64)	  | Unique rack name.					   |
-| ELEMENTGROUP_ID | INT8			  |	Reference to the element-group record. |
-| LOCATION		  | VARCHAR(255)	  | Optional rack location details.		   |
-| UNITS			  | INT4			  | Total number of available rack units.  |
-| DESCRIPTION	  | VARCHAR(1024) | Optional additionally description. 	   |
-
-#### Primary Key
-The `ID` column forms the primary key.
-
-#### Unique Constraints
-The combination of `NAME` and `ELEMENTGROUP_ID` column values must be unique, 
-i.e the rack name is unique per element group.
-
-#### Foreign Keys
-The `ELEMENTGROUP_ID` column refers to the `ID` column in the `elementgroup` table.
-This relation assigns a rack to its element group.
- 
-### `elementgroup_rack_element` Table
-The `elementgroup_rack_element` table assigns an element to its location in a rack.
-
-#### Columns
-| Column 	 		    | Type    	  | Description 		                 		  |
-|:----------------------|:------------|:------------------------------------------|
-| ELEMENTGROUP\_RACK_ID | INT8		  | Reference to rack record.				  |
-| ELEMENT_ID				| INT8 		  | Reference to element record.	 			  |
-| UNIT					| INT4 		  | Rack unit where the element is installed. |
-| VPOS					| CHAR(1)     | Vertical position of half-rack units.	  |
-
-The vertical position of half-rack units is either `LEFT` for left or `RIGHT` for right. 
-The vertical position is omitted (`null`) for full-width units. 
-
-#### Primary Key
-The `ELEMENTGROUP_RACK_ID` and `ELEMENT_ID` columns form the primary key.
-
-#### Foreign Keys
-This table has two foreign keys:
-- The `ELEMENTGROUP_RACK_ID` column refers to the `ID` column of the `elementgroup_rack` table.
-- The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
-
-### `elementgroup_tag` Table
-The `elementgroup_tag` table stores the element group tags grouped by element group.
-
-#### Columns
-| Column 	 		 | Type 			| Description 					   |
-|:-------------------|:-------------|:---------------------------------|
-| ELEMENTGROUP_ID	 | INT8			| Reference to the element record. |
-| TAG 		 		 | VARCHAR(32)	| The tag value.					   |
-
-#### Primary Key
-`ELEMENT_ID` and the `TAG` form the primary key.
-
-#### Foreign Keys
-The `ELEMENTGROUP_ID` column refers to the `ID` column in the `elementgroup` table.
-This relation assigns a tag to its element group.
-
 ### `elementrole` Table
 The `elementrole` table stores all defined element roles.
 
@@ -967,6 +905,73 @@ This table has two unique constraints:
 - `NAME`, the platform name is unique.
 - `VENDOR` and `MODEL` columns form a composite unique key. 
   The combination of vendor and model name is unique.
+
+### `rack` Table
+The `rack` describes the racks where the network elements are installed.
+
+#### Columns
+| Column 		  | Type 		  | Description 							                        |
+|:----------------|:--------------|:------------------------------------------------------------|
+| ID 			  | INT8 		  | Sequential number as primary key.	                        | 
+| UUID			  | CHAR(36)		  | Unique rack ID in UUIDv4 format.		                        |
+| NAME			  | VARCHAR(64)	  | Unique rack name.					                        |
+| STATE			  | VARCHAR(8)    | Administrative sate (ACTIVE, PLANNED, RETIRED)              |
+| UNITS			  | INT4          | Rack height in rack units.				                    |
+| ASCENDING		  | CHAR(1)		  | Ascending ('Y') or descending ('N') unit numbering scheme.  |
+| TYPE    		  | VARCHAR(64)   | Optional rack type information.		                        |
+| SERIAL			  | VARCHAR(64)   | Optional rack serial number.					                |
+| VENDOR			  | VARCHAR(64)	  | Optional rack vendor name.                                  |
+| FACILITY		  | VARCHAR(256)  | Optional facility address.
+| LOCATION		  | VARCHAR(256)	  | Optional rack location details.		                        |
+| DESCRIPTION	  | VARCHAR(1024) | Optional additionally description. 	                        |
+
+#### Primary Key
+The `ID` column forms the primary key.
+
+#### Unique Constraints
+- The `UUID` column value must be unique.
+- The `NAME` column value must be unique.
+
+### `rack_item` Table
+The `rack_item` table contains the items installed in a rack.
+
+#### Columns
+| Column 	 		    | Type    	  | Description 		                 		                           |
+|:----------------------|:------------|:-------------------------------------------------------------------|
+| RACK\_ID 				| INT8		  | Reference to the rack record.			                           |
+| POSITION				| INT4 		  | Rack unit where the item is installed.	                           |
+| FACE					| VARCHAR(8)  | The rack face to access the item (FRONT or REAR).                  |
+| ELEMENT_ID				| INT8 		  | Reference to the element record, if the item refers to an element. |
+| NAME					| VARCHAR(64) | A descriptive name if the rack item is not an element.	           |
+| HEIGHT					| INT4		  | The item height expressed in rack units.                           |
+
+The vertical position of half-rack units is either `LEFT` for left or `RIGHT` for right. 
+The vertical position is omitted (`null`) for full-width units. 
+
+#### Primary Key
+The `RACK_ID` and `POSITION` columns form the primary key.
+
+#### Foreign Keys
+This table has two foreign keys:
+- The `RACK_ID` column refers to the `ID` column of the `elementgroup_rack` table.
+- The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
+
+### `elementgroup_tag` Table
+The `elementgroup_tag` table stores the element group tags grouped by element group.
+
+#### Columns
+| Column 	 		 | Type 			| Description 					   |
+|:-------------------|:-------------|:---------------------------------|
+| ELEMENTGROUP_ID	 | INT8			| Reference to the element record. |
+| TAG 		 		 | VARCHAR(32)	| The tag value.					   |
+
+#### Primary Key
+`ELEMENT_ID` and the `TAG` form the primary key.
+
+#### Foreign Keys
+The `ELEMENTGROUP_ID` column refers to the `ID` column in the `elementgroup` table.
+This relation assigns a tag to its element group.
+
 
 ### `service` Table
 The `service` table stores services that are provisioned by network elements.

@@ -20,7 +20,7 @@ import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
 import static io.leitstand.inventory.model.Image.findImageById;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -232,13 +232,11 @@ public class ElementImageServiceIT extends InventoryIT{
 										   										GROUP_NAME);
 								   		  return group;});
 			
-			Platform platform = repository.addIfAbsent(findByPlatformId(PLATFORM_ID), 
+			Platform platform = repository.addIfAbsent(findPlatformById(PLATFORM_ID), 
 													   () -> new Platform(PLATFORM_ID,
 															   			  PLATFORM_NAME,
 															   			  PLATFORM_CHIPSET));
-
 			elementService.storeElementSettings(settings);		
-			
 			
 			// Create base image
 			repository.addIfAbsent(findImageById(IMAGE_100),

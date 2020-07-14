@@ -6,7 +6,7 @@ extensions:
 - extend: 
     module: inventory
     menu: main
-    after: ifps
+    after: racks
   items:
   - item: dns
     label: DNS Zones
@@ -22,9 +22,9 @@ extensions:
 - extend:
     module: inventory
     menu: element
-    after: configuration
+    after: element-ifl
   items:
-  - item: DNS
+  - item: element-dns
     label: DNS
     title: Manage DNS records
     view: element-dns-records.html

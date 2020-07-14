@@ -308,7 +308,6 @@ public class PlatformServiceIT extends InventoryIT{
 								  .withPlatformName(platformName("new_platform_name"))
 								  .withVendorName(VENDOR)
 				  				  .withModelName("updated_model_name")
-				  				  .withHalfRackSize(true)
 				  				  .withRackUnits(10)
 				  				  .withDescription("updated description")
 				  				  .build();

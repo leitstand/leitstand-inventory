@@ -5,7 +5,7 @@ extensions:
 - extend:
     module: inventory
     menu: element
-    after: element-location
+    after: element-settings
   items:
   - item: element-config
     label: Configuration

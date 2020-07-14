@@ -18,7 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -128,10 +128,10 @@ public class ElementSettingsServiceIT extends InventoryIT {
 					   					   									    seed.getGroupName());
 					   			          return group;});
 			
-			repository.addIfAbsent(findByPlatformId(PLATFORM_A.getPlatformId()),
+			repository.addIfAbsent(findPlatformById(PLATFORM_A.getPlatformId()),
 								   () -> PLATFORM_A);	
 
-			repository.addIfAbsent(findByPlatformId(PLATFORM_B.getPlatformId()),
+			repository.addIfAbsent(findPlatformById(PLATFORM_B.getPlatformId()),
 					   			   () -> PLATFORM_B);	
 
 			

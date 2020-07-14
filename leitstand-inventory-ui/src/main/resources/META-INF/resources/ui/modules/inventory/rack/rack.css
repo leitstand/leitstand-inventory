@@ -1,0 +1,85 @@
+.rack {
+	position: relative;
+	color: white;
+	width: 80%;
+	margin: auto;
+	text-align: center;
+}
+
+.rack>div{
+	background-color: black;
+	display: block;
+	clear: both;
+}
+
+.rack .unit {
+	float: left;
+	background-color: black;
+	display:block;
+	width: 3em;
+	padding: 5px;
+	border: 1px solid white;
+}
+
+	
+.rack .frame {
+	background-color: black;
+	float: left;
+	width: 80%;
+	padding: 5px;
+	border: 1px solid white;
+	border-collapse: collapse;
+}
+	
+.rack .item {
+	background-color: white;
+	position: relative;
+	float: left;
+	width: 80%;
+	border: 1px solid white;
+	border-collapse: collapse;
+}
+	
+.rack .item > div {
+	position: absolute;
+	width: 100%;
+	color: black;
+	background-color: #EFEFEF;
+	z-index: 10;
+	vertical-align: middle;
+}
+
+.rack .item > div span {
+	display: inline;
+	vertical-align: middle;
+}
+
+.rack .ru1 {
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid black;
+}
+
+.rack .ru2 {
+	height: 58px;
+	line-height: 58px;
+	border: 1px solid black;
+}
+
+.rack .ru3 {
+	height: 88px;
+	line-height: 88px;
+	border: 1px solid black;
+}
+
+.rack .ru4 {
+	height: 118px;
+	line-height: 118px;
+	border: 1px solid black;
+}
+
+.rack .ru5 {
+	height: 148px;
+	line-height: 148px;
+	border: 1px solid black;
+}

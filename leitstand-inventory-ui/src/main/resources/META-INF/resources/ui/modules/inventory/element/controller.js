@@ -47,163 +47,6 @@ class OperationalStateSelector extends Select {
 }
 customElements.define("element-operational-state",OperationalStateSelector);
 
-//TODO: Implement Rack Component!
-const elementRackController = function(){
-	
-	let Rack = function(rack){
-		
-		const units = [];
-		const elements = {};
-		
-		for(let i = 0; i < rack.units; i++){
-			units.push({
-				"unit": ((100+i+1)+"").substring(1),
-				"elements":[]
-			});
-		}			
-		
-		for(let i = 0; i < rack.elements.length; i++){
-			let element = {
-				"element":rack.elements[i],
-				"selected":rack.elements[i].element_name == rack.element_name ? "selected" :  "",
-				"height":rack.elements[i].height,
-				"size":function(){
-					if (this.element.half_rack){
-						if(this.element.half_rack_pos == "LEFT"){
-							return "half_rack left";
-						}
-						return "half_rack right";
-					}
-				} 		
-			};
-			units[rack.elements[i].unit-2+rack.elements[i].height].elements.push(element);
-		}			
-		
-		this.units = function(){
-			units.reverse();
-			return units;
-		}
-	};
-	
-	const element = new Element({"scope":"rack"});
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-			settings.rack = this.transient(new Rack(settings));
-			return settings;
-		},
-		onNotFound : function(){
-			this.navigate({"view":"new-element-location.html",
-						   "?":this.location.params});
-		},
-		buttons:{
-			"save-rack":function(){
-				const location = { "rack_name":this.input("rack_name").value(),
-						  		   "rack_position":this.input("rack_position").value(),
-						  		   "address":this.input("address").value()};
-				const settings = this.updateViewModel({"location":location});
-				element.saveSettings(this.location.params,
-				                     settings);
-			}
-		}
-	});
-};
-
-const addElementLocationController = function(){
-	const element = new Element({"scope":"settings"});
-	return new Controller({
-		resource:element,
-		viewModel:async function(settings){
-			const racks = new Pod({"scope":"racks"});
-			settings.racks = await racks.load(this.location.params);
-			return settings;
-		},
-		buttons:{
-			"save-location":function(){
-				const location = {"rack_name":this.input("rack_name").value(),
-								  "unit":this.input("unit").value()};
-				const rack = new Element({"scope":"rack"});
-				this.attach(rack);
-				rack.saveSettings(this.location.params,
-								  location);
-			}
-		},
-		onSuccess : function(){
-			this.navigate({"view":"element-rack.html",
-						   "?": this.location.params});
-		}
-	});
-};
-
-const elementMountPointController = function(){
-	const element = new Element({"scope":"rack"});
-	return new Controller({
-		resource:element,
-		viewModel: async function(settings){ 
-			const racks = new Pod({"scope":"racks"})
-						  .load(this.location.params);
-			const element = (function() {
-				for(let i=0; i < settings.elements.length; i++){
-					if(settings.elements[i].element_id == settings.element_id){
-						return settings.elements[i];
-					}
-				 }
-			})();
-				
-			const half_rack_pos = [{"value":"LEFT",
-									  "display_text":"Left side",
-									  "selected":element.half_rack_pos == "LEFT" ? "selected" : ""},
-									{"value":"RIGHT",
-									  "display_text":"Right side",
-									  "selected":element.half_rack_pos == "RIGHT" ? "selected" : ""}];
-				
-			this.updateViewModel({"racks":racks.racks,
-								  "unit": element.unit,
-								  "half_rack":element.half_rack,
-								  "positions":half_rack_pos,
-								  "selected":function(){
-										  return this.rack_name == settings.rack_name	? "selected" : "";}});
-		},
-		buttons:{
-			"save-location":function(){
-				const location = {"rack_name":this.input("rack_name").value(),
-								  "unit":this.input("unit").value(),
-								  "position":this.input("position").value()};
-				const rack = new Element({"scope":"rack"});
-				this.attach(rack);
-				rack.saveSettings(this.location.params,
-								  location);
-			},
-			"remove-location":function(){
-				const rack = new Element({"scope":"rack"});
-				this.attach(rack);
-				rack.remove(this.location.params);
-			}
-		},
-		onSuccess:function(){
-			this.navigate({"view":"element-rack.html",
-						   "?":this.location.params});
-		}
-	});
-};
-
-const elementLocationController = function(){
-	const element = new Element({"scope":"settings"});
-	return new Controller({
-		resource:element,
-		buttons:{
-			"save-location":function(){
-				const location = { "rack_name":this.input("rack_name").value(),
-						  		   "rack_position":this.input("rack_position").value(),
-						  		   "address":this.input("address").value()};
-				const settings = this.updateViewModel({"location":location});
-				element.saveSettings(this.location.params,
-				                     settings);
-			}
-		}
-	});
-};
-
 
 const elementServiceController = function(){
 	const element = new Element({"scope":"services"});
@@ -420,7 +263,6 @@ class PodSelector extends Control{
 			this.viewModel.setProperty("group_id",evt.target.value);
 			this.viewModel.setProperty("group_name",evt.target.getAttribute("data-group-name"));
 		});
-		
 	}
 }
 
@@ -559,7 +401,6 @@ const elementMenu = {
 				 "element-pod.html" : elementPodController(),
 				 "confirm-remove-element.html" : elementController()}
 };
-
 const elementIfpsMenu = {
 	"master"  : elementIfpsController(),
 	"details" : { "element-ifp.html" : elementIfpController() }
@@ -570,21 +411,12 @@ const elementIflsMenu = {
 	"details" : { "element-ifl.html" : elementIflController() }
 };
 
-const elementRackMenu = {
-	"master" : elementRackController(),
-	"details" : {"new-element-location.html" : addElementLocationController(),
-				 "element-location.html" : elementMountPointController(),
-				 "confirm-remove-location.html": elementMountPointController()}
-}
-	
 export const menu = new Menu({
-	"element.html": elementMenu,
-	"element-ifls.html": elementIflsMenu,
-	"element-ifps.html": elementIfpsMenu,
-	"element-location.html" : elementLocationController(),
-	"element-rack.html": elementRackMenu,
-	"element-modules.html": modulesMenu,
-	"element-images.html" : elementImagesController(),
-	"element-services.html": elementServicesController(),
-	"element-service.html": elementServiceController()
-});
+		"element.html" : elementMenu,
+		"element-ifls.html": elementIflsMenu,
+		"element-ifps.html": elementIfpsMenu,
+		"element-modules.html" :modulesMenu,
+		"element-images.html" : elementImagesController(),
+		"element-services.html":elementServicesController(),
+		"element-service.html":elementServiceController()
+ 	});

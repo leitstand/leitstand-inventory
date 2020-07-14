@@ -18,12 +18,9 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.service.ElementGroupExport.newElementGroupExport;
 import static io.leitstand.inventory.service.ElementGroupsExport.newInventoryExport;
-import static io.leitstand.inventory.service.ElementRackLocation.newElementRackLocation;
-import static io.leitstand.inventory.service.RackSettings.newRackSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0101I_GROUP_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0301I_ELEMENT_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0401I_ELEMENT_ROLE_STORED;
-import static io.leitstand.inventory.service.ReasonCode.IVT0801I_RACK_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0901I_PLATFORM_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT1000E_IMPORT_ERROR;
 import static java.lang.Integer.MAX_VALUE;
@@ -42,24 +39,19 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementGroupElementsService;
 import io.leitstand.inventory.service.ElementGroupExport;
 import io.leitstand.inventory.service.ElementGroupExportService;
-import io.leitstand.inventory.service.ElementGroupRack;
-import io.leitstand.inventory.service.ElementGroupRackService;
 import io.leitstand.inventory.service.ElementGroupService;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupSettingsService;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementGroupsExport;
 import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementRack;
-import io.leitstand.inventory.service.ElementRackService;
 import io.leitstand.inventory.service.ElementRoleService;
 import io.leitstand.inventory.service.ElementRoleSettings;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
-import io.leitstand.inventory.service.RackItem;
-import io.leitstand.inventory.service.RackSettings;
+import io.leitstand.inventory.service.RackService;
 
 @ApplicationScoped
 public class DefaultElementGroupExportService implements ElementGroupExportService {
@@ -85,10 +77,7 @@ public class DefaultElementGroupExportService implements ElementGroupExportServi
 	private ElementRoleService roleService;
 
 	@Inject
-	private ElementGroupRackService rackService;
-	
-	@Inject
-	private ElementRackService elementRackService;
+	private RackService rackService;
 	
 	@Inject
 	private Messages messages;
@@ -98,7 +87,6 @@ public class DefaultElementGroupExportService implements ElementGroupExportServi
 												   String filter) {
 		// Fetch all groups matching the filter
 		List<ElementGroupExport> groups = new LinkedList<>();
-		List<ElementGroupRack> racks = new LinkedList<>();
 		for(ElementGroupSettings group : groupService.findGroups(groupType,
 																 filter, 
 																 0, 
@@ -107,11 +95,6 @@ public class DefaultElementGroupExportService implements ElementGroupExportServi
 					   .withGroup(group)
 					   .withElements(loadElementSettings(group))
 					   .build());
-			
-			for(RackSettings rack : rackService.findRacks(group.getGroupId()).getRacks()) {
-				racks.add(rackService.getRack(group.getGroupId(), rack.getRackName()));
-			}
-			
 			
 		}
 		
@@ -145,7 +128,6 @@ public class DefaultElementGroupExportService implements ElementGroupExportServi
 		importPlatforms(export);
 		importElementRoles(export);
 		importGroups(export);
-		importRacks(export);
 		
 	}
 
@@ -195,61 +177,56 @@ public class DefaultElementGroupExportService implements ElementGroupExportServi
 		}
 	}
 
-	private void importRacks(ElementGroupsExport export) {
-		for(ElementRack rack : export.getRacks()) {
-			RackSettings settings = newRackSettings()
-									.withRackName(rack.getRackName())
-									.withUnits(rack.getUnits())
-									.withLocation(rack.getLocation())
-									.withDescription(rack.getDescription())
-									.build();
-			try {
-				rackService.storeRack(rack.getGroupType(),
-									  rack.getGroupName(),
-									  settings.getRackName(),
-									  settings);
-				LOG.info(() -> format ("%s: Rack %s stored",
-									   IVT0801I_RACK_STORED.getReasonCode(),
-									   rack.getRackName()));
-				messages.add(createMessage(IVT0801I_RACK_STORED, 
-										   rack.getRackName()));
-				for(RackItem item : rack.getElements()) {
-					try {
-						elementRackService.storeElementRackLocation(item.getElementName(), 
-																	  newElementRackLocation()
-																	  .withRackName(rack.getRackName())
-																	  .withUnit(item.getUnit())
-																	  .withPosition(item.getHalfRackPosition())
-																	  .build());
-						LOG.info(() -> format ("Element %s rack location %s unit %s stored",
-								   				item.getElementName(),
-												rack.getRackName(),
-												item.getHeight()));
-					} catch (Exception e) {
-						LOG.warning(() ->  format("%s: Element %s rack location %s cannot be stored: %s",
-				  				  				  IVT1000E_IMPORT_ERROR.getReasonCode(),
-				  				  				  item.getElementName(),
-				  				  				  rack.getRackName(),
-				  				  				  item.getHeight()));
-						messages.add(createMessage(IVT1000E_IMPORT_ERROR, 
-								   				   "element "+item.getElementName()+" rack location",
-								   				   rack.getRackName()+" "+item.getHeight(),
-								   				   e.getMessage()));
-					}
-				}
-			} catch(Exception e) {
-				LOG.warning(() ->  format("%s: Rack %s cannot be stored: %s",
-						  				  IVT1000E_IMPORT_ERROR.getReasonCode(),
-						  				  "rack",
-						  				  rack.getRackName(),
-						  				  e.getMessage()));
-				messages.add(createMessage(IVT1000E_IMPORT_ERROR, 
-										   "rack",
-										   rack.getRackName(),
-										   e.getMessage()));
-			}
-		}
-	}
+//	private void importRacks(ElementGroupsExport export) {
+//		for(RackExport rack : export.getRacks()) {
+//	
+//			try {
+//				rackService.storeRack(rack.getGroupType(),
+//									  rack.getGroupName(),
+//									  settings.getRackName(),
+//									  settings);
+//				LOG.info(() -> format ("%s: Rack %s stored",
+//									   IVT0801I_RACK_STORED.getReasonCode(),
+//									   rack.getRackName()));
+//				messages.add(createMessage(IVT0801I_RACK_STORED, 
+//										   rack.getRackName()));
+//				for(RackItem item : rack.getElements()) {
+//					try {
+//						elementRackService.storeElementRackLocation(item.getElementName(), 
+//																	  newElementRackLocation()
+//																	  .withRackName(rack.getRackName())
+//																	  .withUnit(item.getUnit())
+//																	  .withPosition(item.getHalfRackPosition())
+//																	  .build());
+//						LOG.info(() -> format ("Element %s rack location %s unit %s stored",
+//								   				item.getElementName(),
+//												rack.getRackName(),
+//												item.getHeight()));
+//					} catch (Exception e) {
+//						LOG.warning(() ->  format("%s: Element %s rack location %s cannot be stored: %s",
+//				  				  				  IVT1000E_IMPORT_ERROR.getReasonCode(),
+//				  				  				  item.getElementName(),
+//				  				  				  rack.getRackName(),
+//				  				  				  item.getHeight()));
+//						messages.add(createMessage(IVT1000E_IMPORT_ERROR, 
+//								   				   "element "+item.getElementName()+" rack location",
+//								   				   rack.getRackName()+" "+item.getHeight(),
+//								   				   e.getMessage()));
+//					}
+//				}
+//			} catch(Exception e) {
+//				LOG.warning(() ->  format("%s: Rack %s cannot be stored: %s",
+//						  				  IVT1000E_IMPORT_ERROR.getReasonCode(),
+//						  				  "rack",
+//						  				  rack.getRackName(),
+//						  				  e.getMessage()));
+//				messages.add(createMessage(IVT1000E_IMPORT_ERROR, 
+//										   "rack",
+//										   rack.getRackName(),
+//										   e.getMessage()));
+//			}
+//		}
+//	}
 
 	private void importElementRoles(ElementGroupsExport export) {
 		for(ElementRoleSettings role : export.getRoles()) {

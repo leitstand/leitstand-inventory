@@ -67,19 +67,15 @@ public class ElementGroupSettings extends ValueObject{
 			return this;
 		}
 		
-		public Builder withLocation(String location){
+		public Builder withFacilityId(FacilityId facilityId){
 			assertNotInvalidated(getClass(), settings);
-			settings.location = location;
+			settings.facilityId = facilityId;
 			return this;
 		}
 		
-		public Builder withGeolocation(Geolocation.Builder geolocation) {
-			return withGeolocation(geolocation.build());
-		}
-
-		public Builder withGeolocation(Geolocation geolocation) {
+		public Builder withFacilityName(FacilityName facilityName) {
 			assertNotInvalidated(getClass(), settings);
-			settings.geolocation = geolocation;
+			settings.facilityName = facilityName;
 			return this;
 		}
 		
@@ -122,7 +118,10 @@ public class ElementGroupSettings extends ValueObject{
 	private String location;
 	
 	@Valid
-	private Geolocation geolocation;
+	private FacilityId facilityId;
+	
+	@Valid
+	private FacilityName facilityName;
 	
 	private SortedSet<String> tags = emptySortedSet();
 
@@ -142,12 +141,12 @@ public class ElementGroupSettings extends ValueObject{
 		return description;
 	}
 	
-	public String getLocation() {
-		return location;
+	public FacilityId getFacilityId() {
+		return facilityId;
 	}
 	
-	public Geolocation getGeolocation() {
-		return geolocation;
+	public FacilityName getFacilityName() {
+		return facilityName;
 	}
 	
 	public SortedSet<String> getTags() {

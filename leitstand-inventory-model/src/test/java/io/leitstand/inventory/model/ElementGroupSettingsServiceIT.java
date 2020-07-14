@@ -24,7 +24,6 @@ import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
-import static io.leitstand.inventory.service.Geolocation.newGeolocation;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.ReasonCode.IVT0100E_GROUP_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0101I_GROUP_STORED;
@@ -58,7 +57,7 @@ import io.leitstand.inventory.service.ElementGroupSettingsService;
 import io.leitstand.inventory.service.ElementRoleName;
 
 public class ElementGroupSettingsServiceIT extends InventoryIT{
-
+	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
@@ -71,7 +70,10 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	public void initTestEnvironment() {
 		messages = mock(Messages.class);
 		repository = new Repository(getEntityManager());
-		ElementGroupManager manager = new ElementGroupManager(repository, getDatabase(), messages);
+		ElementGroupManager manager = new ElementGroupManager(repository, 
+															  getDatabase(), 
+															  new FacilityProvider(repository),
+															  messages);
 		ElementGroupProvider groups = new ElementGroupProvider(repository);
 		service = new DefaultElementGroupSettingsService(manager, 
 														 groups);
@@ -179,47 +181,6 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	
 		transaction(()->{
 			assertEquals(groupName("renamed_group"),service.getGroupSettings(group.getGroupId()).getGroupName());
-		});
-		
-	}
-	
-	@Test
-	public void set_geolocations() {
-		ElementGroupSettings group = newElementGroupSettings()
-									 .withGroupId(randomGroupId())
-									 .withGroupType(groupType("unittest"))
-									 .withGroupName(groupName("can_rename_existing_group"))
-									 .build();
-
-		transaction(()->{
-			service.storeElementGroupSettings(group);
-		});
-
-		transaction(()->{
-			ElementGroupSettings located = newElementGroupSettings()
-					 					   .withGroupId(group.getGroupId())
-					 					   .withGroupType(groupType("unittest"))
-					 					   .withGroupName(groupName("can_rename_existing_group"))
-					 					   .withLocation("Hofgarten Innsbruck")
-					 					   .withGeolocation(newGeolocation()
-					 							   			.withLongitude(47.2714364)
-					 							   			.withLatitude(11.3977359)
-					 							   			.build())
-					 					   .build();
-			boolean created = service.storeElementGroupSettings(located);
-			assertFalse(created);
-			assertEquals(IVT0101I_GROUP_STORED.getReasonCode(),
-						 messageCaptor.getValue().getReason());
-		});
-		
-	
-		transaction(()->{
-			ElementGroupSettings locatedGroup = service.getGroupSettings(group.getGroupType(), 
-																		 group.getGroupName());
-			
-			assertEquals("Hofgarten Innsbruck",locatedGroup.getLocation());
-			assertEquals(47.2714364d,locatedGroup.getGeolocation().getLongitude(),0.0005);
-			assertEquals(11.3977359d,locatedGroup.getGeolocation().getLatitude(),0.0005);
 		});
 		
 	}

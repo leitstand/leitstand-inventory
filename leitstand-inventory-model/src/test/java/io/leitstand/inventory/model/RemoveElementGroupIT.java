@@ -43,7 +43,10 @@ public class RemoveElementGroupIT extends InventoryIT {
 		Repository repository = new Repository(getEntityManager());
 		groups = new ElementGroupProvider(repository);
 		messages = mock(Messages.class);
-		this.service = new ElementGroupManager(repository,getDatabase(),messages);
+		this.service = new ElementGroupManager(repository,
+											   getDatabase(),
+											   new FacilityProvider(repository),
+											   messages);
 	}
 	
 	@Test

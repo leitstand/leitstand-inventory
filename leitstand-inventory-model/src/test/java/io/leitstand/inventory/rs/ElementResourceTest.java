@@ -68,7 +68,7 @@ public class ElementResourceTest {
 	
 	@Test
 	public void find_elements_by_name_or_tags() {
-		resource.findElement("foo", "ntag", 0, 100);
+		resource.findElement("foo", "tag", 0, 100);
 		verify(service).findElementsByNameOrTag("foo", 0, 100);
 	}
 

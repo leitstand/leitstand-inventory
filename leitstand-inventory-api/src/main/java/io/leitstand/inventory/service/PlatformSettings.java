@@ -18,7 +18,6 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 
-import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -77,12 +76,6 @@ public class PlatformSettings extends ValueObject {
 			return this;
 		}
 		
-		public Builder withHalfRackSize(boolean halfRackSize) {
-			assertNotInvalidated(getClass(), settings);
-			settings.halfRackSize = halfRackSize;
-			return this;
-		}
-		
 		public PlatformSettings build() {
 			try {
 				return settings;
@@ -111,9 +104,6 @@ public class PlatformSettings extends ValueObject {
 	@Min(value=1, message="{rack_units.must_be_greater_than_zero}")
 	private int rackUnits;
 	
-	@JsonbProperty("half_rack")
-	private boolean halfRackSize;
-	
 	public PlatformId getPlatformId() {
 		return platformId;
 	}
@@ -140,10 +130,6 @@ public class PlatformSettings extends ValueObject {
 	
 	public int getRackUnits() {
 		return rackUnits;
-	}
-	
-	public boolean isHalfRackSize() {
-		return halfRackSize;
 	}
 	
 }

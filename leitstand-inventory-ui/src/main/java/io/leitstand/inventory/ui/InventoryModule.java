@@ -77,6 +77,8 @@ public class InventoryModule  {
 			Contribution dnsContrib 	  = contribution("dns/menu.yaml");
 			Contribution platformContrib  = contribution("platform/menu.yaml");
 			Contribution roleContrib      = contribution("role/menu.yaml");
+			Contribution facilityContrib  = contribution("facility/menu.yaml");
+			Contribution racksContrib	  = contribution("rack/menu.yaml");
 			Contribution toolsContrib     = contribution("tools/menu.yaml");
 			
 			return readModuleDescriptor(moduleDescriptor)
@@ -87,6 +89,8 @@ public class InventoryModule  {
 						   			  dnsContrib,
 						   			  platformContrib,
 						   			  roleContrib,
+						   			  facilityContrib,
+						   			  racksContrib,
 						   			  toolsContrib)
 					.build();
 		} catch (IOException e) {

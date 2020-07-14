@@ -51,6 +51,9 @@ import io.leitstand.inventory.service.ElementRoleId;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
+import io.leitstand.inventory.service.FacilityId;
+import io.leitstand.inventory.service.FacilityName;
+import io.leitstand.inventory.service.FacilityType;
 import io.leitstand.inventory.service.IPv4Prefix;
 import io.leitstand.inventory.service.IPv6Prefix;
 import io.leitstand.inventory.service.IPvxPrefix;
@@ -63,6 +66,7 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
+import io.leitstand.inventory.service.RackId;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.ReleaseId;
 import io.leitstand.inventory.service.ReleaseName;
@@ -97,6 +101,9 @@ public class StringScalarAdapterTest {
 			{new ElementRoleNameAdapter(),	 		"unit-role",			new ElementRoleName("unit-role")},
 			{new EnvironmentIdAdapter(),	 	 	uuid,					new EnvironmentId(uuid)},
 			{new EnvironmentNameAdapter(),	 		"unit-env",				new EnvironmentName("unit-env")},
+			{new FacilityIdAdapter(),  			 	uuid,		 			new FacilityId(uuid)},
+			{new FacilityNameAdapter(),	 			"unit-name",			new FacilityName("unit-name")},
+			{new FacilityTypeAdapter(),	 			"unit-type",			new FacilityType("unit-type")},
 			{new ImageIdAdapter(),  			 	uuid,		 			new ImageId(uuid)},
 			{new ImageNameAdapter(),  		 		"unit-image",			new ImageName("unit-image")},
 			{new ImageTypeAdapter(),  		 		"unit-type",			new ImageType("unit-type")},
@@ -114,6 +121,7 @@ public class StringScalarAdapterTest {
 			{new PlatformIdAdapter(),			 	uuid,					new PlatformId(uuid)},
 			{new PlatformNameAdapter(),			 	"unit-platform",		new PlatformName("unit-platform")},
 			{new PlatformChipsetNameAdapter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
+	        {new RackIdAdapter(),                   uuid,                   new RackId(uuid)},
 			{new RackNameAdapter(),			 		"unit-rack",			new RackName("unit-rack")},
 			{new ReleaseIdAdapter(),                uuid,				    new ReleaseId(uuid)},
 			{new ReleaseNameAdapter(),              "unit-release",         new ReleaseName("unit-release")},

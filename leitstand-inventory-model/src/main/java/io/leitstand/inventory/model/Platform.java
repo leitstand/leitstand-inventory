@@ -27,7 +27,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.PlatformChipsetNameConverter;
@@ -78,20 +77,20 @@ public class Platform extends VersionableEntity{
 		
 	}
 	
-	public static Query<Platform> findByPlatformName(PlatformName name){
+	public static Query<Platform> findPlatformByName(PlatformName name){
 		return em -> em.createNamedQuery("Platform.findByPlatformName",Platform.class)
 					   .setParameter("name", name)
 					   .getSingleResult();
 	}
 	
-	public static Query<List<Platform>> findByElementGroupAndElementRole(ElementGroup group, ElementRole role){
+	public static Query<List<Platform>> findPlatformsByElementGroupAndElementRole(ElementGroup group, ElementRole role){
 		return em -> em.createNamedQuery("Platform.findByElementGroupAndElementRole",Platform.class)
 					   .setParameter("group", group)
 					   .setParameter("role", role)
 					   .getResultList();
 	}
 	
-	public static Query<Platform> findByPlatformId(PlatformId platformId){
+	public static Query<Platform> findPlatformById(PlatformId platformId){
 		return em -> em.createNamedQuery("Platform.findByPlatformId", Platform.class)
 					   .setParameter("uuid", platformId.toString())
 					   .getSingleResult();
@@ -113,8 +112,6 @@ public class Platform extends VersionableEntity{
 	private String model;
 	private String description;	
 	private int rackUnits;
-	@Convert(converter=BooleanConverter.class)
-	private boolean halfRack;
 
 	protected Platform() {
 		// JPA
@@ -169,14 +166,6 @@ public class Platform extends VersionableEntity{
 		return this.rackUnits;
 	}
 	
-	public void setHalfRack(boolean halfRack) {
-		this.halfRack = halfRack;
-	}
-	
-	public boolean isHalfRackSize() {
-		return this.halfRack;
-	}
-
 	public PlatformId getPlatformId() {
 		return PlatformId.valueOf(getUuid());
 	}
@@ -188,5 +177,5 @@ public class Platform extends VersionableEntity{
 	public PlatformChipsetName getChipset() {
 		return chipset;
 	}
-
+	
 }

@@ -1,0 +1,50 @@
+name: facility
+provider: leitstand.io
+controller: controller.js
+description: Facility management.
+extensions:
+- extend:
+   module: inventory
+   menu: main
+   after: ifps
+  items:
+  - item: facilities
+    label: Facilities
+    title: Manage facilities
+    view: facilities.html
+- extend:
+    module: inventory
+    after: main
+  menus:
+  - menu: facility
+    label: Facility
+    entity: "{{facility_name}}"
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.facility
+    viewModel:
+    - property: facility_id
+      exists: true
+    - property: group_id
+      exists: false
+    query:
+      facility: "{{facility_id}}"    
+    items:
+    - item: facility-settings
+      label: Settings
+      title: Manage the rack settings.
+      view: facility.html
+    - item: facility-racks
+      label: Racks
+      title: Show the racks of this facility.
+      view: facility-racks.html
+- extend:
+    module: inventory
+    menu: pod
+    after: pod-settings
+  items:  
+  - item: pod-location  
+    label: Pod Location
+    title: Show the location of the main facility where this pod is installed.
+    view: pod-facility.html

@@ -15,8 +15,8 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.model.Platform.findByPlatformId;
-import static io.leitstand.inventory.model.Platform.findByPlatformName;
+import static io.leitstand.inventory.model.Platform.findPlatformById;
+import static io.leitstand.inventory.model.Platform.findPlatformByName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static java.lang.String.format;
 
@@ -48,11 +48,11 @@ public class PlatformProvider {
 	}
 	
 	public Platform tryFetchPlatform(PlatformId platformId) {
-		return repository.execute(findByPlatformId(platformId));
+		return repository.execute(findPlatformById(platformId));
 	}
 	
 	public Platform tryFetchPlatform(PlatformName platformName) {
-		return repository.execute(findByPlatformName(platformName));
+		return repository.execute(findPlatformByName(platformName));
 	}
 	
 	

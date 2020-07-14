@@ -191,6 +191,14 @@ public class ElementManager {
 						    element.getElementRoleName(),
 						    element.getElementName(),
 						    element.getElementId()));
+		Rack_Item rackItem = repository.execute(Rack_Item.findRackItem(element));
+		if(rackItem != null) {
+			LOG.fine(()->format("Remove rack item %d from rack %s (%s)",
+								rackItem.getPosition(),
+								rackItem.getRack().getRackName(),
+								rackItem.getRack().getRackId()));
+		}
+		
 		
 		LOG.fine(()->format("%s: Removed %s %s (%s)", 
 							IVT0302I_ELEMENT_REMOVED.getReasonCode(),

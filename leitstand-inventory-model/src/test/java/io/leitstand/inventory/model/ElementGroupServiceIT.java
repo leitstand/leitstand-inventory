@@ -69,6 +69,7 @@ public class ElementGroupServiceIT extends InventoryIT {
 		this.repository = new Repository(getEntityManager());
 		manager = new ElementGroupManager(repository,
 				 						  getDatabase(),
+				 						  new FacilityProvider(repository),
 				 						  mock(Messages.class));
 		service = new DefaultElementGroupService(manager);
 		

@@ -22,10 +22,11 @@
 		<class>io.leitstand.inventory.model.Element_Service</class>
 		<class>io.leitstand.inventory.model.Element_ServiceContext</class>
 		<class>io.leitstand.inventory.model.ElementRole</class>
+		<class>io.leitstand.inventory.model.Facility</class>
 		<class>io.leitstand.inventory.model.Image</class>
 		<class>io.leitstand.inventory.model.Module</class>
-		<class>io.leitstand.inventory.model.ElementGroup_Rack</class>
-		<class>io.leitstand.inventory.model.ElementGroup_Rack_Element</class>
+		<class>io.leitstand.inventory.model.Rack</class>
+		<class>io.leitstand.inventory.model.Rack_Item</class>
 		<class>io.leitstand.inventory.model.Package</class>
 		<class>io.leitstand.inventory.model.Package_Version</class>
 		<class>io.leitstand.inventory.model.Platform</class>
@@ -49,7 +50,6 @@
 		<class>io.leitstand.inventory.jpa.ImageIdConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ImageTypeConverter</class>
-		<class>io.leitstand.inventory.jpa.RackIdConverter</class>
 		<class>io.leitstand.inventory.jpa.RackNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ReleaseNameConverter</class>
 		<class>io.leitstand.inventory.jpa.RoutingInstanceNameConverter</class>
@@ -57,6 +57,8 @@
 		<class>io.leitstand.inventory.jpa.ElementConfigNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementNameConverter</class>
 		<class>io.leitstand.inventory.jpa.ElementRoleNameConverter</class>
+		<class>io.leitstand.inventory.jpa.FacilityNameConverter</class>
+		<class>io.leitstand.inventory.jpa.FacilityTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.IPv4PrefixConverter</class>
 		<class>io.leitstand.inventory.jpa.IPv6PrefixConverter</class>
 		<class>io.leitstand.inventory.jpa.IPvxPrefixConverter</class>

@@ -49,6 +49,8 @@ import io.leitstand.inventory.service.ElementRoleId;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
+import io.leitstand.inventory.service.FacilityName;
+import io.leitstand.inventory.service.FacilityType;
 import io.leitstand.inventory.service.IPv4Prefix;
 import io.leitstand.inventory.service.IPv6Prefix;
 import io.leitstand.inventory.service.IPvxPrefix;
@@ -89,6 +91,8 @@ public class StringScalarConverterTest {
 			{new ElementRoleNameConverter(),	 		"unit-role",			new ElementRoleName("unit-role")},
 			{new EnvironmentIdConverter(),	 	 		uuid,					new EnvironmentId(uuid)},
 			{new EnvironmentNameConverter(),	 		"unit-env",				new EnvironmentName("unit-env")},
+			{new FacilityNameConverter(),				"unit-facility",		new FacilityName("unit-facility")},
+			{new FacilityTypeConverter(),				"unit-facility-type",	new FacilityType("unit-facility-type")},
 			{new ImageIdConverter(),  			 		uuid,		 			new ImageId(uuid)},
 			{new ImageNameConverter(),  		 		"unit-image",			new ImageName("unit-image")},
 			{new ImageTypeConverter(),  		 		"unit-type",			new ImageType("unit-type")},

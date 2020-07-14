@@ -34,6 +34,7 @@ import static io.leitstand.inventory.service.OperationalState.operationalState;
 import static io.leitstand.inventory.service.ReasonCode.IVT0101I_GROUP_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0102I_GROUP_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0103E_GROUP_NOT_REMOVABLE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0604W_FACILITY_NAME_MISMATCH;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
@@ -56,6 +57,7 @@ import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupStatistics;
 import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.inventory.service.FacilityName;
 import io.leitstand.inventory.service.OperationalState;
 
 @Dependent
@@ -64,13 +66,16 @@ class ElementGroupManager{
 	private Repository repository;
 	private DatabaseService db;
 	private Messages messages;
+	private FacilityProvider facilities;
 
 	@Inject
 	protected ElementGroupManager(@Inventory Repository repository,
 								  @Inventory DatabaseService db,
+								  FacilityProvider facilities,
 								  Messages messages ) {
 		this.repository = repository;
 		this.db = db;
+		this.facilities = facilities;
 		this.messages = messages;
 	}
 
@@ -83,8 +88,8 @@ class ElementGroupManager{
 		}
 		group.setElementGroupName(settings.getGroupName());
 		group.setDescription(settings.getDescription());
-		group.setLocation(settings.getLocation());
-		group.setGeolocation(settings.getGeolocation());
+		Facility facility = findFacility(settings);
+		group.setFacility(facility);
 		group.setTags(settings.getTags());
 		LOG.fine(()->format("%s: Element %s group %s stored", 
 							IVT0101I_GROUP_STORED.getReasonCode(),
@@ -94,6 +99,25 @@ class ElementGroupManager{
 								  settings.getGroupType(), 
 								  settings.getGroupName()));
 	}
+
+	private Facility findFacility(ElementGroupSettings settings) {
+		if(settings.getFacilityId() != null) {
+			Facility facility = facilities.fetchFacility(settings.getFacilityId());
+			if(isDifferent(facility.getFacilityName(), settings.getFacilityName())) {
+				FacilityName currentName = facility.getFacilityName();
+				LOG.fine(()->format("%s: Current facility name %s does not match the expected facility name %s. Facility-ID: %s. Proceed with current name.",
+								 	IVT0604W_FACILITY_NAME_MISMATCH.getReasonCode(),
+								 	currentName,
+								 	settings.getFacilityName(),
+								 	settings.getFacilityId()));
+				messages.add(createMessage(IVT0604W_FACILITY_NAME_MISMATCH,
+										   facility.getFacilityName(),
+										   settings.getFacilityName()));
+			}
+			return facility;
+		}
+		return null;
+	}
 	
 
 	public ElementGroupSettings getGroupSettings(ElementGroup group) {
@@ -102,8 +126,8 @@ class ElementGroupManager{
 			   .withGroupName(group.getGroupName())
 			   .withGroupType(group.getGroupType())
 			   .withDescription(group.getDescription())
-			   .withLocation(group.getLocation())
-			   .withGeolocation(group.getGeolocation())
+			   .withFacilityId(group.getFacilityId())
+			   .withFacilityName(group.getFacilityName())
 			   .withTags(group.getTags())
 			   .build();
 	}
@@ -140,7 +164,7 @@ class ElementGroupManager{
 											  settings.getGroupType(),
 											  settings.getGroupName());
 		group.setDescription(settings.getDescription());
-		group.setLocation(settings.getLocation());
+		group.setFacility(findFacility(settings));
 		group.setTags(settings.getTags());
 		repository.add(group);
 		LOG.fine(()->format("%s: Element %s group %s stored", 
@@ -167,7 +191,8 @@ class ElementGroupManager{
 					   .withGroupType(group.getGroupType())
 					   .withGroupName(group.getGroupName())
 					   .withDescription(group.getDescription())
-					   .withLocation(group.getLocation())
+					   .withFacilityId(group.getFacilityId())
+					   .withFacilityName(group.getFacilityName())
 					   .withTags(group.getTags())
 					   .build());
 		}
