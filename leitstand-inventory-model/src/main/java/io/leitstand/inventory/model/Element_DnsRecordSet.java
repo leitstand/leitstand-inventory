@@ -57,7 +57,7 @@ import io.leitstand.inventory.service.DnsZoneName;
 @NamedQuery(name="Element_DnsRecordSet.removeAll",
 			query="DELETE FROM Element_DnsRecordSet s WHERE s.element=:element")
 @NamedQuery(name="Element_DnsRecordSet.findDnsRecordSets",
-			query="SELECT s FROM Element_DnsRecordSet s WHERE s.element=:element")
+			query="SELECT s FROM Element_DnsRecordSet s WHERE s.element=:element ORDER BY s.type,s.name")
 @NamedQuery(name="Element_DnsRecordSet.findDnsRecordSetByName",
 			query="SELECT s FROM Element_DnsRecordSet s WHERE s.element=:element AND s.name=:name AND s.type=:type")
 @NamedQuery(name="Element_DnsRecordSet.findDnsRecordSetById",
@@ -127,6 +127,7 @@ public class Element_DnsRecordSet {
 	private List<DnsRecord> records;
 	
 	@Convert(converter=DnsNameConverter.class)
+	@Column(unique=true)
 	private DnsName name;
 
 	private String description;
@@ -155,6 +156,7 @@ public class Element_DnsRecordSet {
 		this.element = element;
 		this.uuid = id;
 		this.name = name;
+		this.tsModified = new Date();
 	}
 	
 	@PreUpdate

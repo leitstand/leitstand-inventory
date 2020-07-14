@@ -16,6 +16,7 @@
 package io.leitstand.inventory.service;
 
 import javax.json.bind.annotation.JsonbProperty;
+import javax.validation.Valid;
 
 import io.leitstand.commons.model.BuilderUtil;
 
@@ -41,6 +42,7 @@ public class ElementDnsRecordSet extends BaseElementEnvelope {
 		}
 	}
 	
+	@Valid
 	@JsonbProperty("dns_recordset")
 	private DnsRecordSet dnsRecordSet;
 	

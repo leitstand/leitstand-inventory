@@ -15,7 +15,11 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.Patterns.DNS_PATTERN;
+
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsZoneNameAdapter;
@@ -33,6 +37,8 @@ public class DnsZoneName extends Scalar<String>{
 		return Scalar.fromString(name, DnsZoneName::new);
 	}
 	
+	@NotNull(message="{dns_zone_name.required}")
+	@Pattern(regexp=DNS_PATTERN, message="{dns_zone_name.invalid}")
 	private String value;
 	
 	public DnsZoneName(String name) {

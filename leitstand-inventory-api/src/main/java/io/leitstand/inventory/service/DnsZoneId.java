@@ -15,10 +15,15 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+
 import java.util.UUID;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+import io.leitstand.commons.model.Patterns;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsZoneIdAdapter;
 
@@ -39,6 +44,8 @@ public class DnsZoneId extends Scalar<String> {
 		return Scalar.fromString(name, DnsZoneId::new);
 	}
 	
+	@NotNull(message="{dns_zone_id.required}")
+	@Pattern(regexp=UUID_PATTERN, message="{dns_zone_id.invalid}")
 	private String value;
 	
 	public DnsZoneId(String name) {

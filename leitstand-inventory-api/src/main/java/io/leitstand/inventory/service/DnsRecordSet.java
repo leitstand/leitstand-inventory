@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -113,13 +115,27 @@ public class DnsRecordSet extends ValueObject {
 		}
 	}
 	
+	@NotNull(message="{dns_zone_id.required}")
+	@Valid
 	private DnsZoneId dnsZoneId;
+	@NotNull(message="{dns_zone_name.required}")
+	@Valid
 	private DnsZoneName dnsZoneName;
+	
 	@JsonbProperty("dns_recordset_id")
+	@NotNull(message="{dns_recorset_id.required}")
+	@Valid
 	private DnsRecordSetId dnsRecordSetId = randomDnsRecordSetId();
+
+	@NotNull(message="{dns_type.required}")
+	@Valid
 	private DnsRecordType dnsType;
+	
+	@NotNull(message="{dns_name.required}")
+	@Valid
 	private DnsName dnsName;
 	private int dnsTtl = 3600;
+	@Valid
 	private List<DnsRecord> dnsRecords = emptyList();
 	private String description;
 	
