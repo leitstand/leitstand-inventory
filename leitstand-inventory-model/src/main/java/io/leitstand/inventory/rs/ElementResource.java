@@ -82,6 +82,7 @@ public class ElementResource {
 											 @QueryParam("by") @DefaultValue(FILTER_BY_NAME_OR_TAG) String by,
 	                                         @QueryParam("offset") @DefaultValue("0") int offset,
 											 @QueryParam("limit")  @DefaultValue("100") int limit){
+		
 		switch(by) {
 			case FILTER_BY_NAME:
 				return service.findElementsByName(filter, offset, limit);

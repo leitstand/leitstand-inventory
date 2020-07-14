@@ -177,5 +177,13 @@ public class Platform extends VersionableEntity{
 	public PlatformChipsetName getChipset() {
 		return chipset;
 	}
+	
+	public void setChipset(PlatformChipsetName chipset) {
+		this.chipset = chipset;
+	}
+
+	public PlatformChipsetName getChipset() {
+		return chipset;
+	}
 
 }

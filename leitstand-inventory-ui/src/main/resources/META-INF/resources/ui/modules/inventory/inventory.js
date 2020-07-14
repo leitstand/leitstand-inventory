@@ -36,7 +36,7 @@ export class Pods extends Resource {
 	 * @param {string} params.filter The filter string to filter pods by name and/or tags
 	 * @param {number} [params.limit=100] The maximum number of returned pods. 
 	 */
-	load(params) {
+	load(params) {gi
 		if(this._cfg && this._cfg.scope){
 			return this.json("/api/v1/pods/{{scope}}?filter={{&filter}}",
 							 {"limit":100},
@@ -671,6 +671,7 @@ export class Panel extends Resource {
     }
     
     load(params){
+        
         if(params.ifp_name){
             return this.json("/api/v1/elements/{{element}}/panels/{{panel}}?ifp_name={{&ifp_name}}",params)
                        .GET();
@@ -686,7 +687,6 @@ export class Panel extends Resource {
                        .GET();
         }
 
-        
         return this.json("/api/v1/elements/{{element}}/panels/{{panel}}",params)
                    .GET();
     }
