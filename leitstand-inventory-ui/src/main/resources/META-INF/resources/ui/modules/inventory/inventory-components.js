@@ -54,7 +54,7 @@ class InventoryPanel extends UIElement {
         panel.load(params)
              .then(elementPanels => {
                  const panels = elementPanels.panels
-                 if(panels){
+                 if(panels && panels.length){
                      this.innerHTML = panels.map(panel => `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`).reduce((a,b)=>a+b,'');
                  }
              })
