@@ -53,10 +53,8 @@
 	</ui-details>
 	<ui-code>{{content}}</ui-code>
 	<ui-actions>
-			<ui-button primary when="editable" title="Create a new candidate configuration from the active configuration" href="element-config-editor.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Edit configuration</ui-button>
 			<ui-button danger when="removable" title="Remove configuration" href="confirm-remove.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Remove configuration</ui-button>
 			<ui-button when="restorable" title="Create a new candidate configuration from this configuration" href="confirm-restore.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Restore configuration</ui-button>
-			<ui-button when="active" title="Create a new candidate configuration from the active configuration" href="confirm-edit.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Edit configuration</ui-button>
 			<ui-button href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</ui-button>
 	</ui-actions>
 </ui-form>

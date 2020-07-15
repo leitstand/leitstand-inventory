@@ -252,7 +252,6 @@ public class Image extends VersionableEntity{
 	                   .getSingleResult();
 	}
 	
-	
 	public static Update markAllSuperseded(Image image) {
 		
 		if(image.getElement() != null) {

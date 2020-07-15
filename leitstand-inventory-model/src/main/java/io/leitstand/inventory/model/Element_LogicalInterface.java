@@ -71,8 +71,6 @@ import io.leitstand.inventory.service.VlanTag;
 			query="SELECT i FROM Element_LogicalInterface i JOIN i.addresses a WHERE i.element=:element AND CAST(a.address AS TEXT)=:filter" )
 @NamedQuery(name="Element_LogicalInterface.findLogicalInterfacesByVlan",
 			query="SELECT i FROM Element_LogicalInterface i JOIN i.vlans v WHERE i.element=:element AND CAST(v.vlanId AS INTEGER)=:vlan" )
-
-
 public class Element_LogicalInterface implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -106,7 +104,6 @@ public class Element_LogicalInterface implements Serializable {
 					   .setMaxResults(limit)
 					   .getResultList();	
 }
-	
 	
 	public static Query<Element_LogicalInterface> findIflByName(Element element, InterfaceName name) {
 		return em -> em.find(Element_LogicalInterface.class, new Element_InterfacePK(element,name));

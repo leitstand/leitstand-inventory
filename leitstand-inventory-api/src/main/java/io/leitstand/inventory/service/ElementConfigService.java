@@ -23,6 +23,22 @@ import javax.ws.rs.core.MediaType;
 public interface ElementConfigService {
 	
 	
+    /**
+     * Returns the latest element configuration for the specified element.
+     * @param elementId the element ID
+     * @param configName the configuration name.
+     * @return the configuration for the specified element
+     */
+    ElementConfig getElementConfig(ElementId elementId, ElementConfigName configName);
+
+    /**
+     * Returns the latest element configuration for the specified element.
+     * @param elementId the element ID
+     * @param configName the configuration name.
+     * @return the configuration for the specified element
+     */
+    ElementConfig getElementConfig(ElementName elementName, ElementConfigName configName);
+    
 
 	/**
 	 * Returns the <em>ACTIVE</em> element configuration for the specified element.

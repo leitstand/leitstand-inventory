@@ -16,6 +16,7 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
 import {UIElement,Control} from '/ui/js/ui-components.js';
+import '../inventory-components.js';
 
 class Editor extends Control {
 	connectedCallback(){
@@ -30,9 +31,9 @@ class Editor extends Control {
 	    	editor.set(config);
 	    }
 		this.appendChild(editorpanel);
-		this.form.addEventListener('UIPreExecuteAction',function(){
+		this.form.addEventListener('UIPreExecuteAction',() => {
 			this.viewModel.setProperty(this.binding,editor.get());
-		}.bind(this));
+		});
 	}
 	
 }
@@ -46,41 +47,41 @@ const elementEnvironmentsController = function(){
 	});
 };
 	
-const addElementEnvironmentController = function(){
-	const env = new Element({scope:"environments/{{environment}}"});
-	return new Controller({
-		resource: env,
-		buttons: {
-			"save-env":function(){
-				env.saveEnvironment(this.location.params,
-								 	this.getViewModel("environment"));
-			}
-		},
-		onSuccess: function(){
-			this.navigate({"view":"element-envs.html",
-						   "?": {"group":this.location.param("group"),
-							     "element":this.location.param("element")}})
-		}
-	});
-};
-
 const elementEnvironmentController = function(){
 	const env = new Element({scope:"environments/{{environment}}"});
 	return new Controller({
 		resource: env,
+		postRender:function(){
+            this.element("button[name='inline']").css.add("hidden");
+		},
 		buttons: {
 			"save-env":function(){
+			    const upload = this.input('inventory-upload').unwrap().content;
 				env.saveEnvironment(this.location.params,
 								    { "environment_id" : this.getViewModel("environment_id"),
 									  "environment_name" : this.getViewModel("environment_name"),
 									  "category" : this.getViewModel("category"),
 									  "type" : this.getViewModel("type"),
 									  "description" : this.getViewModel("description"),
-									  "variables" : this.getViewModel("variables") });
+									  "variables" : upload ? JSON.parse(upload) : this.getViewModel("variables") });
 			},
+			
 			"confirm-remove":function(){
 				env.remove(this.location.params);
-			}
+			},
+		    "upload":function(){
+		        this.element("env-editor").css.add("hidden");
+		        this.element("inventory-upload").css.remove("hidden");
+		        this.element("button[name='upload']").css.add("hidden");
+                this.element("button[name='inline']").css.remove("hidden");
+		    },
+		    "inline":function(){
+                this.element("inventory-upload").css.add("hidden");
+                this.element("env-editor").css.remove("hidden");
+                this.element("button[name='inline']").css.add("hidden");
+                this.element("button[name='upload']").css.remove("hidden");
+
+		    }
 		},
 		onSuccess: function(){
 			this.navigate({"view" : "element-envs.html",
@@ -94,7 +95,7 @@ const elementEnvironmentController = function(){
 const envsMenu = {
 	"master" : elementEnvironmentsController(),
 	"details" : { "element-env.html" : elementEnvironmentController(),
-				  "new-element-env.html" : addElementEnvironmentController(),
+				  "new-element-env.html" : elementEnvironmentController(),
 				  "confirm-remove.html" : elementEnvironmentController()}
 };
 	

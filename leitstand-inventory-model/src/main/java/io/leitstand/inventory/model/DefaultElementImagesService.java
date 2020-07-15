@@ -133,5 +133,4 @@ public class DefaultElementImagesService implements ElementImagesService {
         return manager.getZtpImage(element);
     }
 
-
 }
