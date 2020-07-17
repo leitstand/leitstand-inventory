@@ -136,7 +136,6 @@ public class ElementLogicalInterfaceManager {
 		
 	}
 
-	
 	public boolean storeLogicalInterface(Element element, ElementLogicalInterfaceSubmission submission) {
 		Element_ContainerInterface ifc = getContainerInterface(element, 
 															   submission.getContainerInterfaceName());

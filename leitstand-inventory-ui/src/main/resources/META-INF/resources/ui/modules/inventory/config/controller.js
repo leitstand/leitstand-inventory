@@ -16,7 +16,7 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
 import {UIElement,Control} from '/ui/js/ui-components.js';
-
+import '../inventory-components.js';
 class Diff extends UIElement {
 	
 	connectedCallback(){
@@ -145,14 +145,6 @@ const elementConfigController = function(){
 				return this.config_state == 'SUPERSEDED';
 			};
 			
-			config.active = function() {
-				return this.config_state == 'ACTIVE' && this.content_type == 'application/json';;
-			};
-			
-			config.editable = function() {
-				return this.config_state == 'CANDIDATE' && this.content_type == 'application/json';
-			};
-			
 			config.content = function(){ 
 	  			if(this.content_type == "application/json"){
 	  				return JSON.stringify(this.config,null,"  ");
@@ -160,21 +152,10 @@ const elementConfigController = function(){
 	  			return this.config;
 			};
 			return config;
-
 		},
 		buttons: {
 			"confirm-remove":function(){
 				config.remove(this.location.params);
-			},
-			"confirm-edit":function(){
-				config.editConfig(this.location.params,
-								  this.input("comment").value());
-			},
-			"save-config":function(){
-				config.saveConfig(this.location.params,
-								  {"config_name":this.getViewModel("config_name"),
-								   "comment":this.getViewModel("comment"),
-								   "content":JSON.stringify(this.getViewModel("config"))});
 			}
 		},
 		onCreated: function(location){
@@ -202,12 +183,43 @@ const elementConfigController = function(){
 
 
 const addElementConfigController = function(){
-	const element = new Element({scope:"settings"});
+	const element = new Element({scope:'settings'});
+	let content = '';
+	let fileName = '';
 	return new Controller({
 		resource: element,
+		postRender:function(){
+		    const upload = this.element('inventory-upload').unwrap();
+		    upload.onload((file)=>{
+		        this.element('#save-config').enable();
+                const configName = this.input('config_name');
+                if(!configName.value()){
+                   configName.value(file.name);
+                }
+                this.input("content_type").value(file.type);
+                this.element('#save-config').enable();
+		    });
+		    upload.onerror((file)=>{
+		        this.input('config_name').value('');
+		        this.element('#save-config').disable();
+		    });
+		    upload.onreset((file)=>{
+                this.element('#save-config').disable();
+                const configName = this.input('config_name');
+                if(configName.value() == file.name){
+                    configName.value('');
+                }
+		    });
+		},
 		buttons: {
 			"save-config":function(){
-				const config = this.getViewModel("config");
+			    const params = this.location.params;
+			    const config = {
+			        config_name : this.input('config_name').value(),
+			        comment: this.input('comment').value(),
+			        content_type : this.input('content_type').value(),
+			        content : this.input('inventory-upload').unwrap().content
+			    };
 				element.saveConfig(Object.assign(this.location.params,config.config_name),
 								   config);
 			}
@@ -273,10 +285,8 @@ const configsMenu = {
 	"master":elementConfigsController(),
 	"details":{ "element-config-history.html" : elementConfigHistoryController(),
 				"element-config.html" : elementConfigController(),
-				"element-config-editor.html":elementConfigController(),
 				"confirm-remove.html" : elementConfigController(),
 				"confirm-restore.html" : elementConfigController(),
-				"confirm-edit.html" : elementConfigController(),
 				"add-config.html" : addElementConfigController(),
 				"element-config-history-compare.html":elementConfigHistoryCompareController()}
 };

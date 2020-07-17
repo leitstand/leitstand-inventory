@@ -91,6 +91,7 @@ public class DefaultElementLogicalInterfaceService implements ElementLogicalInte
 											 limit);
 	}
 
+
 	@Override
 	public ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName,
 														  String filter, 

@@ -240,7 +240,7 @@ public class ElementConfigResource {
 		if(config.getContentType().contains("json")) {
 			return "json";
 		}
-		if(config.getContentType().contains("yaml")){
+		if(config.getContentType().contains("yaml")||config.getContentType().contains("yml")){
 			return "yaml";
 		}
 		if(config.getContentType().contains("xml")){
@@ -251,6 +251,7 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
+	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
 	public Response storeElementConfig(@Valid @PathParam("element") ElementId elementId, 
 									   @Valid @PathParam("config_name") ElementConfigName configName,
 									   @NotNull @HeaderParam("Content-Type") String contentType,
@@ -275,12 +276,13 @@ public class ElementConfigResource {
 	
 	@POST
 	@Path("/{element}/configs/{config_name}")
+	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
 	public Response storeElementConfig(@Valid @PathParam("element") ElementName elementName, 
 									   @Valid @PathParam("config_name") ElementConfigName configName,
 									   @NotNull @HeaderParam("Content-Type") String contentType,
 									   @QueryParam("state") @DefaultValue("ACTIVE") ConfigurationState state,
-									   String config,
-									   @QueryParam("comment") String comment){
+									   @QueryParam("comment") String comment,
+									   String config){
 
 		StoreElementConfigResult result = service.storeElementConfig(elementName, 
 					 												 configName, 
@@ -316,10 +318,10 @@ public class ElementConfigResource {
 											  @Valid @PathParam("config_id") ElementConfigId configId,
 											  String comment){
 
-			service.setElementConfigComment(elementName,
-											configId,
-											comment);
-			return messages;
+		service.setElementConfigComment(elementName,
+										configId,
+										comment);
+		return messages;
 	}
 	
 	

@@ -40,6 +40,7 @@ import static io.leitstand.inventory.service.ElementConfigs.newElementConfigs;
 import static io.leitstand.inventory.service.ReasonCode.IVT0330I_ELEMENT_CONFIG_REVISION_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0331I_ELEMENT_CONFIG_REVISION_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
+import static io.leitstand.inventory.service.ReasonCode.IVT0333E_ELEMENT_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
@@ -417,8 +418,7 @@ public class ElementConfigManager {
 			LOG.fine(() -> format("%s: %s configuration for element %s not found(Date modified: %s)",
 								  IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,
 								  configId,
-								  element.getElementName(),
-								  isoDateFormat(config.getDateModified())));
+								  element.getElementName()));
 			
 			throw new EntityNotFoundException(IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND, 
 											  element.getElementName(), 

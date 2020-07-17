@@ -216,7 +216,17 @@ public class DefaultElementConfigService implements ElementConfigService {
 										    configId,
 										    comment);
 	}
-	
-	
+
+    @Override
+    public ElementConfig getElementConfig(ElementId elementId, ElementConfigName configName) {
+        Element element = elements.fetchElement(elementId);
+        return manager.getElementConfig(element, configName);
+    }
+
+    @Override
+    public ElementConfig getElementConfig(ElementName elementName, ElementConfigName configName) {
+        Element element = elements.fetchElement(elementName);
+        return manager.getElementConfig(element, configName);
+    }
 	
 }

@@ -47,7 +47,6 @@ class OperationalStateSelector extends Select {
 }
 customElements.define("element-operational-state",OperationalStateSelector);
 
-
 const elementServiceController = function(){
 	const element = new Element({"scope":"services"});
 	return new Controller({

@@ -19,6 +19,8 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 
 import javax.json.JsonObject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class ElementEnvironment extends BaseElementEnvelope {
 
@@ -70,10 +72,13 @@ public class ElementEnvironment extends BaseElementEnvelope {
 	}
 	
 	private EnvironmentId environmentId = randomEnvironmentId();
+	@Valid
+	@NotNull(message="{environment_name.required}")
 	private EnvironmentName environmentName;
 	private String category;
 	private String type;
 	private String description;
+	@NotNull(message="{variables.required}")
 	private JsonObject variables;
 	
 	public EnvironmentId getEnvironmentId() {

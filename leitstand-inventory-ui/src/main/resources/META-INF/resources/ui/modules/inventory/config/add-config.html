@@ -23,16 +23,26 @@
 	<ui-subtitle> Create a new configuration for element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}}.</ui-subtitle>
 </ui-view-header>
 <ui-form scopesAllowed="ivt ivt.element ivt.element.config">
-	<config-editor type="json" style="height:50em;" bind="config.content">
-		<!--  Configuration editor to modify the current configuration -->
-	</config-editor>
-	<ui-group>
-		<ui-label>Configuration Metadata</ui-label>
-		<ui-input name="config_name" bind="config.config_name">
+   	<ui-group>
+		<ui-label>New Configuration</ui-label>
+		<ui-note>Creates a new candidate configuration for an existing configuration or add a new configuration.</ui-note>
+		<inventory-upload>
+		</inventory-upload>
+		<ui-input name="config_name">
 			<ui-label>Configuration Name</ui-label>
 			<ui-note>Descriptive configuration name</ui-note>		
 		</ui-input>
-		<ui-input name="comment" bind="config.comment">
+		<ui-select name="content_type">
+		  <ui-label>Content Type</ui-label>
+		  <ui-note>The MIME-Type of the application</ui-note>
+		  <ui-options>
+		      <ui-option value="application/json">JSON</ui-option>
+		      <ui-option value="application-vnd/yaml">YAML</ui-option>
+		      <ui-option value="application/xml">XML</ui-option>
+		      <ui-option value="text/plain">Other text format</ui-option>
+		  </ui-options>
+		</ui-select>
+		<ui-input name="comment" >
 			<ui-label>Comment</ui-label>
 			<ui-note>Comment on the applied configuration changes</ui-note>
 		</ui-input>

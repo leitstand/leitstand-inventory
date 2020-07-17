@@ -36,7 +36,7 @@ export class Pods extends Resource {
 	 * @param {string} params.filter The filter string to filter pods by name and/or tags
 	 * @param {number} [params.limit=100] The maximum number of returned pods. 
 	 */
-	load(params) {gi
+	load(params) {
 		if(this._cfg && this._cfg.scope){
 			return this.json("/api/v1/pods/{{scope}}?filter={{&filter}}",
 							 {"limit":100},
@@ -532,21 +532,17 @@ export class Element extends Resource {
 						 params)
 				   .DELETE();
 	}
-	editConfig(params,comment){
-		return this.json(`/api/v1/elements/{{&element}}/${this._cfg['scope']}/_edit?comment={{comment}}&state={{state}}`,
-						 this._cfg,
-						 params,
-						 {"comment":comment,
-						  "state":"CANDIDATE"})
-					.POST();
-	}
-	
+
 	saveConfig(params,config){
 		config.state="CANDIDATE";
+		if(config.content_type == 'application/json' && typeof config.content  == 'string'){
+		    config.content = JSON.parse(config.content);
+		}
 		return this.json("/api/v1/elements/{{&element}}/configs/{{config_name}}?comment={{comment}}&state={{state}}",
 						 this._cfg,
 						 params,
 						 config)
+				   .contentType(config.content_type)
 				   .POST(config.content);
 	}
 	
@@ -564,6 +560,7 @@ export class Element extends Resource {
 						 params)
 				   .POST(record);
 	}
+	
 }
 
 //TODO Documentation
@@ -692,4 +689,5 @@ export class Panel extends Resource {
     }
     
 }
+
 	

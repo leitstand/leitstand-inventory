@@ -25,30 +25,32 @@
 <ui-form scopesAllowed="ivt ivt.element ivt.element.config">
 	<ui-group>
 		<ui-label>Environment</ui-label>
-		<ui-input name="environment_name" bind="environment.environment_name">
+		<ui-input name="environment_name">
 			<ui-label>Environment Name</ui-label>
-			<ui-note>The environment name needs to be unique per element.</ui-note>
+			<ui-note>The environment name is unique per element</ui-note>
 		</ui-input>
-		<ui-input name="category" bind="environment.category">
+		<ui-input name="category" >
 			<ui-label>Category</ui-label>
 			<ui-note>Optional environment category.</ui-note>
 		</ui-input>
-		<ui-input name="type" bind="environment.type">
+		<ui-input name="type">
 			<ui-label>Type</ui-label>
 			<ui-note>Optional environment type.</ui-note>
 		</ui-input>
-		<ui-textarea name="description" bind="environment.description">
+		<ui-textarea name="description">
 			<ui-label>Description</ui-label>
-			<ui-note>Optional environment description</ui-note>
+			<ui-note>Optional environment description.</ui-note>
 		</ui-textarea>
-		<env-editor type="json" style="height:50em;" bind="environment.variables">
-			<ui-label>Variables</ui-label>
-			<ui-note>The environment variables as JSON object</ui-note>
+		<inventory-upload accept="application/json" class="hidden">
+		</inventory-upload>
+		<env-editor type="json" name="variables" style="height:50em;">
 			<!--  Configuration editor to modify the current configuration -->
 		</env-editor>
 	</ui-group>
 	<ui-actions>
-		<ui-button name="save-env" primary title="Create new environment">Add environment</ui-button>
-		<ui-button href="element-envs.html?group={{group_id}}&element={{element_id}}" title="Cancel creation of new environment">Cancel</ui-button>
+		<ui-button name="save-env" primary title="Apply all configuration changes">Add environment</ui-button>
+		<ui-button href="element-envs.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}" title="Remove environment" danger>Cancel</ui-button>
+	    <ui-button name="upload" title="Upload a new environment file to upgrade the current environment">Upload new environment</ui-button>
+	    <ui-button name="inline" class="hidden" title="Edit environment inline">Edit environment</ui-button>
 	</ui-actions>
 </ui-form>

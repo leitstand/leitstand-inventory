@@ -41,6 +41,8 @@
 			<ui-label>Description</ui-label>
 			<ui-note>Optional environment description.</ui-note>
 		</ui-textarea>
+		<inventory-upload accept="application/json" class="hidden">
+		</inventory-upload>
 		<env-editor type="json" name="variables" style="height:50em;">
 			<!--  Configuration editor to modify the current configuration -->
 		</env-editor>
@@ -48,5 +50,7 @@
 	<ui-actions>
 		<ui-button name="save-env" primary title="Apply all configuration changes">Save environment</ui-button>
 		<ui-button href="confirm-remove.html?group={{group_id}}&element={{element_id}}&environment={{environment_id}}" title="Remove environment" danger>Remove environment</ui-button>
+	    <ui-button name="upload" title="Upload a new environment file to upgrade the current environment">Upload new environment</ui-button>
+	    <ui-button name="inline" class="hidden" title="Edit environment inline">Edit environment</ui-button>
 	</ui-actions>
 </ui-form>

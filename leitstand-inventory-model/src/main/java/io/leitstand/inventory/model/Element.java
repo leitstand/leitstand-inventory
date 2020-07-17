@@ -86,7 +86,6 @@ import io.leitstand.inventory.service.PlatformName;
 			query="SELECT e FROM Element e WHERE e.serialNumber REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
 @NamedQuery(name="Element.findByAssetId", 
 			query="SELECT e FROM Element e WHERE e.assetId REGEXP :pattern ORDER by e.group.name ASC, e.elementName ASC")
-
 @NamedQuery(name="Element.findByElementGroupAndPlane",
 			query="SELECT e FROM Element e WHERE e.group=:group AND e.role.plane=:plane")
 
