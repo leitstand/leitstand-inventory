@@ -25,6 +25,8 @@
 	<ui-subtitle>Services deployed on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <!-- {{#services.length}} -->
+<ui-group>
+<ui-label>Services</ui-label>
 <table id="elements" class="list">
 	<thead>
 		<tr>
@@ -47,6 +49,7 @@
 		<!-- {{/services}}  -->
 	</tbody>
 </table>
+</ui-group>
 <!-- {{/services.length}} -->
 <!-- {{^services}} -->
 <ui-blankslate>

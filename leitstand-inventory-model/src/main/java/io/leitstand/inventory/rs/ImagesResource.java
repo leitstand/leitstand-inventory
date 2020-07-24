@@ -24,6 +24,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ImageQuery.newQuery;
+import static java.util.Collections.emptyList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -166,6 +167,9 @@ public class ImagesResource {
 	@Path("/_versions")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
 	public List<Version> getImageVersions(@QueryParam("image_type") @Valid ImageType imageType) {
+	    if(imageType == null) {
+	        return emptyList();
+	    }
 		return service.getImageVersions(imageType);
 	}
 	
