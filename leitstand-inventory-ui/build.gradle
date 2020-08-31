@@ -4,13 +4,14 @@ plugins {
 }
 
 dependencies {
-	compile 'io.leitstand.ui:leitstand-ui-model:'+findProperty('versions.leitstand-ui')
+    implementation 'io.leitstand:leitstand-commons:'+findProperty('versions.leitstand-commons')
+	implementation 'io.leitstand.ui:leitstand-ui-model:'+findProperty('versions.leitstand-ui')
 	compileOnly 'javax:javaee-api:8.0'
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
@@ -19,7 +20,6 @@ publishing {
             artifactId = 'leitstand-inventory-ui'
             version = project.getVersion()
             from components.java
-            artifact sourcesJar
         }
     }
 }

@@ -4,15 +4,22 @@ plugins {
 }
 
 dependencies {
-    compile 'io.leitstand:leitstand-commons:' + findProperty("versions.leitstand-commons")
-    compile 'io.leitstand.security:leitstand-login:' + findProperty("versions.leitstand-security")
+    implementation 'io.leitstand:leitstand-commons:' + findProperty("versions.leitstand-commons")
+    implementation 'io.leitstand.security:leitstand-auth:' + findProperty("versions.leitstand-security")
     compileOnly 'javax:javaee-api:8.0'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'io.leitstand:leitstand-test:' + findProperty("versions.leitstand-commons")
-    testCompile 'org.mockito:mockito-all:1.8.4'
-    testCompile 'org.glassfish.jersey.core:jersey-client:2.6'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'io.leitstand:leitstand-test:' + findProperty("versions.leitstand-commons")
+    testImplementation 'org.mockito:mockito-all:1.8.4'
+    //testR 'org.glassfish.jersey.core:jersey-client:2.6'
+}
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+    javadoc {
+        failOnError = false
+    }
 }
 
 publishing {
