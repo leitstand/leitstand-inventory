@@ -25,10 +25,20 @@ import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static java.lang.String.format;
+import static javax.json.Json.createWriterFactory;
+import static javax.json.stream.JsonGenerator.PRETTY_PRINTING;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.ok;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import javax.inject.Inject;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
@@ -66,6 +76,7 @@ import io.leitstand.security.auth.Scopes;
 @Produces(APPLICATION_JSON)
 public class ElementConfigResource {
 
+    private static final Logger LOG = Logger.getLogger(ElementConfigResource.class.getName());
 	
 	@Inject
 	private Messages messages;
@@ -108,18 +119,6 @@ public class ElementConfigResource {
 		return service.getElementConfig(elementName, 
 										configId);
 	}
-	
-	@GET
-	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
-	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public Response getElementConfigData(@Valid @PathParam("element") ElementName elementName,
-					  		      	  	 @Valid @PathParam("config_id") ElementConfigId configId){
-		ElementConfig config = service.getElementConfig(elementName,
-														configId);
-		
-		return success(config.getConfig().toString(), 
-				  	   config.getContentType());
-	}	
 	
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
@@ -206,11 +205,12 @@ public class ElementConfigResource {
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/config")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public Response downloadElementConfig(@Valid @PathParam("element") ElementId elementId,
-										  @Valid @PathParam("config_id") ElementConfigId configId){
+										  @Valid @PathParam("config_id") ElementConfigId configId,
+										  @QueryParam("pretty") boolean pretty){
 		
 		ElementConfig config = service.getElementConfig(elementId, configId);
 		
-		return ok(config.getConfig(), config.getContentType())
+		return ok(formattedConfig(config,pretty), config.getContentType())
 			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
 					   								 config.getConfigName(),
 					   								 isoDateFormat(config.getDateModified()),
@@ -225,10 +225,11 @@ public class ElementConfigResource {
 	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
 	public Response downloadElementConfig(@Valid @PathParam("element") ElementName elementName,
-								     	  @Valid @PathParam("config_id") ElementConfigId configId){
+								     	  @Valid @PathParam("config_id") ElementConfigId configId,
+								     	  @QueryParam("pretty") boolean pretty){
 		ElementConfig config = service.getElementConfig(elementName, configId);
 		
-		return ok(config.getConfig(), config.getContentType())
+		return ok(formattedConfig(config, pretty), config.getContentType())
 			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
 					   								 config.getConfigName(),
 					   								 isoDateFormat(config.getDateModified()),
@@ -247,6 +248,27 @@ public class ElementConfigResource {
 			return "xml";
 		}
 		return "txt";
+	}
+	
+	protected static Object formattedConfig(ElementConfig config, boolean prettyPrint) {
+	    if(prettyPrint && config.getContentType().contains("json")) {
+	        Map<String,Object> settings = new HashMap<>();
+	        settings.put(PRETTY_PRINTING, true);
+	        try(StringWriter buffer = new StringWriter();
+	            JsonWriter prettyPrinter = createWriterFactory(settings)
+	                                       .createWriter(buffer)){
+	            JsonObject object = (JsonObject) config.getConfig();
+	            prettyPrinter.writeObject(object);
+	            return buffer.toString();
+	            
+	        } catch (IOException e) {
+	            LOG.fine(() -> "Failed to format JSON configuration due to IO exception: "+e);
+	            // Use default implementation to format the output
+	        }
+	        
+	    }
+	    return config.getConfig();
+	    
 	}
 	
 	@POST
