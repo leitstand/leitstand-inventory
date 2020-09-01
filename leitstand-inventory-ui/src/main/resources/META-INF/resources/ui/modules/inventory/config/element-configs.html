@@ -43,7 +43,7 @@
 				<td>{{creator}}</td>
 				<td class="text"><a href="/ui/views/inventory/config/element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}" title="Show config"><ui-date readonly>{{date_modified}}</ui-date></a></td>
 				<td class="text">{{comment}}</td>
-				<td><a class="btn btn-sm btn-outline" href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</a></td>
+				<td><a class="btn btn-sm btn-outline" href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config?pretty=true" title="Download configuration">Download</a></td>
 			</tr>
 			<!-- {{/configs}} -->
 		</table>

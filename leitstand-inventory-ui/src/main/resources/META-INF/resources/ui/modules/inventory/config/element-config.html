@@ -55,6 +55,6 @@
 	<ui-actions>
 			<ui-button danger when="removable" title="Remove configuration" href="confirm-remove.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Remove configuration</ui-button>
 			<ui-button when="restorable" title="Create a new candidate configuration from this configuration" href="confirm-restore.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Restore configuration</ui-button>
-			<ui-button href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config" target="_blank" title="Download configuration">Download</ui-button>
+			<ui-button href="/api/v1/elements/{{element_id}}/configs/{{config_id}}/config?pretty=true" title="Download configuration">Download</ui-button>
 	</ui-actions>
 </ui-form>
