@@ -36,7 +36,6 @@ import static io.leitstand.inventory.service.ServiceData.newServiceData;
 import static io.leitstand.inventory.service.ServiceInfo.newServiceInfo;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static java.lang.String.format;
-import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -178,7 +177,6 @@ public class ElementServicesManager {
 
 	public boolean storeElementService(Element element, ElementServiceSubmission submission) {
 		boolean created = false;
-		repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
 		Element_Service service = repository.execute(findElementService(element, 
 																	    submission.getServiceName()));
 		if(service == null){
@@ -240,13 +238,11 @@ public class ElementServicesManager {
 											  element.getElementName(),
 											  serviceName);
 		}
-		repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
 		service.setOperationalState(state);
 
 	}
 
 	public void storeElementServices(Element element, List<ElementServiceSubmission> services) {
-		repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
 		for(ElementServiceSubmission service : services){
 			storeElementService(element, service);
 		}
@@ -257,7 +253,6 @@ public class ElementServicesManager {
 		Element_Service service = repository.execute(findElementService(element, 
 																	    serviceName));
 		if(service != null){
-			repository.lock(element, OPTIMISTIC_FORCE_INCREMENT);
 			repository.remove(service);
 			LOG.fine(() -> format("%s: Service %s does not exist on %s %s (%s).",
 								  IVT0322I_ELEMENT_SERVICE_REMOVED.getReasonCode(),
