@@ -402,6 +402,7 @@ public class Element extends VersionableEntity {
 		if((opState.is(OPERATIONAL) || opState.is(UP)) && admState.is(NEW)){
 			admState = ACTIVE;
 		}
+		touchLastModified();
 		return old;
 	}
 
