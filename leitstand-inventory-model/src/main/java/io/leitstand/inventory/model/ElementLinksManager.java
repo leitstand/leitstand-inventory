@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.jpa.AdministrativeStateConverter.toAdministrativeState;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
+import static io.leitstand.inventory.service.Bandwidth.bandwidth;
 import static io.leitstand.inventory.service.ElementGroupId.groupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -35,8 +36,6 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.db.ResultSetMapping;
-import io.leitstand.inventory.service.Bandwidth;
-import io.leitstand.inventory.service.Bandwidth.Unit;
 import io.leitstand.inventory.service.ElementLinkData;
 import io.leitstand.inventory.service.ElementLinks;
 
@@ -57,12 +56,12 @@ public class ElementLinksManager {
 														  .withLocalMac(macAddress(rs.getString(2)))
 														  .withLocalOperationalState(toOperationalState(rs.getString(3)))
 														  .withLocalAdministrativeState(toAdministrativeState(rs.getString(4)))
-														  .withLocalBandwidth(new Bandwidth(rs.getFloat(5), Unit.valueOf(rs.getString(6))))
+														  .withLocalBandwidth(bandwidth(rs.getFloat(5), rs.getString(6)))
 														  .withRemoteIfpName(interfaceName(rs.getString(7)))
 														  .withRemoteMac(macAddress(rs.getString(8)))
 														  .withRemoteOperationalState(toOperationalState(rs.getString(9)))
 														  .withRemoteAdministrativeState(toAdministrativeState(rs.getString(10)))
-														  .withRemoteBandwidth(new Bandwidth(rs.getFloat(11),Unit.valueOf(rs.getString(12))))
+														  .withRemoteBandwidth(bandwidth(rs.getFloat(11),rs.getString(12)))
 														  .withRemoteElementId(elementId(rs.getString(13)))
 														  .withRemoteElementName(elementName(rs.getString(14)))
 														  .withRemoteElementGroupId(groupId(rs.getString(15)))
