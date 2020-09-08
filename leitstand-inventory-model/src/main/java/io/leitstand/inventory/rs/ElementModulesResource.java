@@ -16,6 +16,7 @@
 package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.rs.ResourceUtil.encodeUri;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
@@ -40,6 +41,7 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
+import io.leitstand.commons.rs.ResourceUtil;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementModule;
 import io.leitstand.inventory.service.ElementModuleService;
@@ -103,10 +105,10 @@ public class ElementModulesResource{
 	@PUT
 	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
 	public Response storeElementModule(@Valid @PathParam("id") ElementId elementId, 
-	                                   @PathParam("module") ModuleName moduleName,
+	                                   @Valid @PathParam("module") ModuleName moduleName,
 	                                   ModuleData module){
 		if(service.storeElementModule(elementId, moduleName, module)){
-			return created(messages,moduleName);
+			return created(messages,encodeUri(moduleName.toString()));
 		}
 		return success(messages);
 	}
@@ -117,7 +119,7 @@ public class ElementModulesResource{
 									   @Valid @PathParam("module") ModuleName moduleName,
 	                                   @Valid ModuleData module){
 		if(service.storeElementModule(elementName, moduleName, module)){
-			return created(messages,moduleName);
+			return created(messages,encodeUri(moduleName.toString()));
 		}
 		return success(messages);
 	}

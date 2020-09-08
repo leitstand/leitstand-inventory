@@ -46,7 +46,7 @@ import io.leitstand.inventory.service.ModuleName;
 	   name="element_module",
 	   uniqueConstraints=@UniqueConstraint(columnNames={"element_id","name"}))
 @NamedQuery(name="Element_Module.findModules", 
-			query="SELECT m FROM Element_Module m WHERE m.element=:element")
+			query="SELECT m FROM Element_Module m WHERE m.element=:element ORDER BY m.name")
 @NamedQuery(name="Element_Module.findModuleBySerialNumber", 
 			query="SELECT m FROM Element_Module m WHERE m.element=:element AND m.serialNumber=:serialNumber")
 @NamedQuery(name="Element_Module.findModuleByName", 

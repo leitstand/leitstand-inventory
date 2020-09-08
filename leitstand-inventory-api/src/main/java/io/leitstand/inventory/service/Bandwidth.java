@@ -29,6 +29,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 
 import io.leitstand.commons.model.CompositeValue;
+import io.leitstand.commons.model.StringUtil;
 import io.leitstand.inventory.jsonb.BandwidthAdapter;
 
 /**
@@ -42,6 +43,13 @@ import io.leitstand.inventory.jsonb.BandwidthAdapter;
 public class Bandwidth extends CompositeValue implements Serializable{
 
 	private static final Pattern BANDWITH_PATTERN = Pattern.compile("^(\\d+[\\.]\\d{3}) ([KMGT]bps)$");
+	
+	public static Bandwidth bandwidth(float value, String unit) {
+	    if(StringUtil.isEmptyString(unit)) {
+	        return null;
+	    }
+	    return new Bandwidth(value, Unit.valueOf(unit));
+	}
 	
 	public static Bandwidth bandwidth(String bandwidth) {
 		if(isEmptyString(bandwidth)) {
