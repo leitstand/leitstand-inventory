@@ -16,10 +16,12 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
+import static io.leitstand.commons.etc.Environment.getSystemProperty;
 import static io.leitstand.commons.jpa.SerializableJsonObjectConverter.parseJson;
 import static io.leitstand.commons.jsonb.IsoDateAdapter.isoDateFormat;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static io.leitstand.commons.rs.ResourceUtil.tryParseInt;
 import static io.leitstand.inventory.event.ElementConfigRemovedEvent.newElementConfigRemovedEvent;
 import static io.leitstand.inventory.event.ElementConfigRevisionRemovedEvent.newElementConfigRevisionRemovedEvent;
 import static io.leitstand.inventory.event.ElementConfigStoredEvent.newElementConfigStoredEvent;
@@ -40,15 +42,16 @@ import static io.leitstand.inventory.service.ElementConfigs.newElementConfigs;
 import static io.leitstand.inventory.service.ReasonCode.IVT0330I_ELEMENT_CONFIG_REVISION_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0331I_ELEMENT_CONFIG_REVISION_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
-import static io.leitstand.inventory.service.ReasonCode.IVT0333E_ELEMENT_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configCreated;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configUpdated;
 import static io.leitstand.security.auth.UserName.userName;
 import static io.leitstand.security.crypto.SecureHashes.md5;
 import static java.lang.String.format;
+import static java.util.logging.Logger.getLogger;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -62,7 +65,6 @@ import javax.ws.rs.core.MediaType;
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.db.DatabaseService;
-import io.leitstand.commons.messages.MessageFactory;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.event.ElementConfigEvent;
@@ -73,15 +75,15 @@ import io.leitstand.inventory.service.ElementConfigName;
 import io.leitstand.inventory.service.ElementConfigReference;
 import io.leitstand.inventory.service.ElementConfigRevisions;
 import io.leitstand.inventory.service.ElementConfigs;
-import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.StoreElementConfigResult;
 import io.leitstand.security.auth.UserContext;
-import io.leitstand.security.auth.UserName;
 
 @Dependent
 public class ElementConfigManager {
 
-	private static final Logger LOG = Logger.getLogger(ElementConfigManager.class.getName());
+	private static final Logger LOG = getLogger(ElementConfigManager.class.getName());
+	private static final int CONFIG_HISTORY_SIZE = tryParseInt(getSystemProperty("LEITSTAND_CONFIGSTORE_HISTORY_SIZE"), 50);
+	
 	
 	private Repository repository;
 	private DatabaseService database;
@@ -473,4 +475,37 @@ public class ElementConfigManager {
 								  comment);
 	}
 
+	
+	public void purgeOutdatedConfigurations(Element element, 
+	                                        ElementConfigName configName) {
+	    
+	   int removedConfigs = database.executeUpdate(
+	                                 prepare("WITH outdated (uuid) AS ( " +
+	                                         "  SELECT c.uuid "+
+	                                         "  FROM inventory.element_config c "+
+	                                         "  JOIN inventory.element e "+
+	                                         "  ON c.element_id = e.id "+
+	                                         "  WHERE e.id = ? "+
+	                                         "  AND c.name = ? "+
+	                                         "  ORDER BY c.tsmodified DESC "+
+	                                         "  OFFSET ? )"+
+	                                         "DELETE FROM inventory.element_config "+
+	                                         "WHERE uuid "+
+	                                         "IN ( SELECT uuid FROM outdated )",
+	                                         element.getId(),
+	                                         configName, 
+	                                         CONFIG_HISTORY_SIZE));
+	   
+	   LOG.fine(() -> format("%s: %d %s configuration(s) removed for element %s.",
+	                         IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED.getReasonCode(),
+	                         removedConfigs,
+	                         configName,
+	                         element.getElementName()));
+	   
+	   if(removedConfigs > 0) {
+	       messages.add(createMessage(IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED, element.getElementName(),configName,removedConfigs));
+	   }
+	    
+	    
+	}
 }

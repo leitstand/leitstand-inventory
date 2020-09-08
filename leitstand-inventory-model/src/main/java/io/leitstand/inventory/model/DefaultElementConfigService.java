@@ -228,5 +228,17 @@ public class DefaultElementConfigService implements ElementConfigService {
         Element element = elements.fetchElement(elementName);
         return manager.getElementConfig(element, configName);
     }
+    
+    @Override
+    public void purgeOutdatedElementConfigs(ElementId elementId, ElementConfigName configName) {
+        Element element = elements.fetchElement(elementId);
+        manager.purgeOutdatedConfigurations(element, configName);
+    }
+    
+    @Override
+    public void purgeOutdatedElementConfigs(ElementName elementName, ElementConfigName configName) {
+        Element element = elements.fetchElement(elementName);
+        manager.purgeOutdatedConfigurations(element, configName);
+    }
 	
 }
