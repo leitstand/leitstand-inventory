@@ -25,6 +25,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static java.lang.String.format;
+import static java.util.logging.Level.FINER;
 import static javax.json.Json.createWriterFactory;
 import static javax.json.stream.JsonGenerator.PRETTY_PRINTING;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -293,7 +294,17 @@ public class ElementConfigResource {
 		if(result.isCreated()) {
 			return created(messages,result.getConfigId());
 		}
-		return success(messages);
+        try {
+            return success(messages);
+        } finally {
+            try {
+                service.purgeOutdatedElementConfigs(elementId, 
+                                                    configName);
+            } catch (Exception e) {
+                LOG.fine(() -> format("Failed to purge outdated configurations. %s",e.getMessage()));
+                LOG.log(FINER,e, () -> e.getMessage());
+            }
+        }
 	}
 	
 	@POST
@@ -317,8 +328,18 @@ public class ElementConfigResource {
 			return created(messages,
 						   result.getConfigId());
 		}
-		return success(messages);
-				
+
+		try {
+		    return success(messages);
+		} finally {
+		    try {
+    		    service.purgeOutdatedElementConfigs(elementName, 
+    		                                        configName);
+            } catch (Exception e) {
+                LOG.fine(() -> format("Failed to purge outdated configurations. %s",e.getMessage()));
+                LOG.log(FINER,e, () -> e.getMessage());
+            }
+		}
 	}
 	
 	

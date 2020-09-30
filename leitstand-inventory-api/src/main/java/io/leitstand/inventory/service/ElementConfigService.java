@@ -243,5 +243,22 @@ public interface ElementConfigService {
 								  ElementConfigId configId,
 								  String comment);
 	
+	/**
+	 * Purges all outdated configurations with the specified name for the specified element.
+     * A configuration is considered outdated if its position in the configuration history exceeds the history size limit.
+ 	 * @param elementId the element ID
+ 	 * @param configName the configuration name
+	 */
+	void purgeOutdatedElementConfigs(ElementId elementId,
+	                                 ElementConfigName configName);
+	
+	/**
+     * Purges all outdated configurations with the specified name for the specified element.
+     * A configuration is considered outdated if its position in the configuration history exceeds the history size limit.
+     * @param elementName the element name
+     * @param configName the configuration name
+     */
+    void purgeOutdatedElementConfigs(ElementName elementName,
+                                     ElementConfigName configName);
 
 }
