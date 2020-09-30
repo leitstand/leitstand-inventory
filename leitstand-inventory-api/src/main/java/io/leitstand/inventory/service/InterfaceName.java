@@ -40,7 +40,7 @@ public class InterfaceName extends Scalar<String>{
 	}
 
 	@NotNull(message="{interface_name.required}")
-	@Pattern(regexp="[a-z0-9]{2,4}-?(\\d+/)+\\d+(:\\d+)?", message="{interface_name.invalid}")
+	@Pattern(regexp="[a-z0-9]{2,}-?(\\d+/)+\\d+(:\\d+)?", message="{interface_name.invalid}")
 	private String value;
 	
 	public InterfaceName(String value){
