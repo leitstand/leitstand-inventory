@@ -15,7 +15,8 @@ menus:
     label: Images
     view: images.html
 - menu: image
-  label: Image Information
+  label: Image
+  entity: "{{image_name}}"
   title: View manage details
   scopesAllowed:
   - ivt

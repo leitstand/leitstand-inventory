@@ -31,12 +31,4 @@ menus:
     - ivt.element
     - ivt.element.read
     view: ifps.html
-- menu: meta
-  label: Administration
-  title: Maintain roles and platforms
-  scopesAllowed:
-  - ivt
-  - ivt.read
-  - ivt.element
-  - ivt.element.read
         

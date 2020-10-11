@@ -9,7 +9,7 @@ extensions:
   - menu: element
     label: Element
     title: Element settings
-    entity: "{{element_role}} {{element_name}}"
+    entity: "{{element_name}}"
     expand: auto
     scopesAllowed:
       - ivt
