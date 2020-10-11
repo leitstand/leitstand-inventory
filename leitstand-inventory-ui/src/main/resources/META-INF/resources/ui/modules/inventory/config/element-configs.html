@@ -14,8 +14,15 @@
  the License.
 -->
 <ui-view-header>
-	<ui-title>Element Configurations</ui-title>
-	<ui-subtitle>List of all existing element configurations</ui-subtitle>
+    <ui-breadcrumbs>
+        <ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show pod elements">Elements</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+        <ui-breadcrumb>Element Configurations</ui-breadcrumb>
+    </ui-breadcrumbs>
+	<ui-title>Configurations of {{element_name}}</ui-title>
+	<ui-subtitle>List of all configurations of {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <ui-form>
 	<ui-filter name="filter">
