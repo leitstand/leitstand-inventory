@@ -4,7 +4,7 @@ description: Platform management views.
 extensions:
 - extend:
     module: inventory
-    menu: meta
+    menu: main
     after: roles
   items:
   - item: platforms

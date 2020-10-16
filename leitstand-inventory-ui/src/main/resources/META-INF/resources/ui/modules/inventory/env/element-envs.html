@@ -14,6 +14,13 @@
  the License.
 -->
 <ui-view-header>
+    <ui-breadcrumbs>
+        <ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show pod elements">Elements</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+        <ui-breadcrumb>Element Environments</ui-breadcrumb>
+    </ui-breadcrumbs>
 	<ui-title>Element Environments</ui-title>
 	<ui-subtitle>List of environments declared for this element.</ui-subtitle>
 </ui-view-header>

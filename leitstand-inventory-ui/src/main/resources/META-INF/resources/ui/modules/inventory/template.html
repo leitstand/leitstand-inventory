@@ -13,13 +13,20 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
+<style>
+
+
+</style>
 <ui-module>
-<div class="columns">
+<div class="row">
+<ui-module-menu></ui-module-menu>
+</div>
+<div class="row columns">
 	<div id="menu" class="column one-fifth" role="navigation">
 		<h2 class="hidden">Inventory Menus</h2>
-		<ui-module-menu>
+		<ui-view-menu>
 			<!--  Render context-sensitive menu -->
-		</ui-module-menu>
+		</ui-view-menu>
 	</div>
 	<div class="column four-fifths" role="main">
 		<ui-view>

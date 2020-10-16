@@ -15,7 +15,11 @@
 -->
 <ui-view-header>
 	<ui-breadcrumbs>
-		<ui-breadcrumb href="element.html?group={{group_id}}&element={{element_id}}">Element Settings</ui-breadcrumb>
+	    <ui-breadcrumb href="/ui/views/inventory/pods.html" title="Show pod list">Pods</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod.html?group={{group_id}}" title="Show pod details">{{group_name}}</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show pod elements">Elements</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
+		<ui-breadcrumb href="element.html?group={{group_id}}&element={{element_id}}">Element settings</ui-breadcrumb>
 		<ui-breadcrumb>Pod</ui-breadcrumb>
 	</ui-breadcrumbs>
 	<ui-title>Select pod for element {{element_name}}</ui-title>
