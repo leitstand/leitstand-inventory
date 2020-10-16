@@ -75,6 +75,9 @@ public class ElementModuleManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withModules(modules)
 			   .build();
 	}
@@ -226,6 +229,9 @@ public class ElementModuleManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withModule(moduleData(module))
 			   .build();
 	}

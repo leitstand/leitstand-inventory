@@ -32,7 +32,6 @@ import java.util.TreeSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -88,12 +87,6 @@ public class ElementSettings extends BaseElementEnvelope{
 			return this;
 		}
 		
-		public Builder withAdministrativeState(AdministrativeState admState){
-			assertNotInvalidated(getClass(), object);
-			object.administrativeState = admState;
-			return this;
-		}
-
 		public Builder withDescription(String description) {
 			assertNotInvalidated(getClass(), object);
 			object.description = description;
@@ -119,13 +112,6 @@ public class ElementSettings extends BaseElementEnvelope{
 			object.managementInterfaces = new TreeMap<>(mgmtInterfaces);
 			return this;
 		}
-
-		
-		public Builder withOperationalState(OperationalState operationalState) {
-			assertNotInvalidated(getClass(), object);
-			object.operationalState = operationalState;
-			return this;
-		}
 		
 		public Builder withTags(String... tags){
 			return withTags(new TreeSet<>(Arrays.asList(tags)));
@@ -145,6 +131,7 @@ public class ElementSettings extends BaseElementEnvelope{
 	
 	
 	@JsonbProperty("mgmt_mac")
+	@Valid
 	private MACAddress managementInterfaceMacAddress;
 	private String serialNumber;
 	private String assetId;
@@ -152,15 +139,7 @@ public class ElementSettings extends BaseElementEnvelope{
 	
 	@JsonbProperty
 	private Plane plane;
-	
-	@JsonbProperty("administrative_state")
-	@NotNull(message="{administrative_state.required}")
-	private AdministrativeState administrativeState;
-	
-	@JsonbProperty("operational_state")
-	@NotNull(message="{operational_state.required}")
-	private OperationalState operationalState;
-	
+
 	@JsonbProperty
 	@Size(max=1024, message="{description.too_long}")
 	private String description;
@@ -168,9 +147,11 @@ public class ElementSettings extends BaseElementEnvelope{
 	@JsonbProperty
 	private Set<String> tags = emptySet();
 	
+	@Valid
 	private PlatformId platformId;
+
+    @Valid
 	private PlatformName platformName;
-	
 	
 	public String getDescription() {
 		return description;
@@ -182,14 +163,6 @@ public class ElementSettings extends BaseElementEnvelope{
 	
 	public Plane getPlane() {
 		return plane;
-	}
-	
-	public AdministrativeState getAdministrativeState() {
-		return administrativeState;
-	}
-	
-	public OperationalState getOperationalState(){
-		return operationalState;
 	}
 	
 	public Set<String> getTags() {

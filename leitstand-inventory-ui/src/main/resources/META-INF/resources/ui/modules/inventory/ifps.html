@@ -41,8 +41,8 @@
 				<td class="text"><a href="/ui/views/inventory/topology/link-state.html?group={{group_id}}&filter={{element_name}}&hops=1" title="Show element details">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a></td>
 				<td class="text"><a href="/ui/views/inventory/element/element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show interface details">{{&ifp_name}}</a></td>
 				<td class="text" ><code>{{ifp_alias}}</code></td>
-				<td><span class="{{adm_state}}">{{adm_state}}</span></td>
-				<td><span class="{{op_state}}">{{op_state}}</span></td>
+				<td><span class="{{ifp_administrative_state}}">{{ifp_administrative_state}}</span></td>
+				<td><span class="{{ifp_operational_state}}">{{ifp_operational_state}}</span></td>
 			</tr>
 			<!-- {{/ifps}} -->
 		</table>

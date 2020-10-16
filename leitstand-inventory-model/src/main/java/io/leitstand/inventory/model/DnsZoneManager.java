@@ -130,6 +130,9 @@ public class DnsZoneManager {
  						.withElementId(element.getElementId())
  						.withElementName(element.getElementName())
  						.withElementAlias(element.getElementAlias())
+ 						.withAdministrativeState(element.getAdministrativeState())
+ 						.withOperationalState(element.getOperationalState())
+ 						.withDateModified(element.getDateModified())
  						.withDnsRecordSets(sets)
  						.build());
  		}

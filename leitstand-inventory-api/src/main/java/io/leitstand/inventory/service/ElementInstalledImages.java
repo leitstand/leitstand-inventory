@@ -37,7 +37,7 @@ public class ElementInstalledImages extends BaseElementEnvelope{
 	 * Returns a builder to create a summary of installed images.
 	 * @return a builder to create a summary of installed images.
 	 */
-	public static Builder newElementInstalleImages(){
+	public static Builder newElementInstalledImages(){
 		return new Builder();
 	}
 	

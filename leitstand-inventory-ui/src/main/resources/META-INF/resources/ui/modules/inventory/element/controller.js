@@ -17,7 +17,7 @@ import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Select,Control} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
-import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms} from '/ui/modules/inventory/inventory.js';
+import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms,TimeSeries} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
 
 class AdministrativeStateSelector extends Select {
@@ -296,25 +296,56 @@ const elementIfpsController = function(){
 		resource:ifps,
 		postRender:function(){
 			const ifps = this.getViewModel();
-			const metrics = new Connector({"scope":"ifp"});
+			const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
 			metrics.onLoaded = function(response){
 				const ifps = {};
-				if(response && response.metrics && response.metrics.ifp_data_rate){
-					response.metrics.ifp_data_rate.forEach(function(ifp){
-						const metric = ifps[ifp.labels.ifp_name];
-						if(!metric){
-							metric = {};
-							ifps[ifp.labels.ifp_name] = metric;
+				
+				const scale = function(value){
+	                let scale = '';
+	                let factor = 1000;
+	                if(value > factor){
+	                    value = value / factor;
+	                    scale = 'k'
+	                    if(value > factor){
+	                        value = value / factor;
+	                        scale = 'M';
+	                        if(value > factor){
+	                            value = value / factor;
+	                            scale = 'G';
+	                            if(value > factor){
+	                                value = value / factor;
+	                                scale = 'T';
+	                                if(value > factor){
+	                                    value = value / factor;
+	                                    scale = 'P';
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	                return {'value':value,'unit':scale+'bps'};
+				}
+				
+				if(response && response.metric && response.metric.metric_values){
+					response.metric.metric_values.forEach(function(metric){
+						let ifp = ifps[metric.labels.ifp_name];
+						if(!ifp){
+							ifp = {};
+							ifps[metric.labels.ifp_name] = ifp;
 						}
-						metric[ifp.labels.direction]=parseFloat(ifp.value);
+						ifp[metric.labels.direction]=parseFloat(metric.value).toFixed(3);
 					});
 					for( const ifp in ifps ){
-						document.getElementById(ifp).innerHTML=(Units.format(ifps[ifp]["in"],"Gbps")+" / "+Units.format(ifps[ifp]["out"],"Gbps"));
+					    const rate = document.getElementById(ifp);
+					    if(rate){
+					        const inRate = scale(ifps[ifp]["in"]);
+					        const outRate = scale(ifps[ifp]["out"]);
+					        rate.innerHTML=`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`;
+					    }
 					}
 				}
 			};
-			metrics.onNotFound = function(){alert("Cannot access interface metrics!")};
-			metrics.load(this.location.params);
+			metrics.load(ifps);
 		}
 	});
 };

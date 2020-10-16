@@ -113,6 +113,9 @@ public class ElementServicesManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withServices(services)
 			   .build();
 	}
@@ -171,6 +174,9 @@ public class ElementServicesManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withServices(services)
 			   .build();
 	}
@@ -298,6 +304,9 @@ public class ElementServicesManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withService(newServiceData()
 					   		.withServiceType(service.getServiceType())
 					   		.withServiceName(service.getServiceName())

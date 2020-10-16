@@ -130,6 +130,9 @@ public class ElementLogicalInterfaceManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withLogicalInterface(data)
 			   .build();
 		
@@ -212,6 +215,9 @@ public class ElementLogicalInterfaceManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withLogicalInterfaces(ifls
 					   				  .stream()
 					   				  .limit(limit)

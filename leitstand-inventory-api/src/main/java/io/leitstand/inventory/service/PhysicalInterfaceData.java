@@ -41,21 +41,15 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 			return this;
 		}
 		
-		public Builder withCategory(String category) {
+		public Builder withIfpAdministrativeState(AdministrativeState admState) {
 			assertNotInvalidated(getClass(), object);
-			object.category = category;
+			object.ifpAdministrativeState = admState;
 			return this;
 		}
 		
-		public Builder withAdministrativeState(AdministrativeState admState) {
+		public Builder withIfpOperationalState(OperationalState opState) {
 			assertNotInvalidated(getClass(), object);
-			object.admState = admState;
-			return this;
-		}
-		
-		public Builder withOperationalState(OperationalState opState) {
-			assertNotInvalidated(getClass(), object);
-			object.opState = opState;
+			object.ifpOperationalState = opState;
 			return this;
 		}
 
@@ -63,9 +57,8 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 	
 	private InterfaceName ifpName;
 	private String ifpAlias;
-	private String category;
-	private OperationalState opState;
-	private AdministrativeState admState;
+	private OperationalState ifpOperationalState;
+	private AdministrativeState ifpAdministrativeState;
 	
 	public InterfaceName getIfpName() {
 		return ifpName;
@@ -75,16 +68,12 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 		return ifpAlias;
 	}
 	
-	public String getCategory() {
-		return category;
-	}
+	public AdministrativeState getIfpAdministrativeState() {
+        return ifpAdministrativeState;
+    }
 	
-	public OperationalState getOpState() {
-		return opState;
-	}
+	public OperationalState getIfpOperationalState() {
+        return ifpOperationalState;
+    }
 	
-	public AdministrativeState getAdmState() {
-		return admState;
-	}
-
 }

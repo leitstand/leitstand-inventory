@@ -108,6 +108,9 @@ public class ElementEnvironmentManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
    			   .withEnvironmentId(env.getEnvironmentId())
    			   .withEnvironmentName(env.getEnvironmentName())
    			   .withCategory(env.getCategory())
@@ -181,6 +184,9 @@ public class ElementEnvironmentManager {
 				   .withElementId(element.getElementId())
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withEnvironment(environmentInfo(_env))
 				   .build());
 		
@@ -212,6 +218,9 @@ public class ElementEnvironmentManager {
 					   .withElementId(element.getElementId())
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withEnvironment(environmentInfo(env))
 					   .build());
 			
@@ -242,6 +251,9 @@ public class ElementEnvironmentManager {
 					   .withElementId(element.getElementId())
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withEnvironment(environmentInfo(env))
 					   .build());
 		}
@@ -261,6 +273,9 @@ public class ElementEnvironmentManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withEnvironments(environments)
 			   .build();
 	

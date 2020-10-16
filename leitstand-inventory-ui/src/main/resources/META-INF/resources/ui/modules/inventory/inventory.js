@@ -649,12 +649,13 @@ export class TimeSeries extends Resource {
         this._cfg = cfg;
     }
     
-    load(params){
+    load(settings){
+        const params = Object.assign(this._cfg,settings);
         if(params.metric_name){
-            return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}/{{metric_name}}",params)
+            return this.json("/api/v1/timeseries/{{element_role}}/{{element_name}}/{{metric_name}}",params)
                        .GET();
         }
-        return this.json("/api/v1/telemetry/timeseries/{{role}}/{{element_name}}",params)
+        return this.json("/api/v1/timeseries/{{element_role}}/{{element_name}}",params)
                    .GET();
     }
     

@@ -120,7 +120,7 @@ public class ElementManagerTest {
 		manager.updateElementOperationalState(element, UP);
 		
 		ElementOperationalStateChangedEvent opStateChanged = firedEvent.getValue();
-		assertThat(opStateChanged.getPreviousState(), is(DOWN));
+		assertThat(opStateChanged.getPreviousOperationalState(), is(DOWN));
 		assertThat(opStateChanged.getOperationalState(),is(UP));
 	}
 	

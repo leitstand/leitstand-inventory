@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.event;
 
+import java.util.Date;
+
 import javax.json.bind.annotation.JsonbProperty;
 
 import io.leitstand.commons.model.BuilderUtil;
@@ -28,30 +30,44 @@ public abstract class ElementInterfaceEvent extends ElementEvent{
 			super(event);
 		}
 		
-		public B withOperationalState(OperationalState opState) {
+		public B withInterfaceOperationalState(OperationalState opState) {
 			BuilderUtil.assertNotInvalidated(getClass(), object);
-			((ElementInterfaceEvent)object).operationalState = opState;
+			((ElementInterfaceEvent)object).interfaceOperationalState = opState;
 			return (B) this;
 		}
 		
-		public B withAdministrativeState(AdministrativeState admState) {
+		public B withInterfaceAdministrativeState(AdministrativeState admState) {
 			BuilderUtil.assertNotInvalidated(getClass(), object);
-			((ElementInterfaceEvent)object).administrativeState = admState;
+			((ElementInterfaceEvent)object).interfaceAdministrativeState = admState;
 			return (B) this;
 		}
+		
+	      public B withInterfaceDateModified(Date dateModified) {
+	            BuilderUtil.assertNotInvalidated(getClass(), object);
+	            if(dateModified != null) {
+	                ((ElementInterfaceEvent)object).interfaceDateModified = new Date(dateModified.getTime());
+	            }
+	            return (B) this;
+	        }
+		
 	}
 	
-	@JsonbProperty("opstate")
-	private OperationalState operationalState;
-	@JsonbProperty("admstate")
-	private AdministrativeState administrativeState;
+	@JsonbProperty("ifc_operational_state")
+	private OperationalState interfaceOperationalState;
+	@JsonbProperty("ifc_administrative_state")
+	private AdministrativeState interfaceAdministrativeState;
 	
-	public OperationalState getOperationalState() {
-		return operationalState;
+	private Date interfaceDateModified;
+	
+	public OperationalState getInterfaceOperationalState() {
+		return interfaceOperationalState;
 	}
 	
-	public AdministrativeState getAdministrativeState() {
-		return administrativeState;
+	public AdministrativeState getInterfaceAdministrativeState() {
+		return interfaceAdministrativeState;
 	}
 	
+	public Date getInterfaceDateModified() {
+	    return interfaceDateModified;
+	}
 }

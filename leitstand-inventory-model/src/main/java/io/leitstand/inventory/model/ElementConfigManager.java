@@ -144,6 +144,9 @@ public class ElementConfigManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withConfigs(configs)
 			   .build();
 		
@@ -181,6 +184,9 @@ public class ElementConfigManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withElementConfigName(configName)
 			   .withElementConfigRevisions(revisions)
 			   .build();
@@ -215,6 +221,9 @@ public class ElementConfigManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withConfigId(config.getConfigId())
 			   .withConfigName(config.getName())
 			   .withContentType(config.getContentType())
@@ -312,12 +321,15 @@ public class ElementConfigManager {
 						   .withElementName(element.getElementName())
 						   .withElementAlias(element.getElementAlias())
 						   .withElementRole(element.getElementRoleName())
+						   .withAdministrativeState(element.getAdministrativeState())
+						   .withOperationalState(element.getOperationalState())
+						   .withDateModified(element.getDateModified())
 						   .withConfigId(config.getConfigId())
 						   .withConfigName(configName)
 						   .withConfigState(configState)
+						   .withConfigDate(config.getDateModified())
 						   .withContentType(contentType.toString())
 						   .withCreator(config.getCreator())
-						   .withDateModified(config.getDateModified())
 						   .build());
 				
 				return configUpdated(config.getConfigId());
@@ -389,10 +401,13 @@ public class ElementConfigManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withConfigName(config.getName())
+					   .withConfigDate(config.getDateModified())
 					   .withContentType(config.getContentType())
 					   .withCreator(config.getCreator())
-					   .withDateModified(config.getDateModified())
 					   .build());
 
 		}
@@ -441,6 +456,9 @@ public class ElementConfigManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withConfigName(configName)
 					   .build());
 		}

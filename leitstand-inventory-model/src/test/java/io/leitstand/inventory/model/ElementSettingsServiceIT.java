@@ -395,7 +395,21 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		transaction( () -> {
 			ElementSettings reloaded = service.getElementSettings(elementName);
 			assertNotSame(settings,reloaded);
-			assertEquals(settings,reloaded);
+            assertNotSame(settings,reloaded);
+            assertEquals(settings.getGroupId(),reloaded.getGroupId());
+            assertEquals(settings.getGroupType(),reloaded.getGroupType());
+            assertEquals(settings.getGroupName(),reloaded.getGroupName());
+            assertEquals(settings.getElementId(),reloaded.getElementId());
+            assertEquals(settings.getElementName(),reloaded.getElementName());
+            assertEquals(settings.getElementAlias(),reloaded.getElementAlias());
+            assertEquals(settings.getElementRole(),reloaded.getElementRole());
+            assertEquals(settings.getAdministrativeState(),reloaded.getAdministrativeState());
+            assertEquals(settings.getAssetId(),reloaded.getAssetId());
+            assertEquals(settings.getDescription(),reloaded.getDescription());
+            assertEquals(settings.getSerialNumber(),reloaded.getSerialNumber());
+            assertEquals(settings.getTags(),reloaded.getTags());
+            assertEquals(settings.getOperationalState(),reloaded.getOperationalState());
+            assertNotNull(reloaded.getDateModified());
 		});
 		
 	}
@@ -416,7 +430,22 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		transaction( () -> {
 			ElementSettings reloaded = service.getElementSettings(elementId);
 			assertNotSame(settings,reloaded);
-			assertEquals(settings,reloaded);
+			assertEquals(settings.getGroupId(),reloaded.getGroupId());
+			assertEquals(settings.getGroupType(),reloaded.getGroupType());
+			assertEquals(settings.getGroupName(),reloaded.getGroupName());
+			assertEquals(settings.getElementId(),reloaded.getElementId());
+            assertEquals(settings.getElementName(),reloaded.getElementName());
+            assertEquals(settings.getElementAlias(),reloaded.getElementAlias());
+            assertEquals(settings.getElementRole(),reloaded.getElementRole());
+            assertEquals(settings.getAdministrativeState(),reloaded.getAdministrativeState());
+            assertEquals(settings.getAssetId(),reloaded.getAssetId());
+            assertEquals(settings.getDescription(),reloaded.getDescription());
+            assertEquals(settings.getSerialNumber(),reloaded.getSerialNumber());
+            assertEquals(settings.getTags(),reloaded.getTags());
+            assertEquals(settings.getOperationalState(),reloaded.getOperationalState());
+            assertNotNull(reloaded.getDateModified());
+            
+
 		});
 		
 	}
@@ -542,7 +571,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		
 		ElementSettings elementWithUnknownGroup = element(seed)
 										  		  .withGroupId(null)
-										  		  .withGroupName(ElementGroupName.valueOf("UNKNOWN"))
+										  		  .withGroupName(groupName("UNKNOWN"))
 										  		  .build();
 		
 		transaction(() -> {

@@ -25,7 +25,7 @@
 					   title="Show configuration history">{{config_name}}</ui-breadcrumb>
 		<ui-breadcrumb>{{config_state}} <ui-date readonly>{{date_modified}}</ui-date></ui-breadcrumb>
 	</ui-bread-crumbs>
-	<ui-title>Element Configuration Editor</ui-title>
+	<ui-title>Element Configuration Editor<inventory-operational-state></inventory-operational-state></ui-title>
 	<ui-subtitle>{{config_name}} configuration of element {{element_name}} {{#element_alias}} ({{.}}){{/element_alias}} from <ui-date readonly>{{date_created}}</ui-date></ui-subtitle>
 </ui-view-header>
 <ui-form scopesAllowed="ivt ivt.element ivt.element.config">

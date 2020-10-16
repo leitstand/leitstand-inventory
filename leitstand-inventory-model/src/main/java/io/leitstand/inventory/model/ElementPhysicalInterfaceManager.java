@@ -120,6 +120,10 @@ public class ElementPhysicalInterfaceManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withPhysicalInterface(ifpData)
 			   .build();
 	}
@@ -144,8 +148,12 @@ public class ElementPhysicalInterfaceManager {
 			   .withGroupName(element.getGroup().getGroupName())
 			   .withGroupType(element.getGroup().getGroupType())
 			   .withElementId(element.getElementId())
+			   .withElementRole(element.getElementRoleName())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withPhysicalInterfaces(ifps)
 			   .build();
 	}
@@ -235,9 +243,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 
@@ -308,9 +320,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 		return;
@@ -346,9 +362,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 	}
@@ -379,9 +399,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 	}
@@ -411,9 +435,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementName(element.getElementName())
 				   .withElementAlias(element.getElementAlias())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 	}
@@ -437,9 +465,13 @@ public class ElementPhysicalInterfaceManager {
 				   .withElementId(element.getElementId())
 				   .withElementName(element.getElementName())
 				   .withElementRole(element.getElementRoleName())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
 				   .withInterfaceName(ifp.getIfpName())
-				   .withOperationalState(ifp.getOperationalState())
-				   .withAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceOperationalState(ifp.getOperationalState())
+				   .withInterfaceAdministrativeState(ifp.getAdministrativeState())
+				   .withInterfaceDateModified(ifp.getDateModified())
 				   .withNeighbor(ifp.getNeighbor())
 				   .build());
 	}

@@ -21,7 +21,7 @@
 		<ui-breadcrumb href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</ui-breadcrumb>
 		<ui-breadcrumb>Services</ui-breadcrumb>
 	</ui-breadcrumbs>
-	<ui-title>Services on {{element_name}}</ui-title>
+	<ui-title>Services on {{element_name}}<inventory-operational-state></inventory-operational-state></ui-title>
 	<ui-subtitle>Services deployed on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
 <!-- {{#services.length}} -->
