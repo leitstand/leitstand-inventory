@@ -118,7 +118,7 @@ public class FacilityResource {
 		return success(messages);
 	}	
 	
-	@PUT
+	@DELETE
 	@Path("/{facility}")
 	public Response removeFacility(@Valid @PathParam("facility") FacilityName facilityName) {
 		service.removeFacility(facilityName);
