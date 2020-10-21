@@ -291,66 +291,66 @@ const elementPodController = function(){
 };
 
 const elementIfpsController = function(){
-	const ifps = new ElementPhysicalInterfaces();
-	return new Controller({
-		resource:ifps,
-		postRender:function(){
-			const ifps = this.getViewModel();
-			const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
-			metrics.onNotFound = (e) => {console.log(e)}
-			metrics.load(ifps)
-			       .then(response => {
-            				const ifps = {};
-            				
-            				const scale = function(value){
-            	                let scale = '';
-            	                let factor = 1000;
-            	                if(value > factor){
-            	                    value = value / factor;
-            	                    scale = 'k'
-            	                    if(value > factor){
-            	                        value = value / factor;
-            	                        scale = 'M';
-            	                        if(value > factor){
-            	                            value = value / factor;
-            	                            scale = 'G';
-            	                            if(value > factor){
-            	                                value = value / factor;
-            	                                scale = 'T';
-            	                                if(value > factor){
-            	                                    value = value / factor;
-            	                                    scale = 'P';
-            	                                }
-            	                            }
-            	                        }
-            	                    }
-            	                }
-            	                
-            	                return {'value':value,'unit':scale+'bps'};
-            				}
-            				
-            				if(response && response.metric && response.metric.metric_values){
-            					response.metric.metric_values.forEach(function(metric){
-            						let ifp = ifps[metric.labels.ifp_name];
-            						if(!ifp){
-            							ifp = {};
-            							ifps[metric.labels.ifp_name] = ifp;
-            						}
-            						ifp[metric.labels.direction]=parseFloat(metric.value).toFixed(3);
-            					});
-            					for( const ifp in ifps ){
-            					    const rate = document.getElementById(ifp);
-            					    if(rate){
-            					        const inRate = scale(parseInt(ifps[ifp]["in"]));
-            					        const outRate = scale(parseInt(ifps[ifp]["out"]));
-            					        rate.innerHTML=`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`;
-            					    }
-            					}
-            				}
-			       })
-			       .catch(e => console.log(e))			     
-		}
-	});
+    const ifps = new ElementPhysicalInterfaces();
+    return new Controller({
+        resource:ifps,
+        postRender:function(){
+            const ifps = this.getViewModel();
+            const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
+            metrics.onNotFound = (e) => {console.log(e)}
+            metrics.load(ifps)
+                   .then(response => {
+                            const ifps = {};
+                            
+                            const scale = function(value){
+                                let scale = '';
+                                let factor = 1000;
+                                if(value > factor){
+                                    value = value / factor;
+                                    scale = 'k'
+                                    if(value > factor){
+                                        value = value / factor;
+                                        scale = 'M';
+                                        if(value > factor){
+                                            value = value / factor;
+                                            scale = 'G';
+                                            if(value > factor){
+                                                value = value / factor;
+                                                scale = 'T';
+                                                if(value > factor){
+                                                    value = value / factor;
+                                                    scale = 'P';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                return {'value':value,'unit':scale+'bps'};
+                            }
+                            
+                            if(response && response.metric && response.metric.metric_values){
+                                response.metric.metric_values.forEach(function(metric){
+                                    let ifp = ifps[metric.labels.ifp_name];
+                                    if(!ifp){
+                                        ifp = {};
+                                        ifps[metric.labels.ifp_name] = ifp;
+                                    }
+                                    ifp[metric.labels.direction]=parseFloat(metric.value).toFixed(3);
+                                });
+                                for( const ifp in ifps ){
+                                    const rate = document.getElementById(ifp);
+                                    if(rate){
+                                        const inRate = scale(parseInt(ifps[ifp]["in"]));
+                                        const outRate = scale(parseInt(ifps[ifp]["out"]));
+                                        rate.innerHTML=`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`;
+                                    }
+                                }
+                            }
+                   })
+                   .catch(e => console.log(e))                 
+        }
+    });
 };
 
 const elementIfpController = function(){
