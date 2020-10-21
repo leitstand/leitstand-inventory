@@ -18,6 +18,8 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 
+import java.util.Date;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -74,6 +76,41 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 			return (B) this;
 		}
 		
+		/**
+		 * Sets the administrative state of this element.
+		 * @param administrativeState the administrative state
+		 * @return a reference to this builder to continue with object creation
+		 */
+		public B withAdministrativeState(AdministrativeState administrativeState) {
+		    assertNotInvalidated(getClass(),object);
+		    ((BaseElementEnvelope)object).administrativeState = administrativeState;
+		    return (B) this;
+		}
+		
+	    /**
+         * Sets the operational state of this element.
+         * @param operationalState the operational state
+         * @return a reference to this builder to continue with object creation
+         */
+        public B withOperationalState(OperationalState operationalState) {
+            assertNotInvalidated(getClass(),object);
+            ((BaseElementEnvelope)object).operationalState = operationalState;
+            return (B) this;
+        }
+        
+        /**
+         * Sets the date when this element has been last modified.
+         * @param administrativeState the administrative state
+         * @return a reference to this builder to continue with object creation
+         */
+        public B withDateModified(Date dateModified) {
+            assertNotInvalidated(getClass(),object);
+            if(dateModified != null) {
+                ((BaseElementEnvelope)object).dateModified = new Date(dateModified.getTime());
+            }
+            return (B) this;
+        }
+		
 	}
 	
 	
@@ -88,7 +125,18 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 	private ElementAlias elementAlias;
 	
 	@Valid
+    @NotNull(message="{element_role.required}")
 	private ElementRoleName elementRole;
+	
+	@Valid
+	@NotNull(message="{administrative_state.required}")
+	private AdministrativeState administrativeState;
+
+	@Valid
+    @NotNull(message="{operational_state.required}")
+	private OperationalState operationalState;
+
+	private Date dateModified; 
 
 	
 	public ElementId getElementId() {
@@ -106,5 +154,17 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 	public ElementAlias getElementAlias() {
 		return elementAlias;
 	}
+	
+	public AdministrativeState getAdministrativeState() {
+        return administrativeState;
+    }
+	
+	public OperationalState getOperationalState() {
+        return operationalState;
+    }
+	
+	public Date getDateModified() {
+        return dateModified;
+    }
 	
 }

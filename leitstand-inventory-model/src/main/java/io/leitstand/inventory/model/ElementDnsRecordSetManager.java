@@ -110,6 +110,9 @@ public class ElementDnsRecordSetManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withDnsRecordSets(records)
 			   .build();
 	}
@@ -132,6 +135,9 @@ public class ElementDnsRecordSetManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withDnsRecordSet(dnsRescordSet(record)).build();	
 
 	}
@@ -160,7 +166,11 @@ public class ElementDnsRecordSetManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
-			   .withDnsRecordSet(dnsRescordSet(record)).build();
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
+			   .withDnsRecordSet(dnsRescordSet(record))
+			   .build();
 		
 	}
 	
@@ -304,6 +314,9 @@ public class ElementDnsRecordSetManager {
 			   .withElementId(element.getElementId())
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withDnsRecordSetUpdate(update)
 			   .build();
 	}

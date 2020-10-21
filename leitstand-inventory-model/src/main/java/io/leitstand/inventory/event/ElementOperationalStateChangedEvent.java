@@ -32,25 +32,16 @@ public class ElementOperationalStateChangedEvent extends ElementEvent {
 		
 		public Builder withPreviousState(OperationalState previousState) {
 			assertNotInvalidated(getClass(), object);
-			object.previousOpertionalState = previousState;
+			object.previousOperationalState = previousState;
 			return this;
 		}
 		
-		public Builder withOperationalState(OperationalState operationalState) {
-			assertNotInvalidated(getClass(), object);
-			object.operationalState = operationalState;
-			return this;
-		}
 	}
 	
-	private OperationalState operationalState;
-	private OperationalState previousOpertionalState;
+	private OperationalState previousOperationalState;
 
-	public OperationalState getPreviousState() {
-		return previousOpertionalState;
+	public OperationalState getPreviousOperationalState() {
+		return previousOperationalState;
 	}
-	
-	public OperationalState getOperationalState() {
-		return operationalState;
-	}
+
 }

@@ -93,6 +93,9 @@ public class DefaultRetireElementService implements RetireElementService {
 				  .withElementId(element.getElementId())
 				  .withElementName(element.getElementName())
 				  .withElementRole(element.getElementRoleName())
+				  .withAdministrativeState(element.getAdministrativeState())
+				  .withOperationalState(element.getOperationalState())
+				  .withDateModified(element.getDateModified())
 				  .build());
 	}
 

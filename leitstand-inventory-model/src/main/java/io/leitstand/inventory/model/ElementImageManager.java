@@ -33,7 +33,7 @@ import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
 import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
-import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalleImages;
+import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalledImages;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
@@ -141,13 +141,16 @@ public class ElementImageManager {
 						  .build());
 		}	
 		
-		 return newElementInstalleImages()
+		 return newElementInstalledImages()
 				.withGroupId(group.getGroupId())
 				.withGroupName(group.getGroupName())
 				.withGroupType(group.getGroupType())
 				.withElementId(element.getElementId())
 				.withElementName(element.getElementName())
 				.withElementAlias(element.getElementAlias())
+				.withAdministrativeState(element.getAdministrativeState())
+				.withOperationalState(element.getOperationalState())
+				.withDateModified(element.getDateModified())
 				.withInstalledImages(installed)
 				.build(); 
 		
@@ -204,6 +207,8 @@ public class ElementImageManager {
 			   .withElementName(element.getElementName())
 			   .withElementAlias(element.getElementAlias())
 			   .withElementRole(element.getElementRoleName())
+			   .withAdministrativeState(element.getAdministrativeState())
+			   .withOperationalState(element.getOperationalState())
 			   .withImage(newElementInstalledImageData()
 					   	  .withImageId(image.getImageId())
 					   	  .withZtp(elementImage.isZtp())

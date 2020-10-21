@@ -135,7 +135,7 @@ public class ElementSettingsManagerTest {
 		assertEquals(GROUP_NAME,event.getGroupName());
 		assertEquals(ELEMENT_ROLE,event.getElementRole());
 		assertEquals(UP,event.getOperationalState());
-		assertEquals(DOWN,event.getPreviousState());
+		assertEquals(DOWN,event.getPreviousOperationalState());
 
 	}
 	

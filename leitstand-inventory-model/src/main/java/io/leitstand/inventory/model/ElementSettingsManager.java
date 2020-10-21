@@ -69,6 +69,7 @@ public class ElementSettingsManager {
 			   .withElementRole(element.getElementRoleName())
 			   .withAdministrativeState(element.getAdministrativeState())
 			   .withOperationalState(element.getOperationalState())
+			   .withDateModified(element.getDateModified())
 			   .withPlane(element.getElementRole().getPlane())
 			   .withSerialNumber(element.getSerialNumber())
 			   .withAssetId(element.getAssetId())
@@ -198,6 +199,9 @@ public class ElementSettingsManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withPreviousElementRole(oldRole)
 					   .build());
 		}
@@ -221,6 +225,9 @@ public class ElementSettingsManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withPreviousName(previousElementName)
 					   .build());
 		}
@@ -240,8 +247,10 @@ public class ElementSettingsManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
-					   .withPreviousState(previousOperationalState)
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withDateModified(element.getDateModified())
 					   .withOperationalState(element.getOperationalState())
+					   .withPreviousState(previousOperationalState)
 					   .build());
 		}
 		ElementGroup current = element.getGroup();
@@ -264,6 +273,9 @@ public class ElementSettingsManager {
 					   .withElementName(element.getElementName())
 					   .withElementAlias(element.getElementAlias())
 					   .withElementRole(element.getElementRoleName())
+					   .withAdministrativeState(element.getAdministrativeState())
+					   .withOperationalState(element.getOperationalState())
+					   .withDateModified(element.getDateModified())
 					   .withFrom(groupSettings(current))
 					   .withTo(groupSettings(expected))
 					   .build());

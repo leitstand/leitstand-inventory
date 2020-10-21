@@ -286,5 +286,9 @@ public class Element_PhysicalInterface implements Serializable{
 	public String getCategory() {
 		return category;
 	}
+	
+	public Date getDateModified(){
+	    return new Date(tsModified.getTime());
+	}
 
 }

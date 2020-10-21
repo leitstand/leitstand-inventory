@@ -92,6 +92,9 @@ public class DefaultElementSettingsService implements ElementSettingsService {
 					   .withElementName(settings.getElementName())
 					   .withElementAlias(settings.getElementAlias())
 					   .withElementRole(settings.getElementRole())
+					   .withAdministrativeState(settings.getAdministrativeState())
+					   .withOperationalState(settings.getOperationalState())
+					   .withDateModified(settings.getDateModified())
 					   .build());
 	}
 	

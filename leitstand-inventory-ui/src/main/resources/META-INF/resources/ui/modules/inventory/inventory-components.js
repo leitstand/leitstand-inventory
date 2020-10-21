@@ -31,6 +31,14 @@ class PlatformSelector extends Select {
 				 				});
 	}
 	
+	   
+    nooptions(){
+        this.innerHTML=`<ui-blankslate>
+                            <ui-title>No platforms found</ui-title>
+                            <ui-note>Please <a href="/ui/views/inventory/platform/platforms.html" title="Manage platforms">add a platform</a> before you continue adding a first element.</ui-note>
+                        </ui-blankslate>`;
+    }
+	
 }
 customElements.define("element-platform",PlatformSelector);
 
@@ -44,6 +52,13 @@ class ElementRoleSelector extends Select {
 				 							return {"value":role.role_name,"label":role.display_name}
 				 					});
 				 			});
+	}
+	
+	nooptions(){
+	    this.innerHTML=`<ui-blankslate>
+	                        <ui-title>No roles found</ui-title>
+	                        <ui-note>Please <a href="/ui/views/inventory/role/roles.html" title="Manage roles">add a role</a> before you continue adding a first element.</ui-note>
+	                    </ui-blankslate>`;
 	}
 
 }
@@ -66,6 +81,27 @@ class InventoryPanel extends UIElement {
 }
 
 customElements.define("inventory-panel",InventoryPanel);
+
+
+class AdministrativeState extends UIElement {
+    renderDom(){
+        const state = this.viewModel.getProperty("administrative_state");
+        this.innerHTML=`<span class="right inventory administrative ${state}">${state}</span>`;
+    }
+}
+customElements.define("inventory-administrative-state",AdministrativeState);
+
+class OperationalState extends UIElement {
+    renderDom(){
+        const ops = this.viewModel.getProperty("operational_state");
+        const adm = this.viewModel.getProperty("administrative_state");
+        if(ops && adm){
+            this.innerHTML=`<span class="right ${ops}">${ops}</span>`;
+        }
+    }
+}
+customElements.define("inventory-operational-state",OperationalState);
+
 
 
 class FileUpload extends Control {

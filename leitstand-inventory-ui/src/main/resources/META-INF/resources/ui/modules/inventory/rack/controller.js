@@ -16,6 +16,7 @@
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Select,Control,UIElement} from '/ui/js/ui-components.js';
 import {Racks,Rack,RackItem,Elements,Facilities,Element} from '../inventory.js';
+import '../inventory-components.js';
 
 class RackPosition extends Select {
 	constructor(){

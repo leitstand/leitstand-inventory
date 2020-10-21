@@ -18,6 +18,7 @@
 import {Menu,Controller} from '/ui/js/ui.js';
 import {UIElement} from '/ui/js/ui-components.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
+import '../inventory-components.js';
 
 class ToolList extends UIElement{
 	constructor(){

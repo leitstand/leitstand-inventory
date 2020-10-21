@@ -54,9 +54,9 @@
 					<th class="text">Element</th>
 					<th class="text">Alias</th>
 					<th class="tiny">Adm.-State</th>
-					<th class="text">Tags</th>
+					<th class="tiny">Op.-State</th>
 					<!-- {{#render_description}} -->	
-					<th class="text">Description</th>
+					<th class="text">Tags / Description</th>
 					<!-- {{/render_description}} -->	
 					<!-- {{#render_serial}} -->	
 					<th class="text">Serial Number</th>
@@ -75,14 +75,14 @@
 					<td class="text"><a href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show {{group_type}} details">{{group_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_alias}}</a></td>
-					<td class=><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+					<td><span class="{{operational_state}}">{{operational_state}}</span>
 					<td class="text"><ol class="tags">
+					<!-- {{#render_description}} -->	
 					<!-- {{#tags}}  -->
 						<li>{{.}}</li>
 					<!-- {{/tags}} -->
-					</ol></td>
-					<!-- {{#render_description}} -->	
-					<td class="text">{{description}}</td>
+					</ol>{{description}}</td>
 					<!-- {{/render_description}} -->	
 					<!-- {{#render_serial}} -->	
 					<td class="text">{{serial_number}}</td>

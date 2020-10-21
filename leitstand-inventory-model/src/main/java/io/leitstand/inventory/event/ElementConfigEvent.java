@@ -66,9 +66,9 @@ public abstract class ElementConfigEvent extends ElementEvent {
 			return (B) this;
 		}
 		
-		public B withDateModified(Date dateModified) {
+		public B withConfigDate(Date dateConfig) {
 			assertNotInvalidated(getClass(), object);
-			((ElementConfigEvent)object).dateModified = new Date(dateModified.getTime());
+			((ElementConfigEvent)object).dateConfig = new Date(dateConfig.getTime());
 			return (B) this;
 		}
 		
@@ -82,7 +82,7 @@ public abstract class ElementConfigEvent extends ElementEvent {
 	private ConfigurationState configState;
 	private String contentType;
 	@JsonbTypeAdapter(IsoDateAdapter.class)
-	private Date dateModified;
+	private Date dateConfig;
 	private UserName creator;
 	
 	
@@ -102,11 +102,11 @@ public abstract class ElementConfigEvent extends ElementEvent {
 		return contentType;
 	}
 	
-	public Date getDateModified() {
-		if(dateModified == null) {
+	public Date getDateConfig() {
+		if(dateConfig == null) {
 			return null;
 		}
-		return new Date(dateModified.getTime());
+		return new Date(dateConfig.getTime());
 	}
 	
 	public UserName getCreator() {

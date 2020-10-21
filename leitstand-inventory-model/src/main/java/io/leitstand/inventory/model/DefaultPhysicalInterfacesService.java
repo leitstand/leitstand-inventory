@@ -19,11 +19,14 @@ import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.inventory.jpa.AdministrativeStateConverter.toAdministrativeState;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
+import static io.leitstand.inventory.service.ElementAlias.elementAlias;
 import static io.leitstand.inventory.service.ElementGroupId.groupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.elementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.InterfaceName.interfaceName;
 import static io.leitstand.inventory.service.PhysicalInterfaceData.newPhysicalInterfaceData;
 
 import java.util.List;
@@ -33,55 +36,55 @@ import javax.inject.Inject;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.db.StatementPreparator;
 import io.leitstand.commons.model.Service;
-import io.leitstand.inventory.service.ElementAlias;
-import io.leitstand.inventory.service.ElementRoleName;
-import io.leitstand.inventory.service.InterfaceName;
 import io.leitstand.inventory.service.PhysicalInterfaceData;
 import io.leitstand.inventory.service.PhysicalInterfaceService;
 
 @Service
 public class DefaultPhysicalInterfacesService implements PhysicalInterfaceService {
  
-	@Inject
-	@Inventory
-	private DatabaseService db;
-	
-	@Override
-	public List<PhysicalInterfaceData> findPhysicalInterfaces(String filter) {
-		
-		return db.executeQuery(filterQuery(filter), 
-						rs -> newPhysicalInterfaceData()
-							  .withGroupId(groupId(rs.getString(1)))
-							  .withGroupName(groupName(rs.getString(2)))
-							  .withGroupType(groupType(rs.getString(3)))
-							  .withElementId(elementId(rs.getString(4)))
-							  .withElementName(elementName(rs.getString(5)))
-							  .withElementAlias(ElementAlias.elementAlias(rs.getString(6)))
-							  .withElementRole(ElementRoleName.valueOf(rs.getString(7)))
-							  .withIfpName(InterfaceName.valueOf(rs.getString(8)))
-							  .withIfpAlias(rs.getString(9))
-							  .withOperationalState(toOperationalState(rs.getString(10)))
-							  .withAdministrativeState(toAdministrativeState(rs.getString(11)))
-							  .build());
-	
-	}
+    @Inject
+    @Inventory
+    private DatabaseService db;
+    
+    @Override
+    public List<PhysicalInterfaceData> findPhysicalInterfaces(String filter) {
+        
+        return db.executeQuery(filterQuery(filter), 
+                        rs -> newPhysicalInterfaceData()
+                              .withGroupId(groupId(rs.getString(1)))
+                              .withGroupName(groupName(rs.getString(2)))
+                              .withGroupType(groupType(rs.getString(3)))
+                              .withElementId(elementId(rs.getString(4)))
+                              .withElementName(elementName(rs.getString(5)))
+                              .withElementAlias(elementAlias(rs.getString(6)))
+                              .withElementRole(elementRoleName(rs.getString(7)))
+                              .withAdministrativeState(toAdministrativeState(rs.getString(8)))
+                              .withOperationalState(toOperationalState(rs.getString(9)))
+                              .withDateModified(rs.getTimestamp(10))
+                              .withIfpName(interfaceName(rs.getString(11)))
+                              .withIfpAlias(rs.getString(12))
+                              .withIfpOperationalState(toOperationalState(rs.getString(13)))
+                              .withIfpAdministrativeState(toAdministrativeState(rs.getString(14)))
+                              .build());
+    
+    }
 
-	private StatementPreparator filterQuery(String filter) {
-		String sql = "SELECT g.uuid,g.name,g.type,e.uuid,e.name,e.alias,r.name,ifp.name,ifp.alias,ifp.opstate,ifp.admstate "+
-				     "FROM inventory.element_ifp ifp "+
-				     "JOIN inventory.element e "+
-				     "ON ifp.element_id = e.id "+
-				     "JOIN inventory.elementgroup g "+
-				     "ON e.elementgroup_id = g.id "+
-				     "JOIN inventory.elementrole r "+
-				     "ON e.elementrole_id = r.id ";
-		
-		if(isEmptyString(filter)) {
-			return prepare(sql);
-		}
-		
-		return prepare( sql + "WHERE ifp.alias ~ ?",
-						filter);
-	}
+    private StatementPreparator filterQuery(String filter) {
+        String sql = "SELECT g.uuid,g.name,g.type,e.uuid,e.name,e.alias,r.name,e.admstate,e.opstate,e.tsmodified,ifp.name,ifp.alias,ifp.opstate,ifp.admstate "+
+                     "FROM inventory.element_ifp ifp "+
+                     "JOIN inventory.element e "+
+                     "ON ifp.element_id = e.id "+
+                     "JOIN inventory.elementgroup g "+
+                     "ON e.elementgroup_id = g.id "+
+                     "JOIN inventory.elementrole r "+
+                     "ON e.elementrole_id = r.id ";
+        
+        if(isEmptyString(filter)) {
+            return prepare(sql);
+        }
+        
+        return prepare( sql + "WHERE ifp.alias ~ ?",
+                        filter);
+    }
 
 }

@@ -108,6 +108,8 @@ public class ElementManager {
 									.withElementAlias(element.getElementAlias())
 									.withElementRole(element.getElementRoleName())
 									.withAdministrativeState(element.getAdministrativeState())
+									.withOperationalState(element.getOperationalState())
+									.withDateModified(element.getDateModified())
 									.build();
 
 		sink.fire(event);
@@ -224,8 +226,10 @@ public class ElementManager {
 					  .withElementName(element.getElementName())
 					  .withElementAlias(element.getElementAlias())
 					  .withElementRole(element.getElementRoleName())
+					  .withAdministrativeState(element.getAdministrativeState())
 					  .withOperationalState(state)
 					  .withPreviousState(old)
+					  .withDateModified(element.getDateModified())
 					  .build());
 		}
 	}
