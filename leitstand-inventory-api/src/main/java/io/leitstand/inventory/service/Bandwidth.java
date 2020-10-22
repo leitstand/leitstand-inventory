@@ -16,11 +16,14 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static java.lang.Float.parseFloat;
+import static java.lang.Math.round;
 import static java.lang.String.format;
+import static java.util.Locale.ENGLISH;
+import static java.util.regex.Pattern.compile;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +32,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Enumerated;
 
 import io.leitstand.commons.model.CompositeValue;
-import io.leitstand.commons.model.StringUtil;
 import io.leitstand.inventory.jsonb.BandwidthAdapter;
 
 /**
@@ -42,10 +44,10 @@ import io.leitstand.inventory.jsonb.BandwidthAdapter;
 @JsonbTypeAdapter(BandwidthAdapter.class)
 public class Bandwidth extends CompositeValue implements Serializable{
 
-	private static final Pattern BANDWITH_PATTERN = Pattern.compile("^(\\d+[\\.]\\d{3}) ([KMGT]bps)$");
+	private static final Pattern BANDWITH_PATTERN = compile("^(\\d+(?:\\.\\d{3})?)\\s?([KMGT]bps)$");
 	
 	public static Bandwidth bandwidth(float value, String unit) {
-	    if(StringUtil.isEmptyString(unit)) {
+	    if(isEmptyString(unit)) {
 	        return null;
 	    }
 	    return new Bandwidth(value, Unit.valueOf(unit));
@@ -96,7 +98,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 		 * @return the given bandwidth converted to bits per second.
 		 */
 		public long toBps(double value) {
-			return Math.round(value * scale);
+			return round(value * scale);
 		}
 
 		/**
@@ -172,7 +174,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	public Bandwidth(String bandwidth){
 		Matcher matcher = BANDWITH_PATTERN.matcher(bandwidth);
 		matcher.matches();
-		value = Float.parseFloat(matcher.group(1));
+		value = parseFloat(matcher.group(1));
 		unit  = Unit.valueOf(matcher.group(2).toUpperCase());
 	}
 	
@@ -204,7 +206,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	 */
 	@Override
 	public String toString() {
-		return format(Locale.ENGLISH,"%.3f %s",value,unit.getLabel());
+		return format(ENGLISH,"%.3f %s",value,unit.getLabel());
 	}
 }
 
