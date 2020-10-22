@@ -197,6 +197,7 @@ public class ElementPhysicalInterfaceManager {
 		ifp.setContainerInterface(ifc);
 		ifp.setIfpAlias(submission.getIfpAlias());
 		ifp.setCategory(submission.getCategory());
+		ifp.setBandwidth(submission.getBandwidth());
 		if(submission.getNeighbor() != null ) {
 			Element neighborElement = elements.tryFetchElement(submission.getNeighbor().getElementName());
 			if(neighborElement != null) {
@@ -213,6 +214,7 @@ public class ElementPhysicalInterfaceManager {
 									element.getElementName(),
 									submission.getNeighbor().getElementName()));
 				
+				ifp.removeNeighbor();
 				messages.add(createMessage(IVT0355W_ELEMENT_IFP_NEIGHBOR_NOT_FOUND,
 										   element.getElementName(),
 										   submission.getIfpName(),

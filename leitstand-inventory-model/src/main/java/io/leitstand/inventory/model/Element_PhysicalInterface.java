@@ -131,7 +131,7 @@ public class Element_PhysicalInterface implements Serializable{
 		@AttributeOverride(name="value", column=@Column(name="bwvalue")),
 		@AttributeOverride(name="unit", column=@Column(name="bwunit"))
 	})
-	private Bandwidth type;
+	private Bandwidth bandwidth;
 	
 	@Convert(converter=OperationalStateConverter.class)
 	@Column(name="opstate")
@@ -178,10 +178,13 @@ public class Element_PhysicalInterface implements Serializable{
 		//JPA
 	}
 	
-	public Element_PhysicalInterface(Element element, InterfaceName name, Bandwidth type, Element_ContainerInterface ifc){
+	public Element_PhysicalInterface(Element element, 
+	                                 InterfaceName name, 
+	                                 Bandwidth bandwidth, 
+	                                 Element_ContainerInterface ifc){
 		this.element = element;
 		this.name  = name;
-		this.type    = type;
+		this.bandwidth    = bandwidth;
 		this.ifc = ifc;
 		long now = System.currentTimeMillis();
 		this.tsCreated = new Date(now);
@@ -203,7 +206,7 @@ public class Element_PhysicalInterface implements Serializable{
 	}
 	
 	public Bandwidth getBandwidth() {
-		return type;
+		return bandwidth;
 	}
 	
 	public void setMacAddress(MACAddress mac) {
@@ -290,5 +293,9 @@ public class Element_PhysicalInterface implements Serializable{
 	public Date getDateModified(){
 	    return new Date(tsModified.getTime());
 	}
+
+    public void setBandwidth(Bandwidth bandwidth) {
+        this.bandwidth = bandwidth;
+    }
 
 }

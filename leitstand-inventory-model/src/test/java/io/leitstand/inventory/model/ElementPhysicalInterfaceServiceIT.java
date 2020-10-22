@@ -58,6 +58,7 @@ import io.leitstand.inventory.event.ElementPhysicalInterfaceEvent;
 import io.leitstand.inventory.event.ElementPhysicalInterfaceRemovedEvent;
 import io.leitstand.inventory.event.ElementPhysicalInterfaceStoredEvent;
 import io.leitstand.inventory.service.AdministrativeState;
+import io.leitstand.inventory.service.Bandwidth;
 import io.leitstand.inventory.service.ElementPhysicalInterface;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceService;
@@ -344,7 +345,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 	
 	
 	@Test
-	public void update_physical_interface_operational_state() {
+	public void update_physical_interface_bandwidth() {
 		ElementPhysicalInterfaceSubmission submission = newPhysicalInterfaceSubmission()
 														.withAdministrativeState(AdministrativeState.UP)
 														.withBandwidth(bandwidth("100.000 Mbps"))
@@ -367,13 +368,63 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 		});
 
 		transaction(() -> {
-			service.updatePhysicalInterfaceOperationalState(element.getElementName(), submission.getIfpName(),OperationalState.DOWN);
+		     ElementPhysicalInterfaceSubmission update = newPhysicalInterfaceSubmission()
+                                                         .withAdministrativeState(AdministrativeState.UP)
+                                                         .withBandwidth(bandwidth("1Gbps"))
+                                                         .withIfpAlias("IFP alias")
+                                                         .withCategory("IFP category")
+                                                         .withIfpName(interfaceName("ifp-0/0/5"))
+                                                         .withMacAddress(macAddress("00:11:22:33:44:55"))
+                                                         .withOperationalState(OperationalState.UP)
+                                                         .withNeighbor(newPhysicalInterfaceNeighbor()
+                                                                       .withElementId(neighbor.getElementId())
+                                                                       .withElementName(neighbor.getElementName())
+                                                                       .withInterfaceName(interfaceName("ifp-0/0/1")))
+                                                         .build();
+		    
+		     service.storePhysicalInterface(element.getElementName(), update);
+	         assertThat(eventCaptor.getValue(),is(ElementPhysicalInterfaceStoredEvent.class));
 		});
 		
 		transaction(() -> {
-			assertEquals(OperationalState.DOWN, service.getPhysicalInterface(element.getElementName(), submission.getIfpName()).getPhysicalInterface().getOperationalState());
+			assertEquals(bandwidth("1Gbps"), service.getPhysicalInterface(element.getElementName(), submission.getIfpName())
+			                                        .getPhysicalInterface()
+			                                        .getBandwidth());
 		});
 	}
+	
+	
+    @Test
+    public void update_physical_interface_operational_state() {
+        ElementPhysicalInterfaceSubmission submission = newPhysicalInterfaceSubmission()
+                                                        .withAdministrativeState(AdministrativeState.UP)
+                                                        .withBandwidth(bandwidth("100.000 Mbps"))
+                                                        .withIfpAlias("IFP alias")
+                                                        .withCategory("IFP category")
+                                                        .withIfpName(interfaceName("ifp-0/0/5"))
+                                                        .withMacAddress(macAddress("00:11:22:33:44:55"))
+                                                        .withOperationalState(OperationalState.UP)
+                                                        .withNeighbor(newPhysicalInterfaceNeighbor()
+                                                                      .withElementId(neighbor.getElementId())
+                                                                      .withElementName(neighbor.getElementName())
+                                                                      .withInterfaceName(interfaceName("ifp-0/0/1")))
+                                                        .build();
+        ArgumentCaptor<ElementPhysicalInterfaceEvent> eventCaptor = forClass(ElementPhysicalInterfaceEvent.class);
+        doNothing().when(event).fire(eventCaptor.capture());
+
+        transaction(()->{
+            service.storePhysicalInterface(element.getElementName(), submission);
+            assertThat(eventCaptor.getValue(),is(ElementPhysicalInterfaceStoredEvent.class));
+        });
+
+        transaction(() -> {
+            service.updatePhysicalInterfaceOperationalState(element.getElementName(), submission.getIfpName(),OperationalState.DOWN);
+        });
+        
+        transaction(() -> {
+            assertEquals(OperationalState.DOWN, service.getPhysicalInterface(element.getElementName(), submission.getIfpName()).getPhysicalInterface().getOperationalState());
+        });
+    }
 	
 	@Test
 	public void store_physical_interface_list() {
