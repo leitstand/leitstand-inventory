@@ -16,7 +16,12 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.AdministrativeState.UP;
+import static io.leitstand.inventory.service.Bandwidth.bandwidth;
+import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor.newPhysicalInterfaceNeighbor;
+import static io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission.newPhysicalInterfaceSubmission;
+import static io.leitstand.inventory.service.InterfaceName.interfaceName;
+import static io.leitstand.inventory.service.MACAddress.macAddress;
 import static io.leitstand.inventory.service.OperationalState.DOWN;
 import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0350E_ELEMENT_IFP_NOT_FOUND;
@@ -54,16 +59,17 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.event.ElementPhysicalInterfaceEvent;
+import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission;
 import io.leitstand.inventory.service.InterfaceName;
+import io.leitstand.inventory.service.OperationalState;
 @RunWith(MockitoJUnitRunner.class)
 public class ElementPhysicalInterfaceManagerTest {
 
-	private static final InterfaceName IFP_NAME = InterfaceName.valueOf("ifp-0/0/0");
-	private static final InterfaceName IFL_NAME = InterfaceName.valueOf("ifl-0/0/0/0/0");
+	private static final InterfaceName IFP_NAME = interfaceName("ifp-0/0/0");
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -94,7 +100,7 @@ public class ElementPhysicalInterfaceManagerTest {
 	private ElementPhysicalInterfaceManager manager = new ElementPhysicalInterfaceManager();
 	
 	@Test
-	public void cannot_remove_physical_interface_with_associated_logical_interfaces() {
+	public void cannot_remove_physical_interface_having_logical_interfaces() {
 		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(1L);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
 		when(ifp.getContainerInterface()).thenReturn(ifc);
@@ -106,7 +112,7 @@ public class ElementPhysicalInterfaceManagerTest {
 	}
 	
 	@Test
-	public void remove_physical_interface_without_associated_logical_interfaces() {
+	public void remove_physical_interface() {
 		when(repository.execute(any(Query.class))).thenReturn(ifp).thenReturn(0L);
 		when(ifp.getElement()).thenReturn(element);
 		Element_ContainerInterface ifc = mock(Element_ContainerInterface.class);
@@ -203,16 +209,14 @@ public class ElementPhysicalInterfaceManagerTest {
 	}
 	
 	@Test
-	public void remove_neighbor_of_existing_physical_interface() {
+	public void remove_neighbor_of_physical_interface() {
 		when(repository.execute(any(Query.class))).thenReturn(ifp);
 		manager.removePhysicalInterfaceNeighbor(element, IFP_NAME);
 		verify(ifp).removeNeighbor();
 	}
 	
-
-	
 	@Test
-	public void store_new_pyhsical_interface_creates_container_interface() {
+	public void storing_new_pyhsical_interface_creates_container_interface() {
 		ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
 		doNothing().when(repository).add(captor.capture());
 		assertTrue(manager.storePhysicalInterface(element, mock(ElementPhysicalInterfaceSubmission.class)));
@@ -224,7 +228,7 @@ public class ElementPhysicalInterfaceManagerTest {
 	}
 	
 	@Test
-	public void update_existing_physical_interface_creates_container_interface() {
+	public void updating_physical_interface_creates_no_new_container_interface() {
 		Element_ContainerInterface  ifc = mock(Element_ContainerInterface.class);
 		when(repository.find(eq(Element_ContainerInterface.class),any(Element_InterfacePK.class))).thenReturn(ifc);
 		when(repository.execute(any(Query.class))).thenReturn(ifp);
@@ -234,5 +238,68 @@ public class ElementPhysicalInterfaceManagerTest {
 		verify(repository,never()).add(ifc);
 		verify(repository,never()).add(ifp);
 	}
+	
+	@Test
+	public void update_existing_interface_addresses_all_attributes_and_remove_neighbor() {
+	    Element_ContainerInterface  ifc = mock(Element_ContainerInterface.class);
+        when(repository.find(eq(Element_ContainerInterface.class),any(Element_InterfacePK.class))).thenReturn(ifc);
+        when(repository.execute(any(Query.class))).thenReturn(ifp);	    
+	    
+        ElementPhysicalInterfaceSubmission submission = newPhysicalInterfaceSubmission()
+                                                        .withAdministrativeState(AdministrativeState.UP)
+                                                        .withBandwidth(bandwidth("10 Gbps"))
+                                                        .withCategory("category")
+                                                        .withIfcName(interfaceName("ifc-0/0/0/1"))
+                                                        .withIfpAlias("alias")
+                                                        .withIfpName(interfaceName("ifp-0/0/1"))
+                                                        .withMacAddress(macAddress("00:11:22:33:44:55"))
+                                                        .withOperationalState(OperationalState.UP)
+                                                        .build();
+        
+        manager.storePhysicalInterface(element, submission);
 
+        verify(ifp).setAdministrativeState(AdministrativeState.UP);
+        verify(ifp).setCategory("category");
+        verify(ifp).setIfpAlias("alias");
+        verify(ifp).setMacAddress(macAddress("00:11:22:33:44:55"));
+        verify(ifp).setOperationalState(OperationalState.UP);
+	    verify(ifp).setContainerInterface(ifc);
+	    verify(ifp).setBandwidth(bandwidth("10 Gbps"));
+	    verify(ifp).removeNeighbor();
+	}
+	
+	@Test
+    public void update_existing_interface_addresses_all_attributes_and_neighbor() {
+        Element_ContainerInterface  ifc = mock(Element_ContainerInterface.class);
+        Element neighbor = mock(Element.class);
+        when(repository.find(eq(Element_ContainerInterface.class),any(Element_InterfacePK.class))).thenReturn(ifc);
+        when(repository.execute(any(Query.class))).thenReturn(ifp);
+        when(elements.tryFetchElement(elementName("neighbor"))).thenReturn(neighbor);     
+        
+        ElementPhysicalInterfaceSubmission submission = newPhysicalInterfaceSubmission()
+                                                        .withAdministrativeState(AdministrativeState.UP)
+                                                        .withBandwidth(bandwidth("10 Gbps"))
+                                                        .withCategory("category")
+                                                        .withIfcName(interfaceName("ifc-0/0/0/1"))
+                                                        .withIfpAlias("alias")
+                                                        .withIfpName(interfaceName("ifp-0/0/1"))
+                                                        .withMacAddress(macAddress("00:11:22:33:44:55"))
+                                                        .withOperationalState(OperationalState.UP)
+                                                        .withNeighbor(newPhysicalInterfaceNeighbor()
+                                                                      .withElementName(elementName("neighbor"))
+                                                                      .withInterfaceName(interfaceName("ifp-0/0/2")))
+                                                        .build();
+        
+        manager.storePhysicalInterface(element, submission);
+
+        verify(ifp).setAdministrativeState(AdministrativeState.UP);
+        verify(ifp).setCategory("category");
+        verify(ifp).setIfpAlias("alias");
+        verify(ifp).setMacAddress(macAddress("00:11:22:33:44:55"));
+        verify(ifp).setOperationalState(OperationalState.UP);
+        verify(ifp).setContainerInterface(ifc);
+        verify(ifp).setBandwidth(bandwidth("10Gbps"));
+        verify(ifp).linkTo(neighbor, interfaceName("ifp-0/0/2"));
+    }
+	
 }
