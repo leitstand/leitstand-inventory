@@ -432,8 +432,8 @@ public class ElementConfigManager {
 	private Element_Config findConfig(Element element, ElementConfigId configId) {
 		Element_Config config = repository.execute(findElementConfig(configId));
 		if(config == null) {
-			LOG.fine(() -> format("%s: %s configuration for element %s not found(Date modified: %s)",
-								  IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,
+			LOG.fine(() -> format("%s: Configuration %s for element %s not found",
+								  IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND.getReasonCode(),
 								  configId,
 								  element.getElementName()));
 			
