@@ -24,6 +24,7 @@ import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementPhysicalInterface;
+import io.leitstand.inventory.service.ElementPhysicalInterfaceFilter;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceService;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission;
@@ -63,15 +64,15 @@ public class DefaultElementPhysicalInterfaceService implements ElementPhysicalIn
 	}
 
 	@Override
-	public ElementPhysicalInterfaces getPhysicalInterfaces(ElementId elementId) {
+	public ElementPhysicalInterfaces getPhysicalInterfaces(ElementId elementId, ElementPhysicalInterfaceFilter filter) {
 		Element element = elements.fetchElement(elementId);
-		return inventory.getPhysicalInterfaces(element);
+		return inventory.getPhysicalInterfaces(element,filter);
 	}
 
 	@Override
-	public ElementPhysicalInterfaces getPhysicalInterfaces(ElementName elementName) {
+	public ElementPhysicalInterfaces getPhysicalInterfaces(ElementName elementName, ElementPhysicalInterfaceFilter filter) {
 		Element element = elements.fetchElement(elementName);
-		return inventory.getPhysicalInterfaces(element);
+		return inventory.getPhysicalInterfaces(element,filter);
 	}
 
 	@Override

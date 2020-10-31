@@ -24,6 +24,36 @@
 	<ui-title>Physical interfaces of {{element_name}}<inventory-operational-state></inventory-operational-state></ui-title>
 	<ui-subtitle>Physical interfaces of element {{element_name}}{{#element_alias}}({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<ui-form>
+<ui-composition>
+<ui-item>
+	<ui-select name="administrative_state" autofocus>
+	    <ui-label>Adm.-State</ui-label>
+	    <ui-options>
+	        <ui-option value="">Any</ui-option>
+	        <ui-option value="UP">UP</ui-option>
+	        <ui-option value="DOWN">DOWN</ui-option>    
+	    </ui-options>
+	</ui-select>
+</ui-item>
+<ui-item>
+	<ui-select name="operational_state" >
+	    <ui-label>Link-State</ui-label>
+	    <ui-options>
+	        <ui-option value="">Any</ui-option>
+	        <ui-option value="UP">UP</ui-option>
+	        <ui-option value="DOWN">DOWN</ui-option>    
+	    </ui-options>
+	</ui-select>
+</ui-item>
+<ui-item>
+    <ui-filter name="filter">
+       <ui-label>Filter</ui-label>
+       <ui-note>Filter by interface name or interface alias.</ui-note>
+    </ui-filter>
+</ui-item>
+</ui-composition>
+</ui-form>
 <!-- {{#physical_interfaces.length}} -->
 <ui-group>
 <ui-label>Physcial Interfaces</ui-label>
@@ -64,6 +94,7 @@
 <ui-note class="right">{{physical_interfaces.length}} physical interfaces found.</ui-note>
 </ui-group>
 <!-- {{/physical_interfaces.length}} -->
+<div class="clearfix"></div>
 <!-- {{^physical_interfaces}} -->
 <ui-blankslate>
 <ui-title>No physical interfaces found</ui-title>

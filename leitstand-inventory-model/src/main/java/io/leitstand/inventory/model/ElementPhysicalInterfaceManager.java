@@ -53,6 +53,7 @@ import io.leitstand.inventory.event.ElementPhysicalInterfaceEvent;
 import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementPhysicalInterface;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceData;
+import io.leitstand.inventory.service.ElementPhysicalInterfaceFilter;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission;
 import io.leitstand.inventory.service.ElementPhysicalInterfaces;
@@ -128,10 +129,12 @@ public class ElementPhysicalInterfaceManager {
 			   .build();
 	}
 	
-	public ElementPhysicalInterfaces getPhysicalInterfaces(Element element){
+	public ElementPhysicalInterfaces getPhysicalInterfaces(Element element, ElementPhysicalInterfaceFilter filter){
 		List<ElementPhysicalInterfaceData> ifps = new LinkedList<>();
+		ElementPhysicalInterfaceMatcher matcher = new ElementPhysicalInterfaceMatcher(filter);
 		for(Element_PhysicalInterface ifp : repository.execute(findIfps(element))){
-			ifps.add(newPhysicalInterfaceData()
+		    if(matcher.accept(ifp)) {
+		    ifps.add(newPhysicalInterfaceData()
 					 .withIfpName(ifp.getIfpName())
 					 .withIfpAlias(ifp.getIfpAlias())
 					 .withCategory(ifp.getCategory())
@@ -141,8 +144,11 @@ public class ElementPhysicalInterfaceManager {
 					 .withOperationalState(ifp.getOperationalState())
 					 .withNeighbor(ifp.getNeighbor())
 					 .build());
+		    }
 		}
-		ifps.sort((a,b)->a.getIfpName().compareTo(b.getIfpName()));
+		
+		ifps.sort((a,b) -> a.getIfpName().compareTo(b.getIfpName()));
+		
 		return newPhysicalInterfaces()
 			   .withGroupId(element.getGroup().getGroupId())
 			   .withGroupName(element.getGroup().getGroupName())

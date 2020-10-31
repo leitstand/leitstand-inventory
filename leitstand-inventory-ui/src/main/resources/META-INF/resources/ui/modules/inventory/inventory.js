@@ -571,7 +571,7 @@ export class ElementPhysicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements/{{&element}}/physical_interfaces",
+		return this.json("/api/v1/elements/{{&element}}/physical_interfaces?ifp_name={{&ifp_name}}&ifp_alias={{&ifp_alias}}&operational_state={{operational_state}}&administrative_state={{administrative_state}}",
 				  		 this._cfg,
 				  		 params)
 				   .GET()

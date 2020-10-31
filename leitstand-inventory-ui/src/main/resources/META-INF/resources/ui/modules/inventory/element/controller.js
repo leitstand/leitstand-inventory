@@ -294,6 +294,38 @@ const elementIfpsController = function(){
     const ifps = new ElementPhysicalInterfaces();
     return new Controller({
         resource:ifps,
+        viewModel:function(ifps){
+            ifps.administrative_state=this.location.param("administrative_state");
+            ifps.operational_state=this.location.param("operational_state");            
+            ifps.filter=this.location.param("ifp_name");
+            return ifps;
+        },
+        buttons:{
+            "filter":function(){
+                const filter = {
+                    "administrative_state":this.input("administrative_state").value(),
+                    "operational_state":this.input("operational_state").value(),
+                    "ifp_name":this.input("filter").value(),
+                    "ifp_alias":this.input("filter").value()
+                };
+                this.reload(Object.assign(this.location.params,filter));
+            }
+
+        },
+        selections:{
+            "operational_state":function(opState){
+                const filter = {
+                        "operational_state":opState,
+                };
+                this.reload(Object.assign(this.location.params,filter));
+            },
+            "administrative_state":function(admState){
+                const filter = {
+                        "administrative_state":admState,
+                };
+                this.reload(Object.assign(this.location.params,filter));
+            }
+        },
         postRender:function(){
             const ifps = this.getViewModel();
             const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});

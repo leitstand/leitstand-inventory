@@ -25,6 +25,7 @@ import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
+import static io.leitstand.inventory.service.ElementPhysicalInterfaceFilter.ifpFilter;
 import static io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor.newPhysicalInterfaceNeighbor;
 import static io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission.newPhysicalInterfaceSubmission;
 import static io.leitstand.inventory.service.InterfaceName.interfaceName;
@@ -58,7 +59,6 @@ import io.leitstand.inventory.event.ElementPhysicalInterfaceEvent;
 import io.leitstand.inventory.event.ElementPhysicalInterfaceRemovedEvent;
 import io.leitstand.inventory.event.ElementPhysicalInterfaceStoredEvent;
 import io.leitstand.inventory.service.AdministrativeState;
-import io.leitstand.inventory.service.Bandwidth;
 import io.leitstand.inventory.service.ElementPhysicalInterface;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceNeighbor;
 import io.leitstand.inventory.service.ElementPhysicalInterfaceService;
@@ -454,7 +454,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 		});
 		
 		transaction(() -> {
-			ElementPhysicalInterfaces reloaded = service.getPhysicalInterfaces(element.getElementId());
+			ElementPhysicalInterfaces reloaded = service.getPhysicalInterfaces(element.getElementId(),ifpFilter());
 			assertThat(reloaded.getPhysicalInterfaces(), hasSizeOf(2));
 			assertEquals(AdministrativeState.UP,reloaded.getPhysicalInterfaces().get(0).getAdministrativeState());
 			assertEquals(OperationalState.UP,reloaded.getPhysicalInterfaces().get(0).getOperationalState());
@@ -532,7 +532,7 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 			});
 			
 			transaction(() -> {
-				ElementPhysicalInterfaces reloaded = service.getPhysicalInterfaces(element.getElementId());
+				ElementPhysicalInterfaces reloaded = service.getPhysicalInterfaces(element.getElementId(),ifpFilter());
 				assertThat(reloaded.getPhysicalInterfaces(), hasSizeOf(2));
 				assertEquals(AdministrativeState.UP,reloaded.getPhysicalInterfaces().get(0).getAdministrativeState());
 				assertEquals(OperationalState.UP,reloaded.getPhysicalInterfaces().get(0).getOperationalState());
