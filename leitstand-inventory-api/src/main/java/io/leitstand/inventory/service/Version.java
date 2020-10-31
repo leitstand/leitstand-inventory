@@ -44,7 +44,7 @@ import io.leitstand.inventory.jsonb.VersionAdapter;
 public class Version extends CompositeValue implements Comparable<Version>, Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	private static final String VERSION_PATTERN = "(\\d+)\\.(\\d+)\\.(\\d+)(?:\\-(\\p{Graph}+))?";
+	private static final String VERSION_PATTERN = "(\\d+)\\.(\\d+)\\.(\\d+)(?:[\\-\\.](\\p{Graph}+))?";
 	private static final Pattern PATTERN = compile(VERSION_PATTERN);
 	
 	public static Version version(String version) {

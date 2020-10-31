@@ -20,9 +20,18 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class VersionTest {
+    
+    @Test
+    public void create_non_semantic_version_without_prerelease(){
+        Version rev = Version.valueOf("1.2.3.4");
+        assertEquals(1,rev.getMajorLevel());
+        assertEquals(2,rev.getMinorLevel());
+        assertEquals(3,rev.getPatchLevel());
+        assertEquals("4",rev.getPreRelease());
+    }
 	
 	@Test
-	public void create_version_without_prerelease(){
+	public void create_semantic_version_without_prerelease(){
 		Version rev = Version.valueOf("1.2.3");
 		assertEquals(1,rev.getMajorLevel());
 		assertEquals(2,rev.getMinorLevel());
@@ -30,7 +39,7 @@ public class VersionTest {
 	}
 	
 	@Test
-	public void create_version_with_prerelease(){
+	public void create_semantic_version_with_prerelease(){
 		Version rev = Version.valueOf("1.2.3-alpha");
 		assertEquals(1,rev.getMajorLevel());
 		assertEquals(2,rev.getMinorLevel());
