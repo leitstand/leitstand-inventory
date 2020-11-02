@@ -29,10 +29,10 @@
 		<table id="elements" class="list">
 			<thead>
 				<tr>
-					<th class="extra-small text">Name</th>
-					<th class="extra-small text">Alias</th>
-					<th class="extra-small">Adm.-State</th>
-					<th class="extra-small">Op.-State</th>
+					<th class="text">Name</th>
+					<th class="text">Alias</th>
+					<th class="">Adm.-State</th>
+					<th class="">Op.-State</th>
 					<th class="text">Tags</th>
 					<th class="text">Description</th>
 				</tr>
@@ -40,12 +40,12 @@
 			<tbody>
 				<!-- {{#elements}}  -->
 				<tr>
-					<td class="extra-small text wrap"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</a></td>
-					<td class="extra-small text wrap">{{element_alias}}</td>
+					<td class="text wrap"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</a></td>
+					<td class="text wrap">{{element_alias}}</td>
 					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
 					<td><a href="/ui/views/inventory/element/element-events.html?group={{group_id}}&element={{element_id}}" class="{{operational_state}}" title="Show element log events">{{operational_state}}</a></td>
 					<td class="text wrap"><ol class="tags">{{#tags}}<li>{{.}}</li>{{/tags}}</ol></td>
-					<td class="text"> {{description}}</td>					
+					<td class="text wrap"> {{description}}</td>					
 				</tr>
 				<!-- {{/elements}}  -->
 			</tbody>
