@@ -373,8 +373,8 @@ const elementIfpsController = function(){
                                 for( const ifp in ifps ){
                                     const rate = document.getElementById(ifp);
                                     if(rate){
-                                        const inRate = scale(parseInt(ifps[ifp]["in"]));
-                                        const outRate = scale(parseInt(ifps[ifp]["out"]));
+                                        const inRate = scale(parseInt(ifps[ifp]["in"] ? ifps[ifp]["in"] : 0));
+                                        const outRate = scale(parseInt(ifps[ifp]["out"] ? ifps[ifp]["out"] : 0));
                                         rate.innerHTML=`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`;
                                     }
                                 }
