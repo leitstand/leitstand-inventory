@@ -36,53 +36,18 @@ class Diff extends UIElement {
 			source.content = read(source);
 			target.content = read(target);
 			
-			const diff = JsDiff.diffLines(source.content,
-										  target.content)
+			const diff = JsDiff.diffLines(target.content,
+										  source.content)
 					.map(part => `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">${part.value||''}</span>`)
 					.reduce((a,b)=>a+b);
 			this.innerHTML=`<div id="comparator">
-								<div style="display:block; margin-bottom: 5px;">
-									<div class="cell column one-half" >
-									<h3 style="color: black; background-color: #ffd6cc; padding-left: 1em;"><ui-date readonly>${source.date_modified}</ui-date></h3>
-										<ui-code>${source.content}</ui-code>
-									</div>
-									<div class="cell column one-half">
-										<h3 style="color: black; background-color: lime; padding-left: 1em;" ><ui-date readonly>${target.date_modified}</ui-date></h3>
-										<ui-code>${target.content}</ui-code>
-									</div>
-									<div style="clear:both"></div>
-								</div>
-								<div>
-									<div class="single-column cell" style="clear:both;">
-										<h3 style="color: black; background-color: #cedaed; padding-left: 1em; margin-top: 10px">Diff</h3>
-										<code id="diff" class="hl"><pre>${diff}</pre></code>
-									</div>
-								</div>
-							</div>
-							<p class="text-center note">
-								Click on a listing to enlarge.
-							</p>`;
+							    <div>
+							        <div style="background-color:lime; font-weight:bold; font-size: 1em; padding: 5px;">Added to ${target.config_name} at <ui-date readonly dateTime>${target.date_modified}</ui-date></div> 
+							        <div style="background-color: #ffd6cc; font-weight: bold; font-size: 1em; padding: 5px;">Removed from ${source.config_name} from <ui-date dateTime readonly>${source.date_modified}</ui-date></div>
+							    </div>
+							    <code id="diff" class="hl" style="height: 45em; overflow: scroll"><pre>${diff}</pre></code>
+							</div>`;
 			hljs.highlightBlock(this.querySelector('#diff'));
-			this.addEventListener('click',(evt) => {
-				const div = this.controller.element(evt.target).up('div');
-				if(div.css.contains('cell')){
-					if(div.style.width=='100%'){
-						this.controller.elements('#comparator div.cell').forEach(function(element){
-							element.css.remove('hidden');
-						});
-						div.style.width=null;
-					} else {
-						this.controller.elements('#comparator div.cell').forEach(function(element){
-							element.css.add('hidden');
-						});
-						div.css.remove('hidden');
-						div.style.width='100%';
-					}
-					evt.stopPropagation();
-					evt.preventDefault()
-				}
-				
-			});
 
 		}
 		}catch(e){
