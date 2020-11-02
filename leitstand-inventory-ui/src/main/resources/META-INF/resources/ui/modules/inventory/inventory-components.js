@@ -15,6 +15,7 @@
  */
 import {Select,UIElement,Control} from '/ui/js/ui-components.js';
 import {Metadata,Platforms,Facilities,Panel} from '/ui/modules/inventory/inventory.js';
+import {Element} from '/ui/js/ui-dom.js';
 
 class PlatformSelector extends Select {
 	
@@ -72,8 +73,30 @@ class InventoryPanel extends UIElement {
         panel.load(params)
              .then(elementPanels => {
                  const panels = elementPanels.panels
+                 let panel = panels[0];
                  if(panels && panels.length){
-                     this.innerHTML = panels.map(panel => `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`).reduce((a,b)=>a+b,'');
+                     let defaultPanel = null;
+                     if(panels.length > 1){
+                         const namedPanels = {};
+                         panels.forEach(p => {
+                             namedPanels[p.name]=p;
+                             if(p.default_panel){
+                                 panel = p;
+                             }
+                         });                     
+                         
+                         this.innerHTML = `<ui-select label="Metric" small class="right" name="panel">${panels.map(panel => `<ui-option value="${panel.name}" ${panel.default_panel ? "default" : ""} >${panel.name}</ui-option>`).reduce((a,b)=>a+b,'')}</ui-select>
+                                           <div class="panel">
+                                           </div>`;
+                         this.addEventListener("change",(evt) => {
+                             const selected = evt.target.options[evt.target.selectedIndex].value;
+                             const panel = namedPanels[selected];
+                             this.querySelector("div.panel").innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                         });
+                         this.querySelector("div.panel").innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                     } else {
+                         this.innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                     }
                  }
              })
              .catch(e => console.log(e));
