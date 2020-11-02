@@ -213,16 +213,9 @@ export class Pod extends Resource {
 			query+=(del+"layout={{&layout}}");
 			del="&";
 		}
-		if(params["type"]){
-			if(params["type"].forEach){
-				params["type"].forEach(function(type){
-					query+=(del+"type="+type);
-					del="&";
-				});
-			} else {
-				query+=(del+"type="+params["type"]);
-				del="&";
-			}
+		if(params["role"]){
+		    query+=(del+"role={{&role}}");
+			del="&";
 		}
 		if(params["filter"]){
 			query+=(del+"filter={{&filter}}");
