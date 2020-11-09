@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class VersionTest {
     
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void create_non_semantic_version_without_prerelease(){
         Version rev = Version.valueOf("1.2.3.4");
         assertEquals(1,rev.getMajorLevel());
