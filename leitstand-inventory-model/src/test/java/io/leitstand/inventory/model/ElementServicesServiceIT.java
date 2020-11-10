@@ -18,7 +18,6 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Element_Service.removeServices;
 import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.model.Service.findService;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
@@ -49,7 +48,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Provider;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

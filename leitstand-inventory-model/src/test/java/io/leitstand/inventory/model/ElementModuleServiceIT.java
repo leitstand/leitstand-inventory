@@ -18,7 +18,6 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Element_Module.removeModules;
 import static io.leitstand.inventory.model.ModuleDataMother.testModule;
 import static io.leitstand.inventory.service.AdministrativeState.RETIRED;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
@@ -46,7 +45,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

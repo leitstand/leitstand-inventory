@@ -21,7 +21,8 @@ import static io.leitstand.inventory.service.ModuleData.newModuleData;
 import static io.leitstand.inventory.service.ModuleName.moduleName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0310E_ELEMENT_MODULE_NOT_FOUND;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
 
@@ -34,12 +35,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementModule;
 import io.leitstand.inventory.service.ElementModuleService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
-import io.leitstand.inventory.service.ReasonCode;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElementModuleResourceTest {

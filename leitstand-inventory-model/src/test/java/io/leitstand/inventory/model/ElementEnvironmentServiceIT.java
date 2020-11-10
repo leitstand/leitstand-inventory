@@ -18,7 +18,6 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Element_Environment.removeEnvironments;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -39,7 +38,6 @@ import static org.mockito.Mockito.mock;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

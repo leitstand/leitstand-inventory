@@ -27,7 +27,6 @@ import javax.sql.DataSource;
 
 import org.junit.After;
 
-import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.testing.it.JpaIT;
 
 /**

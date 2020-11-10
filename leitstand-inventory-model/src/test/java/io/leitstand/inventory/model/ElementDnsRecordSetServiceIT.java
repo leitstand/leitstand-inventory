@@ -19,7 +19,6 @@ import static io.leitstand.inventory.model.DnsZone.findDnsZoneById;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Element_DnsRecordSet.removeDnsRecordSets;
 import static io.leitstand.inventory.service.DnsName.dnsName;
 import static io.leitstand.inventory.service.DnsRecord.newDnsRecord;
 import static io.leitstand.inventory.service.DnsRecordSet.newDnsRecordSet;
@@ -47,7 +46,6 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

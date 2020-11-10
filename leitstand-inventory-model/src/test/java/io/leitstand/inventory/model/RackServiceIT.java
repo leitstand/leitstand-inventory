@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -57,7 +56,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

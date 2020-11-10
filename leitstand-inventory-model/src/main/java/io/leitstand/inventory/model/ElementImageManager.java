@@ -64,9 +64,7 @@ import io.leitstand.inventory.service.ElementInstalledImageData;
 import io.leitstand.inventory.service.ElementInstalledImageReference;
 import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ImageId;
-import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageReference;
-import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 
 @Dependent

@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.rs;
 
-import static io.leitstand.inventory.rs.ElementConfigResource.ext;
 import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
 import static io.leitstand.inventory.service.ElementConfigName.elementConfigName;
@@ -28,7 +27,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -41,7 +39,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.inventory.service.ElementConfig;
 import io.leitstand.inventory.service.ElementConfigId;
 import io.leitstand.inventory.service.ElementConfigName;
 import io.leitstand.inventory.service.ElementConfigService;

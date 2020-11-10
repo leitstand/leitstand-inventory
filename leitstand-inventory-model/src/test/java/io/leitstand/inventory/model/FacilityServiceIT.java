@@ -1,6 +1,5 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -22,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

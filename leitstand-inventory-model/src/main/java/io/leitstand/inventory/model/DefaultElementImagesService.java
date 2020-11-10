@@ -28,7 +28,6 @@ import io.leitstand.inventory.service.ElementInstalledImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageReference;
-import io.leitstand.inventory.service.ImageType;
 
 @Service
 public class DefaultElementImagesService implements ElementImagesService {

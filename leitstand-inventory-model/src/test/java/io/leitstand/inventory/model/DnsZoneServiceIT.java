@@ -28,7 +28,6 @@ import static org.mockito.Mockito.mock;
 import javax.enterprise.event.Event;
 import javax.json.JsonObject;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

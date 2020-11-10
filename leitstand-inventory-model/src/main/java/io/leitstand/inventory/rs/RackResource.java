@@ -38,7 +38,6 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.StringUtil;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.RackId;
 import io.leitstand.inventory.service.RackItem;

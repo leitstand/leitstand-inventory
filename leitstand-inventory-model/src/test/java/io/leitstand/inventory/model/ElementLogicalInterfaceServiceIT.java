@@ -1,6 +1,5 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -45,7 +44,6 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

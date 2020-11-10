@@ -25,8 +25,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.UnprocessableEntityException;
-import io.leitstand.inventory.service.FacilityId;
-import io.leitstand.inventory.service.FacilityName;
 import io.leitstand.inventory.service.RackId;
 import io.leitstand.inventory.service.RackItemData;
 import io.leitstand.inventory.service.RackName;
