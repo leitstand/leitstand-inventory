@@ -118,15 +118,6 @@ public class ElementDnsRecordSetServiceIT extends InventoryIT{
 		
 	}
 	
-	@After
-	public void removeDnsRecords() {
-		transaction(()->{
-			Element element = repository.execute(findElementById(ELEMENT_ID));
-			repository.execute(removeDnsRecordSets(element));
-		});
-	}
-	
-	
 	@Test
 	public void add_dns_record_set_for_element_identified_by_id() {
 		DnsRecordSet record = newDnsRecordSet()

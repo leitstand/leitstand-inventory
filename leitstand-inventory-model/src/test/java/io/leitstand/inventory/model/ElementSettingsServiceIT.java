@@ -57,7 +57,6 @@ import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.ElementAlias;
-import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;

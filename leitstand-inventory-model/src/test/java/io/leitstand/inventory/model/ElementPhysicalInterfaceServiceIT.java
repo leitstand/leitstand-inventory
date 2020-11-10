@@ -115,16 +115,6 @@ public class ElementPhysicalInterfaceServiceIT extends InventoryIT{
 		
 	}
 	
-	@After
-	public void removeInterfaces() {
-		transaction(() -> {
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifc"));
-		});
-	}
-	
-	
 	@Test
 	public void store_physical_interface_without_neighbor() {
 		ElementPhysicalInterfaceSubmission submission = newPhysicalInterfaceSubmission()

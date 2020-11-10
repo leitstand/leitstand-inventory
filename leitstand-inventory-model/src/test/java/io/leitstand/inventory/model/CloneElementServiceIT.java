@@ -1,5 +1,6 @@
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
 import javax.enterprise.event.Event;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -169,9 +171,6 @@ public class CloneElementServiceIT extends InventoryIT {
 		Message message = messageCaptor.getValue();
 		assertEquals(message.getReason(),IVT0306I_ELEMENT_CLONED.getReasonCode());
 		
-		
-		
 	}
-	
-	
+		
 }

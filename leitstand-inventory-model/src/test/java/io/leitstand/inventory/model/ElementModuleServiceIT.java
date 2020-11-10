@@ -103,17 +103,6 @@ public class ElementModuleServiceIT extends InventoryIT {
 		
 	}
 	
-	@After
-	public void removeCreatedModules() {
-		Repository repository = new Repository(getEntityManager());
-
-		transaction(()->{
-			Element element = repository.execute(Element.findElementById(ELEMENT_ID));
-			repository.execute(removeModules(element));
-		});
-	}
-
-	
 	@Test
 	public void throws_EntityNotFoundException_when_attempting_to_add_module_for_non_existent_element_id() {
 		transaction(()->{

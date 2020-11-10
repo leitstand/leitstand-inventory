@@ -71,15 +71,6 @@ public class FacilityServiceIT extends InventoryIT{
 												  messages);
 	}
 	
-	@After
-	public void cleanupDatabase() {
-		transaction(()->{
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack WHERE uuid=?",RACK_ID));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementgroup WHERE uuid=?",GROUP_ID));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.facility"));
-		});
-	}
-	
 	@Test
 	public void create_facility() {
 		FacilitySettings facility = newFacilitySettings()

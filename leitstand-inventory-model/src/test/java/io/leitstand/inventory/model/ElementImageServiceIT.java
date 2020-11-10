@@ -298,14 +298,6 @@ public class ElementImageServiceIT extends InventoryIT{
 
 	}
 	
-	@After
-	public void clearTestEnvironment() {
-		transaction(() -> {
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_image"));
-		});
-		
-	}
-
 	@Test
 	public void set_initial_installed_image_revision_for_element_identified_by_id() {
 		transaction(()->{

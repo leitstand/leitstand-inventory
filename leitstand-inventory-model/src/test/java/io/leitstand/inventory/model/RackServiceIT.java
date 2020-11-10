@@ -140,14 +140,6 @@ public class RackServiceIT extends InventoryIT {
 		
 	}
 	
-	@After
-	public void removeRacks() {
-		transaction(()->{
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack_item"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack"));
-		});
-	}
-	
 	@Test
 	public void reading_rack_settings_of_unknown_rack_id_throws_EntityNotFoundException() {
 		exception.expect(EntityNotFoundException.class);

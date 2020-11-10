@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -64,12 +65,14 @@ import java.util.UUID;
 import javax.enterprise.event.Event;
 import javax.inject.Provider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
+import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Message;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;

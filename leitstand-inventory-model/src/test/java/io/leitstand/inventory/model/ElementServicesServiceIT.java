@@ -154,18 +154,6 @@ public class ElementServicesServiceIT extends InventoryIT {
 		});
 	}
 	
-	@After
-	public void clearTestEnvironment() {
-		transaction(()->{
-			Element element = elements.fetchElement(ELEMENT_ID);
-			repository.execute(removeServices(element));
-			for(Service service : repository.execute(Service.findAllServices())) {
-				repository.remove(service);
-			}
-		});
-	}
-	
-	
 	@Test
 	public void store_element_service_for_a_new_service_of_an_element_identified_by_id() {
 		

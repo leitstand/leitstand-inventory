@@ -65,16 +65,6 @@ public class DnsZoneServiceIT extends InventoryIT{
 		
 	}
 	
-	@After
-	public void clearTestEnvironment() {
-		transaction(()->{
-			DnsZone zone = zones.tryFetchDnsZone(ZONE_ID);
-			if(zone != null) {
-				repository.remove(zone);
-			}
-		});
-	}
-	
 	@Test
 	public void create_zone() {
 		DnsZoneSettings zone = newDnsZoneSettings()

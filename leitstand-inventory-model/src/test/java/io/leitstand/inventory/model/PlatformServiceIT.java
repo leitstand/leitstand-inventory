@@ -125,21 +125,6 @@ public class PlatformServiceIT extends InventoryIT{
 		});
 	}
 	
-	@After
-	public void remove_created_platforms() {
-		
-		DatabaseService db = getDatabase();
-		transaction(()->{
-			db.executeUpdate(prepare("DELETE FROM inventory.element e WHERE e.platform_id IN (SELECT p.id FROM inventory.platform p WHERE p.vendor = ?)", VENDOR));
-		});
-
-		transaction(()->{
-			db.executeUpdate(prepare("DELETE FROM inventory.platform p WHERE p.vendor = ?", VENDOR));
-
-		});
-
-	}
-	
 	@Test
 	public void throws_EntityNotFoundException_when_platform_id_is_unknown() {
 		exception.expect(EntityNotFoundException.class);

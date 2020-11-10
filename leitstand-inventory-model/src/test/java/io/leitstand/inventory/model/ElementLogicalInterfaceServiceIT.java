@@ -146,17 +146,6 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		
 	}
 	
-	@After
-	public void removeInterfaces() {
-		transaction(() -> {
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_vlan"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_ifa"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifc"));
-		});
-	}
-	
 	@Test
 	public void store_logical_interface_without_vlans() {
 		

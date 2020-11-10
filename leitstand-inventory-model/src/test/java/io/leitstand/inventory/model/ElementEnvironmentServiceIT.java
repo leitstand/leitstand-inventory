@@ -103,16 +103,6 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		
 	}
 	
-	@After
-	public void clearTestEnvironment() {
-		
-		transaction(()->{
-			Element element = repository.execute(findElementById(ELEMENT_ID));
-			repository.execute(removeEnvironments(element));
-		});
-		
-	}
-	
 	@Test
 	public void create_element_environment() {
 		Environment env = newEnvironment()
