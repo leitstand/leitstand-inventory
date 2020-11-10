@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -47,6 +48,7 @@ import static org.mockito.Mockito.when;
 
 import javax.enterprise.event.Event;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -180,7 +182,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
 									   TEXT_PLAIN_TYPE, 
-									   ACTIVE,
+									   CANDIDATE,
 									   "Config 1", 
 									   "First version");
 		});
@@ -189,7 +191,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 			service.storeElementConfig(ELEMENT_ID, 
 									   configName, 
 									   TEXT_PLAIN_TYPE,
-									   ACTIVE,
+									   CANDIDATE,
 									   "Config 2", 
 									   "Updated version");
 		});
@@ -197,8 +199,8 @@ public class ElementConfigServiceIT extends InventoryIT {
 		assertThat(eventCaptor.getValue(),is(ElementConfigStoredEvent.class));
 		
 		transaction(()->{
-			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, 
-									 							  configName);
+			ElementConfig config = service.getElementConfig(ELEMENT_ID, 
+									 					    configName);
 			assertNotNull(config);
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 2",config.getConfig());
@@ -292,6 +294,8 @@ public class ElementConfigServiceIT extends InventoryIT {
 			assertEquals("First version",config.getComment());
 		});
 	}
+	
+	
 	
 	@Test
 	public void do_not_remove_active_config() {
@@ -432,6 +436,67 @@ public class ElementConfigServiceIT extends InventoryIT {
 				assertEquals(IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,e.getReason());
 			}
 		});
+	}
+	
+	@Test
+	public void read_active_configuration() {
+	    
+	    ElementConfigName configName = elementConfigName("config");
+	    
+	    transaction(()->{
+
+            service.storeElementConfig(ELEMENT_ID, 
+                                       configName, 
+                                       TEXT_PLAIN_TYPE,
+                                       ACTIVE,
+                                       "Foo", 
+                                       "Active version");
+            
+            service.storeElementConfig(ELEMENT_ID, 
+                                       configName, 
+                                       TEXT_PLAIN_TYPE,
+                                       CANDIDATE,
+                                       "Bar", 
+                                       "Candidate config");
+	        
+	        
+	    });
+	    
+	    transaction(() -> {
+	       ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, configName);
+	       assertThat(config.getConfigState(),is(ACTIVE));
+	    });
+ 	    
+	}
+	
+	@Test
+	public void read_candidate_configuration() {
+       
+	    ElementConfigName configName = elementConfigName("config");
+        
+        transaction(()->{
+
+            service.storeElementConfig(ELEMENT_ID, 
+                                       configName, 
+                                       TEXT_PLAIN_TYPE,
+                                       ACTIVE,
+                                       "Foo", 
+                                       "Active version");
+            
+            service.storeElementConfig(ELEMENT_ID, 
+                                       configName, 
+                                       TEXT_PLAIN_TYPE,
+                                       CANDIDATE,
+                                       "Bar", 
+                                       "Candidate config");
+            
+            
+        });
+        
+        transaction(() -> {
+           ElementConfig config = service.getElementConfig(ELEMENT_ID, configName);
+           assertThat(config.getConfigState(),is(CANDIDATE));
+        });
 	}
 		
 }

@@ -42,6 +42,7 @@ import static io.leitstand.inventory.service.ElementConfigs.newElementConfigs;
 import static io.leitstand.inventory.service.ReasonCode.IVT0330I_ELEMENT_CONFIG_REVISION_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0331I_ELEMENT_CONFIG_REVISION_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
+import static io.leitstand.inventory.service.ReasonCode.IVT0333E_ELEMENT_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
@@ -236,7 +237,7 @@ public class ElementConfigManager {
 			   .build();
 	}
 	
-	public ElementConfig getElementConfig(Element element, ElementConfigName configName) {
+	public ElementConfig getActiveElementConfig(Element element, ElementConfigName configName) {
 		Element_Config config = repository.execute(findActiveConfig(element,configName));
 		
 		if(config == null) {
@@ -254,6 +255,25 @@ public class ElementConfigManager {
 					  config);
 	
 	}
+	
+	public ElementConfig getElementConfig(Element element, ElementConfigName configName) {
+	       Element_Config config = repository.execute(findLatestConfig(element, configName));
+	        
+	       if(config == null) {
+	            LOG.fine(() -> format("%s: No %s configuration for element %s found.",
+	                                  IVT0333E_ELEMENT_CONFIG_NOT_FOUND,
+	                                  configName,
+	                                  element.getElementName()));
+	            
+	            throw new EntityNotFoundException(IVT0333E_ELEMENT_CONFIG_NOT_FOUND, 
+	                                              element.getElementName(), 
+	                                              configName);
+	        }
+	        
+	        return config(element,
+	                      config);
+	    
+	    }
 	
 
 	public StoreElementConfigResult storeElementConfig(Element element, 

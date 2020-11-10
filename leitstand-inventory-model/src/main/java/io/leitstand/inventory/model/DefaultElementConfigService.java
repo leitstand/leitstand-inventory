@@ -69,16 +69,16 @@ public class DefaultElementConfigService implements ElementConfigService {
 	public ElementConfig getActiveElementConfig(ElementId id, 
 										  ElementConfigName configName) {
 		Element element = elements.fetchElement(id);
-		return manager.getElementConfig(element,
-						   			    configName);
+		return manager.getActiveElementConfig(element,
+		                                      configName);
 	}
 
 	@Override
 	public ElementConfig getActiveElementConfig(ElementName elementName, 
 										  ElementConfigName configName) {
 		Element element = elements.fetchElement(elementName);
-		return manager.getElementConfig(element,
-										configName);
+		return manager.getActiveElementConfig(element,
+										      configName);
 	}
 	
 
