@@ -19,8 +19,9 @@ import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ModuleData.newModuleData;
 import static io.leitstand.inventory.service.ModuleName.moduleName;
+import static io.leitstand.inventory.service.ReasonCode.IVT0310E_ELEMENT_MODULE_NOT_FOUND;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import javax.ws.rs.core.Response;
 
@@ -30,12 +31,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementId;
+import io.leitstand.inventory.service.ElementModule;
 import io.leitstand.inventory.service.ElementModuleService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
+import io.leitstand.inventory.service.ReasonCode;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElementModuleResourceTest {
@@ -55,6 +59,32 @@ public class ElementModuleResourceTest {
 	
 	@InjectMocks
 	private ElementModulesResource resource = new ElementModulesResource();
+	
+	@Test
+	public void find_element_module_by_module_name_and_element_id() {
+	    when(service.getElementModule(ELEMENT_ID, "module")).thenThrow(new EntityNotFoundException(IVT0310E_ELEMENT_MODULE_NOT_FOUND));
+	    resource.getElementModule(ELEMENT_ID,"module");
+	    verify(service).getElementModule(ELEMENT_ID, moduleName("module"));
+	}
+	
+    @Test
+    public void find_element_module_by_module_name_and_element_name() {
+        when(service.getElementModule(ELEMENT_NAME, "module")).thenThrow(new EntityNotFoundException(IVT0310E_ELEMENT_MODULE_NOT_FOUND));
+        resource.getElementModule(ELEMENT_NAME,"module");
+        verify(service).getElementModule(ELEMENT_NAME, moduleName("module"));
+    }
+    
+    @Test
+    public void find_element_module_by_module_serial_and_element_id() {
+        resource.getElementModule(ELEMENT_ID,"serial");
+        verify(service).getElementModule(ELEMENT_ID, "serial");
+    }
+    
+    @Test
+    public void find_element_module_by_module_serial_and_element_name() {
+        resource.getElementModule(ELEMENT_NAME,"serial");
+        verify(service).getElementModule(ELEMENT_NAME, "serial");
+    }
 	
 	@Test
 	public void send_created_response_when_new_module_was_added_for_element_identified_by_id() {
@@ -95,4 +125,16 @@ public class ElementModuleResourceTest {
 													 	MODULE_DATA);
 		assertEquals(200,response.getStatus());
 	}	
+	
+	@Test
+	public void remove_module_by_module_name_and_element_id() {
+	    resource.removeElementModule(ELEMENT_ID, MODULE_NAME);
+	    verify(service).removeElementModule(ELEMENT_ID, MODULE_NAME);
+	}
+	
+   @Test
+    public void remove_module_by_module_name_and_element_name() {
+        resource.removeElementModule(ELEMENT_NAME, MODULE_NAME);
+        verify(service).removeElementModule(ELEMENT_NAME, MODULE_NAME);
+    }
 }
