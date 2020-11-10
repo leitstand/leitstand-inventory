@@ -24,6 +24,7 @@
 	<ui-title>Services on {{element_name}}<inventory-operational-state></inventory-operational-state></ui-title>
 	<ui-subtitle>Services deployed on element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<ui-form>
 <!-- {{#services.length}} -->
 <ui-group>
 <ui-label>Services</ui-label>
@@ -57,3 +58,7 @@
 	<ui-note>No services have been registered for this element</ui-note>
 </ui-blankslate>
 <!-- {{/services}} -->
+<ui-actions>
+    <ui-refresh title="Refresh service list">Refresh</ui-refresh>
+</ui-actions>
+</ui-form>

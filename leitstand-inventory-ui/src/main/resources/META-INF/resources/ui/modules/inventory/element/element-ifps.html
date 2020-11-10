@@ -53,7 +53,6 @@
     </ui-filter>
 </ui-item>
 </ui-composition>
-</ui-form>
 <!-- {{#physical_interfaces.length}} -->
 <ui-group>
 <ui-label>Physcial Interfaces</ui-label>
@@ -93,6 +92,7 @@
 </table>
 <ui-note class="right">{{physical_interfaces.length}} physical interfaces found.</ui-note>
 </ui-group>
+
 <!-- {{/physical_interfaces.length}} -->
 <div class="clearfix"></div>
 <!-- {{^physical_interfaces}} -->
@@ -101,3 +101,7 @@
 <ui-note>No physical interfaces have been registered for this element.</ui-note> 
 </ui-blankslate>
 <!-- {{/physical_interfaces}} -->
+<ui-actions>
+    <ui-refresh title="Refresh interface list">Refresh</ui-refresh>
+</ui-actions>
+</ui-form>

@@ -39,6 +39,7 @@ The active image is currently running on the element.
 An image in pull state is supposed to be pulled by the element into it's local image cache in order to become eligible for immediate activation.
 Cached images can be activated immediately from an element-local cache.
 </ui-note>
+<ui-form>
 <!-- {{#images.length}} -->
 <ui-group>
 <ui-label>Images on {{element_name}}</ui-label>
@@ -107,3 +108,7 @@ Cached images can be activated immediately from an element-local cache.
 	<ui-note>This element has not reported which images are installed</ui-note>
 </ui-blankslate>
 <!-- {{/images.length}} -->
+<ui-actions>
+    <ui-refresh title="Refresh image list">Refresh</ui-refresh>
+</ui-actions>
+</ui-form>
