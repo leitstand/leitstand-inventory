@@ -110,16 +110,16 @@ import io.leitstand.security.auth.UserContext;
 public class ForceRemoveElementIT extends InventoryIT{
 
 	private static final DnsZoneId ZONE_ID = randomDnsZoneId();
-	private static final DnsZoneName ZONE_NAME = dnsZoneName(ForceRemoveElementIT.class.getName());
+	private static final DnsZoneName ZONE_NAME = dnsZoneName("zone");
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName(ForceRemoveElementIT.class.getName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName(ForceRemoveElementIT.class.getName());
-	private static final ElementRoleName ROLE_NAME = elementRoleName(ForceRemoveElementIT.class.getSimpleName());
+	private static final ElementName ELEMENT_NAME = elementName("element");
+	private static final ElementRoleName ROLE_NAME = elementRoleName("role");
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final ServiceName CONTAINER_SERVICE = serviceName(ForceRemoveElementIT.class.getName()+".container");
-	private static final ServiceName DAEMON_SERVICE = serviceName(ForceRemoveElementIT.class.getName()+".daemon");
+	private static final ServiceName CONTAINER_SERVICE = serviceName("container");
+	private static final ServiceName DAEMON_SERVICE = serviceName("daemon");
 	
 	private ElementService service;
 	private Messages messages;
@@ -315,7 +315,7 @@ public class ForceRemoveElementIT extends InventoryIT{
 		
 		// Add DNS record
 		transaction(()->{
-			DnsZoneService zoneService = new DefaultDnsZoneService(zones, new DnsZoneManager(repository, messages, event));
+			DnsZoneService zoneService = new DefaultDnsZoneService(zones, new DnsZoneManager(repository, event, messages));
 			
 			
 			zoneService.storeDnsZoneSettings(newDnsZoneSettings()

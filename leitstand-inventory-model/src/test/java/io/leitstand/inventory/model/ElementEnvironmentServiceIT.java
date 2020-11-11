@@ -63,12 +63,12 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 	
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName(ElementEnvironmentServiceIT.class.getSimpleName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName(ElementEnvironmentServiceIT.class.getSimpleName());
-	private static final ElementRoleName ELEMENT_ROLE = elementRoleName(ElementEnvironmentServiceIT.class.getSimpleName());
+	private static final ElementName ELEMENT_NAME = elementName("element");
+	private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
 	private static final EnvironmentId ENVIRONMENT_ID = randomEnvironmentId();
-	private static final EnvironmentName ENVIRONMENT_NAME = EnvironmentName.environmentName("environment");
+	private static final EnvironmentName ENVIRONMENT_NAME = environmentName("environment");
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none(); 
@@ -391,7 +391,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0300E_ELEMENT_NOT_FOUND));
 		
-		service.storeElementEnvironment(elementName("UNKNOWN"), mock(Environment.class));		
+		service.storeElementEnvironment(elementName("unknown_element"), mock(Environment.class));		
 	}
 	
 	@Test
@@ -407,7 +407,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0300E_ELEMENT_NOT_FOUND));
 		
-		service.getElementEnvironment(elementName("UNKNOWN"), ENVIRONMENT_NAME);
+		service.getElementEnvironment(elementName("unknown_element"), ENVIRONMENT_NAME);
 	}
 	
 	@Test

@@ -45,13 +45,11 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-import javax.enterprise.event.Event;
 import javax.inject.Provider;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
@@ -74,47 +72,48 @@ public class ElementServicesServiceIT extends InventoryIT {
 
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName(ElementServicesServiceIT.class.getName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
 	private static final ElementId ELEMENT_ID = randomElementId();
 	private static final ElementName ELEMENT_NAME = elementName("element");
-	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementServicesServiceIT.class.getSimpleName());
-	private static final PlatformName PLATFORM_NAME = platformName(ElementServicesServiceIT.class.getName());
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
+	private static final ElementRoleName ROLE_NAME = elementRoleName("role");
+	private static final PlatformName PLATFORM_NAME = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final ServiceName CONTAINER_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".container");
-	private static final ServiceName DAEMON_SERVICE = serviceName(ElementServicesServiceIT.class.getName()+".daemon");
+	private static final ServiceName CONTAINER_SERVICE = serviceName("container");
+	private static final ServiceName DAEMON_SERVICE = serviceName("daemon");
+	private static final ServiceName SERVICE_NAME = serviceName("service");
 	
 	
 	private ElementServicesService service;
 	
 	private Messages messages;
 	private ElementProvider elements;
-	private ElementGroupProvider groups;
-	private ElementRoleProvider roles;
 	private Repository repository;
 	
 	@Before
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
-		DatabaseService database = getDatabase();
 		this.elements = new ElementProvider(repository);
-		this.groups = new ElementGroupProvider(repository);
-		this.roles = new ElementRoleProvider(repository);
-		Event event = mock(Event.class);
 		messages = mock(Messages.class);
 		
-		ElementServicesManager manager = new ElementServicesManager(repository, getDatabase(), new SubtransactionService() {
-			
-			@Override
-			protected Provider<SubtransactionService> getServiceProvider() {
-				return () -> this;
-			}
-			
-			@Override
-			protected Repository getRepository() {
-				return repository;
-			}
-		}, elements, messages);
+		SubtransactionService txExecutor = new SubtransactionService() {
+
+		    @Override
+		    protected Provider<SubtransactionService> getServiceProvider() {
+		        return () -> this;
+		    }
+        
+		    @Override
+		    protected Repository getRepository() {
+		        return repository;
+		    }
+		};
+        
+		ElementServicesManager manager = new ElementServicesManager(repository, 
+		                                                            getDatabase(), 
+		                                                            txExecutor, 
+		                                                            elements, 
+		                                                            messages);
 		
 		service = new DefaultElementServicesService(elements, manager);
 		
@@ -143,7 +142,10 @@ public class ElementServicesServiceIT extends InventoryIT {
 			
 			repository.addIfAbsent(findElementById(ELEMENT_ID),
 								   () -> {
-										 Element newElement = new Element(group,role,ELEMENT_ID,ELEMENT_NAME);
+										 Element newElement = new Element(group,
+										                                  role,
+										                                  ELEMENT_ID,
+										                                  ELEMENT_NAME);
 										 newElement.setPlatform(platform);
 										 return newElement;
 								   });
@@ -157,22 +159,22 @@ public class ElementServicesServiceIT extends InventoryIT {
 		
 		transaction(() -> {
 			ElementServiceSubmission submission = newElementServiceSubmission()
-					.withServiceName(serviceName("new-service"))
-					.withOperationalState(UP)
-					.build();
+					                              .withServiceName(SERVICE_NAME)
+					                              .withOperationalState(UP)
+					                              .build();
 			
 			service.storeElementService(ELEMENT_ID, submission);
 		});
 		
 		transaction(() -> {
-			ElementServiceContext serviceContext = service.getElementService(ELEMENT_ID, serviceName("new-service"));
+			ElementServiceContext serviceContext = service.getElementService(ELEMENT_ID, SERVICE_NAME);
 			assertEquals(GROUP_ID,serviceContext.getGroupId());
 			assertEquals(GROUP_TYPE,serviceContext.getGroupType());
 			assertEquals(GROUP_NAME,serviceContext.getGroupName());
 			assertEquals(ROLE_NAME,serviceContext.getElementRole());
 			assertEquals(ELEMENT_ID,serviceContext.getElementId());
 			assertEquals(ELEMENT_NAME,serviceContext.getElementName());
-			assertEquals(serviceName("new-service"), serviceContext.getService().getServiceName());
+			assertEquals(SERVICE_NAME, serviceContext.getService().getServiceName());
 			
 		});
 		
@@ -183,7 +185,7 @@ public class ElementServicesServiceIT extends InventoryIT {
 		
 		transaction(() -> {
 			ElementServiceSubmission submission = newElementServiceSubmission()
-					.withServiceName(serviceName("new-service"))
+					.withServiceName(SERVICE_NAME)
 					.withOperationalState(UP)
 					.build();
 			
@@ -191,14 +193,14 @@ public class ElementServicesServiceIT extends InventoryIT {
 		});
 		
 		transaction(() -> {
-			ElementServiceContext serviceContext = service.getElementService(ELEMENT_NAME, serviceName("new-service"));
+			ElementServiceContext serviceContext = service.getElementService(ELEMENT_NAME, SERVICE_NAME);
 			assertEquals(GROUP_ID,serviceContext.getGroupId());
 			assertEquals(GROUP_TYPE,serviceContext.getGroupType());
 			assertEquals(GROUP_NAME,serviceContext.getGroupName());
 			assertEquals(ROLE_NAME,serviceContext.getElementRole());
 			assertEquals(ELEMENT_ID,serviceContext.getElementId());
 			assertEquals(ELEMENT_NAME,serviceContext.getElementName());
-			assertEquals(serviceName("new-service"), serviceContext.getService().getServiceName());
+			assertEquals(SERVICE_NAME, serviceContext.getService().getServiceName());
 			
 		});
 		

@@ -33,6 +33,7 @@ import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.security.auth.UserName.userName;
+import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -48,7 +49,9 @@ import static org.mockito.Mockito.when;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 
 import io.leitstand.commons.EntityNotFoundException;
@@ -64,16 +67,29 @@ import io.leitstand.inventory.service.ElementConfigName;
 import io.leitstand.inventory.service.ElementConfigReference;
 import io.leitstand.inventory.service.ElementConfigRevisions;
 import io.leitstand.inventory.service.ElementConfigService;
+import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.StoreElementConfigResult;
 import io.leitstand.security.auth.UserContext;
+import io.leitstand.security.auth.UserName;
 
 public class ElementConfigServiceIT extends InventoryIT {
-	
-	private static final ElementName ELEMENT_NAME = elementName("config_test");
-	private static final ElementId	 ELEMENT_ID	  = randomElementId();
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+    
+    private static final ElementGroupId GROUP_ID = randomGroupId();
+    private static final ElementGroupType GROUP_TYPE = groupType("unittest");
+    private static final ElementGroupName GROUP_NAME = groupName("group");
+    private static final ElementId	 ELEMENT_ID	  = randomElementId();
+	private static final ElementName ELEMENT_NAME = elementName("element");
+	private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
+	private static final ElementConfigName CONFIG_NAME = elementConfigName("config");
+	private static final UserName USER_NAME = userName("unittest");
 	private ElementConfigService service;
 	private ArgumentCaptor<ElementConfigEvent> eventCaptor;
 
@@ -86,7 +102,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		eventCaptor = forClass(ElementConfigEvent.class);
 		doNothing().when(event).fire(eventCaptor.capture());
 		UserContext userContext = mock(UserContext.class);
-		when(userContext.getUserName()).thenReturn(userName("unittest"));
+		when(userContext.getUserName()).thenReturn(USER_NAME);
 		
 		ElementConfigManager configs = new ElementConfigManager(repository,
 																db,
@@ -96,19 +112,19 @@ public class ElementConfigServiceIT extends InventoryIT {
 		service = new DefaultElementConfigService(elements,configs);
 		
 		transaction(()->{
-			ElementGroup moduleTestGroup = repository.addIfAbsent(findElementGroupByName(groupType("unittest"), 
-																						 groupName("module_test")), 
-																  () -> new ElementGroup(randomGroupId(), 
-																		  				 groupType("unittest"), 
-																		  				 groupName("module_test")));
+			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, 
+																			   GROUP_NAME), 
+														() -> new ElementGroup(GROUP_ID, 
+																		  	   GROUP_TYPE, 
+																		  	   GROUP_NAME));
 			
 			repository.flush();
 			
-			ElementRole role = repository.addIfAbsent(findRoleByName(elementRoleName("module_test")), 
-							 						   () -> new ElementRole(elementRoleName("module_test"),DATA)); 
+			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
+							 						  () -> new ElementRole(ELEMENT_ROLE,DATA)); 
 			
 			repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
-								   () -> new Element(moduleTestGroup,
+								   () -> new Element(group,
 									  			     role, 
 													 ELEMENT_ID,
 													 ELEMENT_NAME));
@@ -118,44 +134,37 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void raise_exception_if_config_does_not_exist() {
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND));
+	    
 		transaction(()->{
-			try {
-				service.getElementConfig(ELEMENT_NAME, randomConfigId());
-				fail("Exception expected!");
-			} catch (EntityNotFoundException e) {
-				assertEquals(IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND,e.getReason());
-			}			
+			service.getElementConfig(ELEMENT_NAME, randomConfigId());
 		});
 	}
 	
 	@Test
-	public void raise_exception_if_active_config_does_not_exist() {
+	public void raise_exception_if_active_config_does_not_exist_for_specified_element_id() {
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND));
 		transaction(()->{
-			try {
-				service.getActiveElementConfig(ELEMENT_NAME, elementConfigName("non-existent"));
-				fail("Exception expected!");
-			} catch (EntityNotFoundException e) {
-				assertEquals(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,e.getReason());
-			}			
+			service.getActiveElementConfig(ELEMENT_ID, CONFIG_NAME);
 		});
-		
-		transaction(()->{
-			try {
-				service.getActiveElementConfig(ELEMENT_ID, elementConfigName("non-existent"));
-				fail("Exception expected!");
-			} catch (EntityNotFoundException e) {
-				assertEquals(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND,e.getReason());
-			}			
-		});
-
 	}
+	
+   @Test
+    public void raise_exception_if_active_config_does_not_exist_for_specified_element_name() {
+        exception.expect(EntityNotFoundException.class);
+        exception.expect(reason(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND));
+        transaction(()->{
+            service.getActiveElementConfig(ELEMENT_NAME, CONFIG_NAME);
+        });
+    }
 	
 	@Test
 	public void add_new_active_configuration() {
-		ElementConfigName configName = elementConfigName("new_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE,
 									   ACTIVE,
 									   "Config 1", 
@@ -163,9 +172,15 @@ public class ElementConfigServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, 
-									 							  elementConfigName("new_configuration"));
+			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID,
+			                                                      CONFIG_NAME);
 			assertNotNull(config);
+			assertEquals(GROUP_ID,config.getGroupId());
+			assertEquals(GROUP_TYPE,config.getGroupType());
+			assertEquals(GROUP_NAME,config.getGroupName());
+			assertEquals(ELEMENT_ID,config.getElementId());
+			assertEquals(ELEMENT_NAME,config.getElementName());
+			assertEquals(CONFIG_NAME,config.getConfigName());
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
 			assertEquals("First version",config.getComment());
@@ -175,10 +190,9 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void add_new_candidate_configuration() {
-		ElementConfigName configName = elementConfigName("updated_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   CANDIDATE,
 									   "Config 1", 
@@ -187,7 +201,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE,
 									   CANDIDATE,
 									   "Config 2", 
@@ -198,8 +212,14 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfig config = service.getElementConfig(ELEMENT_ID, 
-									 					    configName);
+									 					    CONFIG_NAME);
 			assertNotNull(config);
+	        assertEquals(GROUP_ID,config.getGroupId());
+	        assertEquals(GROUP_TYPE,config.getGroupType());
+	        assertEquals(GROUP_NAME,config.getGroupName());
+	        assertEquals(ELEMENT_ID,config.getElementId());
+	        assertEquals(ELEMENT_NAME,config.getElementName());
+	        assertEquals(CONFIG_NAME,config.getConfigName());
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 2",config.getConfig());
 			assertEquals("Updated version",config.getComment());
@@ -209,10 +229,9 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void activate_candidate_configuration() {
-		ElementConfigName configName = elementConfigName("activate_candidate_configuration");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   CANDIDATE,
 									   "Config 1", 
@@ -221,14 +240,14 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			try {
-				service.getActiveElementConfig(ELEMENT_ID, configName);
+				service.getActiveElementConfig(ELEMENT_ID, CONFIG_NAME);
 				fail("EntityNotFoundException expected");
 			} catch (EntityNotFoundException e) {
 				assertEquals(IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND, e.getReason() );
 			}
 			
 			StoreElementConfigResult result = service.storeElementConfig(ELEMENT_ID, 
-																		 configName, 
+																		 CONFIG_NAME, 
 																		 TEXT_PLAIN_TYPE,
 																		 ACTIVE,
 																		 "Config 1", 
@@ -240,28 +259,31 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, 
-									 							  configName);
+									 							  CONFIG_NAME);
 			assertNotNull(config);
+	        assertEquals(GROUP_ID,config.getGroupId());
+	        assertEquals(GROUP_TYPE,config.getGroupType());
+	        assertEquals(GROUP_NAME,config.getGroupName());
+	        assertEquals(ELEMENT_ID,config.getElementId());
+	        assertEquals(ELEMENT_NAME,config.getElementName());
+	        assertEquals(CONFIG_NAME,config.getConfigName());
 			assertEquals(ACTIVE,config.getConfigState());
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
 			assertEquals("First version",config.getComment());
 			
-			assertEquals(1,service.getElementConfigRevisions(ELEMENT_ID, configName).getRevisions().size());
+			assertEquals(1,service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME)
+			                      .getRevisions()
+			                      .size());
 		});
 		
 	}
 	
-	
-	
-
-	
 	@Test
 	public void read_history_revision() {
-		ElementConfigName configName = elementConfigName("history_revision");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE,
 									   SUPERSEDED,
 									   "Config 1", 
@@ -270,7 +292,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   ACTIVE,
 									   "Config 2", 
@@ -278,7 +300,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			ElementConfigId configId = service.getElementConfigRevisions(ELEMENT_ID,configName)
+			ElementConfigId configId = service.getElementConfigRevisions(ELEMENT_ID,CONFIG_NAME)
 											  .getRevisions()
 											  .get(1)
 											  .getConfigId();
@@ -286,28 +308,31 @@ public class ElementConfigServiceIT extends InventoryIT {
 			ElementConfig config = service.getElementConfig(ELEMENT_ID, 
 														    configId);
 			assertNotNull(config);
-			assertEquals(configName,config.getConfigName());
+	        assertEquals(GROUP_ID,config.getGroupId());
+	        assertEquals(GROUP_TYPE,config.getGroupType());
+	        assertEquals(GROUP_NAME,config.getGroupName());
+	        assertEquals(ELEMENT_ID,config.getElementId());
+	        assertEquals(ELEMENT_NAME,config.getElementName());
+	        assertEquals(CONFIG_NAME,config.getConfigName());
+			assertEquals(CONFIG_NAME,config.getConfigName());
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
 			assertEquals("First version",config.getComment());
 		});
 	}
 	
-	
-	
 	@Test
 	public void do_not_remove_active_config() {
-		ElementConfigName configName = elementConfigName("cannot_remove_active_config");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   SUPERSEDED,
 									   "Config 1", 
 									   "First version");
 			
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   ACTIVE,
 									   "Config 2", 
@@ -315,7 +340,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 			
 			
 			service.storeElementConfig(ELEMENT_ID, 
-					   				   configName, 
+					   				   CONFIG_NAME, 
 					   				   TEXT_PLAIN_TYPE, 
 					   				   CANDIDATE,
 					   				   "Config 3", 
@@ -324,16 +349,16 @@ public class ElementConfigServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			assertEquals(3,service.getElementConfigRevisions(ELEMENT_ID, configName).getRevisions().size());
-			for(ElementConfigReference rev : service.getElementConfigRevisions(ELEMENT_ID, configName).getRevisions()) {
+			assertEquals(3,service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME).getRevisions().size());
+			for(ElementConfigReference rev : service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME).getRevisions()) {
 				System.out.println(rev.getConfigState());
 			}
-			service.removeElementConfig(ELEMENT_ID, configName);
+			service.removeElementConfig(ELEMENT_ID, CONFIG_NAME);
 		});
 		
 		
 		transaction(()->{
-			ElementConfigRevisions revisions = service.getElementConfigRevisions(ELEMENT_ID, configName);
+			ElementConfigRevisions revisions = service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
 			assertEquals(1,revisions.getRevisions().size());
 			assertEquals(ACTIVE,revisions.getRevisions().get(0).getConfigState());
 		});
@@ -343,24 +368,23 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void remove_config_revision() {
-		ElementConfigName configName = elementConfigName("remove_config_revision");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE,
 									   SUPERSEDED,
 									   "Config 1", 
 									   "First version");
 
 			service.storeElementConfig(ELEMENT_ID, 
-					   				   configName, 
+					   				   CONFIG_NAME, 
 					   				   TEXT_PLAIN_TYPE,
 					   				   SUPERSEDED,
 					   				   "Config 2", 
 					   				   "Second version");
 			
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE,
 									   ACTIVE,
 									   "Config 3", 
@@ -369,7 +393,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfigRevisions revisions = service.getElementConfigRevisions(ELEMENT_ID, 
-									 								 			 configName); 
+									 								 			 CONFIG_NAME); 
 			assertEquals("Third version",revisions.getRevisions().get(0).getComment());
 			assertEquals("Second version",revisions.getRevisions().get(1).getComment());
 			assertEquals("First version",revisions.getRevisions().get(2).getComment());
@@ -381,7 +405,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfigRevisions revisions = service.getElementConfigRevisions(ELEMENT_ID, 
-																				 configName); 
+																				 CONFIG_NAME); 
 			assertEquals("Third version",revisions.getRevisions().get(0).getComment());
 			assertEquals("First version",revisions.getRevisions().get(1).getComment());
 
@@ -391,10 +415,9 @@ public class ElementConfigServiceIT extends InventoryIT {
 	
 	@Test
 	public void update_comment_of_existing_config() {
-		ElementConfigName configName = elementConfigName("update_comment_of_existing_config");
 		transaction(()->{
 			service.storeElementConfig(ELEMENT_ID, 
-									   configName, 
+									   CONFIG_NAME, 
 									   TEXT_PLAIN_TYPE, 
 									   ACTIVE,
 									   "Config 1", 
@@ -402,7 +425,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, configName);
+			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, CONFIG_NAME);
 			assertNotNull(config);
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
@@ -413,7 +436,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 		});
 		
 		transaction(()->{
-			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, configName);
+			ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, CONFIG_NAME);
 			assertNotNull(config);
 			assertEquals("text/plain",config.getContentType());
 			assertEquals("Config 1",config.getConfig());
@@ -439,19 +462,17 @@ public class ElementConfigServiceIT extends InventoryIT {
 	@Test
 	public void read_active_configuration() {
 	    
-	    ElementConfigName configName = elementConfigName("config");
-	    
 	    transaction(()->{
 
             service.storeElementConfig(ELEMENT_ID, 
-                                       configName, 
+                                       CONFIG_NAME, 
                                        TEXT_PLAIN_TYPE,
                                        ACTIVE,
                                        "Foo", 
                                        "Active version");
             
             service.storeElementConfig(ELEMENT_ID, 
-                                       configName, 
+                                       CONFIG_NAME, 
                                        TEXT_PLAIN_TYPE,
                                        CANDIDATE,
                                        "Bar", 
@@ -461,7 +482,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	    });
 	    
 	    transaction(() -> {
-	       ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, configName);
+	       ElementConfig config = service.getActiveElementConfig(ELEMENT_ID, CONFIG_NAME);
 	       assertThat(config.getConfigState(),is(ACTIVE));
 	    });
  	    
@@ -470,19 +491,18 @@ public class ElementConfigServiceIT extends InventoryIT {
 	@Test
 	public void read_candidate_configuration() {
        
-	    ElementConfigName configName = elementConfigName("config");
         
         transaction(()->{
 
             service.storeElementConfig(ELEMENT_ID, 
-                                       configName, 
+                                       CONFIG_NAME, 
                                        TEXT_PLAIN_TYPE,
                                        ACTIVE,
                                        "Foo", 
                                        "Active version");
             
             service.storeElementConfig(ELEMENT_ID, 
-                                       configName, 
+                                       CONFIG_NAME, 
                                        TEXT_PLAIN_TYPE,
                                        CANDIDATE,
                                        "Bar", 
@@ -492,7 +512,7 @@ public class ElementConfigServiceIT extends InventoryIT {
         });
         
         transaction(() -> {
-           ElementConfig config = service.getElementConfig(ELEMENT_ID, configName);
+           ElementConfig config = service.getElementConfig(ELEMENT_ID, CONFIG_NAME);
            assertThat(config.getConfigState(),is(CANDIDATE));
         });
 	}

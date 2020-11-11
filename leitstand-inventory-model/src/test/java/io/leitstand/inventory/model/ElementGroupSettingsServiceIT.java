@@ -35,7 +35,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -52,12 +51,23 @@ import io.leitstand.commons.messages.Message;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupSettingsService;
+import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.inventory.service.ElementId;
+import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 
 public class ElementGroupSettingsServiceIT extends InventoryIT{
 	
+    private static final ElementGroupId GROUP_ID = randomGroupId();
+    private static final ElementGroupType GROUP_TYPE = groupType("unittest");
+    private static final ElementGroupName GROUP_NAME = groupName("group");
+    private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
+    private static final ElementId ELEMENT_ID = randomElementId();
+    private static final ElementName ELEMENT_NAME = elementName("element");
+    
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
@@ -87,7 +97,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0100E_GROUP_NOT_FOUND));
 		transaction(() ->{
-			service.getGroupSettings(randomGroupId());
+			service.getGroupSettings(GROUP_ID);
 		});
 	}
 	
@@ -97,17 +107,17 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		exception.expect(EntityNotFoundException.class);
 		exception.expect(reason(IVT0100E_GROUP_NOT_FOUND));
 		transaction(() -> {
-			service.getGroupSettings(groupType("unittest"),
-									 groupName("unknown"));
+			service.getGroupSettings(GROUP_TYPE,
+									 GROUP_NAME);
 		});
 	}
 	
 	@Test
 	public void add_group_without_tags() {
 		ElementGroupSettings group = newElementGroupSettings()
-									 .withGroupId(randomGroupId())
-									 .withGroupType(groupType("unittest"))
-									 .withGroupName(groupName("new_group_without_tags"))
+									 .withGroupId(GROUP_ID)
+									 .withGroupType(GROUP_TYPE)
+									 .withGroupName(GROUP_NAME)
 									 .withDescription("unittest group")
 									 .build();
 		
@@ -129,9 +139,9 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	@Test
 	public void add_group_with_tags() {
 		ElementGroupSettings group = newElementGroupSettings()
-									 .withGroupId(randomGroupId())
-									 .withGroupType(groupType("unittest"))
-									 .withGroupName(groupName("new_group_with_tags"))
+									 .withGroupId(GROUP_ID)
+									 .withGroupType(GROUP_TYPE)
+									 .withGroupName(GROUP_NAME)
 									 .withDescription("unittest group")
 									 .withTags("a","b")
 									 .build();
@@ -157,9 +167,9 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	@Test
 	public void rename_existing_group() {
 		ElementGroupSettings group = newElementGroupSettings()
-									 .withGroupId(randomGroupId())
-									 .withGroupType(groupType("unittest"))
-									 .withGroupName(groupName("can_rename_existing_group"))
+									 .withGroupId(GROUP_ID)
+									 .withGroupType(GROUP_TYPE)
+									 .withGroupName(GROUP_NAME)
 									 .build();
 
 		transaction(()->{
@@ -168,8 +178,8 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		
 		transaction(()->{
 			ElementGroupSettings renamed = newElementGroupSettings()
-					 					   .withGroupId(group.getGroupId())
-					 					   .withGroupType(groupType("unittest"))
+					 					   .withGroupId(GROUP_ID)
+					 					   .withGroupType(GROUP_TYPE)
 					 					   .withGroupName(groupName("renamed_group"))
 					 					   .build();
 			boolean created = service.storeElementGroupSettings(renamed);
@@ -180,7 +190,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		});
 	
 		transaction(()->{
-			assertEquals(groupName("renamed_group"),service.getGroupSettings(group.getGroupId()).getGroupName());
+			assertEquals(groupName("renamed_group"),service.getGroupSettings(GROUP_ID).getGroupName());
 		});
 		
 	}
@@ -188,27 +198,24 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	@Test
 	public void remove_empty_group_by_id() {
 		
-		ElementGroupId groupId = randomGroupId();
 		
 		transaction(()->{
-			repository.add(new ElementGroup(groupId,
-											groupType("unittest"),
-											groupName("can_remove_empty_group_by_id")));
+			repository.add(new ElementGroup(GROUP_ID,
+			                                GROUP_TYPE,
+			                                GROUP_NAME));
 		});
 		
 		transaction(()->{
-			assertNotNull(service.getGroupSettings(groupId));
-			service.remove(groupId);
+			assertNotNull(service.getGroupSettings(GROUP_ID));
+			service.remove(GROUP_ID);
 			assertEquals(IVT0102I_GROUP_REMOVED.getReasonCode(),messageCaptor.getValue().getReason());
 		});
 		
+		exception.expect(EntityNotFoundException.class);
+		exception.expect(reason(IVT0100E_GROUP_NOT_FOUND));
+		
 		transaction(()->{
-			try {
-				service.getGroupSettings(groupId);
-				fail("EntityNotFoundException expected");
-			} catch (EntityNotFoundException e) {
-				assertEquals(IVT0100E_GROUP_NOT_FOUND,e.getReason());
-			}
+			service.getGroupSettings(GROUP_ID);
 		});
 		
 	}
@@ -217,69 +224,66 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	public void remove_empty_group_by_name() {
 		
 		transaction(()->{
-			repository.add(new ElementGroup(randomGroupId(),
-											groupType("unittest"),
-											groupName("can_remove_empty_group_by_name")));
+			repository.add(new ElementGroup(GROUP_ID,
+											GROUP_TYPE,
+											GROUP_NAME));
 		});
 
 		transaction(()->{
-			assertNotNull(service.getGroupSettings(groupType("unittest"),
-												   groupName("can_remove_empty_group_by_name")));
-			service.remove(groupType("unittest"),
-						   groupName("can_remove_empty_group_by_name"));
+			assertNotNull(service.getGroupSettings(GROUP_TYPE,
+												   GROUP_NAME));
+			service.remove(GROUP_TYPE,
+						   GROUP_NAME);
 			assertEquals(IVT0102I_GROUP_REMOVED.getReasonCode(),messageCaptor.getValue().getReason());
 		});
 		
-		transaction(()->{
-			try {
-				service.getGroupSettings(groupType("unittest"),
-										 groupName("can_remove_empty_group_by_name"));
-				fail("EntityNotFoundException expected");
-			} catch (EntityNotFoundException e) {
-				assertEquals(IVT0100E_GROUP_NOT_FOUND,e.getReason());
-			}
-		});
+        exception.expect(EntityNotFoundException.class);
+        exception.expect(reason(IVT0100E_GROUP_NOT_FOUND));
+        
+        transaction(()->{
+            service.getGroupSettings(GROUP_ID);
+        });
+        
 		
 	}
 	
 	@Test
 	public void do_nothing_when_removing_nonexistent_group() {
-		service.remove(randomGroupId());
-		service.remove(groupType("unittest"),
-					   groupName("non-existent"));	
+		transaction(()->{
+		    service.remove(GROUP_ID);
+		    service.remove(GROUP_TYPE,
+		                   GROUP_NAME);	
+		});
 		verifyZeroInteractions(messages);
 	}
 	
 	@Test
 	public void cannot_remove_nonempty_group_by_id() {
 		
-		ElementGroupId groupId = randomGroupId();
 		transaction(()->{
 
-			ElementGroup group = repository.addIfAbsent(findElementGroupByName(groupType("unittest"),
-												   				   			   groupName("cannot_remove_nonempty_group_by_id")) , 
-														() -> new ElementGroup(groupId,
-																			   groupType("unittest"),
-																			   groupName("cannot_remove_nonempty_group_by_id")));
+			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE,
+												   				   			   GROUP_NAME), 
+														() -> new ElementGroup(GROUP_ID,
+																			   GROUP_TYPE,
+																			   GROUP_NAME));
 
-			ElementRole role = repository.addIfAbsent(findRoleByName(ElementRoleName.valueOf("unittest")),
-													  () -> new ElementRole(ElementRoleName.valueOf("unittest"),
+			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE),
+													  () -> new ElementRole(ELEMENT_ROLE,
 															  				DATA));
 
-			repository.addIfAbsent(findElementByName(elementName("cannot_remove_nonempty_group_by_id")),
+			repository.addIfAbsent(findElementByName(ELEMENT_NAME),
 								   () -> new Element(group,
 								 		   			 role,
-								 		   			 randomElementId(),
-								 		   			 elementName("cannot_remove_nonempty_group_by_id")));
+								 		   			 ELEMENT_ID,
+								 		   			 ELEMENT_NAME));
 		});
 		
+	    exception.expect(ConflictException.class);
+	    exception.expect(reason(IVT0103E_GROUP_NOT_REMOVABLE));
+		
 		transaction(() -> {
-			try {
-				service.remove(groupId);
-				fail("ConflictException expected!");
-			} catch (ConflictException e) {
-				assertEquals(IVT0103E_GROUP_NOT_REMOVABLE,e.getReason());
-			}
+			service.remove(GROUP_ID);
 		});
 	}
 	
@@ -288,31 +292,29 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		
 		transaction(()->{
 
-			ElementGroup group = repository.addIfAbsent(findElementGroupByName(groupType("unittest"),
-												   				   			   groupName("group")) , 
-														() -> new ElementGroup(randomGroupId(),
-																			   groupType("unittest"),
-																			   groupName("group")));
+			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE,
+												   				   			   GROUP_NAME), 
+														() -> new ElementGroup(GROUP_ID,
+																			   GROUP_TYPE,
+																			   GROUP_NAME));
 
-			ElementRole role = repository.addIfAbsent(findRoleByName(ElementRoleName.valueOf("unittest")),
-													  () -> new ElementRole(elementRoleName("unittest"),
+			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE),
+													  () -> new ElementRole(ELEMENT_ROLE,
 															  				DATA));
 
-			repository.addIfAbsent(findElementByName(elementName("unittest")),
+			repository.addIfAbsent(findElementByName(ELEMENT_NAME),
 								   () -> new Element(group,
 								 		   			 role,
-								 		   			 randomElementId(),
-								 		   			 elementName("unittest")));
+								 		   			 ELEMENT_ID,
+								 		   			 ELEMENT_NAME));
 		});
 		
+		exception.expect(ConflictException.class);
+		exception.expect(reason(IVT0103E_GROUP_NOT_REMOVABLE));
+		
 		transaction(() -> {
-			try {
-				service.remove(groupType("unittest"),
-							   groupName("group"));
-				fail("ConflictException expected!");
-			} catch (ConflictException e) {
-				assertEquals(IVT0103E_GROUP_NOT_REMOVABLE,e.getReason());
-			}
+			service.remove(groupType("unittest"),
+						   groupName("group"));
 		});
 	}
 	

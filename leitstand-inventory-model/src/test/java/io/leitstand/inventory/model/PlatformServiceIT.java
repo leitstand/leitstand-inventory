@@ -75,10 +75,10 @@ public class PlatformServiceIT extends InventoryIT{
 	private static final PlatformName PLATFORM_NAME = platformName("platform");
 	
 	private static final ElementGroupId	  GROUP_ID	 = randomGroupId();
-	private static final ElementGroupName GROUP_NAME = groupName(PlatformServiceIT.class.getSimpleName());
-	private static final ElementGroupType GROUP_TYPE = groupType("pod");
-	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName(PlatformServiceIT.class.getSimpleName());
-	private static final String 		  VENDOR 	 = PlatformServiceIT.class.getSimpleName();
+	private static final ElementGroupName GROUP_NAME = groupName("group");
+	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
+	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName("role");
+	private static final String 		  VENDOR 	 = "vendor";
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -115,10 +115,13 @@ public class PlatformServiceIT extends InventoryIT{
 		
 		transaction(()->{
 			repository.addIfAbsent(findElementGroupById(GROUP_ID),
-								   () -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
+								   () -> new ElementGroup(GROUP_ID, 
+								                          GROUP_TYPE, 
+								                          GROUP_NAME));
 			
 			repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
-								   () -> new ElementRole(ELEMENT_ROLE, DATA));	
+								   () -> new ElementRole(ELEMENT_ROLE, 
+								                         DATA));	
 		});
 	}
 	

@@ -88,14 +88,14 @@ public class ElementImageServiceIT extends InventoryIT{
 	
 	
 	private static final ElementGroupId GROUP_ID = randomGroupId();
-	private static final ElementGroupName GROUP_NAME = groupName(ElementImageServiceIT.class.getSimpleName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
 	private static final ElementGroupType GROUP_TYPE = groupType("pod");
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName(ElementImageServiceIT.class.getSimpleName());
-	private static final ElementRoleName ELEMENT_ROLE = elementRoleName(ElementImageServiceIT.class.getSimpleName());
+	private static final ElementName ELEMENT_NAME = elementName("element");
+	private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final PlatformName PLATFORM_NAME = platformName(ElementImageServiceIT.class.getSimpleName());
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
+	private static final PlatformName PLATFORM_NAME = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	
 	
 	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()

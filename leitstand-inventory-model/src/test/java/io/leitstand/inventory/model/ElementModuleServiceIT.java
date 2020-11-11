@@ -53,19 +53,27 @@ import org.junit.rules.ExpectedException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementModuleService;
 import io.leitstand.inventory.service.ElementModules;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ModuleData;
 import io.leitstand.inventory.service.ModuleName;
 
 public class ElementModuleServiceIT extends InventoryIT {
 
-	private static final ElementName ELEMENT_NAME = elementName("module_test");
+    private static final ElementGroupId GROUP_ID = randomGroupId();
+    private static final ElementGroupType GROUP_TYPE = groupType("unittest");
+    private static final ElementGroupName GROUP_NAME = groupName("group");
+    private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
+	private static final ElementName ELEMENT_NAME = elementName("element");
 	private static final ElementId   ELEMENT_ID   = randomElementId();
 	private static final ModuleName MODULE_NAME = moduleName("module");
-	private static final ElementName UNKNOWN_ELEMENT = elementName("unknown");
+	private static final ElementName UNKNOWN_ELEMENT = elementName("unknown_element");
 	private static final ModuleName UNKNOWN_MODULE = moduleName("unknown_module");
 
 	
@@ -82,14 +90,14 @@ public class ElementModuleServiceIT extends InventoryIT {
 		service = new DefaultElementModuleService(elements,modules);
 		
 		transaction(()->{
-			ElementGroup moduleTestGroup = repository.addIfAbsent(findElementGroupByName(groupType("unittest"), 
-																						 groupName("module_test")), 
-																  () -> new ElementGroup(randomGroupId(), 
-																		  				 groupType("unittest"), 
-																		  				 groupName("module_test")));
+			ElementGroup moduleTestGroup = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, 
+																						 GROUP_NAME), 
+																  () -> new ElementGroup(GROUP_ID,
+																                         GROUP_TYPE,
+																                         GROUP_NAME));
 			
-			ElementRole role = repository.addIfAbsent(findRoleByName(elementRoleName("module_test")), 
-							 						   () -> new ElementRole(elementRoleName("module_test"),DATA)); 
+			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
+							 						   () -> new ElementRole(ELEMENT_ROLE,DATA)); 
 			
 			repository.addIfAbsent(findElementByName(ELEMENT_NAME), 
 								   () -> new Element(moduleTestGroup,
@@ -211,8 +219,8 @@ public class ElementModuleServiceIT extends InventoryIT {
 	
 	@Test
 	public void add_module_with_existing_parent() {
-		ModuleData parent = testModule("can_add_module_with_parent_parent");
-		ModuleData module = testModule(parent,"can_add_module_with_parent_child");
+		ModuleData parent = testModule("parent_module");
+		ModuleData module = testModule(parent,"child_module");
 
 		// Store parent module
 		transaction(()->{
@@ -237,8 +245,8 @@ public class ElementModuleServiceIT extends InventoryIT {
 	
 	@Test
 	public void add_module_without_existing_parent() {
-		ModuleData parent = testModule("can_add_module_without_existing_parent_parent");
-		ModuleData module = testModule(parent,"can_add_module_without_existing_parent_child");
+		ModuleData parent = testModule("parent_module");
+		ModuleData module = testModule(parent,"child_module");
 
 
 		// Create child module only
@@ -296,7 +304,7 @@ public class ElementModuleServiceIT extends InventoryIT {
 
 	@Test
 	public void remove_module() {
-		ModuleData module = testModule("can_add_module_without_parent");
+		ModuleData module = testModule("module");
 		transaction(()->{
 			service.storeElementModule(ELEMENT_NAME, 
 									   module.getModuleName(), 

@@ -90,15 +90,15 @@ public class RackServiceIT extends InventoryIT {
 	private static final RackId 			 RACK_ID 		  = randomRackId();
 	private static final RackName 			 RACK_NAME 		  = rackName("rack");
 	private static final ElementId 			 ELEMENT_ID 	  = randomElementId();
-	private static final ElementName 		 ELEMENT_NAME 	  = elementName("RackServiceIT");
-	private static final ElementAlias 		 ELEMENT_ALIAS 	  = elementAlias("RackServiceIT-Alias");
-	private static final ElementRoleName	 ELEMENT_ROLE	  = elementRoleName("RackServiceIT-Role");
+	private static final ElementName 		 ELEMENT_NAME 	  = elementName("element");
+	private static final ElementAlias 		 ELEMENT_ALIAS 	  = elementAlias("alias");
+	private static final ElementRoleName	 ELEMENT_ROLE	  = elementRoleName("role");
 	private static final ElementGroupId 	 GROUP_ID 		  = randomGroupId();
-	private static final ElementGroupName 	 GROUP_NAME 	  = groupName("RackServiceIT-Group");
-	private static final ElementGroupType	 GROUP_TYPE 	  = groupType("unittest");
+	private static final ElementGroupName 	 GROUP_NAME 	  = groupName("group");
+	private static final ElementGroupType	 GROUP_TYPE 	  = groupType("type");
 	private static final PlatformId 		 PLATFORM_ID	  = randomPlatformId();
-	private static final PlatformName 		 PLATFORM_NAME	  = platformName("RackServiceIT-Platform");
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("platform-chipset");
+	private static final PlatformName 		 PLATFORM_NAME	  = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();

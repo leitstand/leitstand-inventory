@@ -36,7 +36,7 @@ public class StoreElementGroupIT extends InventoryIT{
 	private Messages messages;
 	
 	@Before
-	public void setup_service(){
+	public void initTestEnvironment(){
 		Repository repository = new Repository(getEntityManager());
 		groups = new ElementGroupProvider(repository);
 		messages = mock(Messages.class);
