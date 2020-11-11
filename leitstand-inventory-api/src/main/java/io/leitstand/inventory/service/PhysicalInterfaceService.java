@@ -19,6 +19,6 @@ import java.util.List;
 
 public interface PhysicalInterfaceService {
 
-	List<PhysicalInterfaceData> findPhysicalInterfaces(String filter);
+	List<PhysicalInterfaceData> findPhysicalInterfaces(String filter, int offset, int limit);
 
 }
