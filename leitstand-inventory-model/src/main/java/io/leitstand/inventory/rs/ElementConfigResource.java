@@ -124,8 +124,8 @@ public class ElementConfigResource {
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public ElementConfigRevisions getRevisions(@Valid @PathParam("element") ElementId elementId,
-											   @Valid @PathParam("config_name") ElementConfigName configName) {
+	public ElementConfigRevisions getElementConfigRevisions(@Valid @PathParam("element") ElementId elementId,
+											                @Valid @PathParam("config_name") ElementConfigName configName) {
 		return service.getElementConfigRevisions(elementId,
 												 configName);
 	}
@@ -133,8 +133,8 @@ public class ElementConfigResource {
 	@GET
 	@Path("/{element}/configs/{config_name}")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public ElementConfigRevisions getRevisions(@Valid @PathParam("element") ElementName elementName,
-											   @Valid @PathParam("config_name") ElementConfigName configName) {
+	public ElementConfigRevisions getElementConfigRevisions(@Valid @PathParam("element") ElementName elementName,
+	                                                        @Valid @PathParam("config_name") ElementConfigName configName) {
 		return service.getElementConfigRevisions(elementName,
 												 configName);
 	}	
@@ -149,9 +149,9 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{id:"+UUID_PATTERN+"}/configs/{config_name}/")
-	public Response removeElementConfig(@Valid @PathParam("id") ElementId id,
-										@Valid @PathParam("config_name") ElementConfigName configName){
-		service.removeElementConfig(id,
+	public Response removeElementConfigRevisions(@Valid @PathParam("id") ElementId id,
+										         @Valid @PathParam("config_name") ElementConfigName configName){
+		service.removeElementConfigRevisions(id,
 									configName);
 		return success(messages);
 	}	
@@ -166,9 +166,9 @@ public class ElementConfigResource {
 	
 	@DELETE
 	@Path("/{element}/configs/{config_name}")
-	public Response removeElementConfig(@Valid @PathParam("element") ElementName elementName,
-								        @Valid @PathParam("config_name") ElementConfigName configName){
-		service.removeElementConfig(elementName,
+	public Response removeElementConfigRevisions(@Valid @PathParam("element") ElementName elementName,
+								                 @Valid @PathParam("config_name") ElementConfigName configName){
+		service.removeElementConfigRevisions(elementName,
 								    configName);
 		return success(messages);
 	}

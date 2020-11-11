@@ -16,8 +16,8 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.model.Platform.findPlatformById;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
@@ -61,8 +61,8 @@ import io.leitstand.inventory.service.Version;
 public class ManageRoleBasedImagesIT extends InventoryIT{
 	
 	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final PlatformName PLATFORM_NAME = platformName(ManageRoleBasedImagesIT.class.getName());
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest");
+	private static final PlatformName PLATFORM_NAME = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	private static final ElementRoleName ROLE_A = elementRoleName("Role A");
 	private static final ElementRoleName ROLE_B = elementRoleName("Role B");
 	

@@ -19,6 +19,7 @@ import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
 import static io.leitstand.inventory.model.Platform.findPlatformById;
+import static io.leitstand.inventory.service.ElementAlias.elementAlias;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -57,7 +58,6 @@ import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.ElementAlias;
-import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
@@ -71,14 +71,16 @@ import io.leitstand.inventory.service.PlatformSettings;
 public class ElementSettingsServiceIT extends InventoryIT {
 
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementRoleName ROLE_A = ElementRoleName.valueOf(ElementSettingsServiceIT.class.getSimpleName()+".A");
-	private static final ElementRoleName ROLE_B = ElementRoleName.valueOf(ElementSettingsServiceIT.class.getSimpleName()+".B");
+	private static final ElementName ELEMENT_NAME = elementName("element");
+	private static final ElementAlias ELEMENT_ALIAS = elementAlias("alias");
+	private static final ElementRoleName ROLE_A = elementRoleName("role_a");
+	private static final ElementRoleName ROLE_B = elementRoleName("role_b");
 	
 	private static final Platform PLATFORM_A = new Platform(randomPlatformId(), 
-															platformName("ElementSettingsServiceIT_A"),
+															platformName("platform_a"),
 															platformChipsetName("unittest"));
 	private static final Platform PLATFORM_B = new Platform(randomPlatformId(), 
-															platformName("ElementSettingsServiceIT_B"),
+															platformName("platform_b"),
 															platformChipsetName("unittest"));
 
 	
@@ -143,7 +145,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	public void throws_EntityNotFoundException_when_element_group_does_not_exist() {
 		ElementSettings unknownGroup = element(seed)
 									   .withGroupId(randomGroupId())
-									   .withGroupType(groupType("pod"))
+									   .withGroupType(groupType("unittest"))
 									   .withGroupName(groupName("unknown"))
 									   .build();
 		
@@ -162,12 +164,12 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		transaction(() -> {
 			// Store an initial element and use a unique name to avoid conflicts with other tests
 			service.storeElementSettings(element(seed)
-										 .withElementName(elementName("rename_existing_element"))
+										 .withElementName(ELEMENT_NAME)
 										 .build());
 		});
 		
 		ElementSettings renamed = element(seed)
-								  .withElementName(elementName("rename_existing_element__renamed"))
+								  .withElementName(elementName("renamed_element"))
 								  .build();
 		
 		transaction(()->{
@@ -188,12 +190,12 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		transaction(() -> {
 			// Store an initial element and use a unique name to avoid conflicts with other tests
 			service.storeElementSettings(element(seed)
-										 .withElementAlias(ElementAlias.valueOf("alias_of_existing_element"))
+										 .withElementAlias(ELEMENT_ALIAS)
 										 .build());
 		});
 		
 		ElementSettings renamed = element(seed)
-								  .withElementAlias(ElementAlias.valueOf("new_alias_of_existing_element"))
+								  .withElementAlias(elementAlias("new alias"))
 								  .build();
 		transaction(()->{
 			boolean created = service.storeElementSettings(renamed);
@@ -352,7 +354,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	public void create_new_platform_when_element_with_unknown_platform_was_registered() {
 		
 		PlatformId platformId = randomPlatformId();
-		PlatformName platformName = platformName("ElementSettingServiceIT_New_Platform");
+		PlatformName platformName = platformName("platform");
 		
 		
 		ElementSettings elementWithUnknownPlatform = element(seed)
@@ -381,11 +383,9 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	
 	@Test
 	public void get_element_settings_by_name() {
-		ElementId elementId = randomElementId();
-		ElementName elementName = elementName("get_element_settings_by_name");
 		ElementSettings settings = element(seed)
-								   .withElementId(elementId)
-								   .withElementName(elementName)
+								   .withElementId(ELEMENT_ID)
+								   .withElementName(ELEMENT_NAME)
 								   .build();
 		transaction(() -> {
 			boolean created = service.storeElementSettings(settings);
@@ -393,7 +393,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		});
 		
 		transaction( () -> {
-			ElementSettings reloaded = service.getElementSettings(elementName);
+			ElementSettings reloaded = service.getElementSettings(ELEMENT_NAME);
 			assertNotSame(settings,reloaded);
             assertNotSame(settings,reloaded);
             assertEquals(settings.getGroupId(),reloaded.getGroupId());
@@ -416,11 +416,9 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	
 	@Test
 	public void get_element_settings_by_id() {
-		ElementId elementId = randomElementId();
-		ElementName elementName = elementName("get_settings_by_id");
 		ElementSettings settings = element(seed)
-								   .withElementId(elementId)
-								   .withElementName(elementName)
+								   .withElementId(ELEMENT_ID)
+								   .withElementName(ELEMENT_NAME)
 								   .build();
 		transaction(() -> {
 			boolean created = service.storeElementSettings(settings);
@@ -428,7 +426,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		});
 		
 		transaction( () -> {
-			ElementSettings reloaded = service.getElementSettings(elementId);
+			ElementSettings reloaded = service.getElementSettings(ELEMENT_ID);
 			assertNotSame(settings,reloaded);
 			assertEquals(settings.getGroupId(),reloaded.getGroupId());
 			assertEquals(settings.getGroupType(),reloaded.getGroupType());
@@ -470,7 +468,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	public void throws_ConflictException_when_alias_matches_the_name_of_another_element() {
 		ElementSettings namedElement = element(seed)
 									   .withElementId(randomElementId())
-									   .withElementName(elementName("name_alias_conflict_test_name"))
+									   .withElementName(elementName("alias"))
 									   .build();
 		
 		transaction(() -> {
@@ -481,8 +479,8 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		exception.expect(reason(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE));
 		ElementSettings aliasedElement = element(seed)
 										 .withElementId(randomElementId())
-										 .withElementName(elementName("throws_ConflictException_when_name_and_alias_of_two_different_elements_are_equal"))
-										 .withElementAlias(ElementAlias.valueOf("name_alias_conflict_test_name"))
+										 .withElementName(ELEMENT_NAME)
+										 .withElementAlias(elementAlias("alias"))
 										 .build();
 
 		transaction(()->{
@@ -493,9 +491,9 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	@Test
 	public void throws_ConflictException_when_name_matches_the_alias_of_another_element() {
 		ElementSettings namedElement = element(seed)
-									   .withElementId(randomElementId())
-									   .withElementName(elementName("alias_name_conflict_test_name"))
-									   .withElementAlias(ElementAlias.valueOf("alias_name_conflict_test_alias"))
+									   .withElementId(ELEMENT_ID)
+									   .withElementName(ELEMENT_NAME)
+									   .withElementAlias(ELEMENT_ALIAS)
 									   .build();
 		
 		transaction(() -> {
@@ -506,7 +504,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		exception.expect(reason(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE));
 		ElementSettings aliasedElement = element(seed)
 										 .withElementId(randomElementId())
-										 .withElementName(elementName("alias_name_conflict_test_alias"))
+										 .withElementName(elementName(ELEMENT_ALIAS))
 										 .build();
 
 		transaction(()->{
@@ -518,7 +516,7 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	public void throws_ConflictException_when_attempting_to_store_two_elements_with_the_same_name() {
 		ElementSettings namedElement = element(seed)
 									   .withElementId(randomElementId())
-									   .withElementName(elementName("name_conflict_test_name"))
+									   .withElementName(ELEMENT_NAME)
 									   .build();
 		
 		transaction(() -> {
@@ -528,8 +526,8 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		exception.expect(UniqueKeyConstraintViolationException.class);
 		exception.expect(reason(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE));
 		ElementSettings clonedElement = element(namedElement)
-										 .withElementId(randomElementId())
-										 .build();
+										.withElementId(randomElementId())
+										.build();
 
 		transaction(()->{
 			service.storeElementSettings(clonedElement);
@@ -540,8 +538,8 @@ public class ElementSettingsServiceIT extends InventoryIT {
 	public void name_and_alias_can_be_equal_for_the_same_element() {
 		ElementSettings namedElement = element(seed)
 									   .withElementId(randomElementId())
-									   .withElementName(elementName("name_and_alias_can_be_equal_for_the_same_element"))
-									   .withElementAlias(ElementAlias.valueOf("name_and_alias_can_be_equal_for_the_same_element"))
+									   .withElementName(elementName("element"))
+									   .withElementAlias(elementAlias("element"))
 									   .build();
 
 		transaction(() -> {
@@ -571,7 +569,8 @@ public class ElementSettingsServiceIT extends InventoryIT {
 		
 		ElementSettings elementWithUnknownGroup = element(seed)
 										  		  .withGroupId(null)
-										  		  .withGroupName(groupName("UNKNOWN"))
+										  		  .withGroupName(groupName(
+										  		          "UNKNOWN"))
 										  		  .build();
 		
 		transaction(() -> {

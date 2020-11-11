@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
@@ -48,7 +47,6 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,7 +55,6 @@ import org.mockito.ArgumentCaptor;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
-import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.messages.Message;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
@@ -78,10 +75,10 @@ public class PlatformServiceIT extends InventoryIT{
 	private static final PlatformName PLATFORM_NAME = platformName("platform");
 	
 	private static final ElementGroupId	  GROUP_ID	 = randomGroupId();
-	private static final ElementGroupName GROUP_NAME = groupName(PlatformServiceIT.class.getSimpleName());
-	private static final ElementGroupType GROUP_TYPE = groupType("pod");
-	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName(PlatformServiceIT.class.getSimpleName());
-	private static final String 		  VENDOR 	 = PlatformServiceIT.class.getSimpleName();
+	private static final ElementGroupName GROUP_NAME = groupName("group");
+	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
+	private static final ElementRoleName  ELEMENT_ROLE = elementRoleName("role");
+	private static final String 		  VENDOR 	 = "vendor";
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -118,26 +115,14 @@ public class PlatformServiceIT extends InventoryIT{
 		
 		transaction(()->{
 			repository.addIfAbsent(findElementGroupById(GROUP_ID),
-								   () -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
+								   () -> new ElementGroup(GROUP_ID, 
+								                          GROUP_TYPE, 
+								                          GROUP_NAME));
 			
 			repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
-								   () -> new ElementRole(ELEMENT_ROLE, DATA));	
+								   () -> new ElementRole(ELEMENT_ROLE, 
+								                         DATA));	
 		});
-	}
-	
-	@After
-	public void remove_created_platforms() {
-		
-		DatabaseService db = getDatabase();
-		transaction(()->{
-			db.executeUpdate(prepare("DELETE FROM inventory.element e WHERE e.platform_id IN (SELECT p.id FROM inventory.platform p WHERE p.vendor = ?)", VENDOR));
-		});
-
-		transaction(()->{
-			db.executeUpdate(prepare("DELETE FROM inventory.platform p WHERE p.vendor = ?", VENDOR));
-
-		});
-
 	}
 	
 	@Test

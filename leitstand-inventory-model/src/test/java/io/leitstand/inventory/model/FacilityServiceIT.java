@@ -1,6 +1,5 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -22,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,18 +64,9 @@ public class FacilityServiceIT extends InventoryIT{
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
 		this.messages = mock(Messages.class);
-		this.service = new DefaultFacilityService(new FacilityProvider(repository),
+		this.service = new DefaultFacilityService(new FacilityProvider(repository,messages),
 												  repository,
 												  messages);
-	}
-	
-	@After
-	public void cleanupDatabase() {
-		transaction(()->{
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack WHERE uuid=?",RACK_ID));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementgroup WHERE uuid=?",GROUP_ID));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.facility"));
-		});
 	}
 	
 	@Test

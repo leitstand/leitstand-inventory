@@ -25,6 +25,7 @@ import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementManagementInterface.newElementManagementInterface;
+import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0303E_ELEMENT_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.isEmptyList;
@@ -60,15 +61,15 @@ import io.leitstand.inventory.service.Plane;
 public class ElementServiceIT extends InventoryIT {
 	
 	private static final ElementId ACTIVE_ELEMENT_ID = randomElementId();
-	private static final ElementName ACTIVE_ELEMENT_NAME = ElementName.elementName(ElementServiceIT.class.getSimpleName()+"_ACTIVE");
+	private static final ElementName ACTIVE_ELEMENT_NAME = elementName("active");
 	private static final ElementId NEW_ELEMENT_ID = randomElementId();
-	private static final ElementName NEW_ELEMENT_NAME = ElementName.elementName(ElementServiceIT.class.getSimpleName()+"_NEW");
+	private static final ElementName NEW_ELEMENT_NAME = elementName("new");
 	private static final ElementId RETIRED_ELEMENT_ID = randomElementId();
-	private static final ElementName RETIRED_ELEMENT_NAME = ElementName.elementName(ElementServiceIT.class.getSimpleName()+"_RETIRED");
+	private static final ElementName RETIRED_ELEMENT_NAME = elementName("retired");
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName(ElementServiceIT.class.getSimpleName());
-	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementServiceIT.class.getSimpleName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
+	private static final ElementRoleName ROLE_NAME = elementRoleName("role");
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -170,7 +171,7 @@ public class ElementServiceIT extends InventoryIT {
 	public void find_elements_by_name_pattern() {
 		
 		transaction(()->{
-			List<ElementSettings> elements = service.findElementsByName(".*_ACTIVE", 0, 100);
+			List<ElementSettings> elements = service.findElementsByName("act.*", 0, 100);
 			assertEquals(GROUP_ID, elements.get(0).getGroupId());
 			assertEquals(GROUP_TYPE, elements.get(0).getGroupType());
 			assertEquals(GROUP_NAME, elements.get(0).getGroupName());

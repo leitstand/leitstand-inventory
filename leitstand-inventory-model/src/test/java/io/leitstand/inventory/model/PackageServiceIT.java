@@ -35,6 +35,7 @@ import io.leitstand.inventory.service.Version;
 
 public class PackageServiceIT extends InventoryIT{
 
+    private static final String IT_PKG_NAME = "package";
 	private static final String IT_PKG_ORG = "net.rtbrick";
 	private static final String IT_PKG_EXT = "test";
 	private Repository repository;
@@ -48,11 +49,11 @@ public class PackageServiceIT extends InventoryIT{
 	
 	@Test
 	public void create_package_with_revision(){
-		service.storePackageVersion(initialVersion(IT_PKG_ORG, "create-package",IT_PKG_EXT));
+		service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME ,IT_PKG_EXT));
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,"create-package",IT_PKG_EXT);
+			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("create-package",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(1,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 		});
@@ -60,7 +61,7 @@ public class PackageServiceIT extends InventoryIT{
 	
 	@Test
 	public void removal_of_last_revision_removes_entire_package(){
-		PackageVersionInfo pkg = initialVersion(IT_PKG_ORG, "remove-pkg-with-last-revision",IT_PKG_EXT);
+		PackageVersionInfo pkg = initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT);
 		transaction(()->{
 			service.storePackageVersion(pkg);
 		});
@@ -98,14 +99,14 @@ public class PackageServiceIT extends InventoryIT{
 	
 	@Test
 	public void add_package_major_revision(){
-		service.storePackageVersion(initialVersion(IT_PKG_ORG, "add-major",IT_PKG_EXT));
+		service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		transaction(()->{
-			service.storePackageVersion(newMajorVersion(IT_PKG_ORG, "add-major",IT_PKG_EXT));
+			service.storePackageVersion(newMajorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,"add-major",IT_PKG_EXT);
+			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("add-major",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 			assertEquals(new Version(2,0,0),pkg.getVersions().get(1).getRevision());
@@ -115,15 +116,15 @@ public class PackageServiceIT extends InventoryIT{
 	@Test
 	public void add_package_minor_revision(){
 		transaction(()->{
-			service.storePackageVersion(initialVersion(IT_PKG_ORG, "add-minor",IT_PKG_EXT));
+			service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, "add-minor",IT_PKG_EXT));
+			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,"add-minor",IT_PKG_EXT);
+			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("add-minor",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getRevision());
@@ -133,15 +134,15 @@ public class PackageServiceIT extends InventoryIT{
 	@Test
 	public void add_package_patch_revision(){
 		transaction(()->{
-			service.storePackageVersion(initialVersion(IT_PKG_ORG, "add-patch",IT_PKG_EXT));
+			service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			service.storePackageVersion(initialVersionPatch(IT_PKG_ORG, "add-patch", IT_PKG_EXT));
+			service.storePackageVersion(initialVersionPatch(IT_PKG_ORG, IT_PKG_NAME, IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,"add-patch",IT_PKG_EXT);
+			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("add-patch",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 			assertEquals(new Version(1,0,1),pkg.getVersions().get(1).getRevision());
@@ -167,14 +168,14 @@ public class PackageServiceIT extends InventoryIT{
 	@Test
 	public void can_repeatedly_store_same_minor_revision(){
 		transaction(()->{
-			service.storePackageVersion(initialVersion(IT_PKG_ORG, "update-minor",IT_PKG_EXT));
+			service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
-		PackageVersionInfo minor = newMinorVersion(IT_PKG_ORG, "update-minor",IT_PKG_EXT);
+		PackageVersionInfo minor = newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT);
 		transaction(()->{
 			service.storePackageVersion(minor);
 		});
 		transaction(()->{
-			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, "update-minor",IT_PKG_EXT));
+			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 			assertEquals(minor,service.getPackageVersion(minor.getOrganization(), 
 														  minor.getPackageName(), 
 														  minor.getPackageVersion()));
@@ -184,14 +185,14 @@ public class PackageServiceIT extends InventoryIT{
 	@Test
 	public void can_repeatedly_store_same_patch_revision(){
 		transaction(()->{
-			service.storePackageVersion(initialVersion(IT_PKG_ORG, "update-patch",IT_PKG_EXT));
+			service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
-		PackageVersionInfo patch = initialVersionPatch(IT_PKG_ORG, "update-patch",IT_PKG_EXT);
+		PackageVersionInfo patch = initialVersionPatch(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT);
 		transaction(()->{
 			service.storePackageVersion(patch);
 		});
 		transaction(()->{
-			service.storePackageVersion(initialVersionPatch(IT_PKG_ORG, "update-patch",IT_PKG_EXT));
+			service.storePackageVersion(initialVersionPatch(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 			assertEquals(patch,service.getPackageVersion(patch.getOrganization(), 
 														  patch.getPackageName(), 
 														  patch.getPackageVersion()));
@@ -201,24 +202,24 @@ public class PackageServiceIT extends InventoryIT{
 	@Test
 	public void remove_revision(){
 		transaction(()->{
-			service.storePackageVersion(initialVersion(IT_PKG_ORG, "remove-revision" ,IT_PKG_EXT));
+			service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME ,IT_PKG_EXT));
 		});
 		transaction(()->{
-			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, "remove-revision",IT_PKG_EXT));
+			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,"remove-revision",IT_PKG_EXT);
+			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("remove-revision",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getRevision());
-			service.removeRevision(IT_PKG_ORG, "remove-revision",new Version(1,1,0));
+			service.removeRevision(IT_PKG_ORG, IT_PKG_NAME,new Version(1,1,0));
 			commitTransaction();
 			beginTransaction();
-			pkg = service.getPackage(IT_PKG_ORG,"remove-revision",IT_PKG_EXT);
+			pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals("remove-revision",pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(1,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
 		});

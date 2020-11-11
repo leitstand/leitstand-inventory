@@ -24,6 +24,14 @@ public class ReleaseProvider {
     @Inventory
     private Repository repository;
     
+    protected ReleaseProvider() {
+        // CDI
+    }
+    
+    protected ReleaseProvider(Repository repository) {
+        this.repository = repository;
+    }
+    
     public Release tryFetchRelease(ReleaseId releaseId) {
         return repository.execute(findReleaseById(releaseId));
     }

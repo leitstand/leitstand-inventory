@@ -69,8 +69,8 @@ public class DnsZoneManager {
 
 	@Inject
 	protected DnsZoneManager(@Inventory Repository repository,
-						     Messages messages,
-						     Event<DnsZoneEvent> event) {
+						     Event<DnsZoneEvent> event,
+						     Messages messages) {
 		this.repository = repository;
 		this.messages = messages;
 		this.event = event;

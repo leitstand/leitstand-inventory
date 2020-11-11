@@ -19,7 +19,6 @@ import static io.leitstand.inventory.model.DnsZone.findDnsZoneById;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Element_DnsRecordSet.removeDnsRecordSets;
 import static io.leitstand.inventory.service.DnsName.dnsName;
 import static io.leitstand.inventory.service.DnsRecord.newDnsRecord;
 import static io.leitstand.inventory.service.DnsRecordSet.newDnsRecordSet;
@@ -35,11 +34,15 @@ import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.ReasonCode.IVT0950E_DNS_ZONE_NOT_FOUND;
+import static io.leitstand.inventory.service.ReasonCode.IVT0953E_DNS_ZONE_NOT_REMOVABLE;
 import static io.leitstand.inventory.service.ReasonCode.IVT3001E_ELEMENT_DNS_RECORD_NOT_FOUND;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import java.util.LinkedList;
@@ -47,21 +50,25 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 
+import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
+import io.leitstand.inventory.event.DnsZoneEvent;
+import io.leitstand.inventory.event.DnsZoneRemovedEvent;
 import io.leitstand.inventory.service.DnsName;
 import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsRecordSetId;
 import io.leitstand.inventory.service.DnsRecordType;
 import io.leitstand.inventory.service.DnsZoneId;
 import io.leitstand.inventory.service.DnsZoneName;
+import io.leitstand.inventory.service.DnsZoneService;
 import io.leitstand.inventory.service.ElementDnsRecordSet;
 import io.leitstand.inventory.service.ElementDnsRecordSetService;
 import io.leitstand.inventory.service.ElementDnsRecordSets;
@@ -76,32 +83,38 @@ public class ElementDnsRecordSetServiceIT extends InventoryIT{
 	
 	private static final ElementGroupId GROUP_ID = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName(ElementDnsRecordSetServiceIT.class.getSimpleName());
-	private static final ElementRoleName ROLE_NAME = elementRoleName(ElementDnsRecordSetServiceIT.class.getSimpleName());
+	private static final ElementGroupName GROUP_NAME = groupName("group");
+	private static final ElementRoleName ROLE_NAME = elementRoleName("role");
 	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName(ElementDnsRecordSetServiceIT.class.getName());
+	private static final ElementName ELEMENT_NAME = elementName("element");
 	private static final DnsRecordSetId DNS_ID = randomDnsRecordSetId();
 	private static final DnsRecordType DNS_TYPE = dnsRecordType("A");
 	private static final DnsZoneId ZONE_ID = randomDnsZoneId();
-	private static final DnsZoneName ZONE_NAME = dnsZoneName(ElementDnsRecordSetServiceIT.class.getSimpleName());
+	private static final DnsZoneName ZONE_NAME = dnsZoneName("unittest");
 	private static final DnsName DNS_NAME = dnsName("test.leitstand.io."+ZONE_NAME);
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
 	private ElementDnsRecordSetService service;
+	private DnsZoneService dnsZones;
 	private Repository repository;
+	private Event event;
 	
 	@Before
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
+		this.event = mock(Event.class);
 		ElementProvider elements = new ElementProvider(repository);
 		DnsZoneProvider zones = new DnsZoneProvider(repository);
 		ElementDnsRecordSetManager manager = new ElementDnsRecordSetManager(zones,
 																			repository, 
-																			mock(Event.class), 
+																			event, 
 																			mock(Messages.class));
 		this.service = new DefaultElementDnsRecordSetService(elements, manager);
-		
+		this.dnsZones = new DefaultDnsZoneService(zones, 
+		                                          new DnsZoneManager(repository, 
+		                                                             event, 
+		                                                             mock(Messages.class)));
 		transaction(() -> {
 			ElementRole role = repository.addIfAbsent(findRoleByName(ROLE_NAME), 
 													  () -> new ElementRole(ROLE_NAME,DATA));
@@ -117,15 +130,6 @@ public class ElementDnsRecordSetServiceIT extends InventoryIT{
 		});
 		
 	}
-	
-	@After
-	public void removeDnsRecords() {
-		transaction(()->{
-			Element element = repository.execute(findElementById(ELEMENT_ID));
-			repository.execute(removeDnsRecordSets(element));
-		});
-	}
-	
 	
 	@Test
 	public void add_dns_record_set_for_element_identified_by_id() {
@@ -472,4 +476,63 @@ public class ElementDnsRecordSetServiceIT extends InventoryIT{
 		
 		service.getElementDnsRecordSet(randomDnsRecordSetId());
 	}
+	
+	@Test
+	public void cannot_remove_dns_zone_with_existing_records() {
+	    DnsRecordSet record = newDnsRecordSet()
+	                          .withDnsZoneId(ZONE_ID)
+	                          .withDnsZoneName(ZONE_NAME)
+	                          .withDnsRecordSetId(DNS_ID)
+	                          .withDnsName(DNS_NAME)
+	                          .withDnsRecordType(DNS_TYPE)
+	                          .withDnsRecords(newDnsRecord()
+	                                          .withRecordValue("10.0.0.1"),
+	                                          newDnsRecord()
+	                                          .withRecordValue("10.0.0.2"))
+	                          .build();
+        transaction(() -> {
+            boolean created = service.storeElementDnsRecordSet(ELEMENT_ID, record);
+            assertTrue(created);
+        });
+        
+        exception.expect(ConflictException.class);
+        exception.expect(reason(IVT0953E_DNS_ZONE_NOT_REMOVABLE));
+        
+        transaction(() -> {
+           dnsZones.removeDnsZone(ZONE_ID); 
+        });
+        
+	}
+	
+	@Test
+    public void force_remove_dns_zone_with_existing_records() {
+        DnsRecordSet record = newDnsRecordSet()
+                              .withDnsZoneId(ZONE_ID)
+                              .withDnsZoneName(ZONE_NAME)
+                              .withDnsRecordSetId(DNS_ID)
+                              .withDnsName(DNS_NAME)
+                              .withDnsRecordType(DNS_TYPE)
+                              .withDnsRecords(newDnsRecord()
+                                              .withRecordValue("10.0.0.1"),
+                                              newDnsRecord()
+                                              .withRecordValue("10.0.0.2"))
+                              .build();
+        transaction(() -> {
+            boolean created = service.storeElementDnsRecordSet(ELEMENT_ID, record);
+            assertTrue(created);
+        });
+        
+        ArgumentCaptor<DnsZoneEvent> eventCaptor = ArgumentCaptor.forClass(DnsZoneEvent.class);
+        doNothing().when(event).fire(eventCaptor.capture());
+        
+        transaction(() -> {
+           dnsZones.forceRemoveDnsZone(ZONE_ID);
+           DnsZoneEvent dnsEvent = eventCaptor.getValue();
+           assertThat(dnsEvent,instanceOf(DnsZoneRemovedEvent.class));
+           assertEquals(ZONE_ID,dnsEvent.getDnsZoneId());
+           assertEquals(ZONE_NAME,dnsEvent.getDnsZoneName());
+        });
+        
+    }
+	
 }

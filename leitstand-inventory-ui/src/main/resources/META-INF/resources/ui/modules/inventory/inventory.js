@@ -213,16 +213,9 @@ export class Pod extends Resource {
 			query+=(del+"layout={{&layout}}");
 			del="&";
 		}
-		if(params["type"]){
-			if(params["type"].forEach){
-				params["type"].forEach(function(type){
-					query+=(del+"type="+type);
-					del="&";
-				});
-			} else {
-				query+=(del+"type="+params["type"]);
-				del="&";
-			}
+		if(params["role"]){
+		    query+=(del+"role={{&role}}");
+			del="&";
 		}
 		if(params["filter"]){
 			query+=(del+"filter={{&filter}}");
@@ -571,7 +564,7 @@ export class ElementPhysicalInterfaces extends Resource {
 	}
 	
 	load(params){
-		return this.json("/api/v1/elements/{{&element}}/physical_interfaces",
+		return this.json("/api/v1/elements/{{&element}}/physical_interfaces?ifp_name={{&ifp_name}}&ifp_alias={{&ifp_alias}}&operational_state={{operational_state}}&administrative_state={{administrative_state}}",
 				  		 this._cfg,
 				  		 params)
 				   .GET()

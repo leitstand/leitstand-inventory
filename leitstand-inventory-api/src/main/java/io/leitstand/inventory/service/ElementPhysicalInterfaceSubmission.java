@@ -17,8 +17,6 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
-import javax.json.bind.annotation.JsonbProperty;
-
 import io.leitstand.commons.model.ValueObject;
 
 /**

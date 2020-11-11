@@ -23,6 +23,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_MODULE;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static io.leitstand.inventory.service.ModuleName.moduleName;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -41,7 +42,6 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
-import io.leitstand.commons.rs.ResourceUtil;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementModule;
 import io.leitstand.inventory.service.ElementModuleService;
@@ -79,7 +79,7 @@ public class ElementModulesResource{
 		try {
 			return service.getElementModule(id,module);
 		} catch (EntityNotFoundException e) {
-			return service.getElementModule(id, ModuleName.valueOf(module));
+			return service.getElementModule(id, moduleName(module));
 		}
 	}
 	
@@ -98,7 +98,7 @@ public class ElementModulesResource{
 		try {
 			return service.getElementModule(name,module);
 		} catch (EntityNotFoundException e) {
-			return service.getElementModule(name, ModuleName.valueOf(module));
+			return service.getElementModule(name, moduleName(module));
 		}
 	}
 	

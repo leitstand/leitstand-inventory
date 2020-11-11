@@ -117,8 +117,8 @@ public class Package_Version implements Serializable {
 	private String buildId;
 	@ElementCollection
 	@CollectionTable(schema="inventory",
-					 name="package_revision_checksum",
-					 joinColumns=@JoinColumn(name="package_revision_id"))
+					 name="package_version_checksum",
+					 joinColumns=@JoinColumn(name="package_version_id"))
 	private List<Checksum> checksums = emptyList();
 	
 	

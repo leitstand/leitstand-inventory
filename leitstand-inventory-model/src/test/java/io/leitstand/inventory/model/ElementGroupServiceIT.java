@@ -54,11 +54,10 @@ import io.leitstand.inventory.service.ElementRoleName;
 
 public class ElementGroupServiceIT extends InventoryIT {
 	
+    private static final ElementGroupId   GROUP_ID 	 = randomGroupId();
 	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupId   GROUP_ID 	 = randomGroupId();
-	private static final ElementGroupName GROUP_NAME = groupName(ElementGroupServiceIT.class.getSimpleName());
-	private static final ElementRoleName  ROLE_NAME  = elementRoleName(ElementGroupServiceIT.class.getSimpleName());
-	
+	private static final ElementGroupName GROUP_NAME = groupName("group");
+	private static final ElementRoleName  ROLE_NAME  = elementRoleName("role");
 	
 	private ElementGroupService service;
 	private ElementGroupManager manager;
@@ -67,15 +66,16 @@ public class ElementGroupServiceIT extends InventoryIT {
 	@Before
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
+		Messages messages = mock(Messages.class);
 		manager = new ElementGroupManager(repository,
 				 						  getDatabase(),
-				 						  new FacilityProvider(repository),
-				 						  mock(Messages.class));
+				 						  new FacilityProvider(repository,messages),
+				 						  messages);
 		service = new DefaultElementGroupService(manager);
 		
 		transaction(() -> {
-			ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, GROUP_NAME),
-														() -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
+			repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, GROUP_NAME),
+			  					   () -> new ElementGroup(GROUP_ID, GROUP_TYPE, GROUP_NAME));
 
 
 
@@ -176,5 +176,5 @@ public class ElementGroupServiceIT extends InventoryIT {
 			assertEquals(1,stats.getRetiredElements());
 		});
 	}
-	
+		
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright 2020 RtBrick Inc.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * Licensed under the Apache License, Version 2.0 (the "License") you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
  * 
@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.db.DatabaseService.prepare;
 import static java.lang.ClassLoader.getSystemResourceAsStream;
 
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.junit.After;
 
 import io.leitstand.testing.it.JpaIT;
 
@@ -55,5 +58,48 @@ public class InventoryIT extends JpaIT {
 		// Inventory module resource name.
 		return "inventory";
 	}
+	
+	@After
+	public void clearDatabase() {
+	    transaction(()->{
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_config"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_dns_record"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_dns"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_env"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_ifa"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_vlan"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifc"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_image"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_management_interface"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_module"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_service"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_service_context"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_tag"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementgroup_tag"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.image_application"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.image_checksum"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.image_elementrole"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.image_package_version"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.package_version_checksum"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.package_version"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.package"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack_item"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.release_image"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.application"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.release"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.image"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.service"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.dnszone"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.platform"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementrole"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementgroup"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.facility"));
+	    });
+	}
+	
 
 }

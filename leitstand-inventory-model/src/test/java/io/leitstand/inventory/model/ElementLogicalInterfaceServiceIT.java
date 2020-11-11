@@ -1,6 +1,5 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -45,7 +44,6 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -146,24 +144,13 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		
 	}
 	
-	@After
-	public void removeInterfaces() {
-		transaction(() -> {
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_vlan"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl_ifa"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifl"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifp"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_ifc"));
-		});
-	}
-	
 	@Test
 	public void store_logical_interface_without_vlans() {
 		
 		ElementLogicalInterfaceSubmission ifc = newElementLogicalInterfaceSubmission()
 												.withIflName(IFL_NAME)
 												.withIfcName(IFP_NAME)
-												.withInterfaceAlias("store logical interface test")
+												.withInterfaceAlias("ifl alias")
 												.withAdministrativeState(AdministrativeState.UP)
 												.withOperationalState(OperationalState.UP)
 												.withRoutingInstanceName(routingInstance("default"))
@@ -193,7 +180,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals(OperationalState.UP,ifl.getLogicalInterface().getOperationalState());
 			assertEquals(AdministrativeState.UP,ifl.getLogicalInterface().getAdministrativeState());
 			assertEquals(routingInstance("default"),ifl.getLogicalInterface().getRoutingInstance());
-			assertEquals("store logical interface test",ifl.getLogicalInterface().getIflAlias());
+			assertEquals("ifl alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("192.168.10.1/16"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
 			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
@@ -215,7 +202,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		ElementLogicalInterfaceSubmission ifc = newElementLogicalInterfaceSubmission()
 												.withIflName(IFL_NAME)
 												.withIfcName(IFP_NAME)
-												.withInterfaceAlias("store logical interface test")
+												.withInterfaceAlias("ifl alias")
 												.withAdministrativeState(AdministrativeState.UP)
 												.withOperationalState(OperationalState.UP)
 												.withRoutingInstanceName(routingInstance("default"))
@@ -283,7 +270,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		ElementLogicalInterfaceSubmission ifc = newElementLogicalInterfaceSubmission()
 												.withIflName(IFL_NAME)
 												.withIfcName(IFP_NAME)
-												.withInterfaceAlias("store logical interface test")
+												.withInterfaceAlias("ifl alias")
 												.withAdministrativeState(AdministrativeState.UP)
 												.withOperationalState(OperationalState.UP)
 												.withRoutingInstanceName(routingInstance("default"))
@@ -316,7 +303,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals(OperationalState.UP,ifl.getLogicalInterface().getOperationalState());
 			assertEquals(AdministrativeState.UP,ifl.getLogicalInterface().getAdministrativeState());
 			assertEquals(routingInstance("default"),ifl.getLogicalInterface().getRoutingInstance());
-			assertEquals("store logical interface test",ifl.getLogicalInterface().getIflAlias());
+			assertEquals("ifl alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("192.168.10.1/16"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
 			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
@@ -340,7 +327,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 		ElementLogicalInterfaceSubmission ifc = newElementLogicalInterfaceSubmission()
 												.withIflName(IFL_NAME)
 												.withIfcName(IFP_NAME)
-												.withInterfaceAlias("store logical interface test")
+												.withInterfaceAlias("ifl alias")
 												.withAdministrativeState(AdministrativeState.UP)
 												.withOperationalState(OperationalState.UP)
 												.withRoutingInstanceName(routingInstance("default"))
@@ -411,7 +398,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			newElementLogicalInterfaceSubmission()
 			.withIflName(IFL_NAME)
 			.withIfcName(IFP_NAME)
-			.withInterfaceAlias("store logical interface test")
+			.withInterfaceAlias("ifl alias")
 			.withAdministrativeState(AdministrativeState.UP)
 			.withOperationalState(OperationalState.UP)
 			.withRoutingInstanceName(routingInstance("default"))
@@ -424,7 +411,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			newElementLogicalInterfaceSubmission()
 			.withIflName(IFL2_NAME)
 			.withIfcName(IFP_NAME)
-			.withInterfaceAlias("store logical interface test")
+			.withInterfaceAlias("ifl alias")
 			.withAdministrativeState(AdministrativeState.UP)
 			.withOperationalState(OperationalState.UP)
 			.withRoutingInstanceName(routingInstance("default"))
@@ -437,7 +424,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			newElementLogicalInterfaceSubmission()
 			.withIflName(IFL3_NAME)
 			.withIfcName(IFP_NAME)
-			.withInterfaceAlias("store logical interface test")
+			.withInterfaceAlias("ifl alias")
 			.withAdministrativeState(AdministrativeState.UP)
 			.withOperationalState(OperationalState.UP)
 			.withRoutingInstanceName(routingInstance("default"))
@@ -471,7 +458,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -484,7 +471,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL2_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -497,7 +484,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL3_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -530,7 +517,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -543,7 +530,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL2_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -556,7 +543,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL3_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("management"))
@@ -587,7 +574,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -600,7 +587,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL2_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -613,7 +600,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL3_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("management"))
@@ -643,7 +630,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -656,7 +643,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL2_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -669,7 +656,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL3_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("management"))
@@ -696,7 +683,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -709,7 +696,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL2_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("default"))
@@ -722,7 +709,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 				newElementLogicalInterfaceSubmission()
 				.withIflName(IFL3_NAME)
 				.withIfcName(IFP_NAME)
-				.withInterfaceAlias("store logical interface test")
+				.withInterfaceAlias("ifl alias")
 				.withAdministrativeState(AdministrativeState.UP)
 				.withOperationalState(OperationalState.UP)
 				.withRoutingInstanceName(routingInstance("management"))

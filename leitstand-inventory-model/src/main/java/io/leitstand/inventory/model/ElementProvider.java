@@ -64,6 +64,16 @@ public class ElementProvider {
 		return element;
 	}
 	
+	public Element fetchElement(ElementId elementId, ElementName elementName) {
+	    if(elementId != null) {
+	        return fetchElement(elementId);
+	    }
+	    if(elementName != null) {
+	        return fetchElement(elementName);
+	    }
+	    return null;
+	}
+	
 	public Element tryFetchElement(ElementName elementName) {
 		return repository.execute(findElementByName(elementName));
 	}

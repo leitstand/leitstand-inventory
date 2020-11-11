@@ -24,6 +24,7 @@
 	<ui-title>Hardware modules of {{element_name}}<inventory-operational-state></inventory-operational-state></ui-title>
 	<ui-subtitle>Hardware modules of element {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</ui-subtitle>
 </ui-view-header>
+<ui-form>
 <!-- {{#modules.length}} -->
 <ui-group>
 <ui-label>Modules</ui-label>
@@ -53,3 +54,7 @@
 <ui-note>No hardware modules have been registered for this element.</ui-note>
 </ui-blankslate>
 <!-- {{/modules}} -->
+<ui-actions>
+    <ui-refresh title="Refresh service list">Refresh</ui-refresh>
+</ui-actions>
+</ui-form>

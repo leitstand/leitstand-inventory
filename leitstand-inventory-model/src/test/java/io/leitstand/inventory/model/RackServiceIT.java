@@ -15,7 +15,6 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Element.findElementById;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
@@ -29,6 +28,9 @@ import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.FacilityId.randomFacilityId;
+import static io.leitstand.inventory.service.FacilityName.facilityName;
+import static io.leitstand.inventory.service.FacilityType.facilityType;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
@@ -39,6 +41,7 @@ import static io.leitstand.inventory.service.RackItemData.Face.REAR;
 import static io.leitstand.inventory.service.RackName.rackName;
 import static io.leitstand.inventory.service.RackSettings.newRackSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOUND;
+import static io.leitstand.inventory.service.ReasonCode.IVT0600E_FACILITY_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0800E_RACK_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0802I_RACK_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0803E_RACK_NOT_REMOVABLE;
@@ -57,7 +60,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -76,6 +78,9 @@ import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.FacilityId;
+import io.leitstand.inventory.service.FacilityName;
+import io.leitstand.inventory.service.FacilityType;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
@@ -92,30 +97,36 @@ public class RackServiceIT extends InventoryIT {
 	private static final RackId 			 RACK_ID 		  = randomRackId();
 	private static final RackName 			 RACK_NAME 		  = rackName("rack");
 	private static final ElementId 			 ELEMENT_ID 	  = randomElementId();
-	private static final ElementName 		 ELEMENT_NAME 	  = elementName("RackServiceIT");
-	private static final ElementAlias 		 ELEMENT_ALIAS 	  = elementAlias("RackServiceIT-Alias");
-	private static final ElementRoleName	 ELEMENT_ROLE	  = elementRoleName("RackServiceIT-Role");
+	private static final ElementName 		 ELEMENT_NAME 	  = elementName("element");
+	private static final ElementAlias 		 ELEMENT_ALIAS 	  = elementAlias("alias");
+	private static final ElementRoleName	 ELEMENT_ROLE	  = elementRoleName("role");
 	private static final ElementGroupId 	 GROUP_ID 		  = randomGroupId();
-	private static final ElementGroupName 	 GROUP_NAME 	  = groupName("RackServiceIT-Group");
-	private static final ElementGroupType	 GROUP_TYPE 	  = groupType("unittest");
+	private static final ElementGroupName 	 GROUP_NAME 	  = groupName("group");
+	private static final ElementGroupType	 GROUP_TYPE 	  = groupType("type");
 	private static final PlatformId 		 PLATFORM_ID	  = randomPlatformId();
-	private static final PlatformName 		 PLATFORM_NAME	  = platformName("RackServiceIT-Platform");
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("platform-chipset");
+	private static final PlatformName 		 PLATFORM_NAME	  = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
+	private static final FacilityId          FACILITY_ID      = randomFacilityId();
+	private static final FacilityName        FACILITY_NAME    = facilityName("facility");   
+	private static final FacilityType        FACILITY_TYPE    = facilityType("unittest");
+	
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 	
+	private Repository repository;
 	private RackService service;
 	private Messages messages;
 	
 	@Before
 	public void initTestEnvironment() {
-		Repository repository = new Repository(getEntityManager());
+		repository = new Repository(getEntityManager());
 		messages = mock(Messages.class);
 		
 		service = new DefaultRackService(repository,
 										 new RackProvider(repository),
 										 new ElementProvider(repository),
+										 new FacilityProvider(repository,messages),
 										 messages);
 		
 		transaction(()->{
@@ -138,14 +149,6 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 		
-	}
-	
-	@After
-	public void removeRacks() {
-		transaction(()->{
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack_item"));
-			getDatabase().executeUpdate(prepare("DELETE FROM inventory.rack"));
-		});
 	}
 	
 	@Test
@@ -997,6 +1000,57 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 	}
+	@Test
+	public void throws_EntityNotFoundException_when_adding_a_rack_with_unknown_facility() {
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(IVT0600E_FACILITY_NOT_FOUND));
+    
+	    RackSettings rack = newRackSettings()
+                            .withRackId(RACK_ID)
+                            .withRackName(RACK_NAME)
+                            .withFacilityId(FACILITY_ID)
+                            .build();
+        
+        transaction(()->{
+            service.storeRack(rack);
+        });
+	}
 	
+	@Test
+	public void create_rack_with_facility() {
+        transaction(()->{
+           Facility facility = new Facility(FACILITY_ID, 
+                                            FACILITY_TYPE, 
+                                            FACILITY_NAME);
+           repository.add(facility);
+        });
+        
+        RackSettings rack = newRackSettings()
+                            .withAscending(true)
+                            .withAssetId("asset-123")
+                            .withDescription("Unit test rack")
+                            .withLocation("Unit test location")
+                            .withRackId(RACK_ID)
+                            .withRackName(RACK_NAME)
+                            .withAdministrativeState(ACTIVE)
+                            .withFacilityId(FACILITY_ID)
+                            .withRackType("Unit test rack type")
+                            .withSerialNumber("X-1234-TEST")
+                            .withUnits(42)
+                            .build();
+        
+        transaction(()->{
+            boolean created = service.storeRack(rack);
+            assertTrue(created);
+        });
+        
+        transaction(()->{
+           RackSettings reloaded = service.getRackSettings(RACK_ID);
+           assertEquals(FACILITY_ID,reloaded.getFacilityId());
+           assertEquals(FACILITY_TYPE,reloaded.getFacilityType());
+           assertEquals(FACILITY_NAME,reloaded.getFacilityName());
+        });
+        
+	}
 	
 }

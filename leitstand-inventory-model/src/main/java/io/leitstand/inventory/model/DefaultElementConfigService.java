@@ -69,16 +69,16 @@ public class DefaultElementConfigService implements ElementConfigService {
 	public ElementConfig getActiveElementConfig(ElementId id, 
 										  ElementConfigName configName) {
 		Element element = elements.fetchElement(id);
-		return manager.getElementConfig(element,
-						   			    configName);
+		return manager.getActiveElementConfig(element,
+		                                      configName);
 	}
 
 	@Override
 	public ElementConfig getActiveElementConfig(ElementName elementName, 
 										  ElementConfigName configName) {
 		Element element = elements.fetchElement(elementName);
-		return manager.getElementConfig(element,
-										configName);
+		return manager.getActiveElementConfig(element,
+										      configName);
 	}
 	
 
@@ -98,7 +98,7 @@ public class DefaultElementConfigService implements ElementConfigService {
 	}
 
 	@Override
-	public int removeElementConfig(ElementId elementId, 
+	public int removeElementConfigRevisions(ElementId elementId, 
 									ElementConfigName configName) {
 		Element element = elements.fetchElement(elementId);
 		return manager.removeElementConfigRevisions(element,
@@ -122,7 +122,7 @@ public class DefaultElementConfigService implements ElementConfigService {
 	}
 
 	@Override
-	public int removeElementConfig(ElementName elementName,
+	public int removeElementConfigRevisions(ElementName elementName,
 								   ElementConfigName configName) {
 		Element element = elements.fetchElement(elementName);
 		return manager.removeElementConfigRevisions(element,

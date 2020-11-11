@@ -228,6 +228,10 @@ public enum ReasonCode implements Reason{
 
 	/** The facility cannot be removed.*/
 	IVT0605E_FACILITY_NOT_REMOVABLE,
+
+    /** The facility type in the request does not match the current facility type.*/
+    IVT0606W_FACILITY_TYPE_MISMATCH,
+
 	
 	/** The requested rack does not exist.*/
 	IVT0800E_RACK_NOT_FOUND,

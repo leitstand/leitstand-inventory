@@ -34,7 +34,6 @@ import static io.leitstand.inventory.service.OperationalState.operationalState;
 import static io.leitstand.inventory.service.ReasonCode.IVT0101I_GROUP_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0102I_GROUP_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0103E_GROUP_NOT_REMOVABLE;
-import static io.leitstand.inventory.service.ReasonCode.IVT0604W_FACILITY_NAME_MISMATCH;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
@@ -57,7 +56,6 @@ import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupSettings;
 import io.leitstand.inventory.service.ElementGroupStatistics;
 import io.leitstand.inventory.service.ElementGroupType;
-import io.leitstand.inventory.service.FacilityName;
 import io.leitstand.inventory.service.OperationalState;
 
 @Dependent
@@ -88,7 +86,9 @@ class ElementGroupManager{
 		}
 		group.setElementGroupName(settings.getGroupName());
 		group.setDescription(settings.getDescription());
-		Facility facility = findFacility(settings);
+		Facility facility = facilities.fetchFacility(settings.getFacilityId(),
+		                                             settings.getFacilityType(),
+		                                             settings.getFacilityName());
 		group.setFacility(facility);
 		group.setTags(settings.getTags());
 		LOG.fine(()->format("%s: Element %s group %s stored", 
@@ -100,25 +100,6 @@ class ElementGroupManager{
 								  settings.getGroupName()));
 	}
 
-	private Facility findFacility(ElementGroupSettings settings) {
-		if(settings.getFacilityId() != null) {
-			Facility facility = facilities.fetchFacility(settings.getFacilityId());
-			if(isDifferent(facility.getFacilityName(), settings.getFacilityName())) {
-				FacilityName currentName = facility.getFacilityName();
-				LOG.fine(()->format("%s: Current facility name %s does not match the expected facility name %s. Facility-ID: %s. Proceed with current name.",
-								 	IVT0604W_FACILITY_NAME_MISMATCH.getReasonCode(),
-								 	currentName,
-								 	settings.getFacilityName(),
-								 	settings.getFacilityId()));
-				messages.add(createMessage(IVT0604W_FACILITY_NAME_MISMATCH,
-										   facility.getFacilityName(),
-										   settings.getFacilityName()));
-			}
-			return facility;
-		}
-		return null;
-	}
-	
 
 	public ElementGroupSettings getGroupSettings(ElementGroup group) {
 		return newElementGroupSettings()
@@ -127,6 +108,7 @@ class ElementGroupManager{
 			   .withGroupType(group.getGroupType())
 			   .withDescription(group.getDescription())
 			   .withFacilityId(group.getFacilityId())
+			   .withFacilityType(group.getFacilityType())
 			   .withFacilityName(group.getFacilityName())
 			   .withTags(group.getTags())
 			   .build();
@@ -164,7 +146,9 @@ class ElementGroupManager{
 											  settings.getGroupType(),
 											  settings.getGroupName());
 		group.setDescription(settings.getDescription());
-		group.setFacility(findFacility(settings));
+		group.setFacility(facilities.fetchFacility(settings.getFacilityId(), 
+		                                           settings.getFacilityType(),
+		                                           settings.getFacilityName()));
 		group.setTags(settings.getTags());
 		repository.add(group);
 		LOG.fine(()->format("%s: Element %s group %s stored", 

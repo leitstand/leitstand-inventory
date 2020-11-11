@@ -10,6 +10,7 @@ import static io.leitstand.inventory.service.ElementAlias.elementAlias;
 import static io.leitstand.inventory.service.ElementCloneRequest.newCloneElementRequest;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
@@ -57,16 +58,16 @@ import io.leitstand.inventory.service.PlatformName;
 
 public class CloneElementServiceIT extends InventoryIT {
 	
-	private static final ElementGroupId GROUP_ID = randomGroupId();
-	private static final ElementGroupType GROUP_TYPE = ElementGroupType.groupType("clone-tests");
-	private static final ElementGroupName GROUP_NAME = groupName("clone-tests");
-	private static final ElementRoleName ELEMENT_ROLE = elementRoleName("CLONE");
-	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName("source");
-	private static final ElementAlias ELEMENT_ALIAS = elementAlias("source-alias");
-	private static final PlatformId PLATFORM_ID = randomPlatformId();
-	private static final PlatformName PLATFORM_NAME = platformName("clone-platform");
-	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("unittest-chipset");
+	private static final ElementGroupId      GROUP_ID         = randomGroupId();
+	private static final ElementGroupType    GROUP_TYPE       = groupType("unittest");
+	private static final ElementGroupName    GROUP_NAME       = groupName("group");
+	private static final ElementRoleName     ELEMENT_ROLE     = elementRoleName("role");
+	private static final ElementId           ELEMENT_ID       = randomElementId();
+	private static final ElementName         ELEMENT_NAME     = elementName("element");
+	private static final ElementAlias        ELEMENT_ALIAS    = elementAlias("alias");
+	private static final PlatformId          PLATFORM_ID      = randomPlatformId();
+	private static final PlatformName        PLATFORM_NAME    = platformName("platform");
+	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	
 	private CloneElementService service;
 	private Event<ElementEvent> sink;
@@ -82,7 +83,11 @@ public class CloneElementServiceIT extends InventoryIT {
 		DefaultCloneElementService.SequenceGenerator sequence = mock(DefaultCloneElementService.SequenceGenerator.class);
 		when(sequence.acquireCloneId()).thenReturn(1000000000L);
 		
-		service = new DefaultCloneElementService(new ElementProvider(repository),db,sequence, sink,messages);
+		service = new DefaultCloneElementService(new ElementProvider(repository),
+		                                         db,
+		                                         sequence, 
+		                                         sink,
+		                                         messages);
 		
 		transaction(()->{
 			ElementRole role = repository.addIfAbsent(findRoleByName(ELEMENT_ROLE), 
@@ -121,11 +126,11 @@ public class CloneElementServiceIT extends InventoryIT {
 	@Test
 	public void clone_element_stub() {
 		ElementCloneRequest cloneRequest = newCloneElementRequest()
-										  .withElementId(randomElementId())
-										  .withElementName(elementName("clone-name"))
-										  .withElementAlias(elementAlias("clone-alias"))
-										  .withSerialNumber("clone-serial")
-										  .build();
+										   .withElementId(randomElementId())
+										   .withElementName(elementName("clone-name"))
+										   .withElementAlias(elementAlias("clone-alias"))
+										   .withSerialNumber("clone-serial")
+										   .build();
 
 		ArgumentCaptor<ElementClonedEvent> eventCaptor = ArgumentCaptor.forClass(ElementClonedEvent.class);
 		doNothing().when(sink).fire(eventCaptor.capture());
@@ -169,9 +174,6 @@ public class CloneElementServiceIT extends InventoryIT {
 		Message message = messageCaptor.getValue();
 		assertEquals(message.getReason(),IVT0306I_ELEMENT_CLONED.getReasonCode());
 		
-		
-		
 	}
-	
-	
+		
 }

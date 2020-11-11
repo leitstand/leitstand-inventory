@@ -12,6 +12,17 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+
+    publishing {
+        repositories {
+            mavenLocal()
+        }
+    }
+
 }
 
 jacoco {
@@ -36,17 +47,6 @@ subprojects {
         def version = findProperty('versions.leitstand-inventory')
         println 'Project version ('+project.name+'): ' + version
         project.setVersion(version)
-    }
-
-    repositories {
-        jcenter()
-        mavenLocal()
-    }
-    
-    publishing {
-        repositories {
-            mavenLocal()
-        }
     }
 
     sonarqube {

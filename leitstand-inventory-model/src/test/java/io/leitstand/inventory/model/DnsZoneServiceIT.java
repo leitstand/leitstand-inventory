@@ -18,6 +18,8 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.service.DnsZoneId.randomDnsZoneId;
 import static io.leitstand.inventory.service.DnsZoneName.dnsZoneName;
 import static io.leitstand.inventory.service.DnsZoneSettings.newDnsZoneSettings;
+import static io.leitstand.inventory.service.ReasonCode.IVT0950E_DNS_ZONE_NOT_FOUND;
+import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static java.lang.Integer.MAX_VALUE;
 import static javax.json.Json.createObjectBuilder;
 import static org.junit.Assert.assertEquals;
@@ -28,12 +30,12 @@ import static org.mockito.Mockito.mock;
 import javax.enterprise.event.Event;
 import javax.json.JsonObject;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.service.DnsZoneId;
@@ -59,21 +61,29 @@ public class DnsZoneServiceIT extends InventoryIT{
 		this.repository = new Repository(getEntityManager());
 		this.zones = new DnsZoneProvider(repository);
 		DnsZoneManager manager = new DnsZoneManager(repository,
-													mock(Messages.class),
-													mock(Event.class));
+													mock(Event.class),
+													mock(Messages.class));
 		service = new DefaultDnsZoneService(zones,manager);
 		
 	}
 	
-	@After
-	public void clearTestEnvironment() {
-		transaction(()->{
-			DnsZone zone = zones.tryFetchDnsZone(ZONE_ID);
-			if(zone != null) {
-				repository.remove(zone);
-			}
-		});
+	@Test
+	public void throw_EntityNotFoundException_when_dns_zone_id_is_unknown() {
+	    exception.expect(EntityNotFoundException.class);
+	    exception.expect(reason(IVT0950E_DNS_ZONE_NOT_FOUND));
+	    transaction(()->{
+	        service.getDnsZoneSettings(ZONE_ID);
+	    });
 	}
+	
+    @Test
+    public void throw_EntityNotFoundException_when_dns_zone_name_is_unknown() {
+        exception.expect(EntityNotFoundException.class);
+        exception.expect(reason(IVT0950E_DNS_ZONE_NOT_FOUND));
+        transaction(()->{
+            service.getDnsZoneSettings(ZONE_NAME);
+        });
+    }
 	
 	@Test
 	public void create_zone() {
@@ -199,6 +209,5 @@ public class DnsZoneServiceIT extends InventoryIT{
 		
 		
 	}
-	
 	
 }

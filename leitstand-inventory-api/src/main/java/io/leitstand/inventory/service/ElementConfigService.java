@@ -149,7 +149,7 @@ public interface ElementConfigService {
 	 * @param configName the name of the configuration series to be removed.
 	 * @return the number of removed configurations.
 	 */
-	int removeElementConfig(ElementId elementId,
+	int removeElementConfigRevisions(ElementId elementId,
 							ElementConfigName configName);
 	
 	/**
@@ -159,7 +159,7 @@ public interface ElementConfigService {
 	 * @param configName the name of the configuration series to be removed.
 	 * @return the number of removed configurations.
 	 */
-	int removeElementConfig(ElementName elementName,
+	int removeElementConfigRevisions(ElementName elementName,
 							ElementConfigName configName);
 
 	/**
