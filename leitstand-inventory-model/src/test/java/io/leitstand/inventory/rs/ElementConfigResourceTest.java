@@ -21,14 +21,21 @@ import static io.leitstand.inventory.service.ElementConfigName.elementConfigName
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static java.lang.Boolean.TRUE;
+import static javax.json.Json.createReader;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.StringReader;
+
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
@@ -39,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.inventory.service.ElementConfig;
 import io.leitstand.inventory.service.ElementConfigId;
 import io.leitstand.inventory.service.ElementConfigName;
 import io.leitstand.inventory.service.ElementConfigService;
@@ -53,9 +61,15 @@ public class ElementConfigResourceTest {
 	private static final ElementName ELEMENT_NAME = elementName("element");
 	private static final ElementConfigId CONFIG_ID = randomConfigId();
 	private static final ElementConfigName CONFIG_NAME = elementConfigName("config");
-	private static final String CONFIG = "foo: bar";
+	private static final String CONFIG = "{'property':'value','array':['item','item','item'],'flag':true,'int':0,'nested':{'name':'value'}}".replace('\'', '"');
 	private static final String COMMENT = "comment";
 
+    static JsonObject parseJson(String json) {
+        try(JsonReader reader = createReader(new StringReader(json))){
+            return reader.readObject();
+        }
+    }
+	
 	@Mock
 	private ElementConfigService service;
 	
@@ -72,6 +86,153 @@ public class ElementConfigResourceTest {
 		result  = mock(StoreElementConfigResult.class);
 		when(result.getConfigId()).thenReturn(CONFIG_ID);
 	}
+	
+	@Test
+	public void find_configs_for_element_id() {
+	    resource.findElementConfigs(ELEMENT_ID, "filter");
+	    verify(service).findElementConfigs(ELEMENT_ID, "filter");
+	}
+	
+    @Test
+    public void find_configs_for_element_name() {
+        resource.findElementConfigs(ELEMENT_NAME, "filter");
+        verify(service).findElementConfigs(ELEMENT_NAME, "filter");
+    }
+	
+    @Test
+    public void get_element_config_by_element_id() {
+        resource.getElementConfig(ELEMENT_ID, CONFIG_ID);
+        verify(service).getElementConfig(ELEMENT_ID, CONFIG_ID);
+    }
+    
+    @Test
+    public void get_element_config_by_element_name() {
+        resource.getElementConfig(ELEMENT_NAME, CONFIG_ID);
+        verify(service).getElementConfig(ELEMENT_NAME, CONFIG_ID);
+    }
+    
+    @Test
+    public void get_element_config_revisions_by_element_id() {
+        resource.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
+        verify(service).getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
+    }
+    
+    @Test
+    public void get_element_config_revisions_by_element_name() {
+        resource.getElementConfigRevisions(ELEMENT_NAME, CONFIG_NAME);
+        verify(service).getElementConfigRevisions(ELEMENT_NAME, CONFIG_NAME);
+    }
+    
+	@Test
+	public void download_raw_configuration_for_element_identified_by_id() {
+	    ElementConfig config = mock(ElementConfig.class);
+	    when(config.getConfig()).thenReturn(CONFIG);
+	    when(config.getConfigName()).thenReturn(CONFIG_NAME);
+	    when(config.getContentType()).thenReturn("application/json");
+	    when(service.getElementConfig(ELEMENT_ID, CONFIG_ID)).thenReturn(config);
+	    Response response = resource.downloadElementConfig(ELEMENT_ID, CONFIG_ID, false);
+	    assertEquals(CONFIG,response.getEntity());
+	}
+	
+    @Test
+    public void download_raw_configuration_for_element_identified_by_name() {
+        ElementConfig config = mock(ElementConfig.class);
+        when(config.getConfig()).thenReturn(CONFIG);
+        when(config.getConfig()).thenReturn(CONFIG);
+        when(config.getConfigName()).thenReturn(CONFIG_NAME);
+        when(config.getContentType()).thenReturn("application/json");
+        when(service.getElementConfig(ELEMENT_NAME, CONFIG_ID)).thenReturn(config);
+        Response response = resource.downloadElementConfig(ELEMENT_NAME, CONFIG_ID, false);
+        assertEquals(CONFIG,response.getEntity());
+    }
+    
+    @Test
+    public void download_formatted_json_configuration_for_element_identified_by_id() {
+        ElementConfig config = mock(ElementConfig.class);
+        when(config.getConfig()).thenReturn(parseJson(CONFIG));
+        when(config.getConfigName()).thenReturn(CONFIG_NAME);
+        when(config.getContentType()).thenReturn("application/json");
+        when(service.getElementConfig(ELEMENT_ID, CONFIG_ID)).thenReturn(config);
+        Response response = resource.downloadElementConfig(ELEMENT_ID, CONFIG_ID, true);
+        String pretty = "\n{\n" + 
+                "    \"property\":\"value\",\n" + 
+                "    \"array\":[\n" + 
+                "        \"item\",\n" + 
+                "        \"item\",\n" + 
+                "        \"item\"\n" + 
+                "    ],\n" + 
+                "    \"flag\":true,\n" + 
+                "    \"int\":0,\n" + 
+                "    \"nested\":{\n" + 
+                "        \"name\":\"value\"\n" + 
+                "    }\n" + 
+                "}";
+        
+        assertEquals(pretty,response.getEntity());
+        
+    }
+    
+    @Test
+    public void download_formatted_configuration_for_element_identified_by_name() {
+        ElementConfig config = mock(ElementConfig.class);
+        when(config.getConfig()).thenReturn(parseJson(CONFIG));
+        when(config.getConfigName()).thenReturn(CONFIG_NAME);
+        when(config.getContentType()).thenReturn("application/json");
+        when(service.getElementConfig(ELEMENT_NAME, CONFIG_ID)).thenReturn(config);
+        Response response = resource.downloadElementConfig(ELEMENT_NAME, CONFIG_ID, true);
+        String pretty = "\n{\n" + 
+                "    \"property\":\"value\",\n" + 
+                "    \"array\":[\n" + 
+                "        \"item\",\n" + 
+                "        \"item\",\n" + 
+                "        \"item\"\n" + 
+                "    ],\n" + 
+                "    \"flag\":true,\n" + 
+                "    \"int\":0,\n" + 
+                "    \"nested\":{\n" + 
+                "        \"name\":\"value\"\n" + 
+                "    }\n" + 
+                "}";
+        
+        assertEquals(pretty,response.getEntity());
+    }
+	
+    @Test
+    public void remove_config_revisions_for_element_id() {
+        resource.removeElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
+        verify(service).removeElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
+    }
+    
+    @Test
+    public void remove_config_revisions_for_element_name() {
+        resource.removeElementConfigRevisions(ELEMENT_NAME, CONFIG_NAME);
+        verify(service).removeElementConfigRevisions(ELEMENT_NAME, CONFIG_NAME);
+    }
+	
+    @Test
+    public void remove_config_for_element_id() {
+        resource.removeElementConfig(ELEMENT_ID, CONFIG_ID);
+        verify(service).removeElementConfig(ELEMENT_ID, CONFIG_ID);
+    }
+    
+    @Test
+    public void remove_config_for_element_name() {
+        resource.removeElementConfig(ELEMENT_NAME, CONFIG_ID);
+        verify(service).removeElementConfig(ELEMENT_NAME, CONFIG_ID);
+    }
+    
+	@Test
+	public void set_config_comment_for_element_identified_by_id() {
+	    resource.storeElementConfigComment(ELEMENT_ID, CONFIG_ID, "comment");
+	    verify(service).setElementConfigComment(ELEMENT_ID, CONFIG_ID, "comment");
+	}
+	
+    @Test
+    public void set_config_comment_for_element_identified_by_name() {
+        resource.storeElementConfigComment(ELEMENT_NAME, CONFIG_ID, "comment");
+        verify(service).setElementConfigComment(ELEMENT_NAME, CONFIG_ID, "comment");
+    }
+	    
 	
 	@Test
 	public void send_created_response_when_restore_config_creates_a_new_config_for_an_element_identified_by_id() {
@@ -130,6 +291,7 @@ public class ElementConfigResourceTest {
         when(result.getConfigId()).thenReturn(CONFIG_ID);
         Response response = resource.storeElementConfig(ELEMENT_ID, CONFIG_NAME, TEXT_PLAIN, CANDIDATE , COMMENT, CONFIG);
         assertThat(response.getStatus(),is(200));
+        verify(service).purgeOutdatedElementConfigs(ELEMENT_ID, CONFIG_NAME);
     }
     
     @Test
@@ -149,6 +311,7 @@ public class ElementConfigResourceTest {
         when(result.getConfigId()).thenReturn(CONFIG_ID);
         Response response = resource.storeElementConfig(ELEMENT_NAME, CONFIG_NAME, TEXT_PLAIN, CANDIDATE, COMMENT, CONFIG);
         assertThat(response.getStatus(),is(200));
+        verify(service).purgeOutdatedElementConfigs(ELEMENT_NAME, CONFIG_NAME);
     }
     
 	@Test
@@ -159,4 +322,26 @@ public class ElementConfigResourceTest {
 		assertEquals(303,resource.restoreElementConfig(ELEMENT_NAME,CONFIG_ID,COMMENT).getStatus());
 	}
 	
+	
+	@Test
+	public void store_config_by_element_id_purging_outdated_services_fails_silently() {
+        StoreElementConfigResult result = mock(StoreElementConfigResult.class);
+        when(service.storeElementConfig(ELEMENT_ID, CONFIG_NAME, TEXT_PLAIN_TYPE, CANDIDATE, CONFIG, COMMENT)).thenReturn(result);
+        when(result.getConfigId()).thenReturn(CONFIG_ID);
+        doThrow(new RuntimeException()).when(service).purgeOutdatedElementConfigs(ELEMENT_ID, CONFIG_NAME);
+        Response response = resource.storeElementConfig(ELEMENT_ID, CONFIG_NAME, TEXT_PLAIN, CANDIDATE , COMMENT, CONFIG);
+        assertThat(response.getStatus(),is(200));
+        verify(service).purgeOutdatedElementConfigs(ELEMENT_ID, CONFIG_NAME);
+	}
+	
+    @Test
+    public void store_config_by_element_name_purging_outdated_services_fails_silently() {
+        StoreElementConfigResult result = mock(StoreElementConfigResult.class);
+        when(service.storeElementConfig(ELEMENT_NAME, CONFIG_NAME, TEXT_PLAIN_TYPE, CANDIDATE, CONFIG, COMMENT)).thenReturn(result);
+        when(result.getConfigId()).thenReturn(CONFIG_ID);
+        doThrow(new RuntimeException()).when(service).purgeOutdatedElementConfigs(ELEMENT_ID, CONFIG_NAME);
+        Response response = resource.storeElementConfig(ELEMENT_NAME, CONFIG_NAME, TEXT_PLAIN, CANDIDATE , COMMENT, CONFIG);
+        assertThat(response.getStatus(),is(200));
+        verify(service).purgeOutdatedElementConfigs(ELEMENT_NAME, CONFIG_NAME);
+    }
 }

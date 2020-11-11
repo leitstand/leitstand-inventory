@@ -66,10 +66,11 @@ public class ElementGroupServiceIT extends InventoryIT {
 	@Before
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
+		Messages messages = mock(Messages.class);
 		manager = new ElementGroupManager(repository,
 				 						  getDatabase(),
-				 						  new FacilityProvider(repository),
-				 						  mock(Messages.class));
+				 						  new FacilityProvider(repository,messages),
+				 						  messages);
 		service = new DefaultElementGroupService(manager);
 		
 		transaction(() -> {

@@ -79,6 +79,12 @@ public class ElementGroupSettings extends ValueObject{
 			return this;
 		}
 		
+	    public Builder withFacilityType(FacilityType facilityType) {
+	        assertNotInvalidated(getClass(), settings);
+	        settings.facilityType = facilityType;
+	        return this;
+	    }
+		
 		public Builder withTags(String... tags){
 			return withTags(new TreeSet<>(asList(tags)));
 		}
@@ -123,6 +129,9 @@ public class ElementGroupSettings extends ValueObject{
 	@Valid
 	private FacilityName facilityName;
 	
+	@Valid
+	private FacilityType facilityType;
+	
 	private SortedSet<String> tags = emptySortedSet();
 
 	public ElementGroupId getGroupId() {
@@ -148,6 +157,10 @@ public class ElementGroupSettings extends ValueObject{
 	public FacilityName getFacilityName() {
 		return facilityName;
 	}
+	
+	public FacilityType getFacilityType() {
+        return facilityType;
+    }
 	
 	public SortedSet<String> getTags() {
 		return unmodifiableSortedSet(tags);

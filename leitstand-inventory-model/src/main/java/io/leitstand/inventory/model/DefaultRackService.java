@@ -1,7 +1,6 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
-import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.model.Rack.findRacksByFacility;
 import static io.leitstand.inventory.model.Rack.findRacksByName;
 import static io.leitstand.inventory.model.Rack_Item.findRackItem;
@@ -9,7 +8,6 @@ import static io.leitstand.inventory.service.RackItem.newRackItem;
 import static io.leitstand.inventory.service.RackItemData.newRackItemData;
 import static io.leitstand.inventory.service.RackItems.newRackItems;
 import static io.leitstand.inventory.service.RackSettings.newRackSettings;
-import static io.leitstand.inventory.service.ReasonCode.IVT0604W_FACILITY_NAME_MISMATCH;
 import static io.leitstand.inventory.service.ReasonCode.IVT0801I_RACK_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0802I_RACK_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0803E_RACK_NOT_REMOVABLE;
@@ -131,10 +129,12 @@ public class DefaultRackService implements RackService{
 	DefaultRackService(Repository repository, 
 					   RackProvider racks, 
 					   ElementProvider elements,
+					   FacilityProvider facilities,
 					   Messages messages){
 		this.repository = repository;
 		this.racks = racks;
 		this.elements = elements;
+		this.facilities = facilities;
 		this.messages = messages;
 	}
 	
@@ -177,22 +177,9 @@ public class DefaultRackService implements RackService{
 			repository.add(rack);
 			created = true;
 		}
-		Facility facility = null;
-		if(settings.getFacilityId() != null) {
-			facility = facilities.fetchFacility(settings.getFacilityId());
-			if(isDifferent(facility.getFacilityName(), settings.getFacilityName())) {
-				FacilityName currentName = facility.getFacilityName();
-				LOG.fine(()->format("%s: Current facility name %s does not match the expected facility name %s. Facility-ID: %s. Proceed with current name.",
-								 	IVT0604W_FACILITY_NAME_MISMATCH.getReasonCode(),
-								 	currentName,
-								 	settings.getFacilityName(),
-								 	settings.getFacilityId()));
-				messages.add(createMessage(IVT0604W_FACILITY_NAME_MISMATCH,
-										   facility.getFacilityName(),
-										   settings.getFacilityName()));
-			}
-		}
-		
+		Facility facility = facilities.fetchFacility(settings.getFacilityId(), 
+		                                             settings.getFacilityType(), 
+		                                             settings.getFacilityName());        
 
 		rack.setAscending(settings.isAscending());
 		rack.setAssetId(settings.getAssetId());
@@ -237,12 +224,8 @@ public class DefaultRackService implements RackService{
 								 rackItem.getPosition(),
 								 rackItem.getFace());
 		}
-		Element element = null;
-		if(rackItem.getElementId() != null) {
-			element = elements.fetchElement(rackItem.getElementId());
-		} else if (rackItem.getElementName() != null) {
-			element = elements.fetchElement(rackItem.getElementName());
-		}
+		Element element = elements.fetchElement(rackItem.getElementId(),
+		                                        rackItem.getElementName());
 		if(element != null) {
 			Rack_Item old = repository.execute(Rack_Item.findRackItem(element));
 			if(old != null && old.getPosition() != rackItem.getPosition()) {
@@ -447,19 +430,19 @@ public class DefaultRackService implements RackService{
 		}
 
 		Rack rack = item.getRack();
-		return RackItem.newRackItem()
-				   .withFacilityId(rack.getFacilityId())
-				   .withFacilityType(rack.getFacilityType())
-				   .withFacilityName(rack.getFacilityName())
-				   .withRackId(rack.getRackId())
-				   .withRackName(rack.getRackName())
-				   .withRackType(rack.getType())
-				   .withAdministrativeState(rack.getAdministrativeState())
-				   .withUnits(rack.getUnits())
-				   .withAscending(rack.isAscending())
-				   .withDescription(rack.getDescription())
-				   .withRackItem(rackItem(item))
-				   .build();
+		return newRackItem()
+			   .withFacilityId(rack.getFacilityId())
+			   .withFacilityType(rack.getFacilityType())
+			   .withFacilityName(rack.getFacilityName())
+			   .withRackId(rack.getRackId())
+			   .withRackName(rack.getRackName())
+			   .withRackType(rack.getType())
+			   .withAdministrativeState(rack.getAdministrativeState())
+			   .withUnits(rack.getUnits())
+			   .withAscending(rack.isAscending())
+			   .withDescription(rack.getDescription())
+			   .withRackItem(rackItem(item))
+			   .build();
 	}
 
 	

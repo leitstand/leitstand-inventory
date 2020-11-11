@@ -64,7 +64,7 @@ public class FacilityServiceIT extends InventoryIT{
 	public void initTestEnvironment() {
 		this.repository = new Repository(getEntityManager());
 		this.messages = mock(Messages.class);
-		this.service = new DefaultFacilityService(new FacilityProvider(repository),
+		this.service = new DefaultFacilityService(new FacilityProvider(repository,messages),
 												  repository,
 												  messages);
 	}

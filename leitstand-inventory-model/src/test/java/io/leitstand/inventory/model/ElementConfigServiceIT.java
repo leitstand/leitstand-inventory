@@ -353,7 +353,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 			for(ElementConfigReference rev : service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME).getRevisions()) {
 				System.out.println(rev.getConfigState());
 			}
-			service.removeElementConfig(ELEMENT_ID, CONFIG_NAME);
+			service.removeElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
 		});
 		
 		

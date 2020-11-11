@@ -15,6 +15,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'io.leitstand:leitstand-test:' + findProperty("versions.leitstand-commons")
+    testImplementation 'io.leitstand:leitstand-commons:' + findProperty("versions.leitstand-commons")
     testImplementation 'org.mockito:mockito-all:1.8.4'
     testImplementation 'com.h2database:h2:1.4.200'
     testRuntimeOnly 'org.eclipse.persistence:eclipselink:2.7.1'

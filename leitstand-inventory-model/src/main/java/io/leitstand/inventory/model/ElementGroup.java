@@ -48,6 +48,7 @@ import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.FacilityId;
 import io.leitstand.inventory.service.FacilityName;
+import io.leitstand.inventory.service.FacilityType;
 import io.leitstand.inventory.service.Plane;
 
 @Entity
@@ -253,6 +254,10 @@ public class ElementGroup extends VersionableEntity {
 	public FacilityName getFacilityName() {
 		return optional(facility, Facility::getFacilityName);
 	}
+
+    public FacilityType getFacilityType() {
+        return optional(facility, Facility::getFacilityType);
+    }
 
 	
 }

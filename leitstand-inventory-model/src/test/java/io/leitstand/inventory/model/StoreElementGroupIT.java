@@ -42,7 +42,7 @@ public class StoreElementGroupIT extends InventoryIT{
 		messages = mock(Messages.class);
 		this.service = new ElementGroupManager(repository, 
 											   getDatabase(),
-											   new FacilityProvider(repository),
+											   new FacilityProvider(repository,messages),
 											   messages);
 	}
 	

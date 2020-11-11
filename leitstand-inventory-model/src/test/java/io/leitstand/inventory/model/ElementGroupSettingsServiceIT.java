@@ -82,7 +82,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		repository = new Repository(getEntityManager());
 		ElementGroupManager manager = new ElementGroupManager(repository, 
 															  getDatabase(), 
-															  new FacilityProvider(repository),
+															  new FacilityProvider(repository,messages),
 															  messages);
 		ElementGroupProvider groups = new ElementGroupProvider(repository);
 		service = new DefaultElementGroupSettingsService(manager, 
