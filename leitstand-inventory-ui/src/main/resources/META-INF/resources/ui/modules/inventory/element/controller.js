@@ -329,7 +329,6 @@ const elementIfpsController = function(){
         postRender:function(){
             const ifps = this.getViewModel();
             const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
-            metrics.onNotFound = (e) => {console.log(e)}
             metrics.load(ifps)
                    .then(response => {
                             const ifps = {};

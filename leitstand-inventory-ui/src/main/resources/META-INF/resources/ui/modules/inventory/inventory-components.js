@@ -21,9 +21,6 @@ class PlatformSelector extends Select {
 	
 	options(){
 		const platforms = new Platforms();
-		platforms.onNotFound=function(){
-		    console.log("No panel found!");
-		}
 		return platforms.load()
 				 		.then(platforms => {
 				 					return platforms.map(platform => { 
