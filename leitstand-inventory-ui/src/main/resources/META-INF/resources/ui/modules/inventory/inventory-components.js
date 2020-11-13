@@ -82,7 +82,7 @@ class InventoryPanel extends UIElement {
                              }
                          });                     
                          
-                         this.innerHTML = `<ui-select label="Metric" small class="right" name="panel">${panels.map(panel => `<ui-option value="${panel.panelName}" ${panel.default_panel ? "default" : ""} >${panel.panelTitle}</ui-option>`).reduce((a,b)=>a+b,'')}</ui-select>
+                         this.innerHTML = `<ui-select label="Metric" small class="right" name="panel">${panels.map(panel => `<ui-option value="${panel.panel_name}" ${panel.default_panel ? "default" : ""} >${panel.panel_title}</ui-option>`).reduce((a,b)=>a+b,'')}</ui-select>
                                            <div class="panel">
                                            </div>`;
                          this.addEventListener("change",(evt) => {
