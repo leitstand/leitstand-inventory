@@ -26,7 +26,6 @@ import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
-import static java.util.Collections.emptyList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -41,7 +40,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.rs.Resource;
-import io.leitstand.commons.rs.Responses;
 import io.leitstand.inventory.service.PhysicalInterfaceData;
 import io.leitstand.inventory.service.PhysicalInterfaceService;
 import io.leitstand.security.auth.Scopes;
@@ -58,15 +56,18 @@ public class PhysicalInterfacesResource {
 	private PhysicalInterfaceService ifps;
 	
     @GET
-	public Response findPhysicalInterfaces(@QueryParam("filter") String filter,
+	public Response findPhysicalInterfaces(@QueryParam("facility") String facilityFilter,
+	                                       @QueryParam("ifp") String ifpFilter,
 	                                       @QueryParam("offset") int offset,
 	                                       @QueryParam("limit") @DefaultValue("100") int limit){
-		String trimmedFilter = trim(filter);
-	    if(isEmptyString(trimmedFilter)) {
+		String trimmedIfpFilter = trim(ifpFilter);
+		String trimmedFacilityFilter = trim(facilityFilter);
+	    if(isEmptyString(trimmedIfpFilter) && isEmptyString(trimmedFacilityFilter)) {
 	        return noContent();
 	    }
 		
-	    List<PhysicalInterfaceData> data = ifps.findPhysicalInterfaces(trimmedFilter, 
+	    List<PhysicalInterfaceData> data = ifps.findPhysicalInterfaces(facilityFilter,
+	                                                                   trimmedIfpFilter, 
 		                                                               offset, 
 		                                                               limit+1);
 	    
@@ -74,7 +75,7 @@ public class PhysicalInterfacesResource {
 	    
 	    if(!eof) {
 	        // Remove lookahead
-	        data = data.subList(0, limit-1);
+	        data = data.subList(0, limit);
 	    }
 	    
 	    return success(data, 

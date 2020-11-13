@@ -15,6 +15,7 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Pods,PhysicalInterfaces,Elements} from './inventory.js'
+import './inventory-components.js';
 
 const podsController = function() {
 	const pods = new Pods();
@@ -66,15 +67,29 @@ const ifpsController = function() {
 	const ifps = new PhysicalInterfaces();
 	return new Controller({
 		resource:ifps,
-		viewModel:function(items){
-			const filter = this.location.param("filter");
+		viewModel:function(items,response){
+			const facility = this.location.param("facility");
+			const ifp = this.location.param("ifp");
+			const limit  = parseInt(response.headers.get("Leitstand-Limit"));
+			const offset = parseInt(response.headers.get("Leitstand-Offset"));
+			const eof = (response.headers.get("Leitstand-Eof") == "true");
+			const size = parseInt(response.headers.get("Leitstand-Size"));
+			const limitExceeded = (((offset + size) > limit) || !eof);
+			
 			return {"ifps"	: items,
-					"filter" : filter};
+					"facility" : facility,
+					"ifp":ifp,
+					"offset":offset,
+					"eof":eof,
+					"limit":limit,
+					"exceeded":limitExceeded,
+					"no_match":!!(facility||ifp)};
 			
 		},
 		buttons:{
 			"filter":function(){
-				this.reload({"filter":this.input("filter").value()});
+				this.reload({"facility":this.input("facility").value(),
+				             "ifp":this.input("ifp").value()});
 			}
 		}
 	});
@@ -97,8 +112,7 @@ const addPodController = function(){
 			this.navigate({"view":"/ui/views/inventory/pods.html"})
 		}
 	});
-}
-
+};
 
 const elementsController = function() {
 	const elements = new Elements();

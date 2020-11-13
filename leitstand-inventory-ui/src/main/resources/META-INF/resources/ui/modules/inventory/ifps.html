@@ -18,13 +18,23 @@
 	<ui-subtitle>Search for physical interfaces</ui-subtitle>
 </ui-view-header>
 <ui-form scopesAllowed="ivt ivt.element">
-	<ui-filter name="filter">
-		<ui-label>Filter</ui-label>
-		<ui-note>Filter physical interfaces by element name or description</ui-note>
-	</ui-filter>
+    <ui-composition>
+        <ui-item size="one-third">
+		    <ui-input name="facility">
+		        <ui-label>Facility</ui-label>
+		        <ui-note>Filter for facility name or location</ui-note>
+		    </ui-input>        
+        </ui-item>
+        <ui-item>
+            <ui-filter name="ifp">
+                <ui-label>Interface</ui-label>
+                <ui-note>Filter for interface name or alias</ui-note>
+            </ui-filter>
+        </ui-item>
+    </ui-composition>
 	<!-- {{#ifps.length}}  -->
 	<ui-group>
-		<ui-label>Elements</ui-label>
+        <ui-label>Elements</ui-label>
 		<table class="list">
 			<thead>
 				<tr>
@@ -46,13 +56,27 @@
 			</tr>
 			<!-- {{/ifps}} -->
 		</table>
-		<ui-note class="right">{{ifps.length}} interface(s) found.</ui-note>
-			</ui-group>
+        <!-- {{#exceeded}} -->
+            <ui-paginator offset="{{offset}}" limit="{{limit}}" eof="{{eof}}"></ui-paginator>
+            <ui-note class="right">{{limit}}+ interfaces found. Use the next and previous buttons to browse through the results.</ui-note>
+	    <!-- {{/exceeded}} -->
+	    <!-- {{^exceeded}} -->
+            <ui-note class="right">{{limit}} interfaces found.</ui-note>
+	    <!-- {{/exceeded}} -->
+	</ui-group>
 	<!--  {{/ifps.length}} -->	
-	<!--  {{^ifps}} -->	
+	<!--  {{^ifps}} -->
+	<!-- {{#no_match}} -->	
 	<ui-blankslate>
-		<ui-title>No interfaces found</ui-title>
+		<ui-title>No interfaces found!</ui-title>
 		<ui-note>Please amend the filter expression.</ui-note>
 	</ui-blankslate>
+	<!-- {{/no_match}} --> 
+    <!-- {{^no_match}} -->  
+    <ui-blankslate>
+        <ui-title>Lookup physical interfaces</ui-title>
+        <ui-note>Provide facility location or interface name information to lookup physical interfaces.</ui-note>
+    </ui-blankslate>
+    <!-- {{/no_match}} -->  
 	<!-- {{/ifps}}  -->
 </ui-form>

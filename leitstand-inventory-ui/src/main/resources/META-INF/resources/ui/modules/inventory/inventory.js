@@ -170,8 +170,8 @@ export class PhysicalInterfaces extends Resource {
 	}
 
 	load(params) {
-		return this.json("/api/v1/physical_interfaces?filter={{&filter}}&limit={{&limit}}",
-						 {"limit":100},
+		return this.json("/api/v1/physical_interfaces?facility={{facility}}&ifp={{&ifp}}&limit={{&limit}}&offset={{&offset}}",
+						 {"limit":100,"offset":"0"},
 						 this._cfg,
 						 params)
 				   .GET();

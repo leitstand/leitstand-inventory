@@ -16,6 +16,7 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
+import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.inventory.jpa.AdministrativeStateConverter.toAdministrativeState;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
 import static io.leitstand.inventory.service.ElementAlias.elementAlias;
@@ -25,15 +26,19 @@ import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.elementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.FacilityId.facilityId;
 import static io.leitstand.inventory.service.InterfaceName.interfaceName;
 import static io.leitstand.inventory.service.PhysicalInterfaceData.newPhysicalInterfaceData;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.leitstand.commons.db.DatabaseService;
+import io.leitstand.commons.db.StatementPreparator;
 import io.leitstand.commons.model.Service;
+import io.leitstand.inventory.service.FacilityName;
 import io.leitstand.inventory.service.PhysicalInterfaceData;
 import io.leitstand.inventory.service.PhysicalInterfaceService;
 
@@ -45,41 +50,79 @@ public class DefaultPhysicalInterfacesService implements PhysicalInterfaceServic
     private DatabaseService db;
     
     @Override
-    public List<PhysicalInterfaceData> findPhysicalInterfaces(String filter, int offset, int limit) {
+    public List<PhysicalInterfaceData> findPhysicalInterfaces(String locationFilter,
+                                                              String ifpFilter, 
+                                                              int offset, 
+                                                              int limit) {
         
         return db.executeQuery(
-                  prepare("SELECT g.uuid,g.name,g.type,e.uuid,e.name,e.alias,r.name,e.admstate,e.opstate,e.tsmodified,ifp.name,ifp.alias,ifp.opstate,ifp.admstate "+
-                          "FROM inventory.element_ifp ifp "+
-                          "JOIN inventory.element e "+
-                          "ON ifp.element_id = e.id "+
-                          "JOIN inventory.elementgroup g "+
-                          "ON e.elementgroup_id = g.id "+
-                          "JOIN inventory.elementrole r "+
-                          "ON e.elementrole_id = r.id "+
-                          "WHERE ifp.name = ? OR ifp.alias ~ ? "+
-                          "ORDER BY g.name, e.name "+
-                          "OFFSET ? LIMIT ? ",
-                          filter,
-                          filter,
-                          offset,
-                          limit), 
+                  prepareQuery(locationFilter, 
+                               ifpFilter, 
+                               offset, 
+                               limit), 
                   rs -> newPhysicalInterfaceData()
                         .withGroupId(groupId(rs.getString(1)))
                         .withGroupName(groupName(rs.getString(2)))
                         .withGroupType(groupType(rs.getString(3)))
-                        .withElementId(elementId(rs.getString(4)))
-                        .withElementName(elementName(rs.getString(5)))
-                        .withElementAlias(elementAlias(rs.getString(6)))
-                        .withElementRole(elementRoleName(rs.getString(7)))
-                        .withAdministrativeState(toAdministrativeState(rs.getString(8)))
-                        .withOperationalState(toOperationalState(rs.getString(9)))
-                        .withDateModified(rs.getTimestamp(10))
-                        .withIfpName(interfaceName(rs.getString(11)))
-                        .withIfpAlias(rs.getString(12))
-                        .withIfpOperationalState(toOperationalState(rs.getString(13)))
-                        .withIfpAdministrativeState(toAdministrativeState(rs.getString(14)))
+                        .withFacilityId(facilityId(rs.getString(4)))
+                        .withFacilityName(FacilityName.facilityName(rs.getString(5)))
+                        .withLocation(rs.getString(6))
+                        .withElementId(elementId(rs.getString(7)))
+                        .withElementName(elementName(rs.getString(8)))
+                        .withElementAlias(elementAlias(rs.getString(9)))
+                        .withElementRole(elementRoleName(rs.getString(10)))
+                        .withAdministrativeState(toAdministrativeState(rs.getString(11)))
+                        .withOperationalState(toOperationalState(rs.getString(12)))
+                        .withDateModified(rs.getTimestamp(13))
+                        .withIfpName(interfaceName(rs.getString(14)))
+                        .withIfpAlias(rs.getString(15))
+                        .withIfpOperationalState(toOperationalState(rs.getString(16)))
+                        .withIfpAdministrativeState(toAdministrativeState(rs.getString(17)))
                         .build());
     
     }
 
+    private StatementPreparator prepareQuery(String locationFilter, 
+                                             String interfaceFilter,
+                                             int offset, 
+                                             int limit) {
+        List<Object> args = new LinkedList<>();
+        String op = "WHERE ";
+        
+        String query = "SELECT g.uuid, g.name, g.type, f.uuid, f.name, f.location, e.uuid, e.name, e.alias, r.name,e.admstate, e.opstate, e.tsmodified, ifp.name, ifp.alias, ifp.opstate, ifp.admstate "+
+                       "FROM inventory.element_ifp ifp "+
+                       "JOIN inventory.element e "+
+                       "ON ifp.element_id = e.id "+
+                       "JOIN inventory.elementgroup g "+
+                       "ON e.elementgroup_id = g.id "+
+                       "JOIN inventory.elementrole r "+
+                       "ON e.elementrole_id = r.id "+
+                       "LEFT JOIN inventory.facility f "+
+                       "ON g.facility_id = f.id ";
+        
+        if(isNonEmptyString(locationFilter)) {
+            query+=op;
+            query+="(f.name ~ ? OR f.location ~ ?) ";
+            op = "AND ";
+            args.add(locationFilter);
+            args.add(locationFilter);
+        }
+        
+        if(isNonEmptyString(interfaceFilter)) {
+            query+=op;
+            query+="(ifp.name = ? OR ifp.alias ~ ?) ";
+            args.add(interfaceFilter);
+            args.add(interfaceFilter);
+        }
+        query+="ORDER BY f.name, g.name, e.name "+
+               "OFFSET ? LIMIT ? ";
+        
+        args.add(offset);
+        args.add(limit);
+        
+        return prepare(query, args);
+        
+        
+    }
+    
 }

@@ -52,9 +52,30 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
 			object.ifpOperationalState = opState;
 			return this;
 		}
+		
+		public Builder withFacilityId(FacilityId facilityId) {
+		    assertNotInvalidated(getClass(), object);
+		    object.facilityId = facilityId;
+		    return this;
+		}
+		
+		public Builder withFacilityName(FacilityName facilityName) {
+		    assertNotInvalidated(getClass(), object);
+		    object.facilityName = facilityName;
+		    return this;
+		}
+		
+		public Builder withLocation(String location) {
+		    assertNotInvalidated(getClass(), object);
+		    object.location = location;
+		    return this;
+		}
 
 	}
 	
+	private FacilityId facilityId;
+	private FacilityName facilityName;
+	private String location;
 	private InterfaceName ifpName;
 	private String ifpAlias;
 	private OperationalState ifpOperationalState;
@@ -76,4 +97,15 @@ public class PhysicalInterfaceData extends BaseElementEnvelope {
         return ifpOperationalState;
     }
 	
+	public FacilityId getFacilityId() {
+        return facilityId;
+    }
+	
+	public FacilityName getFacilityName() {
+        return facilityName;
+    }
+	
+	public String getLocation() {
+        return location;
+    }
 }
