@@ -15,6 +15,14 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static io.leitstand.commons.model.StringUtil.trim;
+import static io.leitstand.commons.rs.Responses.eofHeader;
+import static io.leitstand.commons.rs.Responses.limitHeader;
+import static io.leitstand.commons.rs.Responses.noContent;
+import static io.leitstand.commons.rs.Responses.offsetHeader;
+import static io.leitstand.commons.rs.Responses.sizeHeader;
+import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
@@ -24,10 +32,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.PhysicalInterfaceData;
@@ -45,9 +55,35 @@ public class PhysicalInterfacesResource {
 	@Inject
 	private PhysicalInterfaceService ifps;
 	
-	@GET
-	public List<PhysicalInterfaceData> findPhysicalInterfaces(@QueryParam("filter") String filter){
-		return ifps.findPhysicalInterfaces(filter);
+    @GET
+	public Response findPhysicalInterfaces(@QueryParam("facility") String facilityFilter,
+	                                       @QueryParam("ifp") String ifpFilter,
+	                                       @QueryParam("offset") int offset,
+	                                       @QueryParam("limit") @DefaultValue("100") int limit){
+		String trimmedIfpFilter = trim(ifpFilter);
+		String trimmedFacilityFilter = trim(facilityFilter);
+	    if(isEmptyString(trimmedIfpFilter) && isEmptyString(trimmedFacilityFilter)) {
+	        return noContent();
+	    }
+		
+	    List<PhysicalInterfaceData> data = ifps.findPhysicalInterfaces(facilityFilter,
+	                                                                   trimmedIfpFilter, 
+		                                                               offset, 
+		                                                               limit+1);
+	    
+	    boolean eof = data.size() < limit +1;
+	    
+	    if(!eof) {
+	        // Remove lookahead
+	        data = data.subList(0, limit);
+	    }
+	    
+	    return success(data, 
+	                   offsetHeader(offset),
+	                   limitHeader(limit),
+	                   sizeHeader(data.size()),
+	                   eofHeader(eof));
+	    
 	}
 
 }
