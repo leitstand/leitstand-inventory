@@ -323,6 +323,7 @@ public class ElementConfigManager {
 				config.setConfigState(configState);
 				config.setContentType(contentType);
 				config.setContentHash(contentHash);
+				config.setCreator(creator.getUserName());
 				LOG.fine(() -> format("%s: Updated %s configuration for element %s (%s)",
 			 			  			  IVT0330I_ELEMENT_CONFIG_REVISION_STORED.getReasonCode(),
 			 			  			  configName,
