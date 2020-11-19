@@ -77,8 +77,10 @@ public enum ReasonCode implements Reason{
 	IVT0212E_RELEASE_NAME_ALREADY_IN_USE,
 	
 	/** The release contains ambiguous image references.*/
-	IVT0212I_AMBIGUOUS_IMAGE,
+	IVT0213E_AMBIGUOUS_IMAGE,
 
+	IVT0214I_RELEASE_REMOVED,
+	
 	/** The requested element does not exist.*/
 	IVT0300E_ELEMENT_NOT_FOUND,
 	
@@ -231,7 +233,6 @@ public enum ReasonCode implements Reason{
 
     /** The facility type in the request does not match the current facility type.*/
     IVT0606W_FACILITY_TYPE_MISMATCH,
-
 	
 	/** The requested rack does not exist.*/
 	IVT0800E_RACK_NOT_FOUND,

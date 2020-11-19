@@ -1,6 +1,9 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
+import static io.leitstand.inventory.service.ReleaseState.CANDIDATE;
+import static io.leitstand.inventory.service.ReleaseState.RELEASE;
+import static io.leitstand.inventory.service.ReleaseState.SUPERSEDED;
 import static javax.persistence.EnumType.STRING;
 
 import java.util.List;
@@ -28,7 +31,7 @@ import io.leitstand.inventory.service.ReleaseState;
 @NamedQuery(name="Release.findByName",
             query="SELECT r FROM Release r WHERE r.name=:name")
 @NamedQuery(name="Release.findByNamePattern",
-            query="SELECT r FROM Release r WHERE CAST(r.name AS TEXT) REGEXP :name ORDER BY r.name")    
+            query="SELECT r FROM Release r WHERE CAST(r.name AS TEXT) REGEXP :name ORDER BY r.name") 
 public class Release extends VersionableEntity {
 
     private static final long serialVersionUID = 1L;
@@ -53,8 +56,6 @@ public class Release extends VersionableEntity {
     
     @Convert(converter=ReleaseNameConverter.class)
     private ReleaseName name;
-    @Enumerated(STRING)
-    private ReleaseState state;
     private String description;
     
     @ManyToMany
@@ -84,12 +85,26 @@ public class Release extends VersionableEntity {
     }
 
     public ReleaseState getState() {
-        return state;
+        if(images.isEmpty()) {
+            return CANDIDATE;
+        }
+        
+        boolean containsCandidate = false;
+        boolean containsSuperseded = false;
+        for(Image image : images) {
+            containsCandidate |= image.isCandidate();
+            containsSuperseded |= image.isSuperseded();
+        }
+        if(containsSuperseded) {
+            return SUPERSEDED;
+        }
+        if(containsCandidate) {
+            return CANDIDATE;
+        }
+    
+        return RELEASE;
     }
     
-    public void setState(ReleaseState state) {
-        this.state = state;
-    }
     
     public String getDescription() {
         return description;

@@ -60,6 +60,7 @@ public class InventoryResources implements ApiResourceProvider {
 						   PhysicalInterfacesResource.class,
 						   PlatformResource.class,
 						   RackResource.class,
+						   ReleasesResource.class,
 						   ServiceDefinitionResource.class,
 						   OperationalStateReader.class);
 	}

@@ -1,0 +1,83 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+    <ui-breadcrumbs>
+        <ui-breadcrumb href="/ui/views/image/release/releases.html" title="Show release list">Releases</ui-breadcrumb>
+        <ui-breadcrumb>{{release_name}}</ui-breadcrumb>
+    </ui-breadcrumbs>
+    <ui-title>Manage release {{release_name}}</ui-title>
+    <ui-subtitle>Manage settings of {{release_name}} release.</ui-subtitle>
+</ui-view-header>
+<ui-form scopesAllowed="ivt ivt.release">
+    <ui-group>
+        <ui-label>Release Settings</ui-label>
+        <ui-note>Provide details about this release</ui-note>
+        <ui-input name="release_name">
+            <ui-label>Release Name</ui-label>
+            <ui-note>A unique descriptive release name.</ui-note>
+        </ui-input>
+        <ui-textarea name="description">
+            <ui-label>Description</ui-label>
+            <ui-note>Optional description of this release.</ui-note>
+        </ui-input>
+    </ui-group>
+    <!-- {{#images.length}} -->
+    <ui-group>
+        <ui-label>Images</ui-label>
+        <ui-note>This release includes {{images.length}} images listed below.</ui-note>
+        <!-- {{#images}} -->
+        <ui-details>
+            <ui-property>
+               <ui-label>Image ID</ui-label>
+               <ui-value>{{image_id}}</ui-value>             
+            </ui-property>
+            <ui-property>
+               <ui-label>Image Name</ui-label>
+               <ui-value>{{image_name}}</ui-value>             
+            </ui-property>
+            <ui-property>
+               <ui-label>Image State</ui-label>
+               <ui-value><span class="{{image_state}}">{{image_state}}</span></ui-value>             
+            </ui-property>
+            <ui-property>
+               <ui-label>Chipset</ui-label>
+               <ui-value>{{platform_chipset}}</ui-value>             
+            </ui-property>
+            <ui-property>
+                <ui-label>Element Roles</ui-label>
+                <ui-value>
+                    <ul>
+                        <!-- {{#element_roles}} -->
+                        <li>{{.}}</li>
+                        <!-- {{/element_roles}} -->
+                    </ul>
+                </ui-value>
+            </ui-property>
+        </ui-details>
+        <!-- {{/images}} -->
+    </ui-group>
+    <!-- {{/images.length}} -->
+    <!-- {{^images.length}} -->
+        <ui-blankslate>
+            <ui-title>No images selected!</ui-title>
+            <ui-note>Please select an image version.</ui-note>
+        </ui-blankslate>
+    <!-- {{/images.length}} -->
+    <ui-actions>
+        <ui-button name="save-release" primary>Save release</ui-button>
+        <ui-button href="confirm-remove.html?release={{release_id}}" danger>Remove release</ui-button>
+    </ui-actions>
+</ui-form>
