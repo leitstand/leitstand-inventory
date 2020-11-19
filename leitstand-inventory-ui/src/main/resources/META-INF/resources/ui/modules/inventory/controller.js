@@ -55,7 +55,7 @@ const podsController = function() {
 				});
 		},
 		buttons:{
-			"filter-pods":function(){
+			"filter":function(){
 				this.reload({"filter":this.input("filter").value()});
 			}
 		}
