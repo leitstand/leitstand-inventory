@@ -26,17 +26,30 @@ import static io.leitstand.inventory.model.Application.findAll;
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
-import static io.leitstand.inventory.model.Image.countImageReferences;
+import static io.leitstand.inventory.model.Image.countElementImageReferences;
+import static io.leitstand.inventory.model.Image.countReleaseImageReferences;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
 import static io.leitstand.inventory.model.Image.searchImages;
 import static io.leitstand.inventory.model.Platform.findByChipset;
+import static io.leitstand.inventory.service.ElementAlias.elementAlias;
+import static io.leitstand.inventory.service.ElementGroupId.groupId;
+import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupType.groupType;
+import static io.leitstand.inventory.service.ElementId.elementId;
+import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
+import static io.leitstand.inventory.service.ElementImageState.PULL;
+import static io.leitstand.inventory.service.ElementName.elementName;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState.newElementGroupElementImageState;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
@@ -45,16 +58,20 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0203I_IMAGE_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0204E_IMAGE_NOT_REMOVABLE;
 import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND;
+import static io.leitstand.inventory.service.ReleaseId.releaseId;
+import static io.leitstand.inventory.service.ReleaseName.releaseName;
+import static io.leitstand.inventory.service.ReleaseRef.newReleaseSettings;
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
 import static java.lang.String.format;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -70,7 +87,10 @@ import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.event.ImageEvent;
 import io.leitstand.inventory.event.ImageEvent.ImageEventBuilder;
 import io.leitstand.inventory.service.ApplicationName;
+import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
+import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
@@ -81,11 +101,16 @@ import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
+import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState;
+import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
+import io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformSettings;
 import io.leitstand.inventory.service.ReasonCode;
+import io.leitstand.inventory.service.ReleaseRef;
+import io.leitstand.inventory.service.ReleaseState;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -93,7 +118,7 @@ import io.leitstand.inventory.service.Version;
 @Service
 public class DefaultImageService implements ImageService {
 	
-	private static final Logger LOG = Logger.getLogger(DefaultImageService.class.getName());
+	private static final Logger LOG = getLogger(DefaultImageService.class.getName());
 	
 	@Inject
 	private Messages messages;
@@ -113,18 +138,25 @@ public class DefaultImageService implements ImageService {
 	private ElementProvider elements;
 	
 	@Inject
+	private ElementGroupProvider groups;
+	
+	@Inject
 	private Event<ImageEvent> sink;
 	
 	public DefaultImageService(){
-		// EJB
+		// CDI
 	}
 	
 	DefaultImageService(PackageVersionService packages,
+	                    ElementGroupProvider groups,
+	                    ElementProvider elements,
 						Repository repository,
 						DatabaseService db,
 						Messages messages,
 						Event<ImageEvent> sink){
 		this.packages = packages;
+		this.groups = groups;
+		this.elements = elements;
 		this.repository = repository;
 		this.db = db;
 		this.messages =messages;
@@ -339,17 +371,30 @@ public class DefaultImageService implements ImageService {
 		if(image == null){
 			return null;
 		}
-		long count = repository.execute(countImageReferences(image));
-		if(count > 0) {
+		long elementImageCount = repository.execute(countElementImageReferences(image));
+		if(elementImageCount > 0) {
 			LOG.fine(()->format("%s: Cannot remove image %s (%s) because it is referenced from %d elements.",
 								IVT0204E_IMAGE_NOT_REMOVABLE.getReasonCode(),
 								image.getImageName(),
 								image.getImageId(),
-								count));
+								elementImageCount));
 			throw new ConflictException(IVT0204E_IMAGE_NOT_REMOVABLE, 
 										image.getImageId(), 
 										image.getImageName());
 		}
+		
+        long releaseImageCount = repository.execute(countReleaseImageReferences(image));
+        if(releaseImageCount > 0) {
+            LOG.fine(()->format("%s: Cannot remove image %s (%s) because it is referenced from %d elements.",
+                                IVT0204E_IMAGE_NOT_REMOVABLE.getReasonCode(),
+                                image.getImageName(),
+                                image.getImageId(),
+                                releaseImageCount));
+            throw new ConflictException(IVT0204E_IMAGE_NOT_REMOVABLE, 
+                                        image.getImageId(), 
+                                        image.getImageName());
+        }
+		
 		ImageInfo info = imageInfo(image);
 		repository.remove(image);
 		messages.add(createMessage(IVT0203I_IMAGE_REMOVED,
@@ -420,46 +465,69 @@ public class DefaultImageService implements ImageService {
 	public ImageStatistics getImageStatistics(ImageId imageId) {
 		
 		ImageInfo image = getImage(imageId);
+		Map<String,ImageStatisticsElementGroupImageCount.Builder> stats = new TreeMap<>();
+		db.processQuery(prepare(
+		                "SELECT g.uuid, g.type, g.name, ei.state, count(*) "+
+						"FROM inventory.image i "+
+						"JOIN inventory.element_image ei "+
+						"ON ei.image_id = i.id "+
+						"JOIN inventory.element e "+
+						"ON e.id = ei.element_id "+
+						"JOIN inventory.elementgroup g "+
+						"ON g.id = e.elementgroup_id "+
+						"WHERE i.uuid=? "+
+						"GROUP BY g.uuid, g.type, g.name, ei.state ", 
+						image.getImageId()),
+						rs -> {
+						    String groupName = rs.getString(3);
+						    ImageStatisticsElementGroupImageCount.Builder group = stats.get(groupName);
+						    if(group == null) {
+						        group = newElementGroupImageCount()
+						                .withGroupId(groupId(rs.getString(1)))
+						                .withGroupType(groupType(rs.getString(2)))
+						                .withGroupName(groupName(groupName));
+						        stats.put(groupName, 
+						                  group);
+						    }
+						    ElementImageState state = ElementImageState.valueOf(rs.getString(4));
+						    
+						    if(state == ACTIVE) {
+						        group.withActiveCount(rs.getInt(5));
+						    } else if (state == PULL) {
+						        group.withPullCount(rs.getInt(5));
+						    } else {
+						        group.withCachedCount(rs.getInt(5));
+						    }
+						    
+						});
 		
+		List<ImageStatisticsElementGroupImageCount> groupStats = stats
+                                                                 .values()
+                                                                 .stream()
+                                                                 .map(ImageStatisticsElementGroupImageCount.Builder::build)
+                                                                 .collect(toList());
 		
+		List<ReleaseRef> releases = db.executeQuery(prepare(
+		                                            "SELECT r.uuid,r.name "+
+		                                            "FROM inventory.release r "+
+		                                            "JOIN inventory.release_image ri "+
+		                                            "ON r.id = ri.release_id "+
+		                                            "JOIN inventory.image i "+
+		                                            "ON ri.image_id = i.id "+
+		                                            "WHERE i.uuid=?",
+		                                            imageId),
+		                                            rs -> newReleaseSettings()
+		                                                  .withReleaseId(releaseId(rs.getString(1)))
+		                                                  .withReleaseName(releaseName(rs.getString(2)))
+		                                                  .build());
+		                                                          
 		
-		Map<ElementGroupName,Integer> activeCount = new HashMap<>();
-		db.processQuery(prepare("SELECT eg.name, count(*) "+
-							    "FROM inventory.image i "+
-							    "JOIN inventory.element_image ei "+
-							    "ON ei.image_id = i.id "+
-							    "JOIN inventory.element e "+
-							    "ON e.id = ei.element_id "+
-							    "JOIN inventory.elementgroup eg "+
-							    "ON eg.id = e.elementgroup_id "+
-							    "WHERE i.uuid=? "+
-							    "AND ei.state='ACTIVE' "+
-							    "GROUP BY eg.name", 
-							    image.getImageId()),
-						rs -> activeCount.put(ElementGroupName.valueOf(rs.getString(1)),
-									 	 	  rs.getInt(2)));
-		
-		Map<ElementGroupName,Integer> cachedCount = new HashMap<>();
-		db.processQuery(prepare("SELECT eg.name, count(*) "+
-							    "FROM inventory.image i "+
-							    "JOIN inventory.element_image ei "+
-							    "ON ei.image_id = i.id "+
-							    "JOIN inventory.element e "+
-							    "ON e.id = ei.element_id "+
-							    "JOIN inventory.elementgroup eg "+
-							    "ON eg.id = e.elementgroup_id "+
-							    "WHERE i.uuid=? "+
-							    "AND ei.state='CACHED' "+
-							    "GROUP BY eg.name", 
-							    image.getImageId()),
-						rs -> cachedCount.put(ElementGroupName.valueOf(rs.getString(1)),
-									 	 	  rs.getInt(2)));
-
 		return newImageStatistics()
-			   .withImage(image)
-			   .withActiveCount(activeCount)
-			   .withCachedCount(cachedCount)
-			   .build();
+		       .withImage(image)
+		       .withElementGroupCounters(groupStats)
+		       .withReleases(releases)
+		       .build();
+
 	}
 	
 	@Override
@@ -496,6 +564,61 @@ public class DefaultImageService implements ImageService {
         }
         
         return referenceOf(image);
+    }
+
+    protected ImageStatisticsElementGroupElementImages getElementGroupImageStatistics(ImageId imageId, 
+                                                                                      ElementGroup group) {
+        ImageInfo image = getImage(imageId);
+        
+        List<ImageStatisticsElementGroupElementImageState> elements = db.executeQuery(
+                                                                         prepare(
+                                                                         "SELECT e.uuid, e.name, e.alias, r.name, ei.state "+
+                                                                         "FROM inventory.element e "+
+                                                                         "JOIN inventory.element_image ei "+
+                                                                         "ON e.id = ei.element_id "+
+                                                                         "JOIN inventory.image i "+
+                                                                         "ON ei.image_id = i.id "+
+                                                                         "JOIN inventory.elementrole r "+
+                                                                         "ON e.elementrole_id = r.id "+
+                                                                         "WHERE e.elementgroup_id=? "+
+                                                                         "AND i.uuid=?",
+                                                                         group.getId(),
+                                                                         imageId),
+                                                                         rs -> newElementGroupElementImageState()
+                                                                               .withElementId(elementId(rs.getString(1)))
+                                                                               .withElementName(elementName(rs.getString(2)))
+                                                                               .withElementAlias(elementAlias(rs.getString(3)))
+                                                                               .withElementRole(elementRoleName(rs.getString(4)))
+                                                                               .withElementImageState(ElementImageState.valueOf(rs.getString(5)))
+                                                                               .build());
+                
+                
+                
+        
+        return newElementGroupElementImages()
+               .withGroupId(group.getGroupId())
+               .withGroupName(group.getGroupName())
+               .withGroupType(group.getGroupType())
+               .withImage(image)
+               .withElements(elements)
+               .build();
+        
+    }
+
+    @Override
+    public ImageStatisticsElementGroupElementImages getElementGroupImageStatistics(ImageId imageId,
+                                                                                   ElementGroupId groupId) {
+        ElementGroup group = groups.fetchElementGroup(groupId);
+        return getElementGroupImageStatistics(imageId, group);
+    }
+
+    @Override
+    public ImageStatisticsElementGroupElementImages getElementGroupImageStatistics(ImageId imageId,
+                                                                                   ElementGroupType groupType, 
+                                                                                   ElementGroupName groupName) {
+        ElementGroup group = groups.fetchElementGroup(groupType,groupName);
+        return getElementGroupImageStatistics(imageId, group);
+
     }
 
 }

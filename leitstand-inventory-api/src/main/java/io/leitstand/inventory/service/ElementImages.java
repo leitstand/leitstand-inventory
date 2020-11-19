@@ -28,65 +28,65 @@ import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.Valid;
 
 /**
- * A summary of all images installed on a certain element.
+ * A summary of all images element on a certain element.
  */
 
-public class ElementInstalledImages extends BaseElementEnvelope{
+public class ElementImages extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create a summary of installed images.
-	 * @return a builder to create a summary of installed images.
+	 * Returns a builder to create a summary of element images.
+	 * @return a builder to create a summary of element images.
 	 */
-	public static Builder newElementInstalledImages(){
+	public static Builder newElementImages(){
 		return new Builder();
 	}
 	
 	/**
 	 * The builder to create an immutable <code>ElementInstalledImages</code> instance.
 	 */
-	public static class Builder extends BaseElementEnvelopeBuilder<ElementInstalledImages, Builder>{
+	public static class Builder extends BaseElementEnvelopeBuilder<ElementImages, Builder>{
 		
 		public Builder() {
-			super(new ElementInstalledImages());
+			super(new ElementImages());
 		}
 		
 		/**
-		 * Sets the list of installed images.
-		 * @param images - the installed images.
+		 * Sets the list of element images.
+		 * @param images the element images.
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withInstalledImages(ElementInstalledImageData.Builder... images) {
-			return withInstalledImages(stream(images)
-									  .map(ElementInstalledImageData.Builder::build)
-									  .collect(toList()));
+		public Builder withElementImages(ElementImageData.Builder... images) {
+			return withElementImages(stream(images)
+									 .map(ElementImageData.Builder::build)
+									 .collect(toList()));
 		}
 		
 		/**
-		 * Sets the list of installed images.
-		 * @param images - the installed images.
+		 * Sets the list of element images.
+		 * @param images - the element images.
 		 * @return a reference to this builder to continue with object creation
 		 */		
-		public Builder withInstalledImages(ElementInstalledImageData... images) {
-			return withInstalledImages(asList(images));
+		public Builder withElementImages(ElementImageData... images) {
+			return withElementImages(asList(images));
 		}
 		
 		/**
-		 * Sets the list of installed images.
-		 * @param images - the installed images.
+		 * Sets the list of element images.
+		 * @param images - the element images.
 		 * @return a reference to this builder to continue with object creation
 		 */		
-		public Builder withInstalledImages(List<ElementInstalledImageData> images) {
+		public Builder withElementImages(List<ElementImageData> images) {
 			assertNotInvalidated(getClass(), object);
 			object.images = unmodifiableList(new LinkedList<>(images));
 			return this;
 		}
 		
 		/**
-		 * Returns an immutable list of installed images.
-		 * @return an immutable list of installed images.
+		 * Returns an immutable list of element images.
+		 * @return an immutable list of element images.
 		 */
 		@Override
-		public ElementInstalledImages build(){
+		public ElementImages build(){
 			try{
 				assertNotInvalidated(getClass(), object);
 				return object;
@@ -99,13 +99,13 @@ public class ElementInstalledImages extends BaseElementEnvelope{
 	
 	@JsonbProperty
 	@Valid
-	private List<ElementInstalledImageData> images;
+	private List<ElementImageData> images;
 	
 	/**
-	 * Returns the information of the installed image.
-	 * @return the information of the installed image.
+	 * Returns the information of the element image.
+	 * @return the information of the element image.
 	 */
-	public List<ElementInstalledImageData> getImages() {
+	public List<ElementImageData> getImages() {
 		return images;
 	}
 	

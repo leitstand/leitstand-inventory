@@ -40,7 +40,7 @@ import io.leitstand.commons.model.ValueObject;
  * Provides all details of an installed image.
  */
 
-public class ElementInstalledImageData extends ValueObject{
+public class ElementImageData extends ValueObject{
 
 	/**
 	 * Returns a builder to create a new immutable <code>ElementInstalledImageData</code> instance.
@@ -54,7 +54,7 @@ public class ElementInstalledImageData extends ValueObject{
 	 * The builder to create an immutable <code>ElementInstalledImageData</code> instance.
 	 */
 	public static class Builder{
-		private ElementInstalledImageData image = new ElementInstalledImageData();
+		private ElementImageData image = new ElementImageData();
 
 		/**
 		 * Sets the image id.
@@ -254,7 +254,7 @@ public class ElementInstalledImageData extends ValueObject{
 		 * Any further interaction with this builder raises an exception.
 		 * @return the immutable <code>ElementInstalledImageData</code> instance.
 		 */
-		public ElementInstalledImageData build(){
+		public ElementImageData build(){
 			try{
 				assertNotInvalidated(getClass(), image);
 				return image;

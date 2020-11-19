@@ -48,14 +48,14 @@ import io.leitstand.inventory.service.Version;
 @Table(schema="inventory", name="element_image")
 @IdClass(Element_ImagePK.class)
 @NamedQueries({
-@NamedQuery(name="Element_Image.findInstalledImages", 
+@NamedQuery(name="Element_Image.findImages", 
 			query="SELECT ei FROM Element_Image ei "+
 				  "WHERE ei.element=:element"),
-@NamedQuery(name="Element_Image.findInstalledImageById", 
+@NamedQuery(name="Element_Image.findImageById", 
 			query="SELECT ei FROM Element_Image ei "+
 				  "WHERE ei.element=:element "+
 				  "AND ei.image.uuid=:uuid"),
-@NamedQuery(name="Element_Image.findInstalledImageByName", 
+@NamedQuery(name="Element_Image.findImageByName", 
 			query="SELECT ei FROM Element_Image ei "+
 				  "WHERE ei.element=:element "+
 				  "AND ei.image.imageType=:type "+
@@ -77,16 +77,16 @@ public class Element_Image {
 	}
 
 	
-	public static Query<List<Element_Image>> findInstalledImages(Element element){
-		return em -> em.createNamedQuery("Element_Image.findInstalledImages",
+	public static Query<List<Element_Image>> findElementImages(Element element){
+		return em -> em.createNamedQuery("Element_Image.findImages",
 										 Element_Image.class)
 					   .setParameter("element", element)
 					   .getResultList();
 	}
 
-	public static Query<Element_Image> findInstalledImage(Element element, 
-	                                                      ImageId imageId){
-		return em -> em.createNamedQuery("Element_Image.findInstalledImageById",
+	public static Query<Element_Image> findElementImage(Element element, 
+	                                                    ImageId imageId){
+		return em -> em.createNamedQuery("Element_Image.findImageById",
 										 Element_Image.class)
 					   .setParameter("element", element)
 					   .setParameter("uuid",imageId.toString())
@@ -184,11 +184,11 @@ public class Element_Image {
 		return image.getOrganization();
 	}
 
-	public ElementImageState getInstallationState() {
+	public ElementImageState getElementImageState() {
 		return imageState;
 	}
 
-	public void setImageInstallationState(ElementImageState imageState) {
+	public void setElementImageState(ElementImageState imageState) {
 		this.imageState = imageState;
 	}
 

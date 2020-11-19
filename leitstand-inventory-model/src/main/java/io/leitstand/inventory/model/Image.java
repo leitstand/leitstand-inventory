@@ -19,6 +19,7 @@ import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
+import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
@@ -166,8 +167,10 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.minor=:minor "+
 				  "AND d.patch=:patch "+
 				  "AND d.prerelease=:prerelease")
-@NamedQuery(name="Image.countReferences",
+@NamedQuery(name="Image.countElementReferences",
 			query="SELECT count(ei) FROM Element_Image ei WHERE ei.image=:image")
+@NamedQuery(name="Image.countReleaseReferences",
+            query="SELECT count(r) FROM Release r WHERE :image member of r.images")
 public class Image extends VersionableEntity{
 	
 	private static final long serialVersionUID = 1L;
@@ -372,10 +375,16 @@ public class Image extends VersionableEntity{
 					   .getSingleResult();
 	}
 	
-	public static Query<Long> countImageReferences(Image image){
-		return em -> em.createNamedQuery("Image.countReferences",Long.class)
+	public static Query<Long> countElementImageReferences(Image image){
+		return em -> em.createNamedQuery("Image.countElementReferences",Long.class)
 					   .setParameter("image",image)
 					   .getSingleResult();
+	}
+
+	public static Query<Long> countReleaseImageReferences(Image image){
+	    return em -> em.createNamedQuery("Image.countReleaseReferences",Long.class)
+	                   .setParameter("image",image)
+	                   .getSingleResult();
 	}
 	
 	
@@ -648,5 +657,13 @@ public class Image extends VersionableEntity{
 		}
 		return null;
 	}
+
+    public boolean isCandidate() {
+        return getImageState() == CANDIDATE;
+    }
+    
+    public boolean isSuperseded() {
+        return getImageState() == SUPERSEDED;
+    }
 
 }

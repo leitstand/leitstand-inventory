@@ -22,9 +22,9 @@ import javax.inject.Inject;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementImagesService;
-import io.leitstand.inventory.service.ElementInstalledImage;
-import io.leitstand.inventory.service.ElementInstalledImageReference;
-import io.leitstand.inventory.service.ElementInstalledImages;
+import io.leitstand.inventory.service.ElementImage;
+import io.leitstand.inventory.service.ElementImageReference;
+import io.leitstand.inventory.service.ElementImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageReference;
@@ -48,52 +48,52 @@ public class DefaultElementImagesService implements ElementImagesService {
 	}
 	
 	@Override
-	public ElementInstalledImage getElementInstalledImage(ElementId id, ImageId imageId) {
+	public ElementImage getElementImage(ElementId id, ImageId imageId) {
 		Element element = elements.fetchElement(id);
-		return manager.getElementInstalledImage(element, imageId);
+		return manager.getElementImage(element, imageId);
 	}
 
 	@Override
-	public ElementInstalledImage getElementInstalledImage(ElementName name, ImageId imageId) {
+	public ElementImage getElementImage(ElementName name, ImageId imageId) {
 		Element element = elements.fetchElement(name);
-		return manager.getElementInstalledImage(element, imageId);
+		return manager.getElementImage(element, imageId);
 
 	}
 
 	@Override
-	public ElementInstalledImages getElementInstalledImages(ElementId id) {
+	public ElementImages getElementImages(ElementId id) {
 		Element element = elements.fetchElement(id);
-		return manager.getElementInstalledImages(element);
+		return manager.getElementImages(element);
 	}
 
 	@Override
-	public ElementInstalledImages getElementInstalledImages(ElementName name) {
+	public ElementImages getElementImages(ElementName name) {
 		Element element = elements.fetchElement(name);
-		return manager.getElementInstalledImages(element);
+		return manager.getElementImages(element);
 	}
 
 	@Override
-	public void storeInstalledImages(ElementId id, List<ElementInstalledImageReference> images) {
+	public void storeElementImages(ElementId id, List<ElementImageReference> images) {
 		Element element = elements.fetchElement(id);
-		manager.storeInstalledImages(element,images);
+		manager.storeElementImages(element,images);
 	}
 
 	@Override
-	public void storeInstalledImages(ElementName name, List<ElementInstalledImageReference> images) {
+	public void storeElementImages(ElementName name, List<ElementImageReference> images) {
 		Element element = elements.fetchElement(name);
-		manager.storeInstalledImages(element,images);
+		manager.storeElementImages(element,images);
 	}
 
 	@Override
-	public void removeInstalledImage(ElementId id,ImageId imageId) {
+	public void removeElementImage(ElementId id,ImageId imageId) {
 		Element element = elements.fetchElement(id);
-		manager.removeInstalledImage(element,imageId);
+		manager.removeElementImage(element,imageId);
 	}
 
 	@Override
-	public void removeInstalledImage(ElementName name, ImageId imageId) {
+	public void removeElementImage(ElementName name, ImageId imageId) {
 		Element element = elements.fetchElement(name);
-		manager.removeInstalledImage(element,imageId);
+		manager.removeElementImage(element,imageId);
 	}
 
     @Override

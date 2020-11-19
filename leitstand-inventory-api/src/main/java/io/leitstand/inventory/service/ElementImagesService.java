@@ -32,7 +32,7 @@ public interface ElementImagesService {
 	 * @return the image information for the specified image on the specified element. 
 	 * @throws EntityNotFoundException if the specified element or the specified image does not exist.
 	 */
-	ElementInstalledImage getElementInstalledImage(ElementId elementId, ImageId imageId);
+	ElementImage getElementImage(ElementId elementId, ImageId imageId);
 
 	/**
 	 * Returns the available information for the specified image on the specified element.
@@ -42,7 +42,7 @@ public interface ElementImagesService {
 	 * @return the image information for the specified image on the specified element. 
 	 * @throws EntityNotFoundException if the specified element or the specified image does not exist.
 	 */
-	ElementInstalledImage getElementInstalledImage(ElementName name, ImageId imageId);
+	ElementImage getElementImage(ElementName name, ImageId imageId);
 	
 	/**
 	 * Returns informations of all images available on the element.
@@ -51,7 +51,7 @@ public interface ElementImagesService {
 	 * @return the image information for the specified image on the specified element. 
 	 * @throws EntityNotFoundException if the specified element does not exist.
 	 */
-	ElementInstalledImages getElementInstalledImages(ElementId id);
+	ElementImages getElementImages(ElementId id);
 
 	/**
 	 * Returns informations of all images available on the element.
@@ -60,7 +60,7 @@ public interface ElementImagesService {
 	 * @return the image information for the specified image on the specified element. 
 	 * @throws EntityNotFoundException if the specified element does not exist.
 	 */
-	ElementInstalledImages getElementInstalledImages(ElementName name);
+	ElementImages getElementImages(ElementName name);
 
 	/**
 	 * Updates the information of installed images on the element. 
@@ -69,7 +69,7 @@ public interface ElementImagesService {
 	 * @param id - the element id
 	 * @param images - all images installed on the element.
 	 */
-	void storeInstalledImages(ElementId id, List<ElementInstalledImageReference> images);
+	void storeElementImages(ElementId id, List<ElementImageReference> images);
 
 	/**
 	 * Updates the information of installed images on the element. 
@@ -78,10 +78,10 @@ public interface ElementImagesService {
 	 * @param id - the element name
 	 * @param images - all images installed on the element.
 	 */
-	void storeInstalledImages(ElementName name, List<ElementInstalledImageReference> images);
+	void storeElementImages(ElementName name, List<ElementImageReference> images);
 
-	void removeInstalledImage(ElementId elementId, ImageId imageId);
-	void removeInstalledImage(ElementName elementName, ImageId imageId);
+	void removeElementImage(ElementId elementId, ImageId imageId);
+	void removeElementImage(ElementName elementName, ImageId imageId);
 	
 	/**
 	 * Returns the image that shall be installed via ZTP.

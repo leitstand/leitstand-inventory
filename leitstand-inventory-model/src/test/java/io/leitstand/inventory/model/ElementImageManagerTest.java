@@ -15,9 +15,9 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.inventory.service.ElementImageReference.newElementImageReference;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
-import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
@@ -54,20 +54,20 @@ import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
 import io.leitstand.commons.tx.SubtransactionService;
-import io.leitstand.inventory.service.ElementInstalledImageReference;
+import io.leitstand.inventory.service.ElementImageReference;
 import io.leitstand.inventory.service.ImageId;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElementImageManagerTest {
 	
-	private static final ElementInstalledImageReference ACTIVE_IMAGE_REF =  newElementInstalledImageReference()
-																			.withImageType(imageType("lxd"))
-																			.withImageName(imageName("JUNIT"))
-																			.withImageVersion(version("1.0.0"))
-																			.withElementImageState(ACTIVE)
-																			.build();
+	private static final ElementImageReference ACTIVE_IMAGE_REF =  newElementImageReference()
+																   .withImageType(imageType("lxd"))
+																   .withImageName(imageName("JUNIT"))
+																   .withImageVersion(version("1.0.0"))
+																   .withElementImageState(ACTIVE)
+																   .build();
 
-	private static final ElementInstalledImageReference CACHED_IMAGE_REF =  newElementInstalledImageReference()
+	private static final ElementImageReference CACHED_IMAGE_REF =  newElementImageReference()
 			   																.withImageType(imageType("lxd"))
 			   																.withImageName(imageName("JUNIT"))
 			   																.withImageVersion(version("1.0.0"))
@@ -98,8 +98,8 @@ public class ElementImageManagerTest {
 		doReturn(Boolean.TRUE).when(image).isActive();
 		when(repository.execute(any(Query.class))).thenReturn(image);
 
-		manager.removeInstalledImage(mock(Element.class),
-									 mock(ImageId.class));
+		manager.removeElementImage(mock(Element.class),
+								   mock(ImageId.class));
 	}
 	
 	@Test
@@ -107,16 +107,16 @@ public class ElementImageManagerTest {
 		Element_Image image = mock(Element_Image.class);
 		when(repository.execute(any(Query.class))).thenReturn(image);
 		
-		manager.removeInstalledImage(mock(Element.class), 
-									 mock(ImageId.class));
+		manager.removeElementImage(mock(Element.class), 
+								   mock(ImageId.class));
 		
 		verify(repository).remove(image);
 	}
 	
 	@Test
 	public void do_nothing_when_element_image_to_be_removed_does_not_exist() {
-		manager.removeInstalledImage(mock(Element.class), 
-									 mock(ImageId.class));
+		manager.removeElementImage(mock(Element.class), 
+								   mock(ImageId.class));
 		
 		verify(repository,never()).remove(any());
 	}
@@ -127,14 +127,14 @@ public class ElementImageManagerTest {
 		when(cached.getImageType()).thenReturn(imageType("lxd"));
 		when(cached.getImageName()).thenReturn(imageName("JUNIT"));
 		when(cached.getImageVersion()).thenReturn(version("1.0.0"));
-		when(cached.getInstallationState()).thenReturn(CACHED);
+		when(cached.getElementImageState()).thenReturn(CACHED);
 		when(repository.execute(any(Query.class))).thenReturn(asList(cached));
 
-		manager.storeInstalledImages(mock(Element.class),
-									 asList(ACTIVE_IMAGE_REF));
+		manager.storeElementImages(mock(Element.class),
+								   asList(ACTIVE_IMAGE_REF));
 		
 
-		verify(cached).setImageInstallationState(ACTIVE);
+		verify(cached).setElementImageState(ACTIVE);
 		verify(repository,never()).add(cached);
 		
 	}
@@ -159,8 +159,8 @@ public class ElementImageManagerTest {
 		ArgumentCaptor<Element_Image> imageCaptor = ArgumentCaptor.forClass(Element_Image.class);
 		doNothing().when(repository).add(imageCaptor.capture());
 		
-		manager.storeInstalledImages(mock(Element.class),
-										  asList(ACTIVE_IMAGE_REF));
+		manager.storeElementImages(mock(Element.class),
+										asList(ACTIVE_IMAGE_REF));
 		
 
 		assertEquals(version("1.0.0"),imageCaptor.getValue().getImageVersion());
@@ -178,8 +178,8 @@ public class ElementImageManagerTest {
 		.thenReturn(null);
 
 		
-		manager.storeInstalledImages(mock(Element.class,withSettings().defaultAnswer(RETURNS_MOCKS)),
-										  asList(ACTIVE_IMAGE_REF));
+		manager.storeElementImages(mock(Element.class,withSettings().defaultAnswer(RETURNS_MOCKS)),
+								   asList(ACTIVE_IMAGE_REF));
 		
 		verify(service).run(any(Flow.class));
 		verify(repository).add(any(Element_Image.class));
@@ -191,11 +191,11 @@ public class ElementImageManagerTest {
 		when(cached.getImageType()).thenReturn(imageType("lxd"));
 		when(cached.getImageName()).thenReturn(imageName("JUNIT"));
 		when(cached.getImageVersion()).thenReturn(version("1.0.0"));
-		when(cached.getInstallationState()).thenReturn(CACHED);
+		when(cached.getElementImageState()).thenReturn(CACHED);
 		when(repository.execute(any(Query.class))).thenReturn(asList(cached));
 
-		manager.storeInstalledImages(mock(Element.class),
-										  Collections.emptyList());
+		manager.storeElementImages(mock(Element.class),
+								   emptyList());
 		
 
 		verify(repository).remove(cached);

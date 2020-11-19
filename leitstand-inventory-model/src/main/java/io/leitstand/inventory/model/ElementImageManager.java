@@ -19,8 +19,8 @@ import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.model.DefaultImageService.referenceOf;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
-import static io.leitstand.inventory.model.Element_Image.findInstalledImage;
-import static io.leitstand.inventory.model.Element_Image.findInstalledImages;
+import static io.leitstand.inventory.model.Element_Image.findElementImage;
+import static io.leitstand.inventory.model.Element_Image.findElementImages;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.findUpdates;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.newElementAvailableUpgrade;
@@ -31,9 +31,9 @@ import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
-import static io.leitstand.inventory.service.ElementInstalledImage.newElementInstalledImage;
-import static io.leitstand.inventory.service.ElementInstalledImageData.newElementInstalledImageData;
-import static io.leitstand.inventory.service.ElementInstalledImages.newElementInstalledImages;
+import static io.leitstand.inventory.service.ElementImage.newElementImage;
+import static io.leitstand.inventory.service.ElementImageData.newElementInstalledImageData;
+import static io.leitstand.inventory.service.ElementImages.newElementImages;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0341E_ELEMENT_IMAGE_ACTIVE;
@@ -59,10 +59,10 @@ import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementAvailableUpgrade;
 import io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType;
 import io.leitstand.inventory.service.ElementImageState;
-import io.leitstand.inventory.service.ElementInstalledImage;
-import io.leitstand.inventory.service.ElementInstalledImageData;
-import io.leitstand.inventory.service.ElementInstalledImageReference;
-import io.leitstand.inventory.service.ElementInstalledImages;
+import io.leitstand.inventory.service.ElementImage;
+import io.leitstand.inventory.service.ElementImageData;
+import io.leitstand.inventory.service.ElementImageReference;
+import io.leitstand.inventory.service.ElementImages;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.PackageVersionInfo;
@@ -91,11 +91,11 @@ public class ElementImageManager {
 	}
 
 
-	public ElementInstalledImages getElementInstalledImages(Element element) {
+	public ElementImages getElementImages(Element element) {
 		ElementGroup group = element.getGroup();
-		List<ElementInstalledImageData> installed = new LinkedList<>();
+		List<ElementImageData> installed = new LinkedList<>();
 		
-		for(Element_Image elementImage : repository.execute(findInstalledImages(element))){
+		for(Element_Image elementImage : repository.execute(findElementImages(element))){
 			Image image = elementImage.getImage();
 			
 			List<PackageVersionInfo> packages = new LinkedList<>();
@@ -127,11 +127,14 @@ public class ElementImageManager {
 						  .withImageType(image.getImageType())
 						  .withImageState(image.getImageState())
 						  .withImageName(image.getImageName())
-						  .withElementImageState(elementImage.getInstallationState())
+						  .withElementImageState(elementImage.getElementImageState())
 						  .withZtp(elementImage.isZtp())
 						  .withImageExtension(image.getImageExtension())
 						  .withImageVersion(image.getImageVersion())
-						  .withChecksums(image.getChecksums().stream().collect(Collectors.toMap(c -> c.getAlgorithm().name(), Checksum::getValue)))
+						  .withChecksums(image.getChecksums()
+						                      .stream()
+						                      .collect(toMap(c -> c.getAlgorithm().name(), 
+						                                     Checksum::getValue)))
 						  .withInstallationDate(elementImage.getDeployDate())
 						  .withBuildDate(image.getBuildDate())
 						  .withPackages(packages)
@@ -139,7 +142,7 @@ public class ElementImageManager {
 						  .build());
 		}	
 		
-		 return newElementInstalledImages()
+		 return newElementImages()
 				.withGroupId(group.getGroupId())
 				.withGroupName(group.getGroupName())
 				.withGroupType(group.getGroupType())
@@ -149,7 +152,7 @@ public class ElementImageManager {
 				.withAdministrativeState(element.getAdministrativeState())
 				.withOperationalState(element.getOperationalState())
 				.withDateModified(element.getDateModified())
-				.withInstalledImages(installed)
+				.withElementImages(installed)
 				.build(); 
 		
 	}
@@ -168,10 +171,10 @@ public class ElementImageManager {
 		return type;
 	}
 
-	public ElementInstalledImage getElementInstalledImage(Element element, ImageId imageId) {
+	public ElementImage getElementImage(Element element, ImageId imageId) {
 		ElementGroup group = element.getGroup();
 		
-		Element_Image elementImage = repository.execute(findInstalledImage(element,imageId));
+		Element_Image elementImage = repository.execute(findElementImage(element,imageId));
 		Image image = elementImage.getImage();
 			
 		List<PackageVersionInfo> packages = new LinkedList<>();
@@ -197,7 +200,7 @@ public class ElementImageManager {
 						.withUpdateType(type)
 						.build());
 		}
-		return newElementInstalledImage()
+		return newElementImage()
 			   .withGroupId(group.getGroupId())
 			   .withGroupName(group.getGroupName())
 			   .withGroupType(group.getGroupType())
@@ -215,7 +218,7 @@ public class ElementImageManager {
 				   		  .withImageState(image.getImageState())
 				   		  .withImageName(image.getImageName())
 				   		  .withImageExtension(image.getImageExtension())
-						  .withElementImageState(elementImage.getInstallationState())
+						  .withElementImageState(elementImage.getElementImageState())
 				   		  .withImageVersion(image.getImageVersion())
 				   		  .withChecksums(image.getChecksums()
 				   				  			  .stream()
@@ -230,16 +233,16 @@ public class ElementImageManager {
 			
 	}
 	
-	public void storeInstalledImages(Element element, List<ElementInstalledImageReference> refs) {
+	public void storeElementImages(Element element, List<ElementImageReference> refs) {
 		Map<ImageId,Element_Image> images = new HashMap<>();
-		for(Element_Image image : repository.execute(findInstalledImages(element))){
+		for(Element_Image image : repository.execute(findElementImages(element))){
 			images.put(image.getImageId(),image);
 		}
 		
-		for(ElementInstalledImageReference installed : refs){
+		for(ElementImageReference installed : refs){
 			Element_Image image = images.remove(installed.getImageId());
 			if(image != null) {
-				image.setImageInstallationState(imageInstallationState(installed));
+				image.setElementImageState(elementImageState(installed));
 				continue;
 			}
 			Image artefact = repository.execute(findImageById(installed.getImageId()));
@@ -254,7 +257,7 @@ public class ElementImageManager {
 										 element.getGroupName(),
 										 installed.getImageId(),
 										 installed.getImageType(),
-										 optional(installed, ElementInstalledImageReference::getImageName,"no name specified"),
+										 optional(installed, ElementImageReference::getImageName,"no name specified"),
 										 installed.getImageVersion()));
 				messages.add(createMessage(IVT0340W_ELEMENT_IMAGE_NOT_FOUND,
 						  				   element.getElementName(),
@@ -272,7 +275,7 @@ public class ElementImageManager {
 				}
 			}
 			image = new Element_Image(element,artefact);
-			image.setImageInstallationState(imageInstallationState(installed));
+			image.setElementImageState(elementImageState(installed));
 			repository.add(image);
 		}
 		
@@ -282,13 +285,13 @@ public class ElementImageManager {
 		
 	}
 
-	private ElementImageState imageInstallationState(ElementInstalledImageReference installed) {
+	private ElementImageState elementImageState(ElementImageReference installed) {
 		return installed.isActive() ? ACTIVE : CACHED;
 	}
 
 
-	public void removeInstalledImage(Element element, ImageId imageId) {
-		Element_Image image = repository.execute(findInstalledImage(element, imageId));
+	public void removeElementImage(Element element, ImageId imageId) {
+		Element_Image image = repository.execute(findElementImage(element, imageId));
 		if(image == null) {
 			return;
 		}
@@ -320,13 +323,13 @@ public class ElementImageManager {
             throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageId);
         }
         boolean ztpSet = false;
-        for(Element_Image elementImage : repository.execute(findInstalledImages(element))){
+        for(Element_Image elementImage : repository.execute(findElementImages(element))){
             if(elementImage.isZtp()) {
                if(elementImage.getImageId().equals(imageId)) {
                    return; // No ZTP changes needed. We're done.
                }
                
-               if(elementImage.getInstallationState() == PULL) {
+               if(elementImage.getElementImageState() == PULL) {
                    // Remove PULL image if it is not longer the ZTP image.
                    repository.remove(elementImage);
                } else {
@@ -345,16 +348,16 @@ public class ElementImageManager {
         if(!ztpSet) {
             // Create a PULL image for the ZTP image.
             Element_Image ztpImage = new Element_Image(element,image);
-            ztpImage.setImageInstallationState(PULL); // Must be PULL because otherwise it would have been processed in the loop above.
+            ztpImage.setElementImageState(PULL); // Must be PULL because otherwise it would have been processed in the loop above.
             ztpImage.setZtp(true); // This image shall be pulled via ZTP when doing an upgrade.
             repository.add(ztpImage);
         }
     }
 
     public void resetZtpImage(Element element) {
-        for(Element_Image image : repository.execute(findInstalledImages(element))){
+        for(Element_Image image : repository.execute(findElementImages(element))){
             if(image.isZtp()) {
-                if(image.getInstallationState() == PULL) {
+                if(image.getElementImageState() == PULL) {
                     // A pull image is not needed anymore if it is not a ZTP image.
                     repository.remove(image);
                 } else {
@@ -366,7 +369,7 @@ public class ElementImageManager {
 
 
     public ImageReference getZtpImage(Element element) {
-        for(Element_Image image : repository.execute(findInstalledImages(element))) {
+        for(Element_Image image : repository.execute(findElementImages(element))) {
             if(image.isZtp()) {
                 return referenceOf(image.getImage());
             }

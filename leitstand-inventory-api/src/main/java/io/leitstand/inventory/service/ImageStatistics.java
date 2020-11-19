@@ -16,11 +16,13 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Arrays.stream;
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -45,17 +47,30 @@ public class ImageStatistics extends ValueObject {
 			return this;
 		}
 		
-		public Builder withActiveCount(Map<ElementGroupName,Integer> activeCount) {
-			assertNotInvalidated(getClass(), stats);
-			stats.activeCount = new TreeMap<>(activeCount);
-			return this;
+		public Builder withElementGroupCounters(ImageStatisticsElementGroupImageCount.Builder... groups) {
+		    return withElementGroupCounters(stream(groups)
+		                                    .map(ImageStatisticsElementGroupImageCount.Builder::build)
+		                                    .collect(toList()));
 		}
 		
-		public Builder withCachedCount(Map<ElementGroupName,Integer> cachedCount) {
-			assertNotInvalidated(getClass(), stats);
-			stats.cachedCount = new TreeMap<>(cachedCount);
-			return this;
-		}
+        public Builder withElementGroupCounters(Collection<ImageStatisticsElementGroupImageCount> groups) {
+            assertNotInvalidated(getClass(), stats);
+            stats.groups = unmodifiableList(new ArrayList<>(groups));
+            return this;
+        }
+        
+        public Builder withReleases(ReleaseRef.Builder... releases) {
+            return withReleases(stream(releases)
+                                .map(ReleaseRef.Builder::build)
+                                .collect(toList()));
+        }
+        
+        public Builder withReleases(List<ReleaseRef> releases) {
+            assertNotInvalidated(getClass(),stats);
+            stats.releases = unmodifiableList(new ArrayList<>(releases));
+            return this;
+        }
+		
 		
 		public ImageStatistics build() {
 			try {
@@ -70,20 +85,20 @@ public class ImageStatistics extends ValueObject {
 
 	
 	private ImageInfo image;
-	private Map<ElementGroupName,Integer> activeCount = emptyMap();
-	private Map<ElementGroupName,Integer> cachedCount = emptyMap();
+	private List<ImageStatisticsElementGroupImageCount> groups;
+	private List<ReleaseRef> releases;
 	
 	public ImageInfo getImage() {
 		return image;
 	}
 	
-	public Map<ElementGroupName,Integer> getActiveCount(){
-		return unmodifiableMap(activeCount);
-	}
+	public List<ImageStatisticsElementGroupImageCount> getGroups() {
+        return groups;
+    }
 	
-	public Map<ElementGroupName,Integer> getCachedCount(){
-		return unmodifiableMap(cachedCount);
-	}
+	public List<ReleaseRef> getReleases() {
+        return releases;
+    }
 	
 	
 	

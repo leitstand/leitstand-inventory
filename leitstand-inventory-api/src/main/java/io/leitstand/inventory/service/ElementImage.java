@@ -23,23 +23,23 @@ import javax.validation.constraints.NotNull;
 /**
  * A summary of an image installed on an element.
  */
-public class ElementInstalledImage extends BaseElementEnvelope{
+public class ElementImage extends BaseElementEnvelope{
 
 	/**
 	 * Returns a new builder to create an immutable <code>ElementInstalledImage</code> instance.
 	 * @return a new builder to create an immutable <code>ElementInstalledImage</code> instance.
 	 */
-	public static Builder newElementInstalledImage(){
+	public static Builder newElementImage(){
 		return new Builder();
 	}
 	
 	/**
 	 * The builder to create a new immutable <code>ElementInstalledImage</code> instance.
 	 */
-	public static class Builder extends BaseElementEnvelopeBuilder<ElementInstalledImage, Builder>{
+	public static class Builder extends BaseElementEnvelopeBuilder<ElementImage, Builder>{
 		
 		public Builder() {
-			super(new ElementInstalledImage());
+			super(new ElementImage());
 		}
 		
 		/**
@@ -47,7 +47,7 @@ public class ElementInstalledImage extends BaseElementEnvelope{
 		 * @param image - the image information.
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withImage(ElementInstalledImageData.Builder image){
+		public Builder withImage(ElementImageData.Builder image){
 			return withImage(image.build());
 		}
 		
@@ -56,7 +56,7 @@ public class ElementInstalledImage extends BaseElementEnvelope{
 		 * @param image - the image information.
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withImage(ElementInstalledImageData image){
+		public Builder withImage(ElementImageData image){
 			assertNotInvalidated(getClass(), object);
 			object.image = image;
 			return this;
@@ -68,7 +68,7 @@ public class ElementInstalledImage extends BaseElementEnvelope{
 		 * @return
 		 */
 		@Override
-		public ElementInstalledImage build(){
+		public ElementImage build(){
 			try{
 				assertNotInvalidated(getClass(), object);
 				return object;
@@ -81,13 +81,13 @@ public class ElementInstalledImage extends BaseElementEnvelope{
 	
 	@Valid
 	@NotNull(message="{image.required}")
-	private ElementInstalledImageData image;
+	private ElementImageData image;
 
 	/**
 	 * Returns the element image information
 	 * @return the element image information
 	 */
-	public ElementInstalledImageData getImage() {
+	public ElementImageData getImage() {
 		return image;
 	}
 	
