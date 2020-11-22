@@ -65,6 +65,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -106,7 +107,8 @@ import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.ReleaseId;
 import io.leitstand.inventory.service.ReleaseName;
-import io.leitstand.inventory.service.ReleaseState;
+import io.leitstand.inventory.service.RoleImage;
+import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
 
 public class ImageServiceIT extends InventoryIT{
@@ -840,4 +842,35 @@ public class ImageServiceIT extends InventoryIT{
         });    
     }
 	
+    
+    @Test
+    public void read_images_for_an_element_role() {
+        transaction(() -> {
+            ElementRole  role  = repository.execute(findRoleByName(ELEMENT_ROLE));
+            ElementGroup group = repository.addIfAbsent(findElementGroupByName(GROUP_TYPE, GROUP_NAME), 
+                                                        () -> new ElementGroup(GROUP_ID, 
+                                                                               GROUP_TYPE, 
+                                                                               GROUP_NAME));
+            
+            Image image = new Image(IMAGE_ID,
+                                    IMAGE_TYPE,
+                                    IMAGE_NAME,
+                                    asList(role),
+                                    PLATFORM_CHIPSET,
+                                    new Version(1,0,0));
+            image.setOrganization("leitstand.io");
+            image.setElementRoles(asList(role));
+            repository.add(image);
+        });
+        
+        transaction(()->{
+            RoleImages roleImages = service.findRoleImages(ELEMENT_ROLE);
+            List<RoleImage> images = roleImages.getImages();
+            assertEquals(ELEMENT_ROLE, roleImages.getElementRole());
+            assertThat(images,hasSizeOf(1));
+            assertEquals(IMAGE_NAME,images.get(0).getImageName());
+            assertEquals(IMAGE_TYPE,images.get(0).getImageType());
+        });
+    }
+    
 }

@@ -110,7 +110,6 @@ import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformSettings;
 import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.ReleaseRef;
-import io.leitstand.inventory.service.ReleaseState;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
 import io.leitstand.inventory.service.Version;
@@ -446,8 +445,10 @@ public class DefaultImageService implements ImageService {
 		
 		List<RoleImage> images = db.executeQuery(prepare("SELECT DISTINCT i.name, i.type "+
 														 "FROM inventory.image i "+
+														 "JOIN inventory.image_elementrole ir "+
+														 "ON i.id = ir.image_id "+
 														 "JOIN inventory.elementrole r "+
-														 "ON i.elementrole_id = r.id "+
+														 "ON ir.elementrole_id = r.id "+
 														 "WHERE r.name=? "+
 														 "ORDER BY i.name, i.type", role.toString()), 
 												 rs -> newRoleImage()
