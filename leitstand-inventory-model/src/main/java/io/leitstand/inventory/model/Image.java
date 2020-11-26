@@ -156,7 +156,7 @@ import io.leitstand.inventory.service.Version;
 			   		  "OR ( d.major = :major AND d.minor > :minor) "+
 			   		  "OR (d.major=:major AND d.minor=:minor AND d.patch > :patch) "+
 			   		  "OR (d.major=:major AND d.minor=:minor AND d.patch = :patch AND d.prerelease IS NOT NULL AND d.prerelease > :prerelease)) "+
-				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC")
+				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC, d.prerelease DESC")
 @NamedQuery(name="Image.findByElementAndImageTypeAndVersion", 
 			query="SELECT d FROM Image d "+
 				  "WHERE :role MEMBER OF d.roles "+
@@ -166,7 +166,8 @@ import io.leitstand.inventory.service.Version;
 				  "AND d.major=:major "+
 				  "AND d.minor=:minor "+
 				  "AND d.patch=:patch "+
-				  "AND d.prerelease=:prerelease")
+				  "AND d.prerelease=:prerelease "+
+				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC, d.prerelease DESC")
 @NamedQuery(name="Image.countElementReferences",
 			query="SELECT count(ei) FROM Element_Image ei WHERE ei.image=:image")
 @NamedQuery(name="Image.countReleaseReferences",
@@ -230,7 +231,7 @@ public class Image extends VersionableEntity{
 			}
 			
 				
-			jpql += "ORDER BY i.imageName";
+			jpql += "ORDER BY i.imageName DESC";
 			
 			TypedQuery<Image> query = em.createQuery(jpql,Image.class);
 			query.setParameter("name",querySpec.getFilter());
@@ -364,7 +365,7 @@ public class Image extends VersionableEntity{
 		
 		return em -> em.createNamedQuery("Image.findByElementAndImageTypeAndVersion", 
 										 Image.class)
-					   .setParameter("platform",element.getPlatform())
+					   .setParameter("chipset",element.getPlatform().getChipset())
 					   .setParameter("role", element.getElementRole())
 					   .setParameter("element", element)
 					   .setParameter("type",imageType)

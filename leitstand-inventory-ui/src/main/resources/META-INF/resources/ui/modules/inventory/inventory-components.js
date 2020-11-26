@@ -76,7 +76,7 @@ class InventoryPanel extends UIElement {
                      if(panels.length > 1){
                          const namedPanels = {};
                          panels.forEach(p => {
-                             namedPanels[p.panelName]=p;
+                             namedPanels[p.panel_name]=p;
                              if(p.default_panel){
                                  panel = p;
                              }
