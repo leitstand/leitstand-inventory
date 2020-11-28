@@ -15,8 +15,10 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
@@ -24,6 +26,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
+import static io.leitstand.inventory.service.ReasonCode.IVT0392I_ELEMENT_ENVIRONMENT_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -41,8 +44,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import io.leitstand.commons.ConflictException;
+import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
+import io.leitstand.commons.model.RollbackExceptionUtil;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironmentService;
@@ -52,6 +57,7 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
@@ -213,24 +219,41 @@ public class ElementEnvironmentResource {
 	@Path("/{element}/environments")
 	public Response storeElementEnvironment(@Valid @PathParam("element") ElementName elementName,
 										   	@Valid Environment env) {
-		boolean created = service.storeElementEnvironment(elementName, 
-														  env);
-		if(created) {
-			return created(messages,env.getEnvironmentId());
-		}
-		return success(messages);
+	    
+	    try {
+    		boolean created = service.storeElementEnvironment(elementName, 
+    														  env);
+    		if(created) {
+    			return created(messages,env.getEnvironmentId());
+    		}
+    		return success(messages);
+	    } catch(Exception e) {
+	        givenRollbackException(e)
+	        .whenEntityExists(() -> service.getElementEnvironment(elementName, env.getEnvironmentName()))
+	        .thenThrow(new UniqueKeyConstraintViolationException(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
+	                                                             key("environment_name", env.getEnvironmentName())));
+	        throw e;
+	    }
 	}
 
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/environments")
 	public Response storeElementEnvironment(@Valid @PathParam("element") ElementId elementId,
 										   	@Valid Environment env) {
-		boolean created = service.storeElementEnvironment(elementId, 
-														  env);
-		if(created) {
-			return created(messages,env.getEnvironmentId());
-		}
-		return success(messages);
+	    try {
+    		boolean created = service.storeElementEnvironment(elementId, 
+    														  env);
+    		if(created) {
+    			return created(messages,env.getEnvironmentId());
+    		}
+    		return success(messages);
+	    } catch(Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getElementEnvironment(elementId, env.getEnvironmentName()))
+            .thenThrow(new UniqueKeyConstraintViolationException(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
+                                                                 key("environment_name", env.getEnvironmentName())));
+            throw e;
+        }
 	}
 
 	

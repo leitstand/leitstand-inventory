@@ -302,6 +302,9 @@ public enum ReasonCode implements Reason{
 	
 	/** The environment has been removed.*/
 	IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
+
+	/** The environment with the specified name already exists.*/
+    IVT0393E_ELEMENT_ENVIRONMENT_EXISTS,
 	
 	/** The DNS record does not exist.*/
 	IVT3001E_ELEMENT_DNS_RECORD_NOT_FOUND,
