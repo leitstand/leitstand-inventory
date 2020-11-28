@@ -57,23 +57,19 @@ class Diff extends UIElement {
 }
 
 class Editor extends Control {
-	connectedCallback(){
-		const config = this.viewModel.getProperty(this.binding);
-		const editorpanel = document.createElement('div');
-		if(this.hasAttribute('style')){
-			editorpanel.setAttribute('style',this.getAttribute('style'));
-		}
-		const options = {'mode':'code'};
-	    const editor = new JSONEditor(editorpanel, options);
-	    if(config){
-	    	editor.set(config);
-	    }
-		this.appendChild(editorpanel);
-		this.form.addEventListener('UIPreExecuteAction',(evt) => {
-			this.viewModel.setProperty(this.binding,editor.get());
-		});
-	}
-	
+    connectedCallback(){
+        const config = this.viewModel.getProperty(this.binding);
+        this.innerHTML=`<textarea>${JSON.stringify(config,null,' ')}</textarea>`;
+        const editor = CodeMirror.fromTextArea(this.querySelector("textarea"), {
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            mode:{name:'javascript', json:true}
+        });
+        this.form.addEventListener('UIPreExecuteAction',() => {
+            this.viewModel.setProperty(this.binding,JSON.parse(editor.getValue()));
+        });
+    }
 }
 
 customElements.define('config-diff',Diff);

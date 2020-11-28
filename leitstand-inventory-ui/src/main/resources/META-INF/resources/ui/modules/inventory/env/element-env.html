@@ -29,25 +29,17 @@
 <ui-form scopesAllowed="ivt ivt.element ivt.element.config">
 	<ui-group>
 		<ui-label>Environment</ui-label>
-		<ui-input name="environment_name">
+		<env-name name="environment_name">
 			<ui-label>Environment Name</ui-label>
-			<ui-note>The environment name is unique per element</ui-note>
-		</ui-input>
-		<ui-input name="category" >
-			<ui-label>Category</ui-label>
-			<ui-note>Optional environment category.</ui-note>
-		</ui-input>
-		<ui-input name="type">
-			<ui-label>Type</ui-label>
-			<ui-note>Optional environment type.</ui-note>
-		</ui-input>
+			<ui-note>Select the environment you want to add.</ui-note>
+		</env-name>
 		<ui-textarea name="description">
 			<ui-label>Description</ui-label>
 			<ui-note>Optional environment description.</ui-note>
 		</ui-textarea>
 		<inventory-upload accept="application/json" class="hidden">
 		</inventory-upload>
-		<env-editor type="json" name="variables" style="height:50em;">
+		<env-editor type="json" name="variables">
 			<!--  Configuration editor to modify the current configuration -->
 		</env-editor>
 	</ui-group>
