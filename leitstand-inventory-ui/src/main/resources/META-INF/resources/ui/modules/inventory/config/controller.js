@@ -15,7 +15,7 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
-import {UIElement,Control} from '/ui/js/ui-components.js';
+import {UIElement,Control,html} from '/ui/js/ui-components.js';
 import '../inventory-components.js';
 class Diff extends UIElement {
 	
@@ -38,12 +38,12 @@ class Diff extends UIElement {
 			
 			const diff = JsDiff.diffLines(target.content,
 										  source.content)
-					.map(part => `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">${part.value||''}</span>`)
-					.reduce((a,b)=>a+b);
+					           .map(part => html `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">$${part.value}</span>`)
+					           .reduce((a,b)=>a+b);
 			this.innerHTML=`<div id="comparator">
 							    <div>
-							        <div style="background-color:lime; font-weight:bold; font-size: 1em; padding: 5px;">Added to ${target.config_name} at <ui-date readonly dateTime>${target.date_modified}</ui-date></div> 
-							        <div style="background-color: #ffd6cc; font-weight: bold; font-size: 1em; padding: 5px;">Removed from ${source.config_name} from <ui-date dateTime readonly>${source.date_modified}</ui-date></div>
+							        <div style="background-color:lime; font-weight:bold; font-size: 1em; padding: 5px;">Added to $${target.config_name} at <ui-date readonly dateTime>${target.date_modified}</ui-date></div> 
+							        <div style="background-color: #ffd6cc; font-weight: bold; font-size: 1em; padding: 5px;">Removed from $${source.config_name} from <ui-date dateTime readonly>${source.date_modified}</ui-date></div>
 							    </div>
 							    <code id="diff" class="hl" style="height: 45em; overflow: scroll"><pre>${diff}</pre></code>
 							</div>`;

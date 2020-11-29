@@ -15,7 +15,7 @@
  */
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select,Control} from '/ui/js/ui-components.js';
+import {Select,Control,html} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms,TimeSeries} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
@@ -236,27 +236,29 @@ class PodSelector extends Control{
 		    .then(pods => {
 		    			    	
 		    	this.innerHTML=`<table class="list">
-		    			<thead>
-		    				<tr>
-								<th class="text">Pod</th>
-								<th class="text">Description</th>
-		    				</tr>
-		    			</thead>
-			    		<tbody>
-		    				${pods.map(pod => `<tr>
-		    									<td class="text">
-		    										<label>
-		    											<input type="radio" name="group_id" value="${pod.group_id}" data-group-name="${pod.group_name}"  ${ groupId == pod.group_id && 'checked' }>
-		    											&nbsp;${pod.group_name}
-		    										</label>
-		    									</td>
-		    									<td class="text">${pod.description}</td> 
-		    								  </tr>`)
-		    					  .reduce((a,b)=>a+b,'')}
-		    			</tbody>
-		    		</table>`;
+		    			          <thead>
+		    				        <tr>
+								      <th class="text">Pod</th>
+								      <th class="text">Description</th>
+		    				        </tr>
+		    			          </thead>
+			    		          <tbody>
+		    				        ${pods.map(pod => html `<tr>
+		    									              <td class="text">
+		    										            <label>
+		    											          <input type="radio" 
+		    											                 name="group_id" 
+		    											                 value="${pod.group_id}" 
+		    											                 data-group-name="$${pod.group_name}" ${ groupId == pod.group_id && 'checked' }>
+		    											                 &nbsp;$${pod.group_name}
+		    										            </label>
+		    									              </td>
+		    									              <td class="text">$${pod.description}</td> 
+		    								                </tr>`)
+		    					          .reduce((a,b)=>a+b,'')}
+		    			          </tbody>
+		    		            </table>`;
 		    });
-		    
 		    
 		this.addEventListener('change',(evt)=>{
 			this.viewModel.setProperty("group_id",evt.target.value);

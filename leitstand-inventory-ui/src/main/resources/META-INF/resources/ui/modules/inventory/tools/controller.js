@@ -16,7 +16,7 @@
 
 
 import {Menu,Controller} from '/ui/js/ui.js';
-import {UIElement} from '/ui/js/ui-components.js';
+import {UIElement, html} from '/ui/js/ui-components.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
 
@@ -39,14 +39,19 @@ class ToolList extends UIElement{
 					<tr><th class="text">Tool</th><th class="text">Description</th></tr>
 				</thead>
 				<tbody>
-					${tools.items.map(item => `<tr><td class="text"><a href="${item.viewpath}" title="${item.title}" ${item.target ? `target="${item.target}"` :''}>${item.label}</a></td><td class="text">${item.config.description}</td></tr>`).reduce((a,b)=>a+b,'')}
+					${tools.items.map(item => html `<tr>
+					                                  <td class="text"><a href="${item.viewpath}" 
+					                                                      title="$${item.title}" 
+					                                                      ${item.target ? `target="${item.target}"` :''}>$${item.label}</a></td>
+					                                  <td class="text">$${item.config.description}</td>
+					                                </tr>`).reduce((a,b)=>a+b,'')}
 				</tbody>
 			</table>
 			</ui-group>`;
 		} else {
-			this.innerHTML=`<ui-blankslate>
-								<ui-title>No tools found</ui-title><ui-note>No tools registered for element ${element.element_name}</ui-note>
-							</ui-blankslate>`
+			this.innerHTML=html `<ui-blankslate>
+								   <ui-title>No tools found</ui-title><ui-note>No tools registered for element $${element.element_name}</ui-note>
+							     </ui-blankslate>`
 		}
 	}
 	

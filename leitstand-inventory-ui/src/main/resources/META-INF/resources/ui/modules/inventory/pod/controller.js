@@ -16,7 +16,7 @@
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Pod,Metadata,Platforms,Element,Rack,Facilities} from '/ui/modules/inventory/inventory.js';
-import {Control} from '/ui/js/ui-components.js';
+import {Control,html} from '/ui/js/ui-components.js';
 import '../inventory-components.js';
 
 
@@ -36,16 +36,20 @@ class FacilitySelector extends Control{
 						    				</tr>
 						    			</thead>
 							    		<tbody>
-						    				${facilities.map(facility => `<tr>
-							    									   <td class="text">
-							    										 <label>
-							    											<input type="radio" name="facility_id" value="${facility.facility_id}" data-facility-name="${facility.facility_name}"  ${ facilityId == facility.facility_id && 'checked' }>
-							    											&nbsp;${facility.facility_name}
-							    										</label>
-							    									   </td>
-							    									   <td class="text">${facility.facility_type||''}</td> 
-							    								       <td class="text">${facility.location||''}</td> 
-							    								     </tr>`)
+						    				${facilities.map(facility => html `<tr>
+							    									             <td class="text">
+							    										           <label>
+							    											         <input type="radio" 
+							    											                name="facility_id" 
+							    											                value="${facility.facility_id}" 
+							    											                data-facility-name="$${facility.facility_name}"  
+							    											                ${ facilityId == facility.facility_id && 'checked' }>
+							    											         &nbsp;$${facility.facility_name}
+							    										           </label>
+							    									             </td>
+							    									             <td class="text">$${facility.facility_type||'-'}</td> 
+							    								                 <td class="text">$${facility.location||'-'}</td> 
+							    								               </tr>`)
 		    			  								.reduce((a,b)=>a+b,'')}
 						    			</tbody>
 						    		</table>`;
