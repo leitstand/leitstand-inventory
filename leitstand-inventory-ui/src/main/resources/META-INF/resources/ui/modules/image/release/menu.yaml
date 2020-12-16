@@ -1,0 +1,15 @@
+name: release
+provider: rtbrick.com
+controller: controller.js
+description: RBFS release management
+# Add link-state graph menu item to pod menu.
+extensions:
+- extend:
+    module: image
+    menu: main
+    after: image
+  items:
+  - item: release
+    label: Releases
+    title: Manage release settings
+    view: releases.html

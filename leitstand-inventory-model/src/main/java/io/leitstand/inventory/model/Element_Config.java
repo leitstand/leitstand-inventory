@@ -243,4 +243,8 @@ public class Element_Config implements Serializable {
 	public UserName getCreator() {
 		return creator;
 	}
+	
+	public void setCreator(UserName creator) {
+        this.creator = creator;
+    }
 }

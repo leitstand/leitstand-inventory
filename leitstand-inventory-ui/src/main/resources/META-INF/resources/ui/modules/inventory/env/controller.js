@@ -15,30 +15,71 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
-import {UIElement,Control} from '/ui/js/ui-components.js';
+import {Json} from '/ui/js/client.js';
+import {UIElement,Control,Select} from '/ui/js/ui-components.js';
 import '../inventory-components.js';
 
 class Editor extends Control {
 	connectedCallback(){
-		const config = this.viewModel.getProperty(this.binding);
-		const editorpanel = document.createElement('div');
-		if(this.hasAttribute('style')){
-			editorpanel.setAttribute('style',this.getAttribute('style'));
-		}
-		const options = {'mode':'code'};
-	    const editor = new JSONEditor(editorpanel, options);
-	    if(config){
-	    	editor.set(config);
-	    }
-		this.appendChild(editorpanel);
+		const config = this.viewModel.getProperty(this.binding)||{};
+		this.innerHTML=`<textarea>${JSON.stringify(config,null,' ')}</textarea>`;
+	    const editor = CodeMirror.fromTextArea(this.querySelector("textarea"), {
+	        lineNumbers: true,
+	        styleActiveLine: true,
+	        matchBrackets: true,
+	        mode:{name:'javascript', json:true}
+	    });
 		this.form.addEventListener('UIPreExecuteAction',() => {
-			this.viewModel.setProperty(this.binding,editor.get());
+			this.viewModel.setProperty(this.binding,JSON.parse(editor.getValue()));
 		});
 	}
-	
 }
 
 customElements.define('env-editor',Editor);
+
+class EnvironmentSelector extends Select {
+    
+    constructor(){
+        super();
+    }
+    
+    options(){
+        const envs = new Json('/api/v1/environments/_forElement?element={{element}}',
+                              this.location.params)
+        return envs
+               .load()
+               .then(envs => {
+                   if(envs){
+                       this.envs = {};
+                       envs.forEach(env => this.envs[env.environment_name]=env);
+                       return envs.map( env => ({'value':env.environment_name,
+                                                 'label':env.display_name}));
+                   }
+               });
+    }
+    
+    noOptions(){
+        this.outerHTML = `<ui-input name="environment_name">
+                            <ui-label>Environment Name</ui-label>
+                            <ui-note>The environment name is unique per element</ui-note>
+                          </ui-input>
+                          <ui-input name="category" >
+                            <ui-label>Category</ui-label>
+                            <ui-note>Optional environment category.</ui-note>
+                          </ui-input>`;
+    }
+    
+    category(name){
+        const env = this.envs[name];
+        if(env){
+            return env.category;
+        }
+        return "";
+        
+    }
+}
+
+customElements.define('env-name',EnvironmentSelector);
 
 const elementEnvironmentsController = function(){
 	const envs = new Element({scope:"environments"});
@@ -57,11 +98,16 @@ const elementEnvironmentController = function(){
 		buttons: {
 			"save-env":function(){
 			    const upload = this.input('inventory-upload').unwrap().content;
+			    const envSelector = this.input('env-name');
+			    let category = this.getViewModel("category");
+			    if(envSelector){
+			        category = envSelector.unwrap().category(this.getViewModel("environment_name"));
+			    }
+			    
 				env.saveEnvironment(this.location.params,
 								    { "environment_id" : this.getViewModel("environment_id"),
 									  "environment_name" : this.getViewModel("environment_name"),
-									  "category" : this.getViewModel("category"),
-									  "type" : this.getViewModel("type"),
+									  "category" : category ,
 									  "description" : this.getViewModel("description"),
 									  "variables" : upload ? JSON.parse(upload) : this.getViewModel("variables") });
 			},

@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
 
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.Flow;
-import io.leitstand.inventory.service.ElementInstalledImageReference;
+import io.leitstand.inventory.service.ElementImageReference;
 import io.leitstand.inventory.service.ImageName;
 
 /**
@@ -31,7 +31,7 @@ import io.leitstand.inventory.service.ImageName;
 class CreateImageStubRecordFlow implements Flow<Image>{
 
 	private Element element;
-	private ElementInstalledImageReference installed;
+	private ElementImageReference installed;
 	
 	
 	/**
@@ -39,7 +39,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	 * @param element - the element that has reported the unknown image
 	 * @param data - the data of the unknown image.
 	 */
-	CreateImageStubRecordFlow(Element element, ElementInstalledImageReference image) {
+	CreateImageStubRecordFlow(Element element, ElementImageReference image) {
 		this.element = element;
 		this.installed = image;
 	}

@@ -45,6 +45,6 @@ menus:
 #     title: View image packages
 #     view: image-pkgs.html
   - item: image-stats
-    label: Utilization
-    title: View image utilization statistics
+    label: Usage
+    title: View image usage statistics
     view: image-stats.html

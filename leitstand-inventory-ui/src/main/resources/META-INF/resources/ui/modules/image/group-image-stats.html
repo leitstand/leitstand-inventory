@@ -1,0 +1,74 @@
+<!--
+ Copyright 2020 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<style>
+    .upgrades {
+        list-style-type: none;
+        padding: 5px 0px;
+    }
+    
+    .update {
+        margin: 5px 10px;
+    }
+</style>
+<ui-view-header>
+    <ui-breadcrumbs>
+        <ui-breadcrumb href="/ui/views/image/images.html" title="Show image list">Images</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/image/image-meta.html?image={{image_id}}" title="Show image details">{{image_name}}</ui-breadcrumb>
+        <ui-breadcrumb href="/ui/views/image/images-stats.html" title="Show image usage">Usage</ui-breadcrumb>
+        <ui-breadcrumb>{{group_name}}</ui-breadcrumb>
+    </ui-breadcrumbs>
+    <ui-title>Image usage in {{group_type}} {{group_name}}</ui-title>
+    <ui-note>Elements in {{group_type}} {{group_name}} using image {{image_name}}</ui-note>
+</ui-view-header>
+<ui-note>
+The active image is currently running on the element.
+An image in pull state is supposed to be pulled by the element into it's local image cache in order to become eligible for immediate activation.
+Cached images can be activated immediately from a local cache.
+</ui-note>
+<ui-form>
+<!-- {{#elements.length}} -->
+<ui-group>
+<ui-label>Elements</ui-label>
+<table class="list">
+    <thead>
+        <tr>
+            <th class="text">Role</th>
+            <th class="text">Element</th>
+            <th class="tiny">State</th>
+        </tr>
+    </thead>
+<!-- {{#elements}} -->
+    <tbody>
+    <tr style="vertical-align:top">
+        <td class="text">{{element_role}}</td>
+        <td class="text"><a href="/ui/views/inventory/element/element-images.html?group={{group_id}}&element={{element_id}}">{{element_name}} {{#element_alias}}({{.}}){{/element_alias}}</a></td>
+        <td><span class="{{element_image_state}} image">{{element_image_state}}</span></td>
+    </tr>
+    </tbody>
+<!--  {{/elements}}-->
+</table>
+</ui-group>
+<!-- {{/elements.length}} -->
+<!-- {{^elements.length}} -->
+<ui-blankslate>
+    <ui-title>No images found!</ui-title>
+    <ui-note>This group has no images installed.</ui-note>
+</ui-blankslate>
+<!-- {{/elements.length}} -->
+<ui-actions>
+    <ui-refresh title="Refresh image list">Refresh</ui-refresh>
+</ui-actions>
+</ui-form>

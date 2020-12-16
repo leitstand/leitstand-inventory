@@ -84,7 +84,8 @@ export class Image extends Resource {
 	 */
 	constructor(cfg) {
 		super();
-		this._cfg = cfg;
+		this._cfg = Object.assign({scope:''},cfg);
+		
 	}
 	
 	/**
@@ -92,7 +93,7 @@ export class Image extends Resource {
 	 * @param {string} [params.image] The image's UUID
 	 */
 	load(params) {
-		return this.json("/api/v1/images/{{&image}}/{{&scope}}",
+		return this.json("/api/v1/images/{{&image}}/"+this._cfg.scope,
 						 this._cfg,
 						 params)
 				   .GET();
@@ -129,4 +130,13 @@ export class Image extends Resource {
 				         params)
 				   .PUT(image);
 	}
+	
+	removeImage(params){
+	    return this.json("/api/v1/images/{{&image}}",
+	                     this._cfg,
+	                     params)
+	               .DELETE();
+	}
 }
+
+

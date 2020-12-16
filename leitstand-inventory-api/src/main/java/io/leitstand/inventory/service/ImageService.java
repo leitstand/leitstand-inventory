@@ -23,6 +23,11 @@ public interface ImageService {
 	ImageInfo getImage(ImageId id);
 	
 	ImageStatistics getImageStatistics(ImageId id);
+	ImageStatisticsElementGroupElementImages getElementGroupImageStatistics(ImageId imageId,
+	                                                                        ElementGroupId groupId);
+    ImageStatisticsElementGroupElementImages getElementGroupImageStatistics(ImageId imageId,
+                                                                            ElementGroupType groupType, 
+                                                                            ElementGroupName groupName);
 	
 	List<ImageType> getImageTypes();
 	

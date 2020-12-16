@@ -1,0 +1,43 @@
+<!--
+(c) RtBrick, Inc - All rights reserved, 2015 - 2017
+-->
+<ui-view-header>
+    <ui-title>Releases</ui-title>
+    <ui-subtitle>List of defined releases</ui-subtitle>
+</ui-view-header>
+<ui-form>
+    <ui-filter name="filter">
+        <ui-label>Filter</ui-label>
+        <ui-note>Filter releases by their name</ui-note>
+    </ui-filter>
+    <!-- {{#releases.length}} -->
+    <ui-group>
+        <ui-label>Releases</ui-label>
+        <table class="list">
+            <thead>
+                <tr>
+                    <th class="text small">Release</th>
+                    <th class="text">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            <!-- {{#releases}}  -->
+            <tr>
+                <td class="text"><a href="release.html?release={{release_id}}" title="Show release details">{{release_name}}</a></td>
+                <td class="text">{{description}}</td>
+            </tr>
+            <!--  {{/releases}} -->
+            </tbody>
+        </table>
+    </ui-group>
+    <!-- {{/releases.length}}  -->
+    <!-- {{^releases}} -->
+        <ui-blankslate>
+            <ui-tile>No releases found!<ui-title>
+            <ui-note>No releases match the current filter.</ui-note>
+        </ui-blankslate>            
+    <!-- {{/releases}} -->
+    <ui-actions>
+        <ui-button href="new-release.html" primary>Add release</ui-button>
+    </ui-actions>
+</ui-form>

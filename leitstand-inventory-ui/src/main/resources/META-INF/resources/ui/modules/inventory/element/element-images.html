@@ -47,8 +47,9 @@ Cached images can be activated immediately from an element-local cache.
 	<thead>
 		<tr style="vertical-align:bottom">
 			<th>Type</th>
-			<th>Lifecycle</th>
-			<th class="text">Version</th>
+			<th class="tiny">Lifecycle</th>
+			<th class="tiny text">Version</th>
+			<th class="text">Image</th>
 			<th class="tiny">State</th>
 			<th>Date Installed</th>
 		</tr>
@@ -57,10 +58,11 @@ Cached images can be activated immediately from an element-local cache.
 	<tr style="vertical-align:top">
 		<td>{{image_type}}</td>
 		<td><a class="{{image_state}}">{{image_state}}</a></td>
+		<td>{{image_version}}</td>
 		<td class="text">
-			<a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_version}}</a>
+			<a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_name}}</a>
 		</td>
-		<td style="vertical-align: middle"><span class="{{element_image_state}}">{{element_image_state}}</span></td>
+		<td><span class="{{element_image_state}}">{{element_image_state}}</span></td>
 		<td><ui-date readonly>{{date_installed}}</ui-date></td>
 	</tr>
 <!--  {{/images}}-->
@@ -78,15 +80,15 @@ Cached images can be activated immediately from an element-local cache.
 <ui-note>Upgrades for image {{image_name}}</ui-note>
 <table class="list">
 	<thead>
-		<th>Lifecycle</th>
-		<th>Upgrade Type</th>
+		<th class="tiny">Lifecycle</th>
+		<th class="tiny text">Version</th>
 		<th class="text">Image</th>
 	</thead>
 	<tbody>
 	<!-- {{#available_upgrades}} -->
 	<tr>
 		<td><span class="{{image_state}}">{{image_state}}</span></td>
-		<td>{{upgrade_type}}</td>
+		<td class="text">{{image_version}}</td>
 		<td class="text"><a href="/ui/views/image/image-meta.html?group={{group_id}}&element={{element_id}}&image={{image_id}}" title="Show image details">{{image_name}}</a></td>		
 	</tr>
 	<!-- {{/available_upgrades}} -->
@@ -95,10 +97,12 @@ Cached images can be activated immediately from an element-local cache.
 </ui-group>
 <!-- {{/available_upgrades.length}} -->
 <!-- {{^available_upgrades.length}} -->
-<ui-blankslate>
-	<ui-title>No upgrades found.</ui-title>
-	<ui-note>No upgrades for the installed images available.</ui-note>
-</ui-blankslate>
+<div class="row">
+	<ui-blankslate>
+		<ui-title>No upgrades for {{image_name}} found.</ui-title>
+		<ui-note>No upgrades for {{image_state}} image {{image_name}} found. Upload new images to the image store to make them eligible for deployment. </ui-note>
+	</ui-blankslate>
+</div>
 <!-- {{/available_upgrades.length}} -->
 <!-- {{/images}} -->
 <!-- {{/images.length}} -->

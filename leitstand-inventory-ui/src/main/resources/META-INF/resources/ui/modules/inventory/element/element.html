@@ -64,6 +64,7 @@
 	<ui-group>
 		<ui-label>Tags</ui-label>
 		<ui-tags name="tags">
+		    <ui-label>Element Tags</ui-label>    
 			<ui-note>Optional tags to categorize this element</ui-note>
 		</ui-tags>
 	</ui-group>
@@ -89,7 +90,7 @@
 	</ui-group>
 	<ui-group>
 		<ui-label>Management Interfaces</ui-label>
-		<ui-note>Configure REST and SSH endpoints of the </ui-note>
+		<ui-note>Configure management interfaces of this element.</ui-note>
 			<!--  {{#mgmt_interface_list_length}} -->
 			<table class="list">
 				<thead>
@@ -116,8 +117,8 @@
 			<!-- {{/mgmt_interface_list_length}} -->
 			<!-- {{^mgmt_interface_list}} -->
 			<ui-blankslate>
-				<ui-title>No management interfaces found.</ui-title>
-				<ui-note>No management interfaces have been defined for this </ui-note>
+				<ui-title>No management interfaces found</ui-title>
+				<ui-note>No management interfaces exist for this element.</ui-note>
 			</ui-blankslate>
 			<!-- {{/mgmt_interface_list}} -->
 			<ui-actions>

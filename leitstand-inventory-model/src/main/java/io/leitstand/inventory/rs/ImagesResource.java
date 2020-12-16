@@ -46,6 +46,9 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
+import io.leitstand.inventory.service.ElementGroupId;
+import io.leitstand.inventory.service.ElementGroupName;
+import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
@@ -53,6 +56,7 @@ import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
+import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.RoleImages;
@@ -148,6 +152,26 @@ public class ImagesResource {
 	public ImageStatistics getImageStatistics(@PathParam("image_id") ImageId id){
 		return service.getImageStatistics(id);
 	}
+
+	@GET
+	@Path("/{image_id:"+UUID_PATTERN+"}/statistics/{group_id:"+UUID_PATTERN+"}")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+	public ImageStatisticsElementGroupElementImages getImageStatistics(@Valid @PathParam("image_id") ImageId imageId,
+	                                                                   @Valid @PathParam("group_id") ElementGroupId groupId){
+	    return service.getElementGroupImageStatistics(imageId, 
+	                                                  groupId);
+	}
+	   
+    @GET
+    @Path("/{image_id:"+UUID_PATTERN+"}/statistics/{group_type}/{group_name}")
+    @Scopes({IVT, IVT_READ, IVT_IMAGE})
+    public ImageStatisticsElementGroupElementImages getImageStatistics(@Valid @PathParam("image_id") ImageId imageId,
+                                                                       @Valid @PathParam("group_type") ElementGroupType groupType,
+                                                                       @Valid @PathParam("group_name") ElementGroupName groupName){
+        return service.getElementGroupImageStatistics(imageId,
+                                                      groupType,
+                                                      groupName);
+    }
 	
 	@DELETE
 	@Path("/{image_id:"+UUID_PATTERN+"}")

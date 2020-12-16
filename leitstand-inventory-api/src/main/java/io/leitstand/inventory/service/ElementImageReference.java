@@ -26,15 +26,15 @@ import io.leitstand.commons.model.ValueObject;
 /**
  * A reference to an installed image.
  */
-public class ElementInstalledImageReference extends ValueObject {
+public class ElementImageReference extends ValueObject {
 	
-	public static Builder newElementInstalledImageReference() {
+	public static Builder newElementImageReference() {
 		return new Builder();
 	}
 	
 	public static class Builder {
 		
-		private ElementInstalledImageReference ref = new ElementInstalledImageReference();
+		private ElementImageReference ref = new ElementImageReference();
 		
 		public Builder withImageId(ImageId imageId) {
 			assertNotInvalidated(getClass(),ref);
@@ -66,7 +66,7 @@ public class ElementInstalledImageReference extends ValueObject {
 			return this;
 		}
 		
-		public ElementInstalledImageReference build() {
+		public ElementImageReference build() {
 			try {
 				assertNotInvalidated(getClass(), ref);
 				return ref;

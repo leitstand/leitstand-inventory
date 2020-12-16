@@ -100,64 +100,74 @@ const imageStatisticsController = function(){
 	return new Controller({
 			resource: imageStats,
 			viewModel:function(stats){
-				const pods = {};
+			    const image = stats.image;
+			    
 				let totalActiveCount = 0;
-				let totalCacheCount  = 0;
-				let podCount = 0;
-				if (stats.active_count){
-					for(const podName in stats.active_count){
-						let pod = pods[podName];
-						if(!pod){
-							pod = {"active_count":0,
-								   "cached_count":0};
-							pods[podName]= pod;
-							podCount++;
-						}
-						pod.active_count = stats.active_count[podName];
-						totalActiveCount += pod.active_count;
-					}
+				let totalCachedCount  = 0;
+				let totalPullCount   = 0;
+				let totalTotalCount  = 0;
+				
+				if(stats.groups){
+				    stats.groups.forEach(group => {
+				        totalActiveCount += group.active_count;
+				        totalCachedCount += group.cached_count;
+				        totalPullCount   += group.pull_count;
+				        totalTotalCount  += group.total_count;
+				    });
 				}
-				if(stats.cached_count){
-					for(const podName in stats.cached_count){
-						let pod = pods[podName];
-						if(!pod){
-							pod = {"active_count":0,
-								   "cached_count":0};
-							pods[podName]= pod;
-							podCount++;
-						}
-						pod.cached_count = stats.cached_count[podName];
-						totalCacheCount += pod.cached_count;
-					}
-				}
-				const images = [];
-				for(const podName in pods){
-					const pod = pods[podName];
-					pod["group_name"] = podName;
-					images.push(pod);
-				}
-				const viewModel = stats.image;
-				viewModel["pod_count"]=podCount;
-				viewModel["active_count"]=totalActiveCount;
-				viewModel["cached_count"]=totalCacheCount;
-				viewModel["total_count"]=(totalActiveCount+totalCacheCount);
-				viewModel["images"]=images;
-				return viewModel;
+				image.releases = stats.releases;
+				image.groups = stats.groups;
+				image.total_active_count = totalActiveCount;
+                image.total_cached_count = totalCachedCount;
+                image.total_pull_count = totalPullCount;
+                image.total_total_count = totalTotalCount;
+                return image;
+			},
+			buttons:{
+			    "remove-image":function(){
+			        imageStats.removeImage(this.location.params);
+			    }
+			},
+			onRemoved:function(){
+			    this.navigate({"view":"images.html"});
 			}
 	});
-}
-	
+};
+
+const groupImageStatisticsController = function(){
+    const imageStats = new Image({"scope":"statistics/{{&group}}"});
+    return new Controller({
+        resource: imageStats,
+        viewModel: function(group){
+            const stats = group.image;
+            stats.elements = group.elements;
+            stats.group_id = group.group_id;
+            stats.group_type = group.group_type;
+            stats.group_name = group.group_name;
+            return stats;
+        }
+    });
+};
+
 const imagesMenu = {
 	"master" : imagesController(),
 	"details"  : {
 		"image.html" : imageController()
 	}
-}
+};
+
+const imageStatsMenu = {
+    "master" : imageStatisticsController(),
+    "details": {
+        "confirm-remove-image.html":imageStatisticsController(),
+        "group-image-stats.html":groupImageStatisticsController()
+    }
+};
 
 export const menu = new Menu({"images.html" : imagesMenu,
 							  "image-meta.html" : imageController(),
 							  "image-pkgs.html" : imageController(),
 							  "image-apps.html" : imageController(),
 							  "image-state.html" : imageController(),
-							  "image-stats.html" : imageStatisticsController()},
+							  "image-stats.html" : imageStatsMenu},
 							  "/ui/views/image/images.html");

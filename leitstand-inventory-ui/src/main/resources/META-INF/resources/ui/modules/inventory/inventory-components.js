@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import {Select,UIElement,Control} from '/ui/js/ui-components.js';
+import {Select,UIElement,Control,html} from '/ui/js/ui-components.js';
 import {Metadata,Platforms,Facilities,Panel} from '/ui/modules/inventory/inventory.js';
 import {Element} from '/ui/js/ui-dom.js';
 
@@ -21,13 +21,11 @@ class PlatformSelector extends Select {
 	
 	options(){
 		const platforms = new Platforms();
-		platforms.onNotFound=function(){
-		    console.log("No panel found!");
-		}
 		return platforms.load()
 				 		.then(platforms => {
 				 					return platforms.map(platform => { 
-				 							return {"value":platform.platform_id,"label":platform.platform_name}
+				 							return {"value":platform.platform_id,
+				 							        "label":platform.platform_name}
 				 					});
 				 				});
 	}
@@ -79,23 +77,23 @@ class InventoryPanel extends UIElement {
                      if(panels.length > 1){
                          const namedPanels = {};
                          panels.forEach(p => {
-                             namedPanels[p.panelName]=p;
+                             namedPanels[p.panel_name]=p;
                              if(p.default_panel){
                                  panel = p;
                              }
                          });                     
                          
-                         this.innerHTML = `<ui-select label="Metric" small class="right" name="panel">${panels.map(panel => `<ui-option value="${panel.panelName}" ${panel.default_panel ? "default" : ""} >${panel.panelTitle}</ui-option>`).reduce((a,b)=>a+b,'')}</ui-select>
+                         this.innerHTML = `<ui-select label="Metric" small class="right" name="panel">${panels.map(panel => html `<ui-option value="$${panel.panel_name}" ${panel.default_panel ? "default" : ""} >$${panel.panel_title}</ui-option>`).reduce((a,b)=>a+b,'')}</ui-select>
                                            <div class="panel">
                                            </div>`;
                          this.addEventListener("change",(evt) => {
                              const selected = evt.target.options[evt.target.selectedIndex].value;
                              const panel = namedPanels[selected];
-                             this.querySelector("div.panel").innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                             this.querySelector("div.panel").innerHTML = html `<iframe src="$${panel.uri}" width="${panel.width||'100%'}" height="$${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
                          });
-                         this.querySelector("div.panel").innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                         this.querySelector("div.panel").innerHTML = html `<iframe src="${panel.uri}" width="$${panel.width||'100%'}" height="$${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
                      } else {
-                         this.innerHTML = `<iframe src="${panel.uri}" width="${panel.width||'100%'}" height="${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
+                         this.innerHTML = html `<iframe src="${panel.uri}" width="$${panel.width||'100%'}" height="$${panel.height||'400px'}" frameborder="0" style="border: 1px solid #E7E7E7"/></iframe>`;
                      }
                  }
              })
@@ -109,17 +107,17 @@ customElements.define("element-panel",InventoryPanel);
 class AdministrativeState extends UIElement {
     renderDom(){
         const state = this.viewModel.getProperty("administrative_state");
-        this.innerHTML=`<span class="right inventory administrative ${state}">${state}</span>`;
+        this.innerHTML=html `<span class="right inventory administrative $${state}">$${state}</span>`;
     }
 }
 customElements.define("inventory-administrative-state",AdministrativeState);
 
 class OperationalState extends UIElement {
     renderDom(){
-        const ops = this.viewModel.getProperty("operational_state");
         const adm = this.viewModel.getProperty("administrative_state");
+        const ops = this.viewModel.getProperty("operational_state");
         if(ops && adm){
-            this.innerHTML=`<span class="right ${ops}">${ops}</span>`;
+            this.innerHTML=html `<span class="right $${ops}">$${ops}</span>`;
         }
     }
 }
@@ -136,28 +134,28 @@ class FileUpload extends Control {
             const reader = new FileReader(file);
             reader.onload = (evt) => {
                 this._content = evt.target.result || '';
-                this.innerHTML=`<div>
-                                    <div id="preview.content" style="max-height: 400px; width: 100%; overflow: scroll">
-                                        <ui-code>${this._content.replace('<','&lt;').replace('>','&gt;')}</ui-code>
-                                    </div>
-                                    <ui-actions>
-                                        <ui-button small name="dismiss">Dismiss</ui-button>
-                                    </ui-actions>
-                                </div>`;
+                this.innerHTML=html `<div>
+                                       <div id="preview.content" style="max-height: 400px; width: 100%; overflow: scroll">
+                                         <ui-code>$${this._content}</ui-code>
+                                       </div>
+                                       <ui-actions>
+                                         <ui-button small name="dismiss">Dismiss</ui-button>
+                                       </ui-actions>
+                                     </div>`;
                 if(this._onload){
                     this._onload(file,this._content);
                 }
             };
             reader.onerror = (evt) => {
                 this.input('config_name').value('');
-                this.innerHTML=`<div>
-                    <div id="preview.content" style="height: 400px; width: 100%; overflow: scroll">
-                        <ui-code>Cannot read file ${file.name} (${evt.target.error.code})</ui-code>
-                    </div>
-                    <ui-actions>
-                        <ui-button small name="dismiss">Dismiss</ui-button>
-                    </ui-actions>
-                </div>`;                
+                this.innerHTML= html `<div>
+                                        <div id="preview.content" style="height: 400px; width: 100%; overflow: scroll">
+                                          <ui-code>Cannot read file $${file.name} (${evt.target.error.code})</ui-code>
+                                        </div>
+                                        <ui-actions>
+                                          <ui-button small name="dismiss">Dismiss</ui-button>
+                                        </ui-actions>
+                                      </div>`;                
                 if(this._onerror){
                     this._onerror(file);
                 }

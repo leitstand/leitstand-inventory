@@ -14,7 +14,7 @@
  * the License.
  */
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select,Control,UIElement} from '/ui/js/ui-components.js';
+import {Select,Control,UIElement,html} from '/ui/js/ui-components.js';
 import {Racks,Rack,RackItem,Elements,Facilities,Element} from '../inventory.js';
 import '../inventory-components.js';
 
@@ -61,7 +61,7 @@ class RackView extends UIElement {
 		    		 const lblUnit = ascending ? units-position+1 : position;
 		    		 if(item){
 		    			 if(item.element_id){
-		    				 return `
+		    				 return html `
 		    				 <div>
 		    				 	<div>
 		    			 	  		<div class="unit">
@@ -69,9 +69,8 @@ class RackView extends UIElement {
 		    			 	  		</div>
 		    			 	  		<div class="item">
 		    			 	  			<div class="ru${item.height}">
-		    				 				 <a href="rack-item.html?rack=${rackId}&unit=${item.position}" title="Show rack item details"> ${item.element_name} ${item.element_alias ? `(${item.element_alias})` :'' }</a>
-		    			 	  				 <span class="admin ${item.administrative_state}">${item.administrative_state}</span>
-		    			 	  				 
+		    				 				 <a href="rack-item.html?rack=${rackId}&unit=${item.position}" title="Show rack item details"> $${item.element_name} ${item.element_alias ? html`($${item.element_alias})` :'' }</a>
+		    			 	  				 <span class="admin $${item.administrative_state}">$${item.administrative_state}</span>
 		    			 	  			</div>
 		    			 	  		</div>
 		    			 	  		<div class="unit">
@@ -80,13 +79,13 @@ class RackView extends UIElement {
 		    				 	</div>		
 	    			 		 </div>`
 		    			 }
-		    			 return `<div>
+		    			 return html `<div>
 	    			 	  <div class="unit">
 	    			 	  	${lblUnit}
 	    			 	  </div>
 	    			 	  <div class="item">
 	    			 	  	<div class="ru${item.height}">
-	    			 	      <a href="rack-item.html?rack=${rackId}&unit=${item.position}" title="Show rack item details">${item.rack_item_name}</a>
+	    			 	      <a href="rack-item.html?rack=${rackId}&unit=${item.position}" title="Show rack item details">$${item.rack_item_name}</a>
 	    			 	  	</div>
 	    			 	  </div>
 	    			 	  <div class="unit">
@@ -112,17 +111,17 @@ class RackView extends UIElement {
 		    		itemsHtml += renderRackItem(position);
 		    	}
 		    	 
-				this.innerHTML=`
+				this.innerHTML=html `
 					<div class="rack">
 						<div>
 							<div class="unit">Unit</div>
-							<div class="frame">${this.viewModel.getProperty('rack_name')}</div>
+							<div class="frame">$${this.viewModel.getProperty('rack_name')}</div>
 							<div class="unit">Unit</div>
 						</div>
 						${itemsHtml}
 						<div>
 							<div class="unit">Unit</div>
-							<div class="frame">${this.viewModel.getProperty('rack_name')}</div>
+							<div class="frame">$${this.viewModel.getProperty('rack_name')}</div>
 							<div class="unit">Unit</div>
 						</div>
 					</div>`;
@@ -139,24 +138,24 @@ class FacilitySelector extends Control{
 		facilities.load()
 		    	  .then(facilities => {
 		    			    	
-		    		  this.innerHTML=`<table class="list">
-		    			  				<thead>
-						    				<tr>
-												<th class="text">Name</th>
-												<th class="text">Type</th>
-												<th class="text">Location</th>
-						    				</tr>
-						    			</thead>
-							    		<tbody>
-						    				${facilities.map(facility => `<tr>
-							    									   <td class="text">
-							    										 <label>
-							    											<input type="radio" name="facility_id" value="${facility.facility_id}" data-facility-name="${facility.facility_name}"  ${ facilityId == facility.facility_id && 'checked' }>
-							    											&nbsp;${facility.facility_name}
-							    										</label>
+		    		  this.innerHTML=html `<table class="list">
+		    			  				     <thead>
+						    				   <tr>
+												 <th class="text">Name</th>
+												 <th class="text">Type</th>
+												 <th class="text">Location</th>
+						    				   </tr>
+						    			     </thead>
+							    		     <tbody>
+						    				   ${facilities.map(facility => html `<tr>
+							    									                <td class="text">
+							    										              <label>
+							    											            <input type="radio" name="facility_id" value="${facility.facility_id}" data-facility-name="$${facility.facility_name}"  ${ facilityId == facility.facility_id && 'checked' }>
+							    											            &nbsp;$${facility.facility_name}
+							    										              </label>
 							    									   </td>
-							    									   <td class="text">${facility.facility_type||''}</td> 
-							    								       <td class="text">${facility.location||''}</td> 
+							    									   <td class="text">$${facility.facility_type}</td> 
+							    								       <td class="text">$${facility.location}</td> 
 							    								     </tr>`)
 		    			  								.reduce((a,b)=>a+b,'')}
 						    			</tbody>
@@ -221,13 +220,13 @@ class RackItemElement extends UIElement{
 							
 							const tbody = list.querySelector('tbody');
 							tbody.innerHTML = elements.map(element => 
-														   `<tr>
-																<td class="text"><label><input type="radio" name="element" value="${element.element_id}" data-name="${element.element_name}">&nbsp; ${element.element_name}</label></td>
-																<td class="text">${element.element_alias||'-'}</td>
-																<td class="text">${element.element_role}</td>
-																<td class="text">${element.platform_name||'-'}</td>
-																<td class="text">${element.serial_number||'-'}</td>
-															</tr>`)
+														   html `<tr>
+																   <td class="text"><label><input type="radio" name="element" value="${element.element_id}" data-name="$${element.element_name}">&nbsp; $${element.element_name}</label></td>
+																   <td class="text">$${element.element_alias||'-'}</td>
+																   <td class="text">$${element.element_role}</td>
+																   <td class="text">$${element.platform_name||'-'}</td>
+																   <td class="text">$${element.serial_number||'-'}</td>
+															     </tr>`)
 													  .reduce((a,b)=>a+b,'');
 						} else {
 							list.innerHTML="<ui-blankslate><ui-title>No elements found!</ui-title><ui-note>No matching elements found.</ui-note></ui-blankslate>";
@@ -444,9 +443,6 @@ const elementRackItemController = function(){
 		resource:element,
 		viewModel: async function(settings){
 			const racks = new Racks({'scope':'_findElement'});
-			racks.onNotFound = function(){
-			    // No action required
-			}
 			try {
 				const item = await racks.load(this.location.params);
 				settings.rack = item;

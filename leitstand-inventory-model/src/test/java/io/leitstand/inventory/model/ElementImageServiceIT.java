@@ -26,7 +26,7 @@ import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
-import static io.leitstand.inventory.service.ElementInstalledImageReference.newElementInstalledImageReference;
+import static io.leitstand.inventory.service.ElementImageReference.newElementImageReference;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
@@ -62,10 +62,10 @@ import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementImagesService;
-import io.leitstand.inventory.service.ElementInstalledImage;
-import io.leitstand.inventory.service.ElementInstalledImageData;
-import io.leitstand.inventory.service.ElementInstalledImageReference;
-import io.leitstand.inventory.service.ElementInstalledImages;
+import io.leitstand.inventory.service.ElementImage;
+import io.leitstand.inventory.service.ElementImageData;
+import io.leitstand.inventory.service.ElementImageReference;
+import io.leitstand.inventory.service.ElementImages;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
@@ -98,7 +98,7 @@ public class ElementImageServiceIT extends InventoryIT{
 	private static final PlatformChipsetName PLATFORM_CHIPSET = platformChipsetName("chipset");
 	
 	
-	private static final ElementInstalledImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference ACTIVE_MAJOR_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_200)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -106,7 +106,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
-	private static final ElementInstalledImageReference CACHED_MAJOR_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference CACHED_MAJOR_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_200)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -114,7 +114,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(CACHED)
 																				   .build();
 	
-	private static final ElementInstalledImageReference ACTIVE_MINOR_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference ACTIVE_MINOR_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_110)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -122,7 +122,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
-	private static final ElementInstalledImageReference CACHED_MINOR_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference CACHED_MINOR_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_110)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -130,7 +130,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(CACHED)
 																				   .build();
 
-	private static final ElementInstalledImageReference ACTIVE_PATCH_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference ACTIVE_PATCH_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_101)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -138,7 +138,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(ACTIVE)
 																				   .build();
 
-	private static final ElementInstalledImageReference CACHED_PATCH_UPGRADE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference CACHED_PATCH_UPGRADE_REF = newElementImageReference()
 																				   .withImageId(IMAGE_101)	
 																				   .withImageType(imageType("lxd"))
 																				   .withImageName(imageName("JUNIT"))
@@ -146,7 +146,7 @@ public class ElementImageServiceIT extends InventoryIT{
 																				   .withElementImageState(CACHED)
 																				   .build();
 	
-	private static final ElementInstalledImageReference ACTIVE_BASE_REF = newElementInstalledImageReference()
+	private static final ElementImageReference ACTIVE_BASE_REF = newElementImageReference()
 																		  .withImageId(IMAGE_100)
 																		  .withImageType(imageType("lxd"))
 																		  .withImageName(imageName("JUNIT"))
@@ -299,13 +299,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void set_initial_installed_image_revision_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_BASE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_BASE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -320,14 +320,14 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_patch_update_pulled_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_BASE_REF, 
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_BASE_REF, 
 															CACHED_PATCH_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -342,14 +342,14 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_minor_update_pulled_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_BASE_REF,
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_BASE_REF,
 														  	CACHED_MINOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -364,14 +364,14 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_major_update_pulled_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_BASE_REF,
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_BASE_REF,
 														    CACHED_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -386,13 +386,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_patch_update_activated_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_PATCH_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_PATCH_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -406,13 +406,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_minor_update_activated_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_MINOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_MINOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -425,13 +425,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_major_update_activated_for_element_identified_by_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -443,13 +443,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void set_initial_installed_image_revision_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -465,13 +465,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	public void register_patch_update_pulled_for_element_identified_by_name() {
 		transaction(()->{
 	
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF, CACHED_PATCH_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF, CACHED_PATCH_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -486,13 +486,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_minor_update_pulled_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF,CACHED_MINOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF,CACHED_MINOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -507,13 +507,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_major_update_pulled_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF, CACHED_MAJOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_BASE_REF, CACHED_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(2, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -528,13 +528,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_patch_update_activated_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_PATCH_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_PATCH_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,0,1),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -548,13 +548,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_minor_update_activated_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_MINOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_MINOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(1,1,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -567,13 +567,13 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void register_major_update_activated_for_element_identified_by_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_NAME, asList(ACTIVE_MAJOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_NAME, asList(ACTIVE_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
 			assertEquals(1, installedImages.getImages().size());
-			ElementInstalledImageData installedImage = installedImages.getImages().get(0);
+			ElementImageData installedImage = installedImages.getImages().get(0);
 			assertEquals(new Version(2,0,0),installedImage.getImageVersion());
 			assertEquals(imageType("lxd"),installedImage.getImageType());
 			
@@ -585,12 +585,12 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void load_installed_image_by_element_id() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_ID);
+			ElementImages installedImages = service.getElementImages(ELEMENT_ID);
 			assertNotNull(installedImages);
-			ElementInstalledImage installedImage = service.getElementInstalledImage(ELEMENT_ID, installedImages.getImages().get(0).getImageId());
+			ElementImage installedImage = service.getElementImage(ELEMENT_ID, installedImages.getImages().get(0).getImageId());
 			assertEquals(installedImages.getImages().get(0),installedImage.getImage());
 		});
 		
@@ -599,12 +599,12 @@ public class ElementImageServiceIT extends InventoryIT{
 	@Test
 	public void load_installed_image_by_element_name() {
 		transaction(()->{
-			service.storeInstalledImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
+			service.storeElementImages(ELEMENT_ID, asList(ACTIVE_MAJOR_UPGRADE_REF));
 		});
 		transaction(()->{
-			ElementInstalledImages installedImages = service.getElementInstalledImages(ELEMENT_NAME);
+			ElementImages installedImages = service.getElementImages(ELEMENT_NAME);
 			assertNotNull(installedImages);
-			ElementInstalledImage installedImage = service.getElementInstalledImage(ELEMENT_NAME, installedImages.getImages().get(0).getImageId());
+			ElementImage installedImage = service.getElementImage(ELEMENT_NAME, installedImages.getImages().get(0).getImageId());
 			assertEquals(installedImages.getImages().get(0),installedImage.getImage());
 		});
 		

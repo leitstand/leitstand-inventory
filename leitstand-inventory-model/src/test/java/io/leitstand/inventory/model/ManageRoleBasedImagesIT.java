@@ -90,6 +90,8 @@ public class ManageRoleBasedImagesIT extends InventoryIT{
 		repository = new Repository(getEntityManager());
 
 		service = new DefaultImageService(mock(PackageVersionService.class), 
+		                                  mock(ElementGroupProvider.class),
+		                                  mock(ElementProvider.class),
 										  repository,
 										  mock(DatabaseService.class),
 										  mock(Messages.class),

@@ -32,7 +32,7 @@ import io.leitstand.inventory.jsonb.ElementIdAdapter;
  * </p>
  * @see ElementSettings
  * @see ElementConfig
- * @see ElementInstalledImages
+ * @see ElementImages
  * @see ElementPhysicalInterfaces
  * @see ElementLogicalInterfaces
  * @see ElementModules

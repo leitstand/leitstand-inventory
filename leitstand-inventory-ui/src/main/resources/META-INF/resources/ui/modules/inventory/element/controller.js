@@ -15,7 +15,7 @@
  */
 import {Json} from '/ui/js/client.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select,Control} from '/ui/js/ui-components.js';
+import {Select,Control,html} from '/ui/js/ui-components.js';
 import {units} from '/ui/js/widgets.js';
 import {Metadata,Element,Pod,Pods,ElementPhysicalInterfaces,ElementPhysicalInterface,ElementLogicalInterfaces,ElementLogicalInterface,Platforms,TimeSeries} from '/ui/modules/inventory/inventory.js';
 import '../inventory-components.js';
@@ -236,27 +236,29 @@ class PodSelector extends Control{
 		    .then(pods => {
 		    			    	
 		    	this.innerHTML=`<table class="list">
-		    			<thead>
-		    				<tr>
-								<th class="text">Pod</th>
-								<th class="text">Description</th>
-		    				</tr>
-		    			</thead>
-			    		<tbody>
-		    				${pods.map(pod => `<tr>
-		    									<td class="text">
-		    										<label>
-		    											<input type="radio" name="group_id" value="${pod.group_id}" data-group-name="${pod.group_name}"  ${ groupId == pod.group_id && 'checked' }>
-		    											&nbsp;${pod.group_name}
-		    										</label>
-		    									</td>
-		    									<td class="text">${pod.description}</td> 
-		    								  </tr>`)
-		    					  .reduce((a,b)=>a+b,'')}
-		    			</tbody>
-		    		</table>`;
+		    			          <thead>
+		    				        <tr>
+								      <th class="text">Pod</th>
+								      <th class="text">Description</th>
+		    				        </tr>
+		    			          </thead>
+			    		          <tbody>
+		    				        ${pods.map(pod => html `<tr>
+		    									              <td class="text">
+		    										            <label>
+		    											          <input type="radio" 
+		    											                 name="group_id" 
+		    											                 value="${pod.group_id}" 
+		    											                 data-group-name="$${pod.group_name}" ${ groupId == pod.group_id && 'checked' }>
+		    											                 &nbsp;$${pod.group_name}
+		    										            </label>
+		    									              </td>
+		    									              <td class="text">$${pod.description}</td> 
+		    								                </tr>`)
+		    					          .reduce((a,b)=>a+b,'')}
+		    			          </tbody>
+		    		            </table>`;
 		    });
-		    
 		    
 		this.addEventListener('change',(evt)=>{
 			this.viewModel.setProperty("group_id",evt.target.value);
@@ -329,7 +331,6 @@ const elementIfpsController = function(){
         postRender:function(){
             const ifps = this.getViewModel();
             const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
-            metrics.onNotFound = (e) => {console.log(e)}
             metrics.load(ifps)
                    .then(response => {
                             const ifps = {};
@@ -358,7 +359,8 @@ const elementIfpsController = function(){
                                     }
                                 }
                                 
-                                return {'value':value,'unit':scale+'bps'};
+                                return {'value': scale ? value.toFixed(3) : value,
+                                        'unit':scale+'bps'};
                             }
                             
                             if(response && response.metric && response.metric.metric_values){
@@ -368,7 +370,7 @@ const elementIfpsController = function(){
                                         ifp = {};
                                         ifps[metric.labels.ifp_name] = ifp;
                                     }
-                                    ifp[metric.labels.direction]=parseFloat(metric.value).toFixed(3);
+                                    ifp[metric.labels.direction]=parseFloat(metric.value);
                                 });
                                 for( const ifp in ifps ){
                                     const rate = document.getElementById(ifp);
@@ -476,12 +478,16 @@ const elementIflsMenu = {
 	"details" : { "element-ifl.html" : elementIflController() }
 };
 
+const elementServicesMenu = {
+    "master": elementServicesController(),
+    "details": {"element-service.html" : elementServiceController()}
+}
+
 export const menu = new Menu({
 		"element.html" : elementMenu,
 		"element-ifls.html": elementIflsMenu,
 		"element-ifps.html": elementIfpsMenu,
 		"element-modules.html" :modulesMenu,
 		"element-images.html" : elementImagesController(),
-		"element-services.html":elementServicesController(),
-		"element-service.html":elementServiceController()
+		"element-services.html":elementServicesMenu
  	});
