@@ -288,7 +288,6 @@ public class ElementSettingsManager {
 		
 		
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED,
-								   element.getElementRoleName(),
 								   element.getElementName()));
 		
 	}
