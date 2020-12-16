@@ -15,13 +15,16 @@
  */
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static io.leitstand.commons.model.StringUtil.isNonEmptyString;
+import static io.leitstand.commons.model.StringUtil.trim;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
 import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
@@ -30,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -176,6 +180,7 @@ public class Image extends VersionableEntity{
 	
 	private static final long serialVersionUID = 1L;
 	private static final String RELEASE = "~RELEASE";
+	private static final Pattern IMAGE_ID_PATTERN = compile(UUID_PATTERN);
 	
 	static final String prerelease(Version version) {
 		return isEmptyString(version.getPreRelease()) ? RELEASE : version.getPreRelease();
@@ -197,8 +202,17 @@ public class Image extends VersionableEntity{
 			Map<String,Object> params = new HashMap<>();
 			
 			String jpql = "SELECT i FROM Image i "+
-					      "WHERE CAST(i.imageName AS TEXT) REGEXP :name ";
+					      "WHERE ";
 
+			String filter = trim(querySpec.getFilter());
+			if(IMAGE_ID_PATTERN.matcher(filter).matches()) {
+			    jpql += "i.uuid = :uuid ";
+			    params.put("uuid", filter);
+			} else {
+			   jpql += "CAST(i.imageName AS TEXT) REGEXP :name ";
+			   params.put("name", filter);
+			}
+			
 			if(role != null) {
 				jpql += "AND :role MEMBER OF i.roles ";
 				params.put("role",role);
@@ -234,7 +248,6 @@ public class Image extends VersionableEntity{
 			jpql += "ORDER BY i.imageName DESC";
 			
 			TypedQuery<Image> query = em.createQuery(jpql,Image.class);
-			query.setParameter("name",querySpec.getFilter());
 			for(Map.Entry<String, Object> param : params.entrySet()) {
 				query.setParameter(param.getKey(), param.getValue());
 			}
