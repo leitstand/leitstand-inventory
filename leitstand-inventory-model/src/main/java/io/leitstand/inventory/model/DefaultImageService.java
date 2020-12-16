@@ -73,7 +73,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -174,7 +173,7 @@ public class DefaultImageService implements ImageService {
 			   .execute(searchImages(role,query))
 			   .stream()
 			   .map(image ->  referenceOf(image))
-			   .collect(Collectors.toList());
+			   .collect(toList());
 		
 	}
 
