@@ -21,7 +21,7 @@ import '../inventory-components.js';
 
 class Editor extends Control {
 	connectedCallback(){
-		const config = this.viewModel.getProperty(this.binding);
+		const config = this.viewModel.getProperty(this.binding)||{};
 		this.innerHTML=`<textarea>${JSON.stringify(config,null,' ')}</textarea>`;
 	    const editor = CodeMirror.fromTextArea(this.querySelector("textarea"), {
 	        lineNumbers: true,
