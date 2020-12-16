@@ -40,13 +40,13 @@ class Diff extends UIElement {
 										  source.content)
 					           .map(part => html `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">$${part.value}</span>`)
 					           .reduce((a,b)=>a+b);
-			this.innerHTML=`<div id="comparator">
-							    <div>
+			this.innerHTML=html `<div id="comparator">
+							       <div>
 							        <div style="background-color:lime; font-weight:bold; font-size: 1em; padding: 5px;">Added to $${target.config_name} at <ui-date readonly dateTime>${target.date_modified}</ui-date></div> 
 							        <div style="background-color: #ffd6cc; font-weight: bold; font-size: 1em; padding: 5px;">Removed from $${source.config_name} from <ui-date dateTime readonly>${source.date_modified}</ui-date></div>
-							    </div>
-							    <code id="diff" class="hl" style="height: 45em; overflow: scroll"><pre>${diff}</pre></code>
-							</div>`;
+							       </div>
+							      <code id="diff" class="hl" style="height: 45em; overflow: scroll"><pre>${diff}</pre></code>
+							     </div>`;
 			hljs.highlightBlock(this.querySelector('#diff'));
 
 		}
@@ -58,7 +58,7 @@ class Diff extends UIElement {
 
 class Editor extends Control {
     connectedCallback(){
-        const config = this.viewModel.getProperty(this.binding);
+        const config = this.viewModel.getProperty(this.binding)||{};
         this.innerHTML=`<textarea>${JSON.stringify(config,null,' ')}</textarea>`;
         const editor = CodeMirror.fromTextArea(this.querySelector("textarea"), {
             lineNumbers: true,
