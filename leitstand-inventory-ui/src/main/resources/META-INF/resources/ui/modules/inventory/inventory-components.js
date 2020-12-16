@@ -114,6 +114,7 @@ customElements.define("inventory-administrative-state",AdministrativeState);
 
 class OperationalState extends UIElement {
     renderDom(){
+        const adm = this.viewModel.getProperty("administrative_state");
         const ops = this.viewModel.getProperty("operational_state");
         if(ops && adm){
             this.innerHTML=html `<span class="right $${ops}">$${ops}</span>`;
