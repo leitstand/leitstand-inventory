@@ -359,7 +359,8 @@ const elementIfpsController = function(){
                                     }
                                 }
                                 
-                                return {'value':value,'unit':scale+'bps'};
+                                return {'value': scale ? value.toFixed(3) : value,
+                                        'unit':scale+'bps'};
                             }
                             
                             if(response && response.metric && response.metric.metric_values){
@@ -369,7 +370,7 @@ const elementIfpsController = function(){
                                         ifp = {};
                                         ifps[metric.labels.ifp_name] = ifp;
                                     }
-                                    ifp[metric.labels.direction]=parseFloat(metric.value).toFixed(3);
+                                    ifp[metric.labels.direction]=parseFloat(metric.value);
                                 });
                                 for( const ifp in ifps ){
                                     const rate = document.getElementById(ifp);
@@ -477,12 +478,16 @@ const elementIflsMenu = {
 	"details" : { "element-ifl.html" : elementIflController() }
 };
 
+const elementServicesMenu = {
+    "master": elementServicesController(),
+    "details": {"element-service.html" : elementServiceController()}
+}
+
 export const menu = new Menu({
 		"element.html" : elementMenu,
 		"element-ifls.html": elementIflsMenu,
 		"element-ifps.html": elementIfpsMenu,
 		"element-modules.html" :modulesMenu,
 		"element-images.html" : elementImagesController(),
-		"element-services.html":elementServicesController(),
-		"element-service.html":elementServiceController()
+		"element-services.html":elementServicesMenu
  	});
