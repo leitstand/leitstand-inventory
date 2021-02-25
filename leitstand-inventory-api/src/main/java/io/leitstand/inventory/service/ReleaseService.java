@@ -2,9 +2,6 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
-import io.leitstand.inventory.service.ReleaseId;
-import io.leitstand.inventory.service.ReleaseName;
-
 public interface ReleaseService {
 
     List<ReleaseSettings> findReleases(String filter);

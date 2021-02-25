@@ -9,13 +9,9 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
-import io.leitstand.inventory.service.ReleaseId;
-import io.leitstand.inventory.service.ReleaseName;
-import io.leitstand.inventory.service.ReleaseState;
 
 public class ReleaseSettings extends ValueObject {
     

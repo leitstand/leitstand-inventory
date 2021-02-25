@@ -1,36 +1,17 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.messages.MessageFactory.createMessage;
-import static io.leitstand.inventory.model.Image.findImageById;
-import static io.leitstand.inventory.model.Release.findReleaseByName;
-import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
-import static io.leitstand.inventory.service.ReasonCode.IVT0211I_RELEASE_STORED;
-import static io.leitstand.inventory.service.ReasonCode.IVT0213E_AMBIGUOUS_IMAGE;
-import static io.leitstand.inventory.service.ReasonCode.IVT0214I_RELEASE_REMOVED;
-import static io.leitstand.inventory.service.ReleaseImage.newReleaseImage;
-import static io.leitstand.inventory.service.ReleaseSettings.newReleaseSettings;
-import static java.lang.String.format;
 import static java.util.Objects.hash;
-import static java.util.stream.Collectors.toList;
 
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import io.leitstand.commons.ConflictException;
-import io.leitstand.commons.EntityNotFoundException;
-import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.ReleaseId;
-import io.leitstand.inventory.service.ReleaseImage;
 import io.leitstand.inventory.service.ReleaseName;
 import io.leitstand.inventory.service.ReleaseService;
 import io.leitstand.inventory.service.ReleaseSettings;

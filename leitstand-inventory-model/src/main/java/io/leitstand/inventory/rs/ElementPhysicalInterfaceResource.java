@@ -106,7 +106,7 @@ public class ElementPhysicalInterfaceResource {
     @Path("/{element_id:"+UUID_PATTERN+"}/physical_interfaces/{ifp_name:"+IFP_PATTERN+"}")
     @Scopes({IVT, IVT_READ, IVT_ELEMENT})
     public ElementPhysicalInterface getPhysicalInterface(@PathParam("element_id") ElementId id, 
-                                                       @PathParam("ifp_name") InterfaceName ifpName){
+                                                         @PathParam("ifp_name") InterfaceName ifpName){
         return service.getPhysicalInterface(id,ifpName);
     }
     

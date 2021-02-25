@@ -6,13 +6,6 @@ import static java.util.Arrays.asList;
 import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
-import io.leitstand.inventory.service.ElementRoleName;
-import io.leitstand.inventory.service.ImageId;
-import io.leitstand.inventory.service.ImageName;
-import io.leitstand.inventory.service.ImageState;
-import io.leitstand.inventory.service.ImageType;
-import io.leitstand.inventory.service.PlatformChipsetName;
-import io.leitstand.inventory.service.Version;
 
 public class ReleaseImage extends ValueObject {
 

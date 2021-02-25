@@ -2,8 +2,6 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
-import io.leitstand.commons.model.BuilderUtil;
-
 public class ImageStatisticsElementGroupImageCount extends BaseElementGroupEnvelope{
 
     public static Builder newElementGroupImageCount() {

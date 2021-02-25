@@ -47,7 +47,6 @@ import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
-import io.leitstand.commons.model.RollbackExceptionUtil;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironmentService;
@@ -57,7 +56,6 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
-import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
