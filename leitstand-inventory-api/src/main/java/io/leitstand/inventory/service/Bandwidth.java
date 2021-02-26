@@ -35,7 +35,7 @@ import io.leitstand.commons.model.CompositeValue;
 import io.leitstand.inventory.jsonb.BandwidthAdapter;
 
 /**
- * The bandwidth of a certain data link.
+ * The bandwidth of an interface.
  * <p>
  * The bandwidth is either represented in <code>Kbps</code>, <code>Mbps</code>, <code>Gbps</code> or <code>Tbps</code>.
  * The bandwidth unit provides method to convert a bandwidth from one unit into another unit.
@@ -46,6 +46,12 @@ public class Bandwidth extends CompositeValue implements Serializable{
 
 	private static final Pattern BANDWITH_PATTERN = compile("^(\\d+(?:\\.\\d{3})?)\\s?([KMGT]bps)$");
 	
+	/**
+	 * Creates a bandwidth value object.
+	 * @param value the bandwidth value
+	 * @param unit the bandwidth unit
+	 * @return the bandwidth value
+	 */
 	public static Bandwidth bandwidth(float value, String unit) {
 	    if(isEmptyString(unit)) {
 	        return null;
@@ -53,6 +59,22 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	    return new Bandwidth(value, Unit.valueOf(unit));
 	}
 	
+	/**
+	 * Creates a bandwidth object from the specified string. 
+	 * <p>
+     * The string representation must consist of the bandwidth value with a fraction of three digits followed by the unit.
+     * A blank between bandwidth and unit is accepted. 
+     * Example strings are shown below:
+     * <ul>
+     *  <li>1.000 Gbps for a one gigabit interface</li>
+     *  <li>10.000Gbps for a ten gigabit interface</li>
+     *  <li>100.000 Mbps for a 100 megabit interface</li>
+     * </ul>
+	 * <p>
+	 * Returns <code>null</code> if the given string is <code>null</code> or empty.
+	 * @param bandwidth the bandwidth string
+	 * @return the bandwidth object or <code>null</code> if the given string is <code>null</code> or empty.
+	 */
 	public static Bandwidth bandwidth(String bandwidth) {
 		if(isEmptyString(bandwidth)) {
 			return null;
@@ -61,7 +83,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	}
 	
 	/**
-	 * Enumeration of available bandwidths units.
+	 * Enumeration of supported bandwidths units.
 	 */
 	public enum Unit {
 		/**
@@ -93,51 +115,54 @@ public class Bandwidth extends CompositeValue implements Serializable{
 		}
 		
 		/**
-		 * Converts the given bandwidth from this unit to bits per second.
-		 * @param value - the bandwidth
-		 * @return the given bandwidth converted to bits per second.
+		 * Converts the bandwidth to bits per second.
+		 * @param value the bandwidth
+		 * @return the bandwidth in bits per second.
 		 */
 		public long toBps(double value) {
 			return round(value * scale);
 		}
 
 		/**
-		 * Converts the given bandwidth from this unit to kilobits per second.
-		 * @param value - the bandwidth
-		 * @return the given bandwidth converted to kilobits per second.
+		 * Converts the bandwidth to kilobits per second.
+		 * @param value the bandwidth
+		 * @return the bandwidth in kilobits per second.
 		 */
 		public double toKpbs(double value) {
 			return value*scale/KBPS.scale;
 		}
 
-		/**
-		 * Converts the given bandwidth from this unit to megabits per second.
-		 * @param value - the bandwidth
-		 * @return the given bandwidth converted to megabits per second.
-		 */
+        /**
+         * Converts the bandwidth to megabits per second.
+         * @param value the bandwidth
+         * @return the bandwidth in megabits per second.
+         */
 		public double toMpbs(double value) {
 			return value*scale/MBPS.scale;
 		}
 		
-		/**
-		 * Converts the given bandwidth from this unit to gigabits per second.
-		 * @param value - the bandwidth
-		 * @return the given bandwidth converted to kilobits per second.
-		 */
+        /**
+         * Converts the bandwidth to gigabits per second.
+         * @param value the bandwidth
+         * @return the bandwidth in gigabits per second.
+         */
 		public double toGpbs(double value) {
 			return value*scale/GBPS.scale;
 		}
 		
-		
-		/**
-		 * Converts the given bandwidth from this unit to terabits per second.
-		 * @param value - the bandwidth
-		 * @return the given bandwidth converted to kilobits per second.
-		 */
+        /**
+         * Converts the bandwidth to terrabits per second.
+         * @param value the bandwidth
+         * @return the bandwidth in terrabits per second.
+         */
 		public double toTpbs(double value) {
 			return value*scale/TBPS.scale;
 		}
 		
+		/**
+		 * Returns the label of the bandwidth unit.
+		 * @return the label of the bandiwdth unit.
+		 */
 		public String getLabel() {
 			return label;
 		}
@@ -154,7 +179,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	}
 	
 	/**
-	 * Create a <code>Bandwitdh</code> value object.
+	 * Create a <code>Bandwidth</code> value object.
 	 * @param value the bandwidth value
 	 * @param unit the bandwidth unit
 	 */
@@ -163,14 +188,19 @@ public class Bandwidth extends CompositeValue implements Serializable{
 		this.unit  = unit;
 	}
 
-	/**
-	 * Creates a <code>Bandwidth</code> value object from a string.
-	 * <p>
-	 * The string uses a dot as thousands separator and a comma as decimal fraction delimiter.
-	 * A blank separates the bandwidth value from the bandwidth unit (e.g. <code>100,000 Mbps</code>
-	 * </p>
-	 * @param bandwidth the bandwidth expressed as string
-	 */
+   /**
+    * Creates a new bandwidth from the given string.
+    * <p>
+    * The string representation must consist of the bandwidth value with a fraction of three digits followed by the unit.
+    * A blank between bandwidth and unit is accepted. 
+    * Example strings are shown below:
+    * <ul>
+    *  <li>1.000 Gbps for a one gigabit interface</li>
+    *  <li>10.000Gbps for a ten gigabit interface</li>
+    *  <li>100.000 Mbps for a 100 megabit interface</li>
+    * </ul>
+    * @param bandwidth the bandwith string representation
+    */
 	public Bandwidth(String bandwidth){
 		Matcher matcher = BANDWITH_PATTERN.matcher(bandwidth);
 		matcher.matches();
@@ -198,11 +228,9 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	/**
 	 * Returns a string representation of this bandwidth.
 	 * <p>
-	 * The string uses a dot as thousands separator and a comma as decimal fraction delimiter.
-	 * A blank separates the bandwidth value from the bandwidth unit (e.g. <code>100,000 Mbps</code>
+	 * The string consist of the bandwidth unit as float with a fraction of three digits followed by the unit (e.g. 100.000 Mbps for a 100 megabit interface).
 	 * </p>
-	 * 
-	 * @return a string representation of this bandwidth
+	 * @return the bandwidth string representation
 	 */
 	@Override
 	public String toString() {

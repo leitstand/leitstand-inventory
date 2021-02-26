@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * The <code>BaseElementEnvelope</code> contains the settings shared with every element-related message.
+ * The <code>BaseElementEnvelope</code> contains the attributes shared with every element-related message.
  */
 public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
@@ -120,6 +120,25 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
             if(dateModified != null) {
                 ((BaseElementEnvelope)object).dateModified = new Date(dateModified.getTime());
             }
+            return (B) this;
+        }
+        
+        /**
+         * Copies all setting of the given element envelope to this envelope.
+         * This is a convenience method 
+         * @param envelope
+         * @return
+         */
+        public B withElement(BaseElementEnvelope envelope) {
+            assertNotInvalidated(getClass(), object);
+            super.withGroup(envelope);
+            withAdministrativeState(envelope.getAdministrativeState());
+            withDateModified(envelope.getDateModified());
+            withElementAlias(envelope.getElementAlias());
+            withElementId(envelope.getElementId());
+            withElementName(envelope.getElementName());
+            withElementRole(envelope.getElementRole());
+            withOperationalState(envelope.getOperationalState());
             return (B) this;
         }
 		

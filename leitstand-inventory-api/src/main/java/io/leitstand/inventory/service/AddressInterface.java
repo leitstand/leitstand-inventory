@@ -31,12 +31,19 @@ import io.leitstand.inventory.jpa.IPvxPrefixConverter;
 
 /**
  * An address interface of a logical interface.
+ * <p>
+ * The interface addresses are provided in <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Open Classless Inter-Domain Routing wikipedia article">CIDR notation</a>
  */
 @Embeddable
 public class AddressInterface extends ValueObject implements Serializable {
 
+    /**
+     * Supported address types.
+     */
 	public static enum AddressType{
+	    /** IPv4 prefix. */
 		IPv4,
+		/** IPv6 prefix. */
 		IPv6
 	}
 	
@@ -51,7 +58,7 @@ public class AddressInterface extends ValueObject implements Serializable {
 	}
 	
 	/**
-	 * The builder to create an <code>AddressInterface</code> instance.
+	 * A builder to create an <code>AddressInterface</code> instance.
 	 */
 	public static class Builder {
 		
@@ -73,6 +80,10 @@ public class AddressInterface extends ValueObject implements Serializable {
 			return this;
 		}
 
+		/**
+		 * Returns the <code>AddressInterface</code> instance.
+		 * @return the immutable <code>AddressInterface</code>.
+		 */
 		public AddressInterface build() {
 			try {
 				assertNotInvalidated(getClass(), ifc);
