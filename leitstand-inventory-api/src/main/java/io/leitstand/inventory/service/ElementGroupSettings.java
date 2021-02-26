@@ -16,7 +16,6 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySortedSet;
 import static java.util.Collections.unmodifiableSortedSet;
@@ -26,96 +25,98 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.leitstand.commons.model.ValueObject;
-
-
-public class ElementGroupSettings extends ValueObject{
+/**
+ * General settings of an element group.
+ */
+public class ElementGroupSettings extends BaseElementGroupEnvelope{
 	
+    /**
+     * Returns a group settings builder.
+     * @return a group settings builder.
+     */
 	public static Builder newElementGroupSettings(){
 		return new Builder();
 	}
 	
-	public static class Builder{
+	/**
+	 * A builder for an immutable <code>ElementGroupSettings</code> instance.
+	 */
+	public static class Builder extends BaseElementGroupEnvelopeBuilder<ElementGroupSettings, Builder>{
 		
-		private ElementGroupSettings settings = new ElementGroupSettings();
-		
-		
-		public Builder withGroupId(ElementGroupId id){
-			assertNotInvalidated(getClass(), settings);
-			settings.groupId = id;
-			return this;
+	    /**
+	     * Creates a new builder.
+	     */
+		protected Builder() {
+		    super(new ElementGroupSettings());
 		}
 		
-		public Builder withGroupName(ElementGroupName name){
-			assertNotInvalidated(getClass(), settings);
-			settings.groupName = name;
-			return this;
-		}
-
-		public Builder withGroupType(ElementGroupType type){
-			assertNotInvalidated(getClass(), settings);
-			settings.groupType = type;
-			return this;
-		}
-		
+		/**
+		 * Sets the group description 
+ 		 * @param description the group description
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withDescription(String description){
-			assertNotInvalidated(getClass(), settings);
-			settings.description = description;
+			assertNotInvalidated(getClass(), object);
+			object.description = description;
 			return this;
 		}
 		
+	    /**
+         * Sets the facility ID 
+         * @param facilityId the facility ID
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withFacilityId(FacilityId facilityId){
-			assertNotInvalidated(getClass(), settings);
-			settings.facilityId = facilityId;
+			assertNotInvalidated(getClass(), object);
+			object.facilityId = facilityId;
 			return this;
 		}
 		
+	    /**
+         * Sets the facility name
+         * @param facilityName the facility name
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withFacilityName(FacilityName facilityName) {
-			assertNotInvalidated(getClass(), settings);
-			settings.facilityName = facilityName;
+			assertNotInvalidated(getClass(), object);
+			object.facilityName = facilityName;
 			return this;
 		}
 		
+	    /**
+         * Sets the facility type
+         * @param facilityType the facility type
+         * @return a reference to this builder to continue object creation
+         */
 	    public Builder withFacilityType(FacilityType facilityType) {
-	        assertNotInvalidated(getClass(), settings);
-	        settings.facilityType = facilityType;
+	        assertNotInvalidated(getClass(), object);
+	        object.facilityType = facilityType;
 	        return this;
 	    }
 		
+	    /**
+         * Sets the group tags
+         * @param tags the group tags
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withTags(String... tags){
 			return withTags(new TreeSet<>(asList(tags)));
 		}
-		
+
+	    /**
+         * Sets the group tags
+         * @param tags the group tags
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withTags(Set<String> tags){
-			assertNotInvalidated(getClass(), settings);
-			settings.tags = new TreeSet<>(tags);
+			assertNotInvalidated(getClass(), object);
+			object.tags = new TreeSet<>(tags);
 			return this;
 		}
 		
-		public ElementGroupSettings build(){
-			try{
-				assertNotInvalidated(getClass(), settings);
-				return settings;
-			} finally {
-				this.settings = null;
-			}
-		}
 	}
-	
-	@Valid
-	@NotNull(message="{group_id.required}")
-	private ElementGroupId groupId = randomGroupId();
-
-	@Valid
-	@NotNull(message="{group_name.required}")
-	private ElementGroupName groupName;
-
-	@Valid
-	@NotNull(message="{group_type.required}")
-	private ElementGroupType groupType;
 	
 	@Size(max=1024, message="{description.invalid}")
 	private String description;
@@ -134,34 +135,42 @@ public class ElementGroupSettings extends ValueObject{
 	
 	private SortedSet<String> tags = emptySortedSet();
 
-	public ElementGroupId getGroupId() {
-		return groupId;
-	}
-	
-	public ElementGroupName getGroupName() {
-		return groupName;
-	}
-	
-	public ElementGroupType getGroupType() {
-		return groupType;
-	}
-	
+	/**
+	 * Returns the group description.
+	 * @return the group description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 	
+	/**
+	 * Returns the facility ID.
+	 * @return the facility ID.
+	 */
 	public FacilityId getFacilityId() {
 		return facilityId;
 	}
 	
+	/**
+	 * Returns the facility name.
+	 * @return the facility name.
+	 */
 	public FacilityName getFacilityName() {
 		return facilityName;
 	}
 	
+	/**
+	 * Returns the facility type.
+	 * @return the facility type.
+	 */
 	public FacilityType getFacilityType() {
         return facilityType;
     }
 	
+	/**
+	 * Returns group tags.
+	 * @return the group tags.
+	 */
 	public SortedSet<String> getTags() {
 		return unmodifiableSortedSet(tags);
 	}

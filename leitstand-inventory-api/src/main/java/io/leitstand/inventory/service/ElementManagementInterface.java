@@ -34,49 +34,91 @@ import javax.validation.constraints.Pattern;
 
 import io.leitstand.commons.model.ValueObject;
 
+/**
+ * An element management interface.
+ * <p>
+ * A management interface allows managing a element remotely over the network.
+ * Examples for management interfaces are SSH access or a REST API.
+ */
 @Embeddable
 public class ElementManagementInterface extends ValueObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Creates a builder for an element management interface.
+	 * @return a element management interface builder.
+	 */
 	public static Builder newElementManagementInterface() {
 		return new Builder();
 	}
 	
+	/**
+     * A builder to create an immutable <code>ElementManagementInterface</code> instance.
+	 */
 	public static class Builder{
 		
 		private ElementManagementInterface instance = new ElementManagementInterface();
 		
+		/**
+		 * Sets the management interface name
+		 * @param name the management interface name
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withName(String name) {
 			assertNotInvalidated(getClass(), instance);
 			instance.name = name;
 			return this;
 		}
-		
+
+	    /**
+         * Sets the management interface network protocol
+         * @param protocol the management interface network protocol
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withProtocol(String protocol) {
 			assertNotInvalidated(getClass(), instance);
 			instance.protocol = protocol;
 			return this;
 		}
 		
+	    /**
+         * Sets the management interface hostname or IP address
+         * @param hostname the management interface hostname or IP address
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withHostname(String hostname) {
 			assertNotInvalidated(getClass(), instance);
 			instance.hostname = hostname;
 			return this;
 		}
 		
+	    /**
+         * Sets the management interface port
+         * @param name the management interface port
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withPort(int portNumber) {
 			assertNotInvalidated(getClass(),instance);
 			instance.port = portNumber;
 			return this;
 		}
 		
+	    /**
+         * Sets the management interface base path
+         * @param name the management interface base path
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withPath(String path) {
 			assertNotInvalidated(getClass(),path);
 			instance.path = path;
 			return this;
 		}
 		
+		/**
+		 * Returns an immutable element management interface.
+		 * @return the element management interface.
+		 */
 		public ElementManagementInterface build() {
 			try {
 				assertNotInvalidated(getClass(), instance);
@@ -113,26 +155,50 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 	private String path;
 	
 	
+	/**
+	 * Returns the element management interface name.
+	 * @return the element management interface name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Returns the management interface protocol.
+	 * @return the management interface protocol.
+	 */
 	public String getProtocol() {
 		return protocol;
 	}
 	
+	/**
+	 * Returns the management interface port.
+	 * @return the management interface port.
+	 */
 	public int getPort() {
 		return port;
 	}
 	
+	/**
+	 * Returns the management interface hostname or IP address.
+	 * @return the management interface hostname or IP address.
+	 */
 	public String getHostname() {
 		return hostname;
 	}
 	
+	/**
+	 * Returns the management interface base path.
+	 * @return the management interface base path.
+	 */
 	public String getPath() {
 		return path;
 	}
 	
+	/**
+	 * Returns the management interface endpoint URI
+	 * @return the management interface URI
+	 */
 	@JsonbTransient
 	public URI toURI() {
 		String origin = getProtocol()+"://"+getHostname()+":"+getPort();

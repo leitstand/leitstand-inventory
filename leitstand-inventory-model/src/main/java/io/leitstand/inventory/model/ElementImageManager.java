@@ -117,7 +117,7 @@ public class ElementImageManager {
 						    .withImageState(update.getImageState())
 							.withImageVersion(update.getImageVersion())
 							.withBuildDate(update.getBuildDate())
-							.withUpdateType(type)
+							.withUpgradeType(type)
 							.build());
 			}
 			installed.add(newElementInstalledImageData()
@@ -196,7 +196,7 @@ public class ElementImageManager {
 					 	.withImageState(update.getImageState())
 					 	.withImageVersion(update.getImageVersion())
 					 	.withBuildDate(update.getBuildDate())
-						.withUpdateType(type)
+						.withUpgradeType(type)
 						.build());
 		}
 		return newElementImage()

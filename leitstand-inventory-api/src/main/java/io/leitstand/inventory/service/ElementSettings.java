@@ -19,6 +19,7 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -35,21 +36,20 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
 /**
- * The <code>RouterSettings</code> object contains the settings of a router.
+ * General element settings.
  */
-
 public class ElementSettings extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create an immutable <code>RouterSettings</code> instance.
-	 * @return a builder to create an immutable <code>RouterSettings</code> instance.
+	 * Returns a builder to create an immutable <code>ElementSettings</code> instance.
+	 * @return a builder to create an immutable <code>ElementSettings</code> instance.
 	 */
 	public static Builder newElementSettings() {
 		return new Builder();
 	}
 
 	/**
-	 * A builder to create an immutable <code>RouterSettings</code> instance.@author mast
+	 * A builder to create an immutable <code>ElementSettings</code> instance.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementSettings, Builder>{
 		
@@ -57,48 +57,88 @@ public class ElementSettings extends BaseElementEnvelope{
 			super(new ElementSettings());
 		}
 		
+		/**
+		 * Sets the element platform ID.
+		 * @param platformId the platform ID
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withPlatformId(PlatformId platformId) {
 			assertNotInvalidated(getClass(),object);
 			object.platformId = platformId;
 			return this;
 		}
 		
+		/**
+		 * Sets the element platform name.
+		 * @param platformName the platform name
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withPlatformName(PlatformName platformName) {
 			assertNotInvalidated(getClass(),object);
 			object.platformName = platformName;
 			return this;
 		}
 		
+	    /**
+         * Sets the element serial number.
+         * @param serialNumber the serial number
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withSerialNumber(String serialNumber) {
 			assertNotInvalidated(getClass(), object);
 			object.serialNumber = serialNumber;
 			return this;
 		}
 		
+		/**
+		 * Sets the asset ID
+		 * @param assetId the asset identifier
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withAssetId(String assetId) {
 			assertNotInvalidated(getClass(), object);
 			object.assetId = assetId;
 			return this;
 		}
 		
+		/**
+		 * Sets the MAC address of the management interface.
+		 * @param address the management interface MAC address
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withManagementInterfaceMacAddress(MACAddress address) {
 			assertNotInvalidated(getClass(), object);
 			object.managementInterfaceMacAddress = address;
 			return this;
 		}
 		
+		/**
+		 * Sets the element description.
+		 * @param description the element description
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withDescription(String description) {
 			assertNotInvalidated(getClass(), object);
 			object.description = description;
 			return this;
 		}
 		
+		/**
+		 * Sets the element plane.
+		 * @param plane the plane
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withPlane(Plane plane) {
 			assertNotInvalidated(getClass(), object);
 			object.plane = plane;
 			return this;
 		}
 		
+		/**
+		 * Sets the element management interfaces
+		 * @param mgmtInterfaces the element management interfaces
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withManagementInterfaces(ElementManagementInterface.Builder... mgmtInterfaces) {
 			return withManagementInterfaces(stream(mgmtInterfaces)
 										    .map(ElementManagementInterface.Builder::build)
@@ -106,17 +146,31 @@ public class ElementSettings extends BaseElementEnvelope{
 										    			   identity())));
 		}
 
-		
+	    /**
+         * Sets the element management interfaces
+         * @param mgmtInterfaces the element management interfaces
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withManagementInterfaces(Map<String,ElementManagementInterface> mgmtInterfaces) {
 			assertNotInvalidated(getClass(), object);
 			object.managementInterfaces = new TreeMap<>(mgmtInterfaces);
 			return this;
 		}
 		
+	    /**
+         * Sets the element tags
+         * @param tags the element tags
+         * @return a reference to this builder to continue object creation
+         */
 		public Builder withTags(String... tags){
 			return withTags(new TreeSet<>(Arrays.asList(tags)));
 		}
 		
+	    /**
+         * Sets the element tags
+         * @param tags the element tags
+         * @return a reference to this builder to continue object creation
+         */	
 		public Builder withTags(Set<String> tags){
 			assertNotInvalidated(getClass(), object);
 			object.tags = unmodifiableSet(new TreeSet<String>(tags));
@@ -157,34 +211,67 @@ public class ElementSettings extends BaseElementEnvelope{
 		return description;
 	}
 	
+	/**
+	 * Returns the element management interfaces.
+	 * @return an immutable map of management interfaces.
+	 */
 	public Map<String,ElementManagementInterface> getManagementInterfaces() {
-		return managementInterfaces;
+		return unmodifiableMap(managementInterfaces);
 	}
 	
+	/**
+	 * Returns the element plane.
+	 * @return the element plane.
+	 */
 	public Plane getPlane() {
 		return plane;
 	}
 	
+	/**
+	 * Returns the element tags.
+	 * @return an immutable set of element tags.
+	 */
 	public Set<String> getTags() {
-		return tags;
+		return unmodifiableSet(tags);
 	}
 	
+	/**
+	 * Returns the element platform ID
+	 * @return the element platform ID
+	 */
 	public PlatformId getPlatformId() {
 		return platformId;
 	}
 	
+	/**
+	 * Returns the element platform name.
+	 * @return the element platform name.
+	 */
 	public PlatformName getPlatformName() {
 		return platformName;
 	}
 	
+	/**
+	 * Returns the element serial number.
+	 * @return the element serial number.
+	 */
 	public String getSerialNumber() {
 		return serialNumber;
 	}
 	
+	/**
+	 * Returns the MAC address of the element management port.
+	 * @return the MAC address of the element management port.
+	 */
 	public MACAddress getManagementInterfaceMacAddress() {
 		return managementInterfaceMacAddress;
 	}
 
+	/**
+	 * Returns the URI to access the management interface.
+	 * @param name the management interface name
+	 * @return the management interface URI or <code>null</code> when the management interface does not exist
+	 */
 	public URI getManagementInterfaceUri(String name) {
 		ElementManagementInterface ifc = managementInterfaces.get(name);
 		if(ifc != null) {
@@ -193,10 +280,19 @@ public class ElementSettings extends BaseElementEnvelope{
 		return null;
 	}
 
+	/**
+	 * Returns the management interface with the given name.
+	 * @param name the management interface name
+	 * @return the management interface or <code>null</code> if the management interface does not exist
+	 */
 	public ElementManagementInterface getManagementInterface(String name) {
 		return managementInterfaces.get(name);
 	}
 	
+	/**
+	 * Returns the element asset ID
+	 * @return the element asset ID
+	 */
 	public String getAssetId() {
 		return assetId;
 	}

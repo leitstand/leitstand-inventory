@@ -24,6 +24,9 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementGroupIdAdapter;
 
+/**
+ * A unique element group ID in UUIDv4 format.
+ */
 @JsonbTypeAdapter(ElementGroupIdAdapter.class)
 public class ElementGroupId extends Scalar<String> {
 
@@ -51,7 +54,10 @@ public class ElementGroupId extends Scalar<String> {
 		return fromString(id,ElementGroupId::new);
 	}
 
-	
+	/**
+	 * Creates a random group ID.
+	 * @return a random group ID.
+	 */
 	public static ElementGroupId randomGroupId() {
 		return new ElementGroupId(UUID.randomUUID().toString());
 	}
@@ -60,10 +66,17 @@ public class ElementGroupId extends Scalar<String> {
 	@Pattern(message="{group_id.invalid}", regexp=PATTERN)
 	private String value;
 	
+	/**
+	 * Creates a new group ID
+	 * @param value the group ID
+	 */
 	public ElementGroupId(String value){
 		this.value = value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

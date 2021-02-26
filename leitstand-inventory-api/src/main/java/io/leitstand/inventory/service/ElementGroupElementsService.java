@@ -15,23 +15,65 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * The <code>ElementGroupElementsService</code> provides access to the element settings of all elements of an element group.
+ */
 public interface ElementGroupElementsService {
 
+    /**
+     * Returns the element settings of all elements in the specified element group.
+     * @param groupId the group ID
+     * @return the element settings of all elements in the specified element group.
+     */
 	ElementGroupElements getGroupElements(ElementGroupId groupId);
 
+	/**
+	 * Returns the element settings of all elements in the specified element group and plane.
+	 * @param groupId the group ID
+	 * @param plane the plane
+	 * @return the element settings of all elements in the specified element group and plane.
+	 */
 	ElementGroupElements getGroupElements(ElementGroupId groupid, 
 										  Plane plane);
 
+	
+    /**
+     * Returns the element settings of all elements in the specified element group.
+     * @param groupType the group type
+     * @param groupName the group name
+     * @return the element settings of all elements in the specified element group.
+     */
 	ElementGroupElements getGroupElements(ElementGroupType groupType,
 										  ElementGroupName groupName);
 
+	/**
+     * Returns the element settings of all elements in the specified element group and plane.
+     * @param groupType the group type
+     * @param groupName the group name
+     * @param plane the plane
+     * @return the element settings of all elements in the specified element group and plane.
+     */
 	ElementGroupElements getGroupElements(ElementGroupType groupType,
 										  ElementGroupName groupName, 
 										  Plane plane);
 	
+	/**
+     * Returns the element settings of all elements in the specified element group with the specified role.
+     * @param groupId the group ID
+     * @param elementRole the element role
+     * @return the element settings of all elements in the specified element group and element role.
+     */
 	ElementGroupElements getGroupElements(ElementGroupId groupId, 
 										  ElementRoleName elementRole);
 	
+	
+	/**
+     * Returns the element settings of all elements in the specified element group with the specified role.
+     * @param groupType the group type
+     * @param groupName the group name
+     * @param elementRole the element role
+     * @return the element settings of all elements in the specified element group and element role.
+     */
 	ElementGroupElements getGroupElements(ElementGroupType groupType,
 										  ElementGroupName groupName,
 										  ElementRoleName elementRole);

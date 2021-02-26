@@ -15,18 +15,87 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * The <code>ElementEnvironmentService</code> manages the environments of an element.
+ * <p>
+ * An element environment contains variables passed to the template engine to render the element configuration.
+ * The environment variables are stored in a JSON object.
+ */
 public interface ElementEnvironmentService {
 
-	ElementEnvironments getElementEnvironments(ElementId elementId);
-	ElementEnvironments getElementEnvironments(ElementName elementName);
+    /**
+     * Returns the environments meta data of the specified element.
+     * @param elementId the element ID
+     * @return the environments meta data.
+     */
+    ElementEnvironments getElementEnvironments(ElementId elementId);
+
+    /**
+     * Returns the environments meta data of the specified element.
+     * @param elementName the element name or the element alias
+     * @return the environments meta data.
+     */
+    ElementEnvironments getElementEnvironments(ElementName elementName);
 	
+    /**
+     * Returns the element environment with the specified ID
+     * @param id the environment ID
+     * @return the element environment with the specified ID
+     */
 	ElementEnvironment getElementEnvironment(EnvironmentId id);
+	
+	/**
+	 * Returns the environment with the specified name.
+	 * @param elementId the element ID
+	 * @param name the environment name
+	 * @return the element environment with the specified name
+	 */
 	ElementEnvironment getElementEnvironment(ElementId elementId, EnvironmentName name);
+	
+	/**
+	 * Returns the environment with the specified name.
+	 * @param elementName the element name
+	 * @param name the environment name
+	 * @return the element environment with the specified name
+	 */
 	ElementEnvironment getElementEnvironment(ElementName elementName, EnvironmentName name);
+	
+	/**
+	 * Stores an element environment.
+	 * @param elementId the element ID
+	 * @param env the element environment
+	 * @return <code>true</code> if a new environment is added to the inventory and 
+	 *         <code>false</code> if an existing environment got updated
+	 */
 	boolean storeElementEnvironment(ElementId elementId, Environment env);
+
+	/**
+     * Stores an element environment.
+     * @param elementName the element name or the element alias
+     * @param env the element environment
+     * @return <code>true</code> if a new environment is added to the inventory and 
+     *         <code>false</code> if an existing environment got updated
+     */
 	boolean storeElementEnvironment(ElementName elementName, Environment env);
+	
+	/**
+	 * Removes an element environment.
+	 * @param id the element environment ID
+	 */
 	void removeElementEnvironment(EnvironmentId id);
+	
+	/**
+	 * Removes an element environment.
+	 * @param elementId the element ID
+	 * @param name the environment ID
+	 */
 	void removeElementEnvironment(ElementId elementId, EnvironmentName name);
+	
+	/**
+	 * Removes an element environment.
+	 * @param elementName the element name
+	 * @param name the environment name
+	 */
 	void removeElementEnvironment(ElementName elementName, EnvironmentName name);
 	
 }

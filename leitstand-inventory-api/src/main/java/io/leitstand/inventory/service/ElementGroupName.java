@@ -22,7 +22,7 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementGroupNameAdapter;
 /**
- * The unique name of an element group.
+ * A unique name of an element group.
  */
 @JsonbTypeAdapter(ElementGroupNameAdapter.class)
 public class ElementGroupName extends Scalar<String> {
@@ -55,7 +55,7 @@ public class ElementGroupName extends Scalar<String> {
 	
 	/**
 	 * Creates a <code>ElementGroupName</code>.
-	 * @param value - the group name
+	 * @param value the group name
 	 */
 	public ElementGroupName(String value){
 		this.value = value;

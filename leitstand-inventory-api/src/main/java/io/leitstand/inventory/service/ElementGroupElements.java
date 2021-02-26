@@ -21,25 +21,47 @@ import static java.util.Collections.unmodifiableList;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * Element settings of all elements in an element group.
+ */
 public class ElementGroupElements extends BaseElementGroupEnvelope {
 	
+    /**
+     * Returns a builder for the <code>ElementGroupElements</code>.
+     * @return a builder to create the <code>ElementGroupElements</code>.
+     */
 	public static Builder newElementGroupElements(){
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementGroupElements</code> instance.
+	 */
 	public static class Builder extends BaseElementGroupEnvelopeBuilder<ElementGroupElements, Builder>{
 		
+	    /**
+	     * Creates a new <code>ElementGroupElements</Code> builder.
+	     */
 		protected Builder(){
 			super(new ElementGroupElements());
 		}
 		
+		/** 
+		 * Sets the group description
+		 * @param description the group description
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withDescription(String description){
 			assertNotInvalidated(getClass(), object);
 			object.description = description;
 			return this;
 		}
 		
+		/**
+		 * Add the settings of all elements in this group.
+		 * @param elements the element settings
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withElements(List<ElementSettings> elements){
 			assertNotInvalidated(getClass(), object);
 			object.elements = unmodifiableList(new LinkedList<>(elements));
@@ -51,12 +73,20 @@ public class ElementGroupElements extends BaseElementGroupEnvelope {
 	private String description;
 	private List<ElementSettings> elements;
 
+	/**
+	 * Returns the group description.
+	 * @return the group description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 	
+	/**
+	 * Returns the element settings of all elements in this element group.
+	 * @return the element settings of all elements in this element group.
+	 */
 	public List<ElementSettings> getElements() {
-		return elements;
+		return unmodifiableList(elements);
 	}
 
 }

@@ -51,10 +51,17 @@ public class EnvironmentName extends Scalar<String>{
 	// TODO Add pattern
 	private String value;
 	
+	/**
+	 * Creates an environment name.
+	 * @param value the environment name.
+	 */
 	public EnvironmentName(String value) {
 		this.value = value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;
