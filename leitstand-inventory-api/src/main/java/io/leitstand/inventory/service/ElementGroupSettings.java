@@ -33,20 +33,20 @@ import javax.validation.constraints.Size;
 public class ElementGroupSettings extends BaseElementGroupEnvelope{
 	
     /**
-     * Returns a group settings builder.
-     * @return a group settings builder.
+     * Returns a builder for an immutable <code>ElementGroupSettings</code> value object.
+     * @return a builder for an immutable <code>ElementGroupSettings</code> value object.
      */
 	public static Builder newElementGroupSettings(){
 		return new Builder();
 	}
 	
 	/**
-	 * A builder for an immutable <code>ElementGroupSettings</code> instance.
+	 * A builder for an immutable <code>ElementGroupSettings</code> value object..
 	 */
 	public static class Builder extends BaseElementGroupEnvelopeBuilder<ElementGroupSettings, Builder>{
 		
 	    /**
-	     * Creates a new builder.
+	     * Creates a builder for an immutable <code>ElementGroupSettings</code> value object.
 	     */
 		protected Builder() {
 		    super(new ElementGroupSettings());

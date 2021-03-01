@@ -137,7 +137,7 @@ public class ElementImageManager {
 						  .withInstallationDate(elementImage.getDeployDate())
 						  .withBuildDate(image.getBuildDate())
 						  .withPackages(packages)
-						  .withAvailableUpdates(updates)
+						  .withAvailableUpgrades(updates)
 						  .build());
 		}	
 		
@@ -226,7 +226,7 @@ public class ElementImageManager {
 				   		  .withInstallationDate(elementImage.getDeployDate())
 				   		  .withBuildDate(image.getBuildDate())
 				   		  .withPackages(packages)
-				   		  .withAvailableUpdates(updates))
+				   		  .withAvailableUpgrades(updates))
 			              
 			   .build();
 			

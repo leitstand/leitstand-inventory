@@ -16,7 +16,7 @@
 package io.leitstand.inventory.service;
 
 /**
- * The <code>ElementGroupElementsService</code> provides access to the element settings of all elements of an element group.
+ * A transactional service to access the elements of an element group.
  */
 public interface ElementGroupElementsService {
 

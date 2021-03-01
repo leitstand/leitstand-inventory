@@ -16,7 +16,7 @@
 package io.leitstand.inventory.service;
 
 /**
- * The <code>ElementGroupSettingsService</code> allows managing the general group settings.
+ * A transactional service to manage element group settings.
  */
 public interface ElementGroupSettingsService {
 
@@ -31,6 +31,7 @@ public interface ElementGroupSettingsService {
 	 * Returns the general settings of the specified group.
 	 * @param id the group ID
 	 * @return the general group settings.
+	 * @throws EntityNotFoundException when the element group does not exist.
 	 */
 	ElementGroupSettings getGroupSettings(ElementGroupId id);
 
@@ -39,6 +40,7 @@ public interface ElementGroupSettingsService {
 	 * @param groupType the group type
 	 * @param groupName the group name
 	 * @return the general group settings
+	 * @throws EntityNotFoundException when the element group does not exist.
 	 */
 	ElementGroupSettings getGroupSettings(ElementGroupType groupType,
 										  ElementGroupName groupName);

@@ -31,18 +31,21 @@ import java.util.List;
 public class ElementEnvironments extends BaseElementEnvelope{
 
     /**
-     * Returns a builder for the element environments.
-     * @return a builder for the element environments.
+     * Returns a builder for an immutable <code>ElementEnvironments</code> value object.
+     * @return a builder for an immutable <code>ElementEnvironments</code> value object.
      */
 	public static Builder newElementEnvironments() {
 		return new Builder();
 	}
 	
 	/**
-	 * A builder for an immutable <code>ElementEnvironments</code> instance.
+	 * A builder for an immutable <code>ElementEnvironments</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementEnvironments,Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementEnvironments</code> value object.
+	     */
 		protected Builder() {
 			super(new ElementEnvironments());
 		}
@@ -50,7 +53,7 @@ public class ElementEnvironments extends BaseElementEnvelope{
 		/**
 		 * Sets the environments of the element.
 		 * @param envs the environments
-		 * @return a reference to this buidler to continue object creation
+		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withEnvironments(EnvironmentInfo.Builder... envs) {
 			return withEnvironments(stream(envs)

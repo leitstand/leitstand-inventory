@@ -26,19 +26,43 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsRecordSetIdAdapter;
 
+/**
+ * Unique DNS record set ID in UUIDv4 format.
+ * <p>
+ * The DNS record set ID is an immutable identifier for DNS record sets stored in the inventory.
+ * It simplifies renaming DNS record sets and is not shared with the DNS server.
+ */
 @JsonbTypeAdapter(DnsRecordSetIdAdapter.class)
 public class DnsRecordSetId extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a random DNS record set ID.
+	 * @return a DNS record set ID
+	 */
 	public static DnsRecordSetId randomDnsRecordSetId() {
 		return valueOf(UUID.randomUUID().toString());
 	}
 	
+	/**
+	 * Creates a DNS record set ID from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param id the DNS record set ID
+	 * @return the DNS record set ID or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static DnsRecordSetId dnsRecordSetId(String id) {
 		return valueOf(id);
 	}
 	
+	/**
+	 * Creates a DNS record set ID from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param id the DNS record set ID
+	 * @return the DNS record set ID or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static DnsRecordSetId valueOf(String id) {
 		return Scalar.fromString(id, DnsRecordSetId::new);
 	}
@@ -47,10 +71,17 @@ public class DnsRecordSetId extends Scalar<String>{
 	@Pattern(regexp=UUID_PATTERN, message="{dns_recordset_id.invalid}")
 	private String value;
 	
+	/**
+	 * Creates a DNS record set ID.
+	 * @param id the DNS record set ID.
+	 */
 	public DnsRecordSetId(String id) {
 		this.value = id;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

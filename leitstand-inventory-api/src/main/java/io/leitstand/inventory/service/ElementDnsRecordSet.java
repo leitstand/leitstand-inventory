@@ -15,28 +15,52 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.Valid;
 
-import io.leitstand.commons.model.BuilderUtil;
-
+/**
+ * DNS resource record set of an element.
+ */
 public class ElementDnsRecordSet extends BaseElementEnvelope {
 
+    /**
+     * Creates a builder for an immutable <code>ElementDnsRecordSet</code> value object.
+     * @return a builder for an immutable <code>ElementDnsRecordSet</code> value object.
+     */
 	public static Builder newElementDnsRecordSet() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementDnsRecordSet</code> value object.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementDnsRecordSet, Builder>{
-		protected Builder() {
+
+	    /**
+	     * Creates a builder for an immutable <code>ElementDnsRecordSet</code> value object.
+	     */
+	    protected Builder() {
 			super(new ElementDnsRecordSet());
 		}
 	
+	    /**
+	     * Sets the DNS record set.
+	     * @param set the DNS record set
+	     * @return a reference to this builder to continue object creation.
+	     */
 		public Builder withDnsRecordSet(DnsRecordSet.Builder set) {
 			return withDnsRecordSet(set.build());
 		}
 		
+		/**
+		 * Sets the DNS record set.
+		 * @param set the DNS record set.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDnsRecordSet(DnsRecordSet set) {
-			BuilderUtil.assertNotInvalidated(getClass(),object);
+			assertNotInvalidated(getClass(),object);
 			object.dnsRecordSet = set;
 			return this;
 		}
@@ -47,6 +71,10 @@ public class ElementDnsRecordSet extends BaseElementEnvelope {
 	private DnsRecordSet dnsRecordSet;
 	
 	
+	/**
+	 * Returns the DNS record set.
+	 * @return the DNS record set.
+	 */
 	public DnsRecordSet getDnsRecordSet() {
 		return dnsRecordSet;
 	}

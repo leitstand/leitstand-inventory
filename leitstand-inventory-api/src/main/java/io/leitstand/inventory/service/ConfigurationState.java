@@ -15,12 +15,27 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * Enumeration of configuration lifecycle states.
+ */
 public enum ConfigurationState {
 
+    /** A candidate element configuration is a generated configuration which has not been applied to the element yet.*/
 	CANDIDATE,
+	/** The active element configuration.*/
 	ACTIVE,
+	/** Superseded configurations form the configuration history. Each superseded configuration is a former active element configuration.*/
 	SUPERSEDED;
 
+    /**
+     * Creates a configuration state from the specified string.
+     * <p>
+     * This is an alias of the {@link #valueOf(String)} method to improve readability 
+     * by avoiding static import conflicts.
+     * </p>
+     * @param state the configuration state as string
+     * @return the configuration state.
+     */
 	public static ConfigurationState configurationState(String state) {
 		return valueOf(state);
 	}

@@ -3,6 +3,7 @@ package io.leitstand.inventory.service;
 import static io.leitstand.inventory.service.ElementGroupElements.newElementGroupElements;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
+import static io.leitstand.inventory.service.ElementGroupStatistics.newElementGroupStatistics;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
@@ -10,6 +11,8 @@ import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
 import static io.leitstand.inventory.service.FacilityId.randomFacilityId;
 import static io.leitstand.inventory.service.FacilityName.facilityName;
 import static io.leitstand.inventory.service.FacilityType.facilityType;
+import static io.leitstand.inventory.service.OperationalState.DOWN;
+import static io.leitstand.inventory.service.OperationalState.UP;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.containsExactly;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
@@ -65,5 +68,21 @@ public class ElementGroupValueObjectTest {
                                      .build();
         assertThat(group.getElements(),containsExactly(element));
         assertThat(group.getDescription(),is(DESCRIPTION));
+    }
+    
+    @Test
+    public void element_group_statistics() {
+        ElementGroupStatistics stats = newElementGroupStatistics()
+                                       .withNewCount(3)
+                                       .withCount(UP,2)
+                                       .withCount(DOWN, 1)
+                                       .withRetiredCount(4)
+                                       .build();
+        
+        assertThat(stats.getNewElements(),is(3));
+        assertThat(stats.getRetiredElements(),is(4));
+        assertThat(stats.getActiveElements().get(UP),is(2));
+        assertThat(stats.getActiveElements().get(DOWN),is(1));
+        
     }
 }

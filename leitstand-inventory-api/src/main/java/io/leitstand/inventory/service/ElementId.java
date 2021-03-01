@@ -25,10 +25,9 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementIdAdapter;
 
 /**
- * A unique identifier for an element stored in the resource inventory.
+ * A unique identifier for an element in UUIDv4 format.
  * <p>
- * The element ID is immutable for an element and hence forms a persistent unique key for an element.
- * The element ID is compatible to the UUIDv4 format.
+ * The element ID is immutable for an element and hence forms a persistent unique key.
  * </p>
  * @see ElementSettings
  * @see ElementConfig
@@ -53,9 +52,10 @@ public class ElementId extends Scalar<String> {
 	}
 
 	/**
-	 * Alias for {@link #valueOf(String)} to improve readability.
-	 * <p>
 	 * Creates an <code>ElementId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param id the element ID
 	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -65,6 +65,7 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Creates an <code>ElementId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * @param id the element ID
 	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -78,7 +79,7 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Create a <code>ElementId</code>.
-	 * @param value - the element id
+	 * @param value the element id
 	 */
 	public ElementId(UUID value) {
 		this(value.toString());
@@ -86,7 +87,7 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Create a <code>ElementId</code>.
-	 * @param value - the element id
+	 * @param value the element id
 	 */
 	public ElementId(String value){
 		this.value = value;

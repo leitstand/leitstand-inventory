@@ -30,15 +30,15 @@ import javax.validation.constraints.NotNull;
 public class ElementEnvironment extends BaseElementEnvelope {
 
     /**
-     * Returns a builder for an element environment.
-     * @return a builder for an element environment.
+     * Creates a builder for an immutable <code>ElementEnvironment</code> value object.
+     * @return a builder for an immutable <code>ElementEnvironment</code> value object.
      */
 	public static Builder newElementEnvironment() {
 		return new Builder();
 	}
 	
 	/**
-	 * A builder for an immutable <code>ElementEnvironment</code>.
+	 * A builder for an immutable <code>ElementEnvironment</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementEnvironment, Builder>{
 		protected Builder() {

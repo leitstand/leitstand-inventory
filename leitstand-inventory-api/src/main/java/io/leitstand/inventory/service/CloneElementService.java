@@ -15,10 +15,30 @@
  */
 package io.leitstand.inventory.service;
 
+
+/**
+ * The <code>CloneElementService</code> creates a clone of an element in the inventory.
+ * <p>
+ * Cloning an element creates a new element and applies the settings of the broken element to the new element.
+ */
 public interface CloneElementService {
 
+	/**
+	 * Clones an element by creating a new element in the inventory and 
+	 * copying the configuration and environments from the source element to its clone.
+	 * @param source the source element ID
+	 * @param cloneRequest the mandatory data to create a clone
+	 * @return the element ID of the clone element
+	 */
+	ElementId cloneElement(ElementId source, ElementCloneRequest cloneRequest );
 	
-	ElementId cloneElement(ElementId source, ElementCloneRequest request );
+	/**
+     * Clones an element by creating a new element in the inventory and 
+     * copying the configuration and environments from the source element to its clone.
+     * @param source the source element name
+     * @param cloneRequest the mandatory data to create a clone
+     * @return the element ID of the clone element
+     */
 	ElementId cloneElement(ElementName source, ElementCloneRequest request);
 	
 	

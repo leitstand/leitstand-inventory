@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+
 import java.util.UUID;
 
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -30,14 +32,14 @@ import io.leitstand.inventory.jsonb.ElementGroupIdAdapter;
 @JsonbTypeAdapter(ElementGroupIdAdapter.class)
 public class ElementGroupId extends Scalar<String> {
 
-	public static final String PATTERN = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-	
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Alias for {@link #valueOf(String)} to improve readability.
-	 * <p>
 	 * Creates an <code>ElementGroupId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * <p>
 	 * @param id the group ID
 	 * @return the <code>ElementGroupId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -47,6 +49,7 @@ public class ElementGroupId extends Scalar<String> {
 	
 	/**
 	 * Creates an <code>ElementGroupId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * @param id the group ID
 	 * @return the <code>ElementGroupId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -63,7 +66,7 @@ public class ElementGroupId extends Scalar<String> {
 	}
 	
 	@NotNull(message="{group_id.required}")
-	@Pattern(message="{group_id.invalid}", regexp=PATTERN)
+	@Pattern(message="{group_id.invalid}", regexp=UUID_PATTERN)
 	private String value;
 	
 	/**

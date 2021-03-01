@@ -30,9 +30,10 @@ public class ElementGroupName extends Scalar<String> {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Alias for {@link #valueOf(String)} to improve readability.
+	 * Creates an <code>ElementGroupName</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * <p>
-	 * Creates a <code>ElementGroupName</code> from the specified string.
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param name the group name
 	 * @return the <code>ElementGroupName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -41,7 +42,8 @@ public class ElementGroupName extends Scalar<String> {
 	}
 	
 	/**
-	 * Creates a <code>ElementGroupName</code> from the specified string.
+	 * Creates an <code>ElementGroupName</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * @param name the group name
 	 * @return the <code>ElementGroupName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */

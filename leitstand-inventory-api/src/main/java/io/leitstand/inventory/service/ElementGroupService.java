@@ -18,7 +18,7 @@ package io.leitstand.inventory.service;
 import java.util.List;
 
 /**
- * The <code>ElementGroupService</code> allows querying element groups and group statistics.
+ * A transactional service to query element groups and group statistics.
  */
 public interface ElementGroupService {
 

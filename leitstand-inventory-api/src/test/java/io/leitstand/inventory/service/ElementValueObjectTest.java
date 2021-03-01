@@ -1,17 +1,23 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.inventory.service.AdministrativeState.ACTIVE;
+import static io.leitstand.inventory.service.DnsName.dnsName;
+import static io.leitstand.inventory.service.DnsRecord.newDnsRecord;
+import static io.leitstand.inventory.service.DnsRecordSet.newDnsRecordSet;
+import static io.leitstand.inventory.service.DnsRecordType.dnsRecordType;
 import static io.leitstand.inventory.service.ElementAlias.elementAlias;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.newElementAvailableUpgrade;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MAJOR;
 import static io.leitstand.inventory.service.ElementCloneRequest.newCloneElementRequest;
+import static io.leitstand.inventory.service.ElementDnsRecordSet.newElementDnsRecordSet;
+import static io.leitstand.inventory.service.ElementDnsRecordSets.newElementDnsRecordSets;
 import static io.leitstand.inventory.service.ElementEnvironment.newElementEnvironment;
 import static io.leitstand.inventory.service.ElementEnvironments.newElementEnvironments;
-import static io.leitstand.inventory.service.ElementGroupElements.newElementGroupElements;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
+import static io.leitstand.inventory.service.ElementImage.newElementImage;
 import static io.leitstand.inventory.service.ElementManagementInterface.newElementManagementInterface;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
@@ -38,12 +44,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.json.JsonObject;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class ElementValueObjectTest {
     
@@ -215,6 +221,53 @@ public class ElementValueObjectTest {
         assertThat(env.getDescription(),is(DESCRIPTION));
         assertThat(env.getType(),is("type"));
         assertThat(env.getCategory(),is("category"));
+    }
+    
+    @Test
+    public void element_dns_record_set() {
+        DnsRecordSet records = newDnsRecordSet()
+                               .withDnsName(dnsName("test.leitstand.io"))
+                               .withDnsRecordType(dnsRecordType("CNAME"))
+                               .withDnsRecords(newDnsRecord()
+                                               .withDisabled(true)
+                                               .withSetPtr(true)
+                                               .withRecordValue("alias.leitstand.io"))
+                               .build();
+       
+        ElementDnsRecordSet dnsRecord = newElementDnsRecordSet()
+                                        .withDnsRecordSet(records)
+                                        .build();
+        
+        assertThat(dnsRecord.getDnsRecordSet(),is(records));
+    }
+    
+    @Test
+    public void element_dns_record_sets() {
+        DnsRecordSet records = newDnsRecordSet()
+                               .withDnsName(dnsName("test.leitstand.io"))
+                               .withDnsRecordType(dnsRecordType("CNAME"))
+                               .withDnsRecords(newDnsRecord()
+                                               .withDisabled(true)
+                                               .withSetPtr(true)
+                                               .withRecordValue("alias.leitstand.io"))
+                               .build();
+       
+        ElementDnsRecordSets dnsRecords = newElementDnsRecordSets()
+                                          .withDnsRecordSets(asList(records))
+                                          .build();
+        
+        assertThat(dnsRecords.getDnsRecordSets(),containsExactly(records));
+    }
+    
+    @Test
+    public void element_image() {
+        ElementImageData image = Mockito.mock(ElementImageData.class);
+        
+        ElementImage elementImage = newElementImage()
+                                    .withImage(image)
+                                    .build();
+        
+        assertThat(elementImage.getImage(),is(image));
     }
     
 }
