@@ -21,6 +21,8 @@ package io.leitstand.inventory.service;
  * The <code>ElementEnvironmentService</code> allows querying element environments as well as storing and removing element environments.
  * An element environment contains variables passed to the template engine to render the element configuration.
  * The environment variables are stored in a JSON object.
+ * <p>
+ * Typically an element environment addresses a transport network capability configuration, like BGP or IS-IS configurations for example.
  */
 public interface ElementEnvironmentService {
 

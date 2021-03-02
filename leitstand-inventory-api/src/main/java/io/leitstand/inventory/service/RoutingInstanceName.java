@@ -23,22 +23,32 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.RoutingInstanceNameAdapter;
 
 /**
- * Unique routing instance name.
+ * Name of a routing instance configured on an element.
+ * Routing instance names are unique per routing protocol.
  */
 @JsonbTypeAdapter(RoutingInstanceNameAdapter.class)
 public class RoutingInstanceName extends Scalar<String> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a routing instance name from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link RoutingInstanceName#valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param instanceName the routing instance name.
+	 * @return a routing instance name or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static RoutingInstanceName routingInstance(String name) {
 		return valueOf(name);
 	}
 	
-	/**
-	 * Creates a <code>RoutingInstanceName</code> from the specified string.
-	 * @param name the routing instance name
-	 * @return the <code>RoutingInstanceName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
-	 */
+    /**
+     * Creates a routing instance name from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param instanceName the routing instance name.
+     * @return a routing instance name or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static RoutingInstanceName valueOf(String name){
 		return Scalar.fromString(name, RoutingInstanceName::new);
 	}

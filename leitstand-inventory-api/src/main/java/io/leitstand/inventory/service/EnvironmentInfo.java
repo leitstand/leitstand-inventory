@@ -21,20 +21,20 @@ import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Metadata of an element environment.
+ * Element environment metadata.
  */
 public class EnvironmentInfo extends ValueObject{
 
     /**
-     * Returns a builder to create the environment information.
-     * @return a builder to create the environment information.
+     * Returns a builder for an immutable <code>EnvironmentInfo</code> value object.
+     * @return a builder for an immutable <code>EnvironmentInfo</code> value object.
      */
 	public static Builder newEnvironmentInfo() {
 		return new Builder();
 	}
 	
 	/**
-	 * A base builder for an element environments value objects.
+	 * A base builder for an element environment value objects.
 	 * @param <T> the environment value object
 	 * @param <B> the environment value object builder
 	 */
@@ -122,7 +122,7 @@ public class EnvironmentInfo extends ValueObject{
 	}
 	
 	/**
-	 * A builder for an immutable <code>EnvironmentInfo</code> instance.
+	 * A builder for an immutable <code>EnvironmentInfo</code> value object.
 	 */
 	public static class Builder extends BaseEnvironmentBuilder<EnvironmentInfo, Builder>{
 		protected Builder() {

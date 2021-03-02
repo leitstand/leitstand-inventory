@@ -15,6 +15,7 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.inventory.service.Version.version;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class VersionTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void create_non_semantic_version_without_prerelease(){
-        Version rev = Version.valueOf("1.2.3.4");
+        Version rev = version("1.2.3.4");
         assertEquals(1,rev.getMajorLevel());
         assertEquals(2,rev.getMinorLevel());
         assertEquals(3,rev.getPatchLevel());
@@ -32,7 +33,7 @@ public class VersionTest {
 	
 	@Test
 	public void create_semantic_version_without_prerelease(){
-		Version rev = Version.valueOf("1.2.3");
+		Version rev = version("1.2.3");
 		assertEquals(1,rev.getMajorLevel());
 		assertEquals(2,rev.getMinorLevel());
 		assertEquals(3,rev.getPatchLevel());
@@ -40,7 +41,7 @@ public class VersionTest {
 	
 	@Test
 	public void create_semantic_version_with_prerelease(){
-		Version rev = Version.valueOf("1.2.3-alpha");
+		Version rev = version("1.2.3-alpha");
 		assertEquals(1,rev.getMajorLevel());
 		assertEquals(2,rev.getMinorLevel());
 		assertEquals(3,rev.getPatchLevel());
@@ -55,32 +56,32 @@ public class VersionTest {
 	
 	@Test
 	public void major_level_ordering(){
-		Version a = Version.valueOf("1.0.0");
-		Version b = Version.valueOf("2.0.0");
+		Version a = version("1.0.0");
+		Version b = version("2.0.0");
 		assertEquals(-1,a.compareTo(b));
 		assertEquals(1,b.compareTo(a));
 	}
 	
 	@Test
 	public void minor_level_ordering(){
-		Version a = Version.valueOf("1.1.0");
-		Version b = Version.valueOf("1.2.0");
+		Version a = version("1.1.0");
+		Version b = version("1.2.0");
 		assertEquals(-1,a.compareTo(b));
 		assertEquals(1,b.compareTo(a));
 	}
 	
 	@Test
 	public void patch_level_ordering(){
-		Version a = Version.valueOf("1.0.0");
-		Version b = Version.valueOf("1.0.1");
+		Version a = version("1.0.0");
+		Version b = version("1.0.1");
 		assertEquals(-1,a.compareTo(b));
 		assertEquals(1,b.compareTo(a));
 	}
 	
 	@Test
 	public void prerelease_level_ordering(){
-		Version a = Version.valueOf("1.0.0-alpha");
-		Version b = Version.valueOf("1.0.0-beta");
+		Version a = version("1.0.0-alpha");
+		Version b = version("1.0.0-beta");
 		assertEquals(-1,a.compareTo(b));
 		assertEquals(1,b.compareTo(a));
 	}
@@ -88,8 +89,8 @@ public class VersionTest {
 	
 	@Test
 	public void release_prerelease_level_ordering(){
-		Version a = Version.valueOf("1.0.0-alpha");
-		Version b = Version.valueOf("1.0.0");
+		Version a = version("1.0.0-alpha");
+		Version b = version("1.0.0");
 		assertEquals(-1,a.compareTo(b));
 		assertEquals(1,b.compareTo(a));
 	}
@@ -97,12 +98,12 @@ public class VersionTest {
 	
 	@Test
 	public void same_version_ordering(){
-		Version a = Version.valueOf("1.0.0");
-		Version b = Version.valueOf("1.0.0");
+		Version a = version("1.0.0");
+		Version b = version("1.0.0");
 		assertEquals(0,a.compareTo(b));
 		
-		a = Version.valueOf("1.0.0-alpha");
-		b = Version.valueOf("1.0.0-alpha");
+		a = version("1.0.0-alpha");
+		b = version("1.0.0-alpha");
 		assertEquals(0,a.compareTo(b));
 	}
 

@@ -22,15 +22,36 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ServiceNameAdapter;
 
+/**
+ * Unique service name.
+ * <p>
+ * The service name can be changed provided that new service name is also unique.
+ * @see ServiceId
+ * @see ServiceDefinition
+ */
 @JsonbTypeAdapter(ServiceNameAdapter.class)
 public class ServiceName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 	
-	public static ServiceName serviceName(String name) {
-		return valueOf(name);
+	/**
+	 * Creates a service name from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link ServiceName#valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param serviceName the service name
+	 * @return the service name or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
+	public static ServiceName serviceName(String serviceName) {
+		return valueOf(serviceName);
 	}
 	
+	/**
+     * Creates a service name from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param serviceName the service name
+     * @return the service name or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static ServiceName valueOf(String name) {
 		return fromString(name,ServiceName::new);
 	}
@@ -38,17 +59,21 @@ public class ServiceName extends Scalar<String>{
 	@NotNull(message="{service_name.required}")
 	@Pattern(regexp="\\p{Print}{1,64}",message="{service_name.invalid}" )
 	private String value;
-	
-	public ServiceName(String name){
-		this.value = name;
+
+	/**
+	 * Creates a service name.
+	 * @param serviceName the service name.
+	 */
+	public ServiceName(String serviceName){
+		this.value = serviceName;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;
 	}
-
-
-
 
 }

@@ -33,11 +33,11 @@ public class ElementServiceContext extends BaseElementEnvelope {
 			super(new ElementServiceContext());
 		}
 		
-		public Builder withService(ServiceData.Builder service) {
+		public Builder withService(ServiceSettings.Builder service) {
 			return withService(service.build());
 		}
 		
-		public Builder withService(ServiceData service) {
+		public Builder withService(ServiceSettings service) {
 			assertNotInvalidated(getClass(), object);
 			object.service = service;
 			return this;
@@ -46,9 +46,9 @@ public class ElementServiceContext extends BaseElementEnvelope {
 	}
 	
 	
-	private ServiceData service;
+	private ServiceSettings service;
 	
-	public ServiceData getService() {
+	public ServiceSettings getService() {
 		return service;
 	}
 	

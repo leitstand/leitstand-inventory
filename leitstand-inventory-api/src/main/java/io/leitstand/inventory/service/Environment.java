@@ -19,17 +19,37 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
 import javax.json.JsonObject;
 
+/**
+ * An element environment.
+ * <p>
+ * An element can host multiple environments. 
+ * Every element environment is a JSON object that is passed to the template engine to render an element configuration.
+ * Typically an environment addresses a certain transport network capability. 
+ * The element role defines which environments exist on an element.
+ */
 public class Environment extends EnvironmentInfo {
 
+    /**
+     * Creates a builder for an immutable <code>Environment</code> value object.
+     * @return a builder for an immutable <code>Environment</code> value object.
+     */
 	public static Builder newEnvironment() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>Environment</code> value object.
+	 */
 	public static class Builder extends BaseEnvironmentBuilder<Environment, Builder>{
 		protected Builder() {
 			super(new Environment());
 		}
-		
+
+		/**
+		 * Sets the environment variables.
+		 * @param variables the environment variables.
+		 * @return a reference to this builder to continue objectcreation.
+		 */
 		public Builder withVariables(JsonObject variables) {
 			assertNotInvalidated(getClass(), env);
 			env.variables = variables;
@@ -40,6 +60,10 @@ public class Environment extends EnvironmentInfo {
 	
 	private JsonObject variables;
 	
+	/**
+	 * Returns the environment variables.
+	 * @return the environment variables.
+	 */
 	public JsonObject getVariables() {
 		return variables;
 	}

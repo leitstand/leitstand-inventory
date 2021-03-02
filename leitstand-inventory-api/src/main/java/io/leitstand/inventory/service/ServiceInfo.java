@@ -21,55 +21,91 @@ import static io.leitstand.commons.model.ObjectUtil.optional;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Contains all properties of a service instance.
+ * Metadata of a service running on an element.
+ * <p>
+ * The <code>ServiceInfo</code> consists of
+ * <ul>
+ *  <li>the element ID and element name of the element hosting the service</li>
+ *  <li>an optional parent service to model service hierarchies</li>
+ *  <li>the service name and the service display name</li>
+ *  <li>the service type</li>
+ *  <li>the administrative state and the operational state of the service and</li>
+ *  <li>the service description</li>
+ * </ul>
  */
 public class ServiceInfo extends ValueObject {
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementServiceData</code> instance.
-	 * @return a builder to create an immutable <code>ElementServiceData</code> instance.
+	 * Returns a builder to create an immutable <code>ServiceInfo</code> value object.
+	 * @return a builder to create an immutable <code>ServiceInfo</code> value object.
 	 */
 	public static Builder newServiceInfo(){
 		return new Builder();
 	}
-	
+
 	/**
-	 * The builder to create an immutable <code>ElementServiceData</code> instance.
+     * A base builder to create an service-related value objects.
+	 *
+	 * @param <T> the service-related value object.
+	 * @param <B> the service-related value object builder.
 	 */
 	@SuppressWarnings("unchecked")
 	public static class BaseServiceBuilder<T extends ServiceInfo, B extends BaseServiceBuilder<T,B>> {
 		
 		protected T service;
 		
+		/**
+		 * Creates a builder for a service-related value object.
+		 * @param service the value object under construction.
+		 */
 		protected BaseServiceBuilder(T service){
 			this.service = service;
 		}
 		
-		public B withElementId(ElementId id){
+		/**
+		 * Sets the element ID of the element hosting the service.
+		 * @param elementId the element ID
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public B withElementId(ElementId elementId){
 			assertNotInvalidated(getClass(), service);
-			((ServiceInfo)service).elementId = id;
+			((ServiceInfo)service).elementId = elementId;
 			return (B) this;
 		}
 		
+		/**
+         * Sets the element name of the element hosting the service.
+         * @param elementName the element name
+         * @return a reference to this builder to continue object creation.
+         */
 		public B withElementName(ElementName name){
 			assertNotInvalidated(getClass(), service);
 			((ServiceInfo)service).elementName = name;
 			return (B) this;
 		}
 		
+		/**
+		 * Sets the parent service hosting this service.
+		 * @param parent the parent service.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public B withParent(ElementServiceReference parent){
 			assertNotInvalidated(getClass(), service);
 			((ServiceInfo)service).parent = parent;
 			return (B) this;
 		}
 
+		/**
+         * Sets the parent service hosting this service.
+         * @param parent the parent service.
+         * @return a reference to this builder to continue object creation.
+         */
 		public B withParent(ElementServiceReference.Builder parent){
 			return withParent(optional(parent, ElementServiceReference.Builder::build));
 		}
-
 		
 		/**
-		 * Sets the  service name
+		 * Sets the service name
 		 * @param name the service name.
 		 * @return a reference to this builder to continue object creation
 		 */
@@ -81,8 +117,8 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service display name.
-		 * @param name the display name
-		 * @return a reference to this builder to continue object creation
+		 * @param name the display name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withDisplayName(String name){
 			assertNotInvalidated(getClass(), service);
@@ -92,8 +128,8 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the administrative state of the service.
-		 * @param state the administrative state
-		 * @return a reference to this builder to continue object creation
+		 * @param state the administrative state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 	     public B withAdministrativeState(AdministrativeState state){
 	         assertNotInvalidated(getClass(), service);
@@ -104,8 +140,8 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the operational state of the service.
-		 * @param state the operational state
-		 * @return a reference to this builder to continue object creation
+		 * @param state the operational state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withOperationalState(OperationalState state){
 			assertNotInvalidated(getClass(), service);
@@ -115,8 +151,8 @@ public class ServiceInfo extends ValueObject {
 		
 		/**
 		 * Sets the service type.
-		 * @param serviceType the service type
-		 * @return a reference to this builder to continue object creation
+		 * @param serviceType the service type.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withServiceType(ServiceType serviceType) {
 			assertNotInvalidated(getClass(), service);
@@ -124,6 +160,11 @@ public class ServiceInfo extends ValueObject {
 			return (B) this;
 		}
 		
+		/**
+		 * Sets the service description.
+		 * @param description the service description.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public B withDescription(String description) {
 			assertNotInvalidated(getClass(), service);
 			((ServiceInfo)service).description = description;
@@ -131,9 +172,9 @@ public class ServiceInfo extends ValueObject {
 		}
 		
 		/**
-		 * Returns an immutable <code>ElementServiceData</code> instance and invalidates this builder.
-		 * Any further interaction with this builder raises an exception.
-		 * @return an immutable <code>ElementServiceData</code> instance.
+		 * Returns an immutable service-related value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raises an exception.
+		 * @return an immutable service-related value object.
 		 */
 		public T build(){
 			try{
@@ -146,8 +187,15 @@ public class ServiceInfo extends ValueObject {
 
 	}
 	
+	/**
+	 * A builder for an immutable <code>ServiceInfo</code> value object.
+	 */
 	public static class Builder extends BaseServiceBuilder<ServiceInfo,Builder>{
-		protected Builder() {
+
+	    /**
+	     * Creates a builder for a <code>ServiceInfo</code> value object.
+	     */
+	    protected Builder() {
 			super(new ServiceInfo());
 		}
 
@@ -187,13 +235,17 @@ public class ServiceInfo extends ValueObject {
 		return displayName;
 	}
 	
+	/**
+	 * Returns the administrative state of the service.
+	 * @return the administrative state of the service.
+	 */
 	public AdministrativeState getAdministrativeState() {
         return administrativeState;
     }
 	
 	/**
 	 * Returns the operational state of the service.
-	 * @return the operational state
+	 * @return the operational state of the service.
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
@@ -207,18 +259,34 @@ public class ServiceInfo extends ValueObject {
 		return serviceType;
 	}
 	
+	/**
+	 * Returns the service description.
+	 * @return the service description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 	
+	/**
+	 * Returns the element ID of the element hosting the service.
+	 * @return the element ID of the element hosting the service.
+	 */
 	public ElementId getElementId() {
 		return elementId;
 	}
 	
+	/**
+	 * Returns the element name of the element hosting the service.
+	 * @return the element name of the element hosting the service.
+	 */
 	public ElementName getElementName() {
 		return elementName;
 	}
 	
+	/**
+	 * Returns the reference to a parent service or <code>null</code> if no parent service exists.
+	 * @return the reference to a parent service or <code>null</code> if no parent service exists.
+	 */
 	public ElementServiceReference getParent() {
 		return parent;
 	}

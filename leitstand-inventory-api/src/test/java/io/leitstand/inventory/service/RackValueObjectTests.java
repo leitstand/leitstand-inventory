@@ -13,6 +13,8 @@ import static io.leitstand.inventory.service.FacilityName.facilityName;
 import static io.leitstand.inventory.service.FacilityType.facilityType;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
+import static io.leitstand.inventory.service.RackExport.newRackExport;
+import static io.leitstand.inventory.service.RackExportItem.newRackExportItem;
 import static io.leitstand.inventory.service.RackId.randomRackId;
 import static io.leitstand.inventory.service.RackItem.newRackItem;
 import static io.leitstand.inventory.service.RackItemData.newRackItemData;
@@ -25,6 +27,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -49,6 +53,7 @@ public class RackValueObjectTests {
     private static final FacilityId       FACILITY_ID   = randomFacilityId();
     private static final FacilityName     FACILITY_NAME = facilityName("facility");
     private static final FacilityType     FACILITY_TYPE = facilityType("type");
+    private static final Date             DATE_CREATED  = new Date();
     
     @Test
     public void create_rack_item() {
@@ -135,4 +140,30 @@ public class RackValueObjectTests {
         
     }
     
+    @Test
+    public void create_rack_export() {
+        RackExportItem rack = mock(RackExportItem.class);
+        
+        RackExport export = newRackExport()
+                            .withDateCreated(DATE_CREATED)
+                            .withRacks(asList(rack))
+                            .build();
+        
+        assertThat(export.getDateCreated(),is(DATE_CREATED));
+        assertThat(export.getRacks(),containsExactly(rack));
+    }
+    
+    @Test
+    public void create_rack_export_item() {
+        RackSettings settings = mock(RackSettings.class);
+        RackItemData item = mock(RackItemData.class);
+        
+        RackExportItem rack = newRackExportItem()
+                              .withRackSettings(settings)
+                              .withRackItems(asList(item))
+                              .build();
+        assertThat(rack.getRackSettings(),is(settings));
+        assertThat(rack.getRackItems(),containsExactly(item));
+    }
+
 }

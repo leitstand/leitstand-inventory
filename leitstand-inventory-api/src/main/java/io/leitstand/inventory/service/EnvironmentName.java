@@ -22,6 +22,10 @@ import io.leitstand.inventory.jsonb.EnvironmentNameAdapter;
 
 /**
  * Unique environment name.
+ * <p>
+ * The environment name must be unique per element.
+ * An environment can be renamed provided the new name is also unique per element.
+ * @see EnvironmentId
  */
 @JsonbTypeAdapter(EnvironmentNameAdapter.class)
 public class EnvironmentName extends Scalar<String>{

@@ -32,12 +32,16 @@ import io.leitstand.commons.model.CompositeValue;
 import io.leitstand.inventory.jsonb.VersionAdapter;
 
 /**
- * An artifact <code>Version</code> consisting of a <em>major</em>, <em>minor</em> and
- * <em>patch</em> level.
+ * A version of a software image or a package shipped with an image.
  * <p>
- * The string representation of a version is formed by the major level followed by the minor level 
- * using a dot (.) as delimiter followed by the patch level using a hyphen (-) as delimiter (e.g. 18.04-1).
- * </p>
+ * A version consists of
+ * <ul>
+ * <li>a major version number</li>
+ * <li>a minor version number</li>
+ * <li>a patch version number and</li>
+ * <li>an optional pre-release version string.</li>
+ * </ul>
+ * Major, minor and patch version numbers are separated by dot ('.') and the pre-release is separated by a hyphen ('-').
  */
 @JsonbTypeAdapter(VersionAdapter.class)
 @Embeddable
@@ -47,22 +51,37 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 	private static final String VERSION_PATTERN = "(\\d+)\\.(\\d+)\\.(\\d+)(?:\\-(\\p{Graph}+))?";
 	private static final Pattern PATTERN = compile(VERSION_PATTERN);
 	
+	/**
+	 * Creates a version from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param version the version string.
+	 * @return the version or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static Version version(String version) {
 		return valueOf(version);
 	}
 	
-	/**
-	 * Returns a <code>Version</code> if the specified string is not <code>null</code> or empty.
-	 * @param version - the string representation of a version
-	 * @return
-	 */
+    /**
+     * Creates a version from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param version the version string.
+     * @return the version or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static Version valueOf(String version){
 		if(isEmptyString(version)) {
 			return null;
 		}
 		return new Version(version);
 	}
-	
+
+	/**
+	 * Creates a string representation of the specified version.
+	 * Returns <code>null</code> if the specified version is <code>null</code>.
+	 * @param version the version
+	 * @return a string representation of the specified version or <code>null</code> if the specified version is null.
+	 */
 	public static String toString(Version version) {
 		return version != null ? version.toString() : null;
 	}
@@ -77,8 +96,10 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 	private String preRelease;
 
 	/**
-	 * Create a <code>Version</code>
-	 * @param version - the string representation of a version
+	 * Creates a <code>Version</code> from the specified string.
+	 * @param version the version string
+	 * @throws IllegalArgumentException if the specified string does not match the version format in the class description.
+	 * @throws NullPointerException if the specified string is <code>null</code>.
 	 */
 	public Version(String version) {
 		Matcher matcher = PATTERN.matcher(version);
@@ -95,28 +116,31 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 
 	}
 	
+	/**
+	 * Tool constructor used by the runtime environment.
+	 */
 	public Version(){
 		// JAX-B
 	}
 	
 	/**
-	 * Create a <code>Version</code> instance.
-	 * @param major the version's major level
-	 * @param minor the version's minor level
-	 * @param patch the version's patch level
+	 * Creates a <code>Version</code> instance.
+	 * @param major the major version number
+	 * @param minor the minor version number
+	 * @param patch the patch version number
 	 */
 	public Version(int major, int minor ,int patch){
 		this(major,minor,patch,null);
 	}
 	
 	
-	/**
-	 * Create a <code>Version</code> instance.
-	 * @param major the version's major level
-	 * @param minor the version's minor level
-	 * @param patch the version's patch level
-	 * @param preRelease the optional pre-release
-	 */
+    /**
+     * Creates a <code>Version</code> instance.
+     * @param major the major version number
+     * @param minor the minor version number
+     * @param patch the patch version number
+     * @param preRelease the pre-release string
+     */
 	public Version(int major, int minor, int patch, String preRelease) {
 		this.majorLevel = major;
 		this.minorLevel = minor;
@@ -125,32 +149,40 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 	}
 
 	/**
-	 * Returns the version's major level.
-	 * @return the version's major level.
+	 * Returns the major version number.
+	 * @returns the major version number.
 	 */
 	public int getMajorLevel() {
 		return majorLevel;
 	}
 
 	/**
-	 * Returns the version's minor level.
-	 * @return the version's minor level.
+	 * Returns the minor version number.
+	 * @returns the minor version number.
 	 */
 	public int getMinorLevel() {
 		return minorLevel;
 	}
 	
 	/**
-	 * Returns the version's patch level.
-	 * @return the version's patch level.
+	 * Returns the patch level.
+	 * @returns the patch level.
 	 */
 	public int getPatchLevel() {
 		return patchLevel;
 	}
 	
 	/**
-	 * Returns a string representation of this version in the form of <code>major.minor-patch</code>.
-	 * @return a concatenation of major. minor and patch level using a dot (.) as delimiter.
+	 * Returns the version string for this version.
+	 * Major, minor and patch level are separated by a dot ('.'). The pre-release string is separated by a hyphen ('-').
+	 * Example version strings are
+	 * <ul>
+	 *     <li><code>1.0.0</code> for a major version</li>
+	 *     <li><code>1.1.0</code> for a minor version</li>
+	 *     <li><code>1.0.1</code> for a patch</li>
+	 *     <li><code>2.1.0-RC0</code> for a first release candidate.</li>
+	 * </ul>
+	 * @return the version string.
 	 */
 	@Override
 	public String toString(){
@@ -168,14 +200,17 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 
 	}	
 	
+	/**
+	 * Returns the pre-release string or <code>null</code> if no pre-release is specified.
+	 * @return the pre-release string or <code>null</code> if no pre-release is specified.
+	 */
 	public String getPreRelease() {
 		return preRelease;
 	}
 	
 	/**
-	 * Compares the major, minor and patch level of this version against the given version in ascending order.
-	 * {@inheritDoc}
-	 * @param version - the version to be compared against this version
+	 * Compares two versions by comparing the major, minor, patch and pre-release settings.
+	 * @returns -1, 0 or 1 depending on whether this version is lower, equal or higher than the specified version.
 	 */
 	@Override
 	public int compareTo(Version version){
@@ -203,8 +238,5 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 		return -1;
 		
 	}
-
-
-
 
 }

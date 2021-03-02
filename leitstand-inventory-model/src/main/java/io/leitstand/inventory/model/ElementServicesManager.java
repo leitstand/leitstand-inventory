@@ -32,7 +32,7 @@ import static io.leitstand.inventory.service.ElementServices.newElementServices;
 import static io.leitstand.inventory.service.ReasonCode.IVT0320E_ELEMENT_SERVICE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0321I_ELEMENT_SERVICE_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0322I_ELEMENT_SERVICE_REMOVED;
-import static io.leitstand.inventory.service.ServiceData.newServiceData;
+import static io.leitstand.inventory.service.ServiceSettings.newServiceSettings;
 import static io.leitstand.inventory.service.ServiceInfo.newServiceInfo;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static java.lang.String.format;
@@ -307,7 +307,7 @@ public class ElementServicesManager {
 			   .withAdministrativeState(element.getAdministrativeState())
 			   .withOperationalState(element.getOperationalState())
 			   .withDateModified(element.getDateModified())
-			   .withService(newServiceData()
+			   .withService(newServiceSettings()
 					   		.withServiceType(service.getServiceType())
 					   		.withServiceName(service.getServiceName())
 					   		.withDisplayName(service.getDisplayName())
