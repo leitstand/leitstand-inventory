@@ -18,33 +18,31 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
 
 /**
- * Enumeration of image installation states.
+ * Enumeration of element image lifecycle states.
  */
 public enum ElementImageState {
 	
 	/**
-	 * The image shall be pulled by the device.
-	 * This state is typically used for device replacements in order to 
-	 * install the same image version again, irrespective of the current release version.
+	 * The image shall be pulled by the element.
 	 */
 	PULL,
 	/**
-	 * The image exists in the local cache but is not active at the moment.
+	 * The image exists in the local element cache but is not active at the moment.
 	 */
 	CACHED,
 	
 	/**
-	 * The image running at the device.
+	 * The image running on the device.
 	 */
 	ACTIVE;
 	
 	/**
 	 * Converts a string to the corresponding installation state and defaults to <code>PULL</code>
-	 * if the string is <code>null</code> or <i>empty</i>. 
-	 * @param s - the string to be mapped to an installation state
+	 * if the string is <code>null</code> or empty. 
+	 * @param state the element image state
 	 * @return the corresponding installation state
 	 */
-	public static ElementImageState toInstallationState(String s) {
+	public static ElementImageState toElementImageState(String s) {
 		if(isEmptyString(s)) {
 			return PULL;
 		}
@@ -52,7 +50,7 @@ public enum ElementImageState {
 	}
 	
 	/**
-	 * Returns whether the image is already locally cached.
+	 * Returns whether the image is locally cached.
 	 * @return <code>true</code> if the image is locally cached, <code>false</code> otherwise.
 	 */
 	public boolean isCached() {

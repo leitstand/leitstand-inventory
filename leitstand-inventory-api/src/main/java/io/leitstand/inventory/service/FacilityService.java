@@ -3,7 +3,7 @@ package io.leitstand.inventory.service;
 import java.util.List;
 
 /**
- * The <code>FacilityService</code> manages network facility settings.
+ * A transactional service to manage network facility settings.
  */
 public interface FacilityService {
 

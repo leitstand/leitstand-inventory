@@ -29,7 +29,7 @@ import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PATCH;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PRERELEASE;
 import static io.leitstand.inventory.service.ElementImage.newElementImage;
-import static io.leitstand.inventory.service.ElementImageData.newElementInstalledImageData;
+import static io.leitstand.inventory.service.ElementImageData.newElementImageData;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
@@ -120,7 +120,7 @@ public class ElementImageManager {
 							.withUpgradeType(type)
 							.build());
 			}
-			installed.add(newElementInstalledImageData()
+			installed.add(newElementImageData()
 						  .withOrganization(image.getOrganization())
 						  .withImageId(image.getImageId())
 						  .withImageType(image.getImageType())
@@ -209,7 +209,7 @@ public class ElementImageManager {
 			   .withElementRole(element.getElementRoleName())
 			   .withAdministrativeState(element.getAdministrativeState())
 			   .withOperationalState(element.getOperationalState())
-			   .withImage(newElementInstalledImageData()
+			   .withImage(newElementImageData()
 					   	  .withImageId(image.getImageId())
 					   	  .withZtp(elementImage.isZtp())
 					   	  .withOrganization(image.getOrganization())

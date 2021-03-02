@@ -41,8 +41,8 @@ import javax.validation.constraints.Size;
 public class ElementSettings extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementSettings</code> instance.
-	 * @return a builder to create an immutable <code>ElementSettings</code> instance.
+	 * Returns a builder for an immutable <code>ElementSettings</code> value object.
+	 * @return a builder for an immutable <code>ElementSettings</code> value object.
 	 */
 	public static Builder newElementSettings() {
 		return new Builder();

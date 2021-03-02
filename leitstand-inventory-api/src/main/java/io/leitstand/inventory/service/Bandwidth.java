@@ -45,7 +45,7 @@ import io.leitstand.inventory.jsonb.BandwidthAdapter;
 public class Bandwidth extends CompositeValue implements Serializable{
 
 	private static final Pattern BANDWITH_PATTERN = compile("^(\\d+(?:\\.\\d{3})?)\\s?([KMGT]bps)$");
-	
+
 	/**
 	 * Creates a bandwidth value object.
 	 * @param value the bandwidth value
@@ -56,7 +56,7 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	    if(isEmptyString(unit)) {
 	        return null;
 	    }
-	    return new Bandwidth(value, Unit.valueOf(unit));
+	    return new Bandwidth(value, Unit.valueOf(unit.toUpperCase()));
 	}
 	
 	/**

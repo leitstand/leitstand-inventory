@@ -25,19 +25,40 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.PlatformIdAdapter;
 
+/**
+ * Unique platform ID in UUIDv4 format.
+ */
 @JsonbTypeAdapter(PlatformIdAdapter.class)
 public class PlatformId extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Creates a random platform ID.
+	 * @return a random platform ID.
+	 */
 	public static PlatformId randomPlatformId() {
 		return valueOf(randomUUID().toString());
 	}
 
+	/**
+	 * Creates a <code>PlatformId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param id the platform ID
+	 * @return the platform ID or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static PlatformId platformId(String id) {
 		return valueOf(id);
 	}
 	
+	/**
+     * Creates a platform ID from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param id the platform ID
+     * @return the platform ID or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static PlatformId valueOf(String id) {
 		return fromString(id, PlatformId::new);
 	}
@@ -46,10 +67,17 @@ public class PlatformId extends Scalar<String>{
 	@Pattern(message="{platform_id.invalid}", regexp=UUID_PATTERN)
 	private String value;
 	
+	/**
+	 * Creates a platform ID.
+	 * @param value the platform ID
+	 */
 	public PlatformId(String value) {
 		this.value = value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

@@ -16,14 +16,14 @@
 package io.leitstand.inventory.service;
 
 /**
- * An enumeration of all existing image lifecycle states.
+ * An enumeration of image lifecycle states.
  */
 public enum ImageState {
 	
-	/** A new image that has been registered and waits for being promoted to CANDIDATE in order to become eligible for deplyoment.*/
+	/** A new image that has been registered and waits for being promoted to CANDIDATE to become eligible for deployment.*/
 	NEW,
 	
-	/** A candidate to become the new default image.*/
+	/** A candidate to become the new default release image.*/
 	CANDIDATE,
 	
 	/** The image deployed by default.*/ 

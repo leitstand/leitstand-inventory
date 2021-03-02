@@ -7,7 +7,6 @@ import java.util.UUID;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.validation.constraints.Pattern;
 
-import io.leitstand.commons.model.Patterns;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.FacilityIdAdapter;
 
@@ -29,10 +28,11 @@ public class FacilityId extends Scalar<String>{
 	
 	/**
 	 * Creates a facility ID from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * <p>
-	 * Alias method for {@link #valueOf(String)} to improve readability.
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param id the facility ID
-	 * @return the facility ID
+	 * @return the facility ID or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static FacilityId facilityId(String id) {
 		return valueOf(id);
@@ -40,8 +40,9 @@ public class FacilityId extends Scalar<String>{
 	
 	/**
 	 * Creates a facility ID from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * @param id the facility ID
-	 * @return the facility ID
+	 * @return the facility ID or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static FacilityId valueOf(String id) {
 		return fromString(id,FacilityId::new);

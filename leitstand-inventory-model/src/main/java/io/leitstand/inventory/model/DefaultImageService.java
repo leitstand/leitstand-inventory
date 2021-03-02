@@ -60,7 +60,7 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0204E_IMAGE_NOT_REMOV
 import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
 import static io.leitstand.inventory.service.ReleaseName.releaseName;
-import static io.leitstand.inventory.service.ReleaseRef.newReleaseSettings;
+import static io.leitstand.inventory.service.ReleaseRef.newReleaseReference;
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
 import static java.lang.String.format;
@@ -516,7 +516,7 @@ public class DefaultImageService implements ImageService {
 		                                            "ON ri.image_id = i.id "+
 		                                            "WHERE i.uuid=?",
 		                                            imageId),
-		                                            rs -> newReleaseSettings()
+		                                            rs -> newReleaseReference()
 		                                                  .withReleaseId(releaseId(rs.getString(1)))
 		                                                  .withReleaseName(releaseName(rs.getString(2)))
 		                                                  .build());

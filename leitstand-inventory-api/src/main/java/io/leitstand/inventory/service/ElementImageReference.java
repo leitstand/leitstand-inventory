@@ -24,48 +24,85 @@ import javax.validation.constraints.NotNull;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * A reference to an installed image.
+ * A reference to the installed image or an image eligible for deployment on the element.
  */
 public class ElementImageReference extends ValueObject {
 	
+    /**
+     * Creates a builder for an immutable <code>ElementImageReference</code> value object.
+     * @return a builder for an immutable <code>ElementImageReference</code> value object.
+     */
 	public static Builder newElementImageReference() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementImageReference</code> value object.
+	 */
 	public static class Builder {
 		
 		private ElementImageReference ref = new ElementImageReference();
-		
+
+		/**
+		 * Sets the image ID.
+		 * @param imageId the image ID.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImageId(ImageId imageId) {
 			assertNotInvalidated(getClass(),ref);
 			ref.imageId = imageId;
 			return this;
 		}
 		
+	    /**
+         * Sets the image type.
+         * @param imageType the image type.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withImageType(ImageType imageType) {
 			assertNotInvalidated(getClass(), ref);
 			ref.imageType = imageType;
 			return this;
 		}
 		
+	    /**
+         * Sets the image name.
+         * @param imageName the image name.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withImageName(ImageName imageName) {
 			assertNotInvalidated(getClass(), ref);
 			ref.imageName = imageName;
 			return this;
 		}
 		
+        /**
+         * Sets the element image lifecycle state.
+         * @param imageState the element image lifecycle state.
+         * @return a reference to this builder to continue object creation.
+         */		
 		public Builder withElementImageState(ElementImageState imageState) {
 			assertNotInvalidated(getClass(), ref);
 			ref.elementImageState = imageState;
 			return this;
 		}
 		
+		/**
+		 * Sets the image version.
+		 * @param imageVersion the image version.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImageVersion(Version imageVersion) {
 			assertNotInvalidated(getClass(), ref);
 			ref.imageVersion = imageVersion;
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ElementImageReference</code> value object and invalidated this builder. 
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementImageReference</code> value object.
+		 */
 		public ElementImageReference build() {
 			try {
 				assertNotInvalidated(getClass(), ref);
@@ -109,15 +146,18 @@ public class ElementImageReference extends ValueObject {
 		return imageName;
 	}
 
-	
 	/**
-	 * Returns the image imageVersion.
-	 * @return the image imageVersion.
+	 * Returns the image version.
+	 * @return the image version.
 	 */
 	public Version getImageVersion() {
 		return imageVersion;
 	}
 	
+	/**
+	 * Returns the element image lifecycle state.
+	 * @return the element image lifecycle state.
+	 */
 	public ElementImageState getElementImageState() {
 		return elementImageState;
 	}
@@ -130,6 +170,10 @@ public class ElementImageReference extends ValueObject {
 		return elementImageState == ACTIVE;
 	}
 
+	/**
+	 * Returns the image ID.
+	 * @return the image ID.
+	 */
 	public ImageId getImageId() {
 		return imageId;
 	}

@@ -23,29 +23,55 @@ import javax.persistence.Embeddable;
 
 import io.leitstand.commons.model.ValueObject;
 @Embeddable
+
+/**
+ * Geo-location information as longitude and latitude coordinates.
+ */
 public class Geolocation extends ValueObject implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a builder for an immutable <code>Geolocation</code> value object.
+	 * @return a builder for an immutable <code>Geolocation</code> value object.
+	 */
 	public static Builder newGeolocation() {
 		return new Builder();
 	}
 	
+	/**
+     * A builder for an immutable <code>Geolocation</code> value object.
+	 */
 	public static class Builder {
 		private Geolocation instance = new Geolocation();
 		
+		/**
+		 * Sets the longtitude coordinate.
+		 * @param lon the longtitude coordinate.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withLongitude(double lon) {
 			assertNotInvalidated(getClass(), instance);
 			instance.longitude = lon;
 			return this;
 		}
-		
+
+	    /**
+         * Sets the latitude coordinate.
+         * @param lon the latitude coordinate.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withLatitude(double lat) {
 			assertNotInvalidated(getClass(), instance);
 			instance.latitude = lat;
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>Geolocation</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return an immutable <code>Geolocation</code> value object.
+		 */
 		public Geolocation build() {
 			try {
 				assertNotInvalidated(getClass(),instance);
@@ -59,10 +85,18 @@ public class Geolocation extends ValueObject implements Serializable{
 	private double longitude;
 	private double latitude;
 	
+	/**
+	 * Returns the latitude coordinate.
+	 * @return the latitude coordinate.
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 	
+	/**
+     * Returns the longitude coordinate.
+     * @return the longitude coordinate.
+     */
 	public double getLongitude() {
 		return longitude;
 	}

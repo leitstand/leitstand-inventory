@@ -45,7 +45,7 @@ public class ElementImageData extends ValueObject{
 	 * Returns a builder to create an immutable <code>ElementImageData</code> value object.
 	 * @return a builder to create an immutable <code>ElementIamgeData</code> value object.
 	 */
-	public static Builder newElementInstalledImageData(){
+	public static Builder newElementImageData(){
 		return new Builder();
 	}
 	
@@ -405,7 +405,7 @@ public class ElementImageData extends ValueObject{
 	 * Returns the image file extension.
 	 * @return the image file extension.
 	 */
-	public String getExtension() {
+	public String getImageExtension() {
 		return imageExtension;
 	}
 	
