@@ -16,8 +16,9 @@
 package io.leitstand.inventory.service;
 
 /**
- * A transactional service to manage element environments.
+ * A service for managing element environments.
  * <p>
+ * The <code>ElementEnvironmentService</code> allows querying element environments as well as storing and removing element environments.
  * An element environment contains variables passed to the template engine to render the element configuration.
  * The environment variables are stored in a JSON object.
  */

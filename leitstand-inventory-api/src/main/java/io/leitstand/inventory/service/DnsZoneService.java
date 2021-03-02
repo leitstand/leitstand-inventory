@@ -20,7 +20,10 @@ import java.util.List;
 import io.leitstand.commons.ConflictException;
 
 /**
- * A transactional service to manange DNS zones in the inventory.
+ * A DNS zone management service.
+ * <p>
+ * The <code>DnsZoneService</code> allows querying DNS zones, reading DNS zone settings, storing DNS zone settings and removing DNS zones.
+ * The DNS are stored in the inventory and replicated to a DNS server.
  */
 public interface DnsZoneService {
 

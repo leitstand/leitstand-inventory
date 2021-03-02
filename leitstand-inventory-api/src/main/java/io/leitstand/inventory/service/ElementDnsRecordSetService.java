@@ -16,7 +16,9 @@
 package io.leitstand.inventory.service;
 
 /**
- * A transactional service to manage element DNS records. 
+ * A service for managing element DNS records.
+ * <p>
+ * The <code>ElementDnsRecordSetService</code> allows querying element DNS records as well as adding and removing element DNS records.
  */
 public interface ElementDnsRecordSetService {
 

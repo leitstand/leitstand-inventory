@@ -42,7 +42,9 @@ import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.ImageId.imageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
+import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
@@ -51,6 +53,7 @@ import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementI
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
 import static io.leitstand.inventory.service.ImageType.imageType;
+import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPDATED;
@@ -442,7 +445,7 @@ public class DefaultImageService implements ImageService {
 	@Override
 	public RoleImages findRoleImages(ElementRoleName role) {
 		
-		List<RoleImage> images = db.executeQuery(prepare("SELECT DISTINCT i.name, i.type "+
+		List<RoleImage> images = db.executeQuery(prepare("SELECT DISTINCT i.uuid, i.name, i.type, i.major, i.minor, i.patch, i.prerelease, i.chipset "+
 														 "FROM inventory.image i "+
 														 "JOIN inventory.image_elementrole ir "+
 														 "ON i.id = ir.image_id "+
@@ -451,8 +454,14 @@ public class DefaultImageService implements ImageService {
 														 "WHERE r.name=? "+
 														 "ORDER BY i.name, i.type", role.toString()), 
 												 rs -> newRoleImage()
-												 	   .withImageType(ImageType.valueOf(rs.getString(2)))
-												 	   .withImageName(ImageName.valueOf(rs.getString(1)))
+												       .withImageId(imageId(rs.getString(1)))
+												       .withImageName(imageName(rs.getString(2)))
+												 	   .withImageType(imageType(rs.getString(3)))
+												 	   .withImageVersion(new Version(rs.getInt(4),
+												 	                                 rs.getInt(5),
+												 	                                 rs.getInt(6),
+												 	                                 rs.getString(7)))
+												 	   .withPlatformChipset(platformChipsetName(rs.getString(8)))
 												 	   .build());
 		
 		return newRoleImages()

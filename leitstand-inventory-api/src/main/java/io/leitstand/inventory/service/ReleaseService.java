@@ -3,7 +3,9 @@ package io.leitstand.inventory.service;
 import java.util.List;
 
 /**
- * A transactional service to manage releases.
+ * A release management service.
+ * <p>
+ * The <code>ReleaseService</code> allows querying, storing and removing releases.
  */
 public interface ReleaseService {
 

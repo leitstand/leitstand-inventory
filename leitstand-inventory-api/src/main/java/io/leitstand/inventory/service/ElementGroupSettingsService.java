@@ -16,7 +16,9 @@
 package io.leitstand.inventory.service;
 
 /**
- * A transactional service to manage element group settings.
+ * A service for managing element group settings.
+ * <p>
+ * The <code>ElementGroupSettingsService</code> allows querying element groups as well as storing and removing element groups.
  */
 public interface ElementGroupSettingsService {
 

@@ -21,19 +21,37 @@ import static java.util.Collections.unmodifiableList;
 import java.util.LinkedList;
 import java.util.List;
 
+ /**
+  * Collection of all rack items of a rack.
+  */
 public class RackItems extends BaseRackEnvelope {
 
-	public static Builder newRackItems() {
+    /**
+     * Creates a builder for an immutable <code>RackItems</code> value object.
+     * @return a builder for an immutable <code>RackItems</code> value object.
+     */
+    public static Builder newRackItems() {
 		return new Builder();
 	}
 	
+    /**
+     * A builder for an immutable <code>RackItems</code> value object.
+     */
 	public static class Builder extends BaseRackEnvelopeBuilder<RackItems, Builder>{
 		 
-		public Builder() {
+	    /**
+	     * Creates a builder for an immutable <code>RackItems</code>.
+	     */
+	    public Builder() {
 			super(new RackItems());
 		}
 		
-		public Builder withItems(List<RackItemData> items) {
+	    /**
+	     * Sets the rack items.
+	     * @param items the rack items.
+	     * @return a reference to this builder to continue object creation.
+	     */
+		public Builder withRackItems(List<RackItemData> items) {
 			assertNotInvalidated(getClass(), rack);
 			rack.items = new LinkedList<>(items);
 			return this;
@@ -42,6 +60,10 @@ public class RackItems extends BaseRackEnvelope {
 	
 	private List<RackItemData> items;
 	
+	/**
+	 * Returns the rack items.
+	 * @return the rack items.
+	 */
 	public List<RackItemData> getItems() {
 		return unmodifiableList(items);
 	}

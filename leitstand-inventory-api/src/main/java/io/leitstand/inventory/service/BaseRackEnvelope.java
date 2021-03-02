@@ -34,7 +34,7 @@ public class BaseRackEnvelope extends ValueObject{
      * Base builder for all rack-related value object builders.
      *
      * @param <T> the rack value object type
-     * @param <B> the rack value objectr builder
+     * @param <B> the rack value object builder
      */
     @SuppressWarnings("unchecked")
 	public static class BaseRackEnvelopeBuilder<T extends BaseRackEnvelope, B extends BaseRackEnvelopeBuilder<T, B>> {
@@ -42,7 +42,7 @@ public class BaseRackEnvelope extends ValueObject{
 		protected T rack;
 		
 		/**
-		 * Creates a new builder.
+		 * Creates a rack value object builder.
 		 * @param rack the rack value object under construction
 		 */
 		protected BaseRackEnvelopeBuilder(T rack) {
@@ -51,8 +51,8 @@ public class BaseRackEnvelope extends ValueObject{
 		
 		/**
 		 * Sets the facility ID.
-		 * @param facilityId the facility ID
-		 * @return a reference to this builder to continue object creation
+		 * @param facilityId the facility ID.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withFacilityId(FacilityId facilityId) {
 			assertNotInvalidated(getClass(),rack);
@@ -62,8 +62,8 @@ public class BaseRackEnvelope extends ValueObject{
 		
 		/**
 		 * Sets the facility name.
-		 * @param facilityName the facility name
-		 * @return a reference to this builder to continue object creation
+		 * @param facilityName the facility name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withFacilityName(FacilityName facilityName) {
 			assertNotInvalidated(getClass(),rack);
@@ -73,8 +73,8 @@ public class BaseRackEnvelope extends ValueObject{
 		
 		/**
 		 * Sets the facility type.
-		 * @param facilityType the facility type
-		 * @return a reference to this builder to continue object creation
+		 * @param facilityType the facility type.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withFacilityType(FacilityType facilityType) {
 			assertNotInvalidated(getClass(),rack);
@@ -83,9 +83,9 @@ public class BaseRackEnvelope extends ValueObject{
 		}
 		
 		/**
-		 * Sets the rack ID
-		 * @param rackId the rack ID
-		 * @return a reference to this builder to continue object creation
+		 * Sets the rack ID.
+		 * @param rackId the rack ID.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public B withRackId(RackId rackId) {
 			assertNotInvalidated(getClass(),rack);
@@ -95,8 +95,8 @@ public class BaseRackEnvelope extends ValueObject{
 
 		/**
 		 * Sets the rack name.
-		 * @param rackName the rack name
-         * @return a reference to this builder to continue object creation
+		 * @param rackName the rack name.
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withRackName(RackName rackName) {
 			assertNotInvalidated(getClass(), rack);
@@ -107,7 +107,7 @@ public class BaseRackEnvelope extends ValueObject{
 		/**
 		 * Sets the rack type.
 		 * @param rackType the rack type.
-         * @return a reference to this builder to continue object creation
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withRackType(String rackType) {
 			assertNotInvalidated(getClass(), rack);
@@ -118,7 +118,7 @@ public class BaseRackEnvelope extends ValueObject{
 		/**
 		 * Sets the administrative state of the rack.
 		 * @param administrativeState the administrative state.
-         * @return a reference to this builder to continue object creation
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withAdministrativeState(AdministrativeState administrativeState) {
 			assertNotInvalidated(getClass(), rack);
@@ -129,7 +129,7 @@ public class BaseRackEnvelope extends ValueObject{
 		/**
 		 * Sets whether an ascending or descending rack unit numbering scheme is used.
 		 * @param ascending <code>true</code> for ascending rack unit numbering scheme, <code>false</code> for descending numbers.
-         * @return a reference to this builder to continue object creation
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withAscending(boolean ascending) {
 			assertNotInvalidated(getClass(), rack);
@@ -139,8 +139,8 @@ public class BaseRackEnvelope extends ValueObject{
 		
 		/**
 		 * Sets the rack description.
-		 * @param description the rack description
-         * @return a reference to this builder to continue object creation
+		 * @param description the rack description.
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withDescription(String description) {
 			assertNotInvalidated(getClass(), rack);
@@ -150,8 +150,8 @@ public class BaseRackEnvelope extends ValueObject{
 
 		/**
 		 * Sets the rack height in rack units.
-		 * @param units the number of rack units
-         * @return a reference to this builder to continue object creation
+		 * @param units the number of rack units.
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withUnits(int units) {
 			assertNotInvalidated(getClass(), rack);
@@ -162,8 +162,8 @@ public class BaseRackEnvelope extends ValueObject{
 		/**
 		 * Copies all attributes of the given rack envelope to this envelope.
 		 * This is a convenience method to simplify value object construction.
-		 * @param rack the rack envelope
-         * @return a reference to this builder to continue object creation
+		 * @param rack the rack envelope.
+         * @return a reference to this builder to continue object creation.
 		 */
 		public B withRack(BaseRackEnvelope rack) {
 		    assertNotInvalidated(getClass(), rack);
@@ -225,8 +225,8 @@ public class BaseRackEnvelope extends ValueObject{
 	private int units;
 	
 	/**
-	 * Returns the rack ID
-	 * @return the rack ID
+	 * Returns the rack ID.
+	 * @return the rack ID.
 	 */
 	public RackId getRackId() {
 		return rackId;
@@ -274,15 +274,15 @@ public class BaseRackEnvelope extends ValueObject{
 	
 	/**
 	 * Returns whether ascending or descending rack unit numbering scheme is applied.
-	 * @return <code>true</code> of ascending rack unit numbers and <code>false</code> for decending numbering.
+	 * @return <code>true</code> of ascending rack unit numbers and <code>false</code> for descending numbering.
 	 */
 	public boolean isAscending() {
 		return ascending;
 	}
 	
 	/**
-	 * Returns the facility ID
-	 * @return the facility ID
+	 * Returns the facility ID.
+	 * @return the facility ID.
 	 */
 	public FacilityId getFacilityId() {
 		return facilityId;
@@ -298,7 +298,7 @@ public class BaseRackEnvelope extends ValueObject{
 	
 	/**
 	 * Returns the facility type.
-	 * @return
+	 * @return the facility type.
 	 */
 	public FacilityType getFacilityType() {
 		return facilityType;

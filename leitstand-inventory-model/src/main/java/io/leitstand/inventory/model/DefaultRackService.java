@@ -77,7 +77,7 @@ public class DefaultRackService implements RackService{
 			   .withUnits(rack.getUnits())
 			   .withAscending(rack.isAscending())
 			   .withDescription(rack.getDescription())
-			   .withItems(rack.getItems()
+			   .withRackItems(rack.getItems()
 					   		  .stream()
 					   		  .map(item -> rackItem(item))
 					   		  .collect(toList()))

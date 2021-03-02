@@ -21,30 +21,55 @@ import static java.util.Collections.unmodifiableList;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.leitstand.commons.model.CompositeValue;
+import io.leitstand.commons.model.ValueObject;
 
-public class RoleImages extends CompositeValue{
+/**
+ * The software images available for an element role.
+ */
+public class RoleImages extends ValueObject{
 
+    /**
+     * Creates a builder for an immutable <code>RoleImages</code> value object.
+     * @return a builder for an immutable <code>RoleImages</code> value object.
+     */
 	public static Builder newRoleImages() {
 		return new Builder();
 	}
 	
+	/**
+     * A builder for an immutable <code>RoleImages</code> value object.
+     */
 	public static class Builder {
 		
 		private RoleImages instance = new RoleImages();
 		
+		/**
+		 * Sets the element role name.
+		 * @param elementRole the element role name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withElementRole(ElementRoleName elementRole) {
 			assertNotInvalidated(getClass(), instance);
 			instance.elementRole = elementRole;
 			return this;
 		}
 		
+		/**
+		 * Sets the images available for the element role.
+		 * @param images the available images.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImages(List<RoleImage> images) {
 			assertNotInvalidated(getClass(), instance);
 			instance.images = new LinkedList<>(images);
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>RolesImages</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>RolesImages</code> value object.
+		 */
 		public RoleImages build() {
 			try {
 				assertNotInvalidated(getClass(), instance);
@@ -58,10 +83,18 @@ public class RoleImages extends CompositeValue{
 	private ElementRoleName elementRole;
 	private List<RoleImage> images;
 	
+	/**
+	 * Returns the element role name.
+	 * @return the element role name.
+	 */
 	public ElementRoleName getElementRole() {
 		return elementRole;
 	}
 	
+	/**
+	 * Returns the images available for the element role.
+	 * @return the available images.
+	 */
 	public List<RoleImage> getImages() {
 		return unmodifiableList(images);
 	}
