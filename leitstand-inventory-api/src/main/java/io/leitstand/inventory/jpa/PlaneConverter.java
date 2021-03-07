@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.jpa;
 
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
+
 import java.util.NoSuchElementException;
 
 import javax.persistence.AttributeConverter;
@@ -41,7 +43,7 @@ public class PlaneConverter implements AttributeConverter<Plane, String> {
 	
 
 	public static Plane parse(String mnemonic) {
-		if(mnemonic == null || mnemonic.isEmpty()){
+		if(isEmptyString(mnemonic)){
 			return null;
 		}
 		switch(mnemonic){

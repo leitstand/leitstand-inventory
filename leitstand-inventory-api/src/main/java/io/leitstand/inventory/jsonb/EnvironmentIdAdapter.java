@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.EnvironmentId;
 
 /**
@@ -41,7 +42,7 @@ public class EnvironmentIdAdapter implements JsonbAdapter<EnvironmentId, String>
 	 */
 	@Override
 	public String adaptToJson(EnvironmentId id) throws Exception {
-		return EnvironmentId.toString(id);
+		return Scalar.toString(id);
 	}
 
 }

@@ -17,8 +17,19 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+/**
+ * A service for discovering physical interfaces in the network.
+ */
 public interface PhysicalInterfaceService {
 
+    /**
+     * Lists all matching physical interfaces.
+     * @param locationFilter a regular expression to filter for network facilities.
+     * @param interfaceFilter a regular expression to filter for interface name and alias.
+     * @param offset the search offset
+     * @param limit the maximum number of returned matching interfaces.
+     * @return a list of matching physical interfaces.
+     */
 	List<PhysicalInterfaceData> findPhysicalInterfaces(String locationFilter,
 	                                                   String interfaceFilter, 
 	                                                   int offset, 

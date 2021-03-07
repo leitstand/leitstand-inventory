@@ -21,73 +21,135 @@ import static java.util.Collections.unmodifiableList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * An image reference.
+ * <p>
+ * The <code>ImageReference</code> provides information to access a software image.
+ */
 public class ImageReference {
 
+    /**
+     * Creates a builder for a <code>ImageReference</code> value object.
+     * @return a builder for a <code>ImageReference</code> value object.
+     */
 	public static Builder newImageReference(){
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for a <code>ImageReference</code> value object.
+	 */
 	public static class Builder{
 		
 		private ImageReference image = new ImageReference();
 		
-		public Builder withImageId(ImageId id){
+		/**
+		 * Sets the image ID.
+		 * @param imageId the image ID.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withImageId(ImageId imageId){
 			assertNotInvalidated(getClass(), image);
-			image.imageId = id;
+			image.imageId = imageId;
 			return this;
 		}
 		
+	    /**
+         * Sets the element roles supported by this image.
+         * @param roles the element roles.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withElementRoles(List<ElementRoleName> roles){
 			assertNotInvalidated(getClass(), image);
 			image.elementRoles = roles;
 			return this;
 		}
 		
-		public Builder withElementName(ElementName name){
+		/**
+		 * Sets the element name the image is bound to.
+		 * @param elementName the element name.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withElementName(ElementName elementName){
 			assertNotInvalidated(getClass(), image);
-			image.elementName = name;
+			image.elementName = elementName;
 			return this;
 		}
 		
+		/**
+		 * Sets the image name.
+		 * @param imageName the image name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImageName(ImageName imageName) {
 			assertNotInvalidated(getClass(), image);
 			image.imageName = imageName;
 			return this;
 		}
 		
-		public Builder withImageType(ImageType type){
+	    /**
+         * Sets the image type.
+         * @param imageType the image type.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withImageType(ImageType imageType){
 			assertNotInvalidated(getClass(), image);
-			image.imageType = type;
+			image.imageType = imageType;
 			return this;
 		}
 		
-		public Builder withImageState(ImageState state) {
+	    /**
+         * Sets the image lifecycle state.
+         * @param imageState the image lifecycle state.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withImageState(ImageState imageState) {
 			assertNotInvalidated(getClass(), image);
-			image.imageState = state;
+			image.imageState = imageState;
 			return this;
 		}
 		
-		public Builder withImageVersion(Version version){
+	    /**
+         * Sets the image version.
+         * @param imageVersion the image name.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withImageVersion(Version imageVersion){
 			assertNotInvalidated(getClass(), image);
-			image.imageVersion = version;
+			image.imageVersion = imageVersion;
 			return this;
 		}
 		
-		public Builder withPlatformChipset(PlatformChipsetName chipset){
+		
+	    /**
+         * Sets the platform chipset name.
+         * @param platformChipset the platform chipset.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withPlatformChipset(PlatformChipsetName platformChipset){
 			assertNotInvalidated(getClass(), image);
-			image.platformChipset = chipset;
+			image.platformChipset = platformChipset;
 			return this;			
 		}
 		
-		public Builder withBuildDate(Date date){
+	    /**
+         * Sets the image build date.
+         * @param buildDate the build date.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withBuildDate(Date buildDate){
 			assertNotInvalidated(getClass(), image);
-			if(date != null) {
-				image.buildDate =  new Date(date.getTime());
+			if(buildDate != null) {
+				image.buildDate =  new Date(buildDate.getTime());
 			}
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ImageReference</code> value object and invalidates this builder.
+		 * Subsequence invocation of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ImageReference</code> value object.
+		 */
 		public ImageReference build(){
 			try{
 				assertNotInvalidated(getClass(), image);
@@ -116,41 +178,76 @@ public class ImageReference {
 	
 	private PlatformChipsetName platformChipset;
 	
+	/**
+	 * Returns the image ID.
+	 * @return the image ID.
+	 */
 	public ImageId getImageId() {
 		return imageId;
 	}
 	
+	/**
+	 * Returns the image version.
+	 * @return the image version.
+	 */
 	public Version getImageVersion() {
 		return imageVersion;
 	}
 	
+	/**
+	 * Returns the supported element roles.
+	 * @return the supported element roles.
+	 */
 	public List<ElementRoleName> getElementRoles() {
 		return unmodifiableList(elementRoles);
 	}
 	
+	/**
+	 * Returns the element name this image is bound to or <code>null</code> if this image is not bound to an element.
+	 * @return the element name this image is bound to or <code>null</code> if this image is not bound to an element.
+	 */
 	public ElementName getElementName(){
 		return elementName;
 	}
 	
+	/**
+	 * Returns the build date of the image.
+	 * @return the build date of the image.
+	 */
 	public Date getBuildDate() {
 		return buildDate;
 	}
 
+	/**
+	 * Returns the supported platform chipset.
+	 * @return the supported platform chipset.
+	 */
 	public PlatformChipsetName getPlatformChipset() {
 		return platformChipset;
 	}
 	
+	/**
+	 * Returns the image name. 
+	 * @return the image name.
+	 */
 	public ImageName getImageName() {
 		return imageName;
 	}
 	
+	/**
+	 * Returns the image type.
+	 * @return the image type.
+	 */
 	public ImageType getImageType() {
 		return imageType;
 	}
 	
+	/**
+	 * Returns the image lifecycle state.
+	 * @return the image lifecycle state.
+	 */
 	public ImageState getImageState() {
 		return imageState;
 	}
-	
 	
 }

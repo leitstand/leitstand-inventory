@@ -16,28 +16,26 @@
 package io.leitstand.inventory.service;
 
 /**
- * An enumeration of image lifecycle states.
+ * Enumeration of image lifecycle states.
  */
 public enum ImageState {
 	
-	/** A new image that has been registered and waits for being promoted to CANDIDATE to become eligible for deployment.*/
+	/** A newly registered image.*/
 	NEW,
 	
-	/** A candidate to become the new default release image.*/
+	/** A candidate for becoming the new release image.*/
 	CANDIDATE,
 	
-	/** The image deployed by default.*/ 
+	/** The current release image. The release image is deployed by default. */ 
 	RELEASE,
 	
 	/** 
-	 * An image that must not be deployed anymore. 
-	 * Typically, a candidate gets revoked if severe errors have been detected.
+	 * A revoked image. Revoked images must not be used any longer.
 	 */
 	REVOKED,
 	
 	/**
-	 * A superseded image has been replaced by a new release. 
-	 * A superseded image was a default image before and has never been revoked.
+	 * A superseded image is a release image replaced by a newer release image.
 	 */
 	SUPERSEDED
 	

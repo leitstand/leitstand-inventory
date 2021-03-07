@@ -16,8 +16,8 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv4;
-import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv6;
+import static io.leitstand.inventory.service.AddressInterface.AddressType.IPV4;
+import static io.leitstand.inventory.service.AddressInterface.AddressType.IPV6;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
@@ -42,9 +42,9 @@ public class AddressInterface extends ValueObject implements Serializable {
      */
 	public static enum AddressType{
 	    /** IPv4 prefix. */
-		IPv4,
+		IPV4,
 		/** IPv6 prefix. */
-		IPv6
+		IPV6
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -73,9 +73,9 @@ public class AddressInterface extends ValueObject implements Serializable {
 			assertNotInvalidated(getClass(), ifc);
 			ifc.address = address;
 			if(address.isIPv4Prefix()) {
-				ifc.addressType = IPv4;
+				ifc.addressType = IPV4;
 			} else {
-				ifc.addressType = IPv6;
+				ifc.addressType = IPV6;
 			}
 			return this;
 		}

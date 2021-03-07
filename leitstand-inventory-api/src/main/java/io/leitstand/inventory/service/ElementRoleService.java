@@ -17,13 +17,50 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+/**
+ * A service for managing element roles.
+ */
 public interface ElementRoleService {
 
-	List<ElementRoleSettings> getElementRoles();
-	boolean storeElementRole(ElementRoleSettings element);
+    /**
+     * Returns all defined element roles.
+     * @return a list of defined element roles.
+     */
+    List<ElementRoleSettings> getElementRoles();
+    
+    /**
+     * Stores a element role. Returns <code>true</code> if a new element role is added, <code>false</code> otherwise.
+     * @param role the element role settings
+     * @return <code>true</code> if a new element role is added, <code>false</code> otherwise.
+     */
+	boolean storeElementRole(ElementRoleSettings role);
+	
+	/**
+	 * Removes an element role.
+	 * @param roleName the element role name.
+	 */
 	void removeElementRole(ElementRoleName roleName);
+	
+	/**
+	 * Removes an element role.
+	 * @param roleId the element role ID
+	 */
 	void removeElementRole(ElementRoleId roleId);
+	
+	/**
+	 * Returns the element role settings.
+	 * @param roleId the element role ID.
+	 * @return the element role settings.
+	 * @throws EntityNotFoundException if the element role does not exist.
+	 */
 	ElementRoleSettings getElementRole(ElementRoleId roleId);
+
+	/**
+     * Returns the element role settings.
+     * @param roleName the element role name.
+     * @return the element role settings.
+     * @throws EntityNotFoundException if the element role does not exist.
+     */
 	ElementRoleSettings getElementRole(ElementRoleName roleName);
 
 	

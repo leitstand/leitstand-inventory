@@ -27,78 +27,141 @@ import io.leitstand.commons.model.ValueObject;
 
 
 /**
- * A submission to store a new logical interface of a certain element in the resource inventory.
+ * A submission for storing a logical interface.
  */
 public class ElementLogicalInterfaceSubmission extends ValueObject {
 
+    /**
+     * Creates a builder for an immutable <code>ElementLogicalInterfaceSubmission</code> value object.
+     * @return a builder for an immutable <code>ElementLogicalInterfaceSubmission</code> value object.
+     */
 	public static Builder newElementLogicalInterfaceSubmission() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementLogicalInterfaceSubmission</code> value object.
+	 */
 	public static class Builder {
 		
 		private ElementLogicalInterfaceSubmission submission = new ElementLogicalInterfaceSubmission();
-		
+
+		/**
+		 * Sets the logical interface name.
+		 * @param iflName the logical interface name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withIflName(InterfaceName iflName) {
 			assertNotInvalidated(getClass(), submission);
 			submission.iflName = iflName;
 			return this;
 		}
 
+	    /**
+         * Sets the container interface name.
+         * @param ifcName the container interface name.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withIfcName(InterfaceName ifcName) {
 			assertNotInvalidated(getClass(), submission);
 			submission.ifcName = ifcName;
 			return this;
 		}
 		
+	    /**
+         * Sets the logical interface alias.
+         * @param alias the logical interface alias.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withInterfaceAlias(String alias) {
 			assertNotInvalidated(getClass(), submission);
 			submission.iflAlias = alias;
 			return this;
 		}
 		
+	    /**
+         * Sets the logical interface addresses.
+         * @param ifas the logical interface addresses.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withAddressInterfaces(AddressInterface.Builder... ifas) {
 			return withAddressInterfaces(stream(ifas)
 										 .map(AddressInterface.Builder::build)
 										 .collect(toList()));
 		}
 		
+	    /**
+         * Sets the logical interface addresses.
+         * @param ifas the logical interface addresses.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withAddressInterfaces(List<AddressInterface> ifas) {
 			assertNotInvalidated(getClass(), submission);
 			submission.addresses = new ArrayList<>(ifas);
 			return this;
 		}
 		
+		/**
+		 * Sets the operational state of the logical interface.
+		 * @param state the operational state.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withOperationalState(OperationalState state) {
 			assertNotInvalidated(getClass(), submission);
 			submission.operationalState = state;
 			return this;
 		}
-		
+	    
+		/**
+         * Sets the administrative state of the logical interface.
+         * @param state the administrative state.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withAdministrativeState(AdministrativeState state) {
 			assertNotInvalidated(getClass(), submission);
 			submission.administrativeState = state;
 			return this;
 		}
 		
+		/**
+		 * Sets the routing instance name.
+		 * @param name the routing instance name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withRoutingInstanceName(RoutingInstanceName name) {
 			assertNotInvalidated(getClass(), submission);
 			submission.routingInstance = name;
 			return this;
 		}
 		
+		/**
+		 * Sets the VLANs.
+		 * @param vlans the VLANs.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withVlans(VlanTag.Builder... vlans) {
 			return withVlans(stream(vlans)
 							 .map(VlanTag.Builder::build)
 							 .collect(toList()));
 		}
-
+		
+		
+        /**
+         * Sets the VLANs.
+         * @param vlans the VLANs.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withVlans(List<VlanTag> vlans) {
 			assertNotInvalidated(getClass(), submission);
 			submission.vlans = new ArrayList<>(vlans);
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ElementLogicalInterfaceSubmission</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementLogicalInterfaceSubmission</code> value object.
+		 */
 		public ElementLogicalInterfaceSubmission build() {
 			try {
 				assertNotInvalidated(getClass(), submission);
@@ -136,7 +199,7 @@ public class ElementLogicalInterfaceSubmission extends ValueObject {
 	
 	/**
 	 * Returns the interface alias.
-	 * @return the interface alias or <code>null</code> if no alias exists.
+	 * @return the interface alias.
 	 */
 	public String getInterfaceAlias() {
 		return iflAlias;
@@ -160,13 +223,13 @@ public class ElementLogicalInterfaceSubmission extends ValueObject {
 	 * </p>
 	 * @return the container interface name.
 	 */
-	public InterfaceName getContainerInterfaceName() {
+	public InterfaceName getIfcName() {
 		return ifcName;
 	}
 
 	/**
-	 * Returns the operational state of the logical interface
-	 * @return the operational state
+	 * Returns the operational state of the logical interface.
+	 * @return the operational state of the logical interface.
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
@@ -174,15 +237,15 @@ public class ElementLogicalInterfaceSubmission extends ValueObject {
 	
 	/**
 	 * Returns the administrative state of the logical interface.
-	 * @return the administrative state
+	 * @return the administrative state of the logical interface.
 	 */
 	public AdministrativeState getAdministrativeState() {
 		return administrativeState;
 	}
 	
 	/**
-	 * Returns the name of the routing instance this logical interface is associated with.
-	 * @return the routing instance name or <code>null</code> if no routing instance assignment exist.
+	 * Returns routing instance name.
+	 * @return the routing instance name.
 	 */
 	public RoutingInstanceName getRoutingInstance() {
 		return routingInstance;

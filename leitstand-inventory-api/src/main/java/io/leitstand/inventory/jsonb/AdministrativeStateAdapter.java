@@ -17,13 +17,14 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.AdministrativeState;
 
 public class AdministrativeStateAdapter implements JsonbAdapter<AdministrativeState,String> {
 
 	@Override
 	public String adaptToJson(AdministrativeState obj) throws Exception {
-		return AdministrativeState.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override

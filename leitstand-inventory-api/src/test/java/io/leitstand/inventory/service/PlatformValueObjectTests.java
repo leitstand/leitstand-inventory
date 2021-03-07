@@ -1,4 +1,4 @@
-package io.leitstand.inventory.jpa;
+package io.leitstand.inventory.service;
 
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static org.hamcrest.CoreMatchers.is;

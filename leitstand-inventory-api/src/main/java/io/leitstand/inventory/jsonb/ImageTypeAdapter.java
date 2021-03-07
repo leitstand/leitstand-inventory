@@ -17,13 +17,14 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ImageType;
 
 public class ImageTypeAdapter implements JsonbAdapter<ImageType,String> {
 
 	@Override
 	public String adaptToJson(ImageType obj) throws Exception {
-		return ImageType.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override

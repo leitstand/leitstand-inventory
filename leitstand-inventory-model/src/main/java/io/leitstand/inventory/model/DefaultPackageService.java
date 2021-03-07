@@ -19,7 +19,7 @@ import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Package.findByName;
 import static io.leitstand.inventory.model.Package_Version.findPackageVersion;
 import static io.leitstand.inventory.service.PackageInfo.newPackageInfo;
-import static io.leitstand.inventory.service.PackageVersionId.newPackageVersionId;
+import static io.leitstand.inventory.service.PackageVersionRef.newPackageVersionRef;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.QualifiedPackageName.newQualifiedPackageName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0500E_PACKAGE_NOT_FOUND;
@@ -38,7 +38,7 @@ import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.PackageInfo;
 import io.leitstand.inventory.service.PackageService;
-import io.leitstand.inventory.service.PackageVersionId;
+import io.leitstand.inventory.service.PackageVersionRef;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.QualifiedPackageName;
 import io.leitstand.inventory.service.Version;
@@ -102,9 +102,9 @@ public class DefaultPackageService implements PackageService {
 			throw new EntityNotFoundException(IVT0500E_PACKAGE_NOT_FOUND,org+"-"+name+"."+ext); 
 		}
 		
-		List<PackageVersionId> versions = new LinkedList<>();
+		List<PackageVersionRef> versions = new LinkedList<>();
 		for(Package_Version version : pkg.getVersions()){
-			versions.add(newPackageVersionId()
+			versions.add(newPackageVersionRef()
 						 .withOrganization(version.getOrganization())
 						 .withPackageName(version.getPackageName())
 						 .withPackageVersion(version.getPackageVersion())

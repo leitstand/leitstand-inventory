@@ -17,13 +17,14 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ElementRoleName;
 
 public class ElementRoleNameAdapter implements JsonbAdapter<ElementRoleName,String> {
 
 	@Override
 	public String adaptToJson(ElementRoleName obj) throws Exception {
-		return ElementRoleName.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override

@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.DnsRecordSetId;
 
 @Converter
@@ -25,7 +26,7 @@ public class DnsRecordSetIdConverter implements AttributeConverter<DnsRecordSetI
 
 	@Override
 	public String convertToDatabaseColumn(DnsRecordSetId id) {
-		return DnsRecordSetId.toString(id);
+		return Scalar.toString(id);
 	}
 
 	@Override

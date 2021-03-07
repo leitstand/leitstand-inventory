@@ -26,7 +26,7 @@ import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpOfIf
 import static io.leitstand.inventory.service.ElementLogicalInterface.newLogicalInterface;
 import static io.leitstand.inventory.service.ElementLogicalInterfaceData.newElementLogicalInterfaceData;
 import static io.leitstand.inventory.service.ElementLogicalInterfaces.newLogicalInterfaces;
-import static io.leitstand.inventory.service.PhysicalInterface.newPhysicalInterfaceInfo;
+import static io.leitstand.inventory.service.PhysicalInterface.newPhysicalInterface;
 import static io.leitstand.inventory.service.ReasonCode.IVT0360E_ELEMENT_IFL_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0361I_ELEMENT_IFL_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0362I_ELEMENT_IFL_REMOVED;
@@ -101,7 +101,7 @@ public class ElementLogicalInterfaceManager {
 		Set<PhysicalInterface> ifps = new TreeSet<>();
 		
 		for(Element_PhysicalInterface ifp : repository.execute(findIfpOfIfl(ifl))) {
-			ifps.add(newPhysicalInterfaceInfo()
+			ifps.add(newPhysicalInterface()
 					 .withIfpName(ifp.getIfpName())
 					 .withMacAddress(ifp.getMacAddress())
 					 .withOperationalState(ifp.getOperationalState())
@@ -141,7 +141,7 @@ public class ElementLogicalInterfaceManager {
 
 	public boolean storeLogicalInterface(Element element, ElementLogicalInterfaceSubmission submission) {
 		Element_ContainerInterface ifc = getContainerInterface(element, 
-															   submission.getContainerInterfaceName());
+															   submission.getIfcName());
 		
 		Element_LogicalInterface ifl = repository.execute(findIflByName(element, 
 																		submission.getIflName()));

@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.DnsZoneName;
 
 @Converter
@@ -25,7 +26,7 @@ public class DnsZoneNameConverter implements AttributeConverter<DnsZoneName, Str
 
 	@Override
 	public String convertToDatabaseColumn(DnsZoneName name) {
-		return DnsZoneName.toString(name);
+		return Scalar.toString(name);
 	}
 
 	@Override

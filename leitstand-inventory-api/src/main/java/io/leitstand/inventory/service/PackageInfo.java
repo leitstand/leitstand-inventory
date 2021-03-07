@@ -74,7 +74,7 @@ public class PackageInfo {
 		 * @param versions - the list of existing versions.
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withVersions(List<PackageVersionId> versions){
+		public Builder withVersions(List<PackageVersionRef> versions){
 			data.versions = new LinkedList<>(versions);
 			return this;
 		}
@@ -100,7 +100,7 @@ public class PackageInfo {
 	@JsonbProperty
 	private String name;
 	@JsonbProperty
-	private List<PackageVersionId> versions; 
+	private List<PackageVersionRef> versions; 
 	
 	/**
 	 * Returns the name of the organization which has published this package.
@@ -122,7 +122,7 @@ public class PackageInfo {
 	 * Returns an immutable list of versions of this package.
 	 * @return an immutable list of versions of this package.
  	 */
-	public List<PackageVersionId> getVersions() {
+	public List<PackageVersionRef> getVersions() {
 		return unmodifiableList(versions);
 	}
 }

@@ -25,17 +25,11 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementIdAdapter;
 
 /**
- * A unique identifier for an element in UUIDv4 format.
+ * Unique element ID in UUIDv4 format.
  * <p>
- * The element ID is immutable for an element and hence forms a persistent unique key.
+ * The element ID is immutable for an element and forms a persistent unique key.
  * </p>
- * @see ElementSettings
- * @see ElementConfig
- * @see ElementImages
- * @see ElementPhysicalInterfaces
- * @see ElementLogicalInterfaces
- * @see ElementModules
- * @see ElementLocation
+ * @see ElementName
  */
 @JsonbTypeAdapter(ElementIdAdapter.class)
 public class ElementId extends Scalar<String> {
@@ -44,7 +38,7 @@ public class ElementId extends Scalar<String> {
 	private static final String PATTERN = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
 	/**
-	 * Returns a random <code>ElementId</code>.
+	 * Creates a random <code>ElementId</code>.
 	 * @return a random <code>ElementId</code>.
 	 */
 	public static ElementId randomElementId() {
@@ -70,7 +64,7 @@ public class ElementId extends Scalar<String> {
 	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static ElementId valueOf(String id) {
-		return ElementId.fromString(id, ElementId::new);
+		return fromString(id, ElementId::new);
 	}
 
 	@NotNull(message="{element_id.required}")

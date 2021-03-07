@@ -147,12 +147,12 @@ public class ElementServicesManager {
 	                        "c.service_opstate, c.service_display_name,"+
 			                "c.parent_id, level + 1 "+
 					 "FROM   inventory.service_context c "+ 
-					 "JOIN 	 HIERARCHY h "+
-					 "ON 	 c.servicecontext_id = h.parent_id "+
+					 "JOIN   HIERARCHY h "+
+					 "ON     c.servicecontext_id = h.parent_id "+
 					 ") "+
 					 "SELECT element_uuid, element_name, service_type, service_name, service_display_name, service_opstate "+
-					 "FROM   HIERARCHY ctx "+
-					 "WHERE  level < 10 "+ // Circuit breaker, if someone has accidentally stored a circular service dependency
+					 "FROM  HIERARCHY ctx "+
+					 "WHERE level < 10 "+ // Circuit breaker, if someone has accidentally stored a circular service dependency
 					 "ORDER BY level"; // Order the result by level to get a proper order of the service hierarchy.
 		
 		List<ServiceInfo> services = datasource.executeQuery(prepare(sql,

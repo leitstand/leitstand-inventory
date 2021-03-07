@@ -20,77 +20,138 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * A submission to store a new physical interface of a certain element in the resource inventory.
+ * A submission for storing a physical interface.
  */
-
 public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	
+    /**
+     * Creates a builder for an immutable <code>ElementPhysicalInterfaceSubmission</code> value object.
+     * @return a builder for an immutable <code>ElementPhysicalInterfaceSubmission</code> value object.
+     */
 	public static Builder newPhysicalInterfaceSubmission() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementPhysicalInterfaceSubmission</code> value object.
+	 */
 	public static class Builder {
 		
 		private ElementPhysicalInterfaceSubmission submission = new ElementPhysicalInterfaceSubmission();
 		
+		/**
+		 * Sets the physical interface name.
+		 * @param ifpName the physical interface name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withIfpName(InterfaceName ifpName) {
 			assertNotInvalidated(getClass(), submission);
 			submission.ifpName = ifpName;
 			return this;
 		}
-		
-		public Builder withIfpAlias(String alias) {
+
+	    /**
+         * Sets the physical interface alias.
+         * @param ifpAlias the physical interface alias.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withIfpAlias(String ifpAlias) {
 			assertNotInvalidated(getClass(), submission);
-			submission.ifpAlias = alias;
+			submission.ifpAlias = ifpAlias;
 			return this;
 		}
 		
+	    /**
+         * Sets the physical interface category.
+         * @param category the physical interface category.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), submission);
 			submission.category = category;
 			return this;
 		}
 		
+	    /**
+         * Sets the physical interface bandwidth.
+         * @param bandwidth the physical interface bandwidth.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withBandwidth(Bandwidth bandwidth) {
 			assertNotInvalidated(getClass(), submission);
 			submission.bandwidth = bandwidth;
 			return this;
 		}
 		
+	    /**
+         * Sets the physical interface MAC address.
+         * @param macAddress the physical interface MAC address.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withMacAddress(MACAddress macAddress) {
 			assertNotInvalidated(getClass(), submission);
 			submission.macAddress = macAddress;
 			return this;
 		}
 		
+	    /**
+         * Sets the operational state of the physical interface.
+         * @param operationalState the operational state of the physical interface.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withOperationalState(OperationalState operationalState) {
 			assertNotInvalidated(getClass(), submission);
 			submission.operationalState = operationalState;
 			return this;
 		}
 		
+	    /**
+         * Sets the administrative state of the physical interface.
+         * @param administrativeState the administrative state of the physical interface.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withAdministrativeState(AdministrativeState administrativeState) {
 			assertNotInvalidated(getClass(), submission);
 			submission.administrativeState = administrativeState;
 			return this;
 		}
 		
+		/** 
+		 * Sets the container interface name.
+		 * @param ifcName the container interface name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withIfcName(InterfaceName ifcName) {
 			assertNotInvalidated(getClass(), submission);
 			submission.ifcName = ifcName;
 			return this;
 		}
 		
+	    /** 
+         * Sets the physical interface neighbor.
+         * @param neighbor the physical interface neighbor.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withNeighbor(ElementPhysicalInterfaceNeighbor.Builder neighbor) {
 			return withNeighbor(neighbor.build());
 		}
-		
+
+	    /** 
+         * Sets the physical interface neighbor.
+         * @param neighbor the physical interface neighbor.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withNeighbor(ElementPhysicalInterfaceNeighbor neighbor) {
 			assertNotInvalidated(getClass(), submission);
 			submission.neighbor = neighbor;
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ElementPhysicalInterfaceSubmission</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementPhysicalInterfaceSubmission</code> value object.
+		 */
 		public ElementPhysicalInterfaceSubmission build() {
 			try {
 				assertNotInvalidated(getClass(), submission);
@@ -130,8 +191,8 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 	/**
-	 * Returns the MAC address of the physical interface
-	 * @return the physical interface MAC address
+	 * Returns the MAC address of the physical interface.
+	 * @return the physical interface MAC address.
 	 */
 	public MACAddress getMacAddress(){
 		return macAddress;
@@ -139,7 +200,7 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	
 	/**
 	 * Returns the operational state of the physical interface.
-	 * @return the operational state
+	 * @return the operational state of the physical interface.
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
@@ -163,8 +224,8 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	}
 	
 	/**
-	 * Returns the bandwidth of the physical interface.
-	 * @return the bandwidth
+	 * Returns the physical interface bandwidth.
+	 * @return the physical interface bandwidth.
 	 */
 	public Bandwidth getBandwidth() {
 		return bandwidth;
@@ -172,20 +233,32 @@ public class ElementPhysicalInterfaceSubmission extends ValueObject {
 	
 	/**
 	 * Returns the administrative state of the physical interface.
-	 * @return the administrative state
+	 * @return the administrative state of the physical interface.
 	 */
 	public AdministrativeState getAdministrativeState() {
 		return administrativeState;
 	}
 	
+	/**
+	 * Returns the physical interface alias.
+	 * @return the physical interface alias.
+	 */
 	public String getIfpAlias() {
 		return ifpAlias;
 	}
 	
+	/**
+	 * Returns the physical interface category.
+	 * @return the physical interface category.
+	 */
 	public String getCategory() {
 		return category;
 	}
 	
+	/**
+	 * Returns the physical interface neighbor.
+	 * @return the physical interface neighbor.
+	 */
 	public ElementPhysicalInterfaceNeighbor getNeighbor() {
 		return neighbor;
 	}

@@ -22,20 +22,20 @@ import javax.json.bind.annotation.JsonbProperty;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Contains the properties of a physical interface.
+ * The physical interface settings.
  */
 public class ElementPhysicalInterfaceData extends ValueObject {
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementPhysicalInterfaceData</code> instance.
-	 * @return a builder to create an immutable <code>ElementPhysicalInterfaceData</code> instance.
+	 * Returns a builder for an immutable <code>ElementPhysicalInterfaceData</code> value object.
+	 * @return a builder for an immutable <code>ElementPhysicalInterfaceData</code> value object.
 	 */
 	public static Builder newPhysicalInterfaceData(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementPhysicalInterfaceData</code> instance.
+	 * A builder for an immutable <code>ElementPhysicalInterfaceData</code> value object.
 	 */
 	public static class Builder {
 		
@@ -43,21 +43,31 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the physical interface name.
-		 * @param name - the interface name
-		 * @return a reference to this builder to continue object creation
+		 * @param ifpName the interface name.
+		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withIfpName(InterfaceName name){
+		public Builder withIfpName(InterfaceName ifpName){
 			assertNotInvalidated(getClass(), data);
-			data.ifpName = name;
+			data.ifpName = ifpName;
 			return this;
 		}
 		
+		/**
+		 * Sets the physical interface alias.
+		 * @param ifpAlias the interface alias.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withIfpAlias(String ifpAlias) {
 			assertNotInvalidated(getClass(), data);
 			data.ifpAlias = ifpAlias;
 			return this;
 		}
 
+		/**
+		 * Sets the physical interface category.
+		 * @param category the interface category.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withCategory(String category) {
 			assertNotInvalidated(getClass(), data);
 			data.category = category;
@@ -65,9 +75,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Sets the bandwidth of the physical interface name.
-		 * @param bandwidth - the interface bandwidth
-		 * @return a reference to this builder to continue object creation
+		 * Sets the bandwidth of the physical interface.
+		 * @param bandwidth the interface bandwidth.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withBandwidth(Bandwidth bandwidth) {
 			assertNotInvalidated(getClass(), data);
@@ -76,9 +86,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Sets the MAC address of the physical interface
-		 * @param macAddress - the MAC address
-		 * @return a reference to this builder to continue object creation
+		 * Sets the MAC address of the physical interface.
+		 * @param macAddress the MAC address.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withMacAddress(MACAddress macAddress){
 			assertNotInvalidated(getClass(), data);
@@ -87,9 +97,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 		
 		/**
-		 * Sets the operational state of the physical interface
-		 * @param opState - the operational state
-		 * @return a reference to this builder to continue object creation
+		 * Sets the operational state of the physical interface.
+		 * @param opState the operational state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withOperationalState(OperationalState opState){
 			assertNotInvalidated(getClass(), data);
@@ -99,8 +109,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the administrative state of the physical interface
-		 * @param admState - the administrative state
-		 * @return a reference to this builder to continue object creation
+		 * @param admState the administrative state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withAdministrativeState(AdministrativeState admState){
 			assertNotInvalidated(getClass(), data);
@@ -110,8 +120,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the neighbor interface of this physical interface.
-		 * @param neighbor - the neighbor interface
-		 * @return a reference to this builder to continue with object creation
+		 * @param neighbor the neighbor interface.
+		 * @return a reference to this builder to continue with object creation.
 		 */
 		public Builder withNeighbor(ElementPhysicalInterfaceNeighbor.Builder neighbor) {
 			return withNeighbor(neighbor.build());
@@ -119,8 +129,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the neighbor interface of this physical interface.
-		 * @param neighbor - the neighbor interface
-		 * @return a reference to this builder to continue with object creation
+		 * @param neighbor the neighbor interface.
+		 * @return a reference to this builder to continue with object creation.
 		 */
 		public Builder withNeighbor(ElementPhysicalInterfaceNeighbor neighbor) {
 			assertNotInvalidated(getClass(), data);
@@ -129,9 +139,9 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		}
 
 		/**
-		 * Returns an immutable <code>ElementPhysicalInterfaceData</code> instance and invalidates this builder.
-		 * All further interactions with this builder raises an exception.
-		 * @return an immutable <code>ElementPhysicalInterfaceData</code> instance.
+		 * Returns an immutable <code>ElementPhysicalInterfaceData</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> raise an exception.
+		 * @return the immutable <code>ElementPhysicalInterfaceData</code> value object.
 		 */
 		public ElementPhysicalInterfaceData build(){
 			try{
@@ -162,8 +172,8 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	private ElementPhysicalInterfaceNeighbor neighbor;
 	
 	/**
-	 * Returns the neighbor interface of this physical interface or <code>null</code> if no neighbor information is available.
-	 * @return the neighbor interface 
+	 * Returns the neighbor of this physical interface.
+	 * @return the physical interface neighbor
 	 */
 	public ElementPhysicalInterfaceNeighbor getNeighbor() {
 		return neighbor;
@@ -178,7 +188,7 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 	}
 	
 	/**
-	 * Retruns the MAC address of the physical interface.
+	 * Returns the MAC address of the physical interface.
 	 * @return the MAC address
 	 */
 	public MACAddress getMacAddress(){
@@ -209,10 +219,18 @@ public class ElementPhysicalInterfaceData extends ValueObject {
 		return bandwidth;
 	}
 	
+	/**
+	 * Returns the physical interface alias.
+	 * @return the physical interface alias.
+	 */
 	public String getIfpAlias() {
 		return ifpAlias;
 	}
 	
+	/**
+	 * Returns the physical interface category.
+	 * @return the physical interface category.
+	 */
 	public String getCategory() {
 		return category;
 	}

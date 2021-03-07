@@ -20,7 +20,7 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 /**
- * A transactional service to manage the element image lifecycle.
+ * A service for managing the element software images.
  * <p>
  * An image can have three different element lifecycle states:
  * <ul>

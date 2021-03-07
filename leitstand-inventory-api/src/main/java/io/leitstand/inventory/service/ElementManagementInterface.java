@@ -46,24 +46,24 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Creates a builder for an element management interface.
-	 * @return a element management interface builder.
+	 * Creates a builder for an <code>ElementManagementInterface</code> value object.
+	 * @return a builder for an <code>ElementManagementInterface</code> value object.
 	 */
 	public static Builder newElementManagementInterface() {
 		return new Builder();
 	}
 	
 	/**
-     * A builder to create an immutable <code>ElementManagementInterface</code> instance.
+     * A builder for an immutable <code>ElementManagementInterface</code> value object.
 	 */
 	public static class Builder{
 		
 		private ElementManagementInterface instance = new ElementManagementInterface();
 		
 		/**
-		 * Sets the management interface name
-		 * @param name the management interface name
-		 * @return a reference to this builder to continue object creation
+		 * Sets the management interface name.
+		 * @param name the management interface name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withName(String name) {
 			assertNotInvalidated(getClass(), instance);
@@ -72,9 +72,9 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 		}
 
 	    /**
-         * Sets the management interface network protocol
-         * @param protocol the management interface network protocol
-         * @return a reference to this builder to continue object creation
+         * Sets the management interface network protocol.
+         * @param protocol the management interface network protocol.
+         * @return a reference to this builder to continue object creation.
          */
 		public Builder withProtocol(String protocol) {
 			assertNotInvalidated(getClass(), instance);
@@ -83,9 +83,9 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 		}
 		
 	    /**
-         * Sets the management interface hostname or IP address
-         * @param hostname the management interface hostname or IP address
-         * @return a reference to this builder to continue object creation
+         * Sets the management interface hostname or IP address.
+         * @param hostname the management interface hostname or IP address.
+         * @return a reference to this builder to continue object creation.
          */
 		public Builder withHostname(String hostname) {
 			assertNotInvalidated(getClass(), instance);
@@ -94,9 +94,9 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 		}
 		
 	    /**
-         * Sets the management interface port
-         * @param name the management interface port
-         * @return a reference to this builder to continue object creation
+         * Sets the management interface port.
+         * @param name the management interface port.
+         * @return a reference to this builder to continue object creation.
          */
 		public Builder withPort(int portNumber) {
 			assertNotInvalidated(getClass(),instance);
@@ -105,9 +105,9 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 		}
 		
 	    /**
-         * Sets the management interface base path
-         * @param name the management interface base path
-         * @return a reference to this builder to continue object creation
+         * Sets the management interface base path.
+         * @param name the management interface base path.
+         * @return a reference to this builder to continue object creation.
          */
 		public Builder withPath(String path) {
 			assertNotInvalidated(getClass(),path);
@@ -116,8 +116,8 @@ public class ElementManagementInterface extends ValueObject implements Serializa
 		}
 		
 		/**
-		 * Returns an immutable element management interface.
-		 * @return the element management interface.
+		 * Returns an immutable <code>ElementManagementInterface</code> value object.
+		 * @return an immutable <code>ElementManagementInterface</code> value object.
 		 */
 		public ElementManagementInterface build() {
 			try {

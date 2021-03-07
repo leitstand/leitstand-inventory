@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ElementGroupName;
 
 @Converter
@@ -25,7 +26,7 @@ public class ElementGroupNameConverter implements AttributeConverter<ElementGrou
 
 	@Override
 	public String convertToDatabaseColumn(ElementGroupName attribute) {
-		return ElementGroupName.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

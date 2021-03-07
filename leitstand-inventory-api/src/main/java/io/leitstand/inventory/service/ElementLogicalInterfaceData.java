@@ -35,8 +35,8 @@ import io.leitstand.commons.model.ValueObject;
 public class ElementLogicalInterfaceData extends ValueObject {
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementLogicalInterfaceData</code> value object.
-	 * @return a builder to create an immutable <code>ElementLogicalInterfaceData</code> value object.
+	 * Returns a builder for an immutable <code>ElementLogicalInterfaceData</code> value object.
+	 * @return a builder for an immutable <code>ElementLogicalInterfaceData</code> value object.
 	 */
 	public static Builder newElementLogicalInterfaceData() {
 		return new Builder();
@@ -44,7 +44,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 	
 	/**
-	 * The builder to create a <code>ElementLogicalInterfaceData</code> instance.
+	 * A builder for an immutable <code>ElementLogicalInterfaceData</code> value object.
 	 */
 	public static class Builder{
 		
@@ -52,18 +52,18 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the interface name.
-		 * @param name the interface name
+		 * @param iflName the interface name.
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withInterfaceName(InterfaceName name){
+		public Builder withInterfaceName(InterfaceName iflName){
 			assertNotInvalidated(getClass(), data);
-			data.iflName = name;
+			data.iflName = iflName;
 			return this;
 		}
 		
 		/**
-		 * Sets the interface name.
-		 * @param name the interface name
+		 * Sets the interface alias.
+		 * @param name the interface alias.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withInterfaceAlias(String alias){
@@ -75,7 +75,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		/**
 		 * Sets the routing instance name.
 		 * @param routingInstance the routing instance name.
-		 * @return a reference to this builder to continue with object creation.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withRoutingInstance(RoutingInstanceName routingInstance) {
 			assertNotInvalidated(getClass(),data);
@@ -85,7 +85,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the IP addresses bound to this logical interface.
-		 * @param ifas the address interfaces
+		 * @param ifas the address interfaces.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withAddressInterfaces(AddressInterface.Builder... ifas) {
@@ -96,7 +96,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the IP addresses bound to this logical interface.
-		 * @param ifas the address interfaces
+		 * @param ifas the address interfaces.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withAddressInterfaces(AddressInterface... ifas) {
@@ -105,7 +105,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the IP addresses bound to this logical interface.
-		 * @param ifas the address interfaces
+		 * @param ifas the address interfaces.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withAddressInterfaces(List<AddressInterface> ifas){
@@ -116,7 +116,7 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the configured VLANs.
-		 * @param vlans the configured VLANs
+		 * @param vlans the configured VLANs.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withVlans(VlanTag.Builder... vlans) {
@@ -127,8 +127,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the configured VLANS.
-		 * @param vlans the configured VLANs
-		 * @return a reference to this builder to continue object creation
+		 * @param vlans the configured VLANs.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withVlans(List<VlanTag> vlans) {
 			assertNotInvalidated(getClass(), data);
@@ -138,7 +138,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the used physical interfaces.
-		 * @return a reference to this builder to continue object creation
+		 * @param ifps the physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterfaces(PhysicalInterface.Builder... ifps){
 			return withPhysicalInterfaces(stream(ifps)
@@ -148,8 +149,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the used physical interfaces.
-		 * @param ifps the used physical interfaces 
-		 * @return a reference to this builder to continue object creation
+		 * @param ifps the physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterfaces(PhysicalInterface... ifps){
 			return withPhysicalInterfaces(asList(ifps));
@@ -157,8 +158,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		/**
 		 * Sets the used physical interfaces.
-		 * @param ifps the used physical interfaces 
-		 * @return a reference to this builder to continue object creation
+		 * @param ifps the used physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterfaces(Collection<PhysicalInterface> ifps){
 			assertNotInvalidated(getClass(), data);
@@ -168,8 +169,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the operational state of the logical interface.
-		 * @param opState the operational state
-		 * @return a reference to this builder to continue object creation
+		 * @param opState the operational state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withOperationalState(OperationalState opState) {
 			assertNotInvalidated(getClass(), data);
@@ -179,8 +180,8 @@ public class ElementLogicalInterfaceData extends ValueObject {
 
 		/**
 		 * Sets the administrative state of the logical interface.
-		 * @param operationalState the operational state
-		 * @return a reference to this builder to continue object creation
+		 * @param admState the administrative state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withAdministrativeState(AdministrativeState admState) {
 			assertNotInvalidated(getClass(), data);
@@ -190,9 +191,9 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		
 		
 		/**
-		 * Returns the immutable <code>ElementLogicalInterfaceData</code> object and 
-		 * invalidates this builder. Any further invocation with this builder raises an exception.
-		 * @return the immutable <code>ElementLogicalInterfaceData</code> object.
+		 * Creates an immutable <code>ElementLogicalInterfaceData</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> raise an exception.
+		 * @return the immutable <code>ElementLogicalInterfaceData</code> value object.
 		 */
 		public ElementLogicalInterfaceData build() {
 			try{
@@ -228,36 +229,40 @@ public class ElementLogicalInterfaceData extends ValueObject {
 	}
 	
 	/**
-	 * Returns an unmodifiable list of assigned IP addresses in CIDR notation.
+	 * Returns the assigned IP addresses in CIDR notation.
 	 * @return the assigned IP addresses.
 	 */
 	public List<AddressInterface> getAddresses() {
 		return unmodifiableList(addresses);
 	}
 	
+	/**
+	 * Returns the assigned VLANs.
+	 * @return the assigned VLANs.
+	 */
 	public List<VlanTag> getVlans(){
 		return unmodifiableList(vlans);
 	}
 	
 	/**
-	 * Returns an unmodifiable set of physical interfaces leveraged by this logical interface.
-	 * @return the physical interfaces leveraged by this logical interface.
+	 * Returns the physical interfaces used by this logical interface.
+	 * @return the used physical interfaces.
 	 */
 	public List<PhysicalInterface> getPhysicalInterfaces() {
 		return unmodifiableList(physicalInterfaces);
 	}
 	
 	/**
-	 * Returns the logical interface operational state.
-	 * @return the operational state.
+	 * Returns the operational state of the logical interface.
+	 * @return the operational state of the logical interface.
 	 */
 	public OperationalState getOperationalState() {
 		return operationalState;
 	}
 	
 	/**
-	 * Returns the logical interface administrative state.
-	 * @return the administrative state.
+	 * Returns the administrative state of the logical interface.
+	 * @return the administrative state of the logical interface.
 	 */
 	public AdministrativeState getAdministrativeState() {
 		return administrativeState;
@@ -271,6 +276,10 @@ public class ElementLogicalInterfaceData extends ValueObject {
 		return routingInstance;
 	}
 
+	/**
+	 * Returns the logical interface alias.
+	 * @return the logical interface alias.
+	 */
 	public String getIflAlias() {
 		return iflAlias;
 	}

@@ -20,9 +20,8 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import javax.json.bind.annotation.JsonbProperty;
 
 /**
- * Contains all information of a certain physical interface of an element.
+ * Physical interface of an element.
  */
-
 public class ElementPhysicalInterface extends BaseElementEnvelope{
 	
 	/**

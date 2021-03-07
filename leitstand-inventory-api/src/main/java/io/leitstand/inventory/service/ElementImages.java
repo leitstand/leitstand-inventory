@@ -30,11 +30,10 @@ import javax.validation.Valid;
 /**
  * A summary of all images installed on an element or eligible for deployment.
  */
-
 public class ElementImages extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder for an immutable <code>ElementImages</code> value object.
+	 * Creates a builder for an immutable <code>ElementImages</code> value object.
 	 * @return a builder for an immutable <code>ElementImages</code> value object.
 	 */
 	public static Builder newElementImages(){

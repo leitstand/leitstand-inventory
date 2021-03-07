@@ -55,7 +55,7 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(1,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 		});
 	}
 	
@@ -108,8 +108,8 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
-			assertEquals(new Version(2,0,0),pkg.getVersions().get(1).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
+			assertEquals(new Version(2,0,0),pkg.getVersions().get(1).getPackageVersion());
 		});
 	}
 	
@@ -126,8 +126,8 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
-			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
+			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getPackageVersion());
 		});
 	}
 	
@@ -144,8 +144,8 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
-			assertEquals(new Version(1,0,1),pkg.getVersions().get(1).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
+			assertEquals(new Version(1,0,1),pkg.getVersions().get(1).getPackageVersion());
 		});
 	}
 	
@@ -212,8 +212,8 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(2,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
-			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
+			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getPackageVersion());
 			service.removeRevision(IT_PKG_ORG, IT_PKG_NAME,new Version(1,1,0));
 			commitTransaction();
 			beginTransaction();
@@ -221,7 +221,7 @@ public class PackageServiceIT extends InventoryIT{
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
 			assertEquals(IT_PKG_NAME,pkg.getName());
 			assertEquals(1,pkg.getVersions().size());
-			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getRevision());
+			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 		});
 	}
 	

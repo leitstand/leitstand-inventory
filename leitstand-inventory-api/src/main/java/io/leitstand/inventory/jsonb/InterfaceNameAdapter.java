@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.InterfaceName;
 
 public class InterfaceNameAdapter implements JsonbAdapter<InterfaceName,String> {
@@ -28,7 +29,7 @@ public class InterfaceNameAdapter implements JsonbAdapter<InterfaceName,String> 
 
 	@Override
 	public String adaptToJson(InterfaceName v) throws Exception {
-		return InterfaceName.toString(v);
+		return Scalar.toString(v);
 	}
 
 }

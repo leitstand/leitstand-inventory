@@ -16,7 +16,7 @@
 package io.leitstand.inventory.service;
 
 /**
- * A transactional service to query element link information.
+ * A service to query element link information.
  */
 public interface ElementLinkService {
 

@@ -17,13 +17,14 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ReleaseId;
 
 public class ReleaseIdAdapter implements JsonbAdapter<ReleaseId,String> {
 
 	@Override
 	public String adaptToJson(ReleaseId obj) throws Exception {
-		return ReleaseId.toString(obj);
+		return Scalar.toString(obj);
 	}
 
 	@Override

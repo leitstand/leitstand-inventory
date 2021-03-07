@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.RoutingInstanceName;
 
 /**
@@ -41,7 +42,7 @@ public class RoutingInstanceNameAdapter implements JsonbAdapter<RoutingInstanceN
 	 */
 	@Override
 	public String adaptToJson(RoutingInstanceName name) {
-		return RoutingInstanceName.toString(name);
+		return Scalar.toString(name);
 	}
 
 }

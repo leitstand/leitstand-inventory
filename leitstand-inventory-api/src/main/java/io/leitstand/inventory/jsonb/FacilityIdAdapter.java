@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.FacilityId;
 
 public class FacilityIdAdapter implements JsonbAdapter<FacilityId,String> {
@@ -28,7 +29,7 @@ public class FacilityIdAdapter implements JsonbAdapter<FacilityId,String> {
 
 	@Override
 	public String adaptToJson(FacilityId v) throws Exception {
-		return FacilityId.toString(v);
+		return Scalar.toString(v);
 	}
 
 }

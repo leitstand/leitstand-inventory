@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ApplicationName;
 
 @Converter
@@ -25,7 +26,7 @@ public class ApplicationNameConverter implements AttributeConverter<ApplicationN
 
 	@Override
 	public String convertToDatabaseColumn(ApplicationName name) {
-		return ApplicationName.toString(name);
+		return Scalar.toString(name);
 	}
 
 	@Override
