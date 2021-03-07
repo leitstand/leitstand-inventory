@@ -24,7 +24,17 @@ import java.util.List;
 /**
  * An image reference.
  * <p>
- * The <code>ImageReference</code> provides information to access a software image.
+ * The <code>ImageReference</code> includes
+ * <ul>
+ *  <li>the image ID,</li>
+ *  <li>the image type,</li>
+ *  <li>the image name,</li>
+ *  <li>the image lifecycle state,</li>
+ *  <li>the image version,</li>
+ *  <li>the image build date,</li>
+ *  <li>the supported chipset and </i>
+ *  <li>the element roles the image is built for.</li>
+ * </ul>
  */
 public class ImageReference {
 

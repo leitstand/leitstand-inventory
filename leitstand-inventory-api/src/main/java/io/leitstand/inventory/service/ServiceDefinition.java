@@ -22,7 +22,7 @@ import io.leitstand.commons.model.ValueObject;
 
 
 /**
- * A definition of a service running on an element in the network.
+ * The definition of a service running on an element in the network.
  */
 public class ServiceDefinition extends ValueObject {
 

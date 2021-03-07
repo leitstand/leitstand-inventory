@@ -40,7 +40,7 @@ public class RoutingInstanceNameConverter implements AttributeConverter<RoutingI
 	/**
 	 * Creates a <code>RoutingInstanceName</code> from the specified string.
 	 * @param name the routing instance name
-	 * @returns the <code>RoutingInstanceName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @return the <code>RoutingInstanceName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	@Override
 	public RoutingInstanceName convertToEntityAttribute(String name) {

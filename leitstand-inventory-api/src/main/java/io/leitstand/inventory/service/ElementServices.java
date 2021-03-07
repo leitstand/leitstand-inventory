@@ -26,32 +26,34 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbProperty;
 
 /**
- * A summary of all services installed on a certain element.
+ * The services running on an element.
  */
-
 public class ElementServices extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementServices</code> instance.
-	 * @return a builder to create an immutable <code>ElementServices</code> instance.
+	 * Returns a builder for an immutable <code>ElementServices</code> value object.
+	 * @return a builder for an immutable <code>ElementServices</code> value object.
 	 */
 	public static Builder newElementServices(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementServices</code> instance.
+	 * A builder for an immutable <code>ElementServices</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementServices, Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementServices</code> value object.
+	     */
 		public Builder() {
 			super(new ElementServices());
 		}
 		
 		/**
-		 * Sets the installed services
-		 * @param services - the installed services
-		 * @return a reference to this builder to continue object creation
+		 * Sets the running services.
+		 * @param services the installed services.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withServices(ServiceInfo.Builder... services) {
 			return withServices(stream(services)
@@ -60,18 +62,18 @@ public class ElementServices extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the installed services
-		 * @param services - the installed services
-		 * @return a reference to this builder to continue object creation
+		 * Sets the running services.
+		 * @param services the installed services.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withServices(ServiceInfo... services) {
 			return withServices(asList(services));
 		}
 		
 		/**
-		 * Sets the installed services
-		 * @param services - the installed services
-		 * @return a reference to this builder to continue object creation
+		 * Sets the installed services.
+		 * @param services the installed services.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withServices(List<ServiceInfo> services) {
 			object.services = unmodifiableList(new LinkedList<>(services));
@@ -84,11 +86,11 @@ public class ElementServices extends BaseElementEnvelope{
 	private List<ServiceInfo> services;
 	
 	/**
-	 * Returns an immutable list of installed services.
-	 * @return the list of installed services
+	 * Returns the running services.
+	 * @return the list of running services
 	 */
 	public List<ServiceInfo> getServices() {
-		return services;
+		return unmodifiableList(services);
 	}
 	
 }

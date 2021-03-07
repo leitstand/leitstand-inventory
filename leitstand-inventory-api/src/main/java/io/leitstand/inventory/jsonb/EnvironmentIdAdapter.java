@@ -38,7 +38,7 @@ public class EnvironmentIdAdapter implements JsonbAdapter<EnvironmentId, String>
 	/** 
 	 * Translates an <code>EnvironmentId</code> into a string.
 	 * @param id the environment ID
-	 * @returns the string value or <code>null</code> if the specified ID is <code>null</code>.
+	 * @return the string value or <code>null</code> if the specified ID is <code>null</code>.
 	 */
 	@Override
 	public String adaptToJson(EnvironmentId id) throws Exception {

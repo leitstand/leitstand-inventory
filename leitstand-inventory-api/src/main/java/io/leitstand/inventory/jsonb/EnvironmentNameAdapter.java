@@ -38,7 +38,7 @@ public class EnvironmentNameAdapter implements JsonbAdapter<EnvironmentName, Str
 	/** 
 	 * Translates an <code>EnvironmentName</code> into a string.
 	 * @param name the environment name
-	 * @returns the string value or <code>null</code> if the specified name is <code>null</code>.
+	 * @return the string value or <code>null</code> if the specified name is <code>null</code>.
 	 */
 	@Override
 	public String adaptToJson(EnvironmentName name) throws Exception {

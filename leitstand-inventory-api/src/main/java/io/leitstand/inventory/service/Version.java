@@ -150,7 +150,7 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 
 	/**
 	 * Returns the major version number.
-	 * @returns the major version number.
+	 * @return the major version number.
 	 */
 	public int getMajorLevel() {
 		return majorLevel;
@@ -158,7 +158,7 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 
 	/**
 	 * Returns the minor version number.
-	 * @returns the minor version number.
+	 * @return the minor version number.
 	 */
 	public int getMinorLevel() {
 		return minorLevel;
@@ -166,7 +166,7 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 	
 	/**
 	 * Returns the patch level.
-	 * @returns the patch level.
+	 * @return the patch level.
 	 */
 	public int getPatchLevel() {
 		return patchLevel;
@@ -210,7 +210,7 @@ public class Version extends CompositeValue implements Comparable<Version>, Seri
 	
 	/**
 	 * Compares two versions by comparing the major, minor, patch and pre-release settings.
-	 * @returns -1, 0 or 1 depending on whether this version is lower, equal or higher than the specified version.
+	 * @return -1, 0 or 1 depending on whether this version is lower, equal or higher than the specified version.
 	 */
 	@Override
 	public int compareTo(Version version){

@@ -1,6 +1,10 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.inventory.service.ApplicationName.applicationName;
+import static io.leitstand.inventory.service.ElementAlias.elementAlias;
+import static io.leitstand.inventory.service.ElementId.randomElementId;
+import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
+import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
@@ -8,6 +12,10 @@ import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
+import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState.newElementGroupElementImageState;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
+import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
 import static io.leitstand.inventory.service.ImageType.imageType;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
@@ -41,6 +49,9 @@ public class ImageValueObjectsTest {
     private static final String              DESCRIPTION        = "description";
     private static final String              IMAGE_EXTENSION    = "ext";
     private static final String              ORGANIZATION       = "organization";
+    private static final ElementId           ELEMENT_ID         = randomElementId();
+    private static final ElementName         ELEMENT_NAME       = elementName("element");
+    private static final ElementAlias        ELEMENT_ALIAS      = elementAlias("alias");
     
     @Test
     public void create_role_image() {
@@ -160,8 +171,69 @@ public class ImageValueObjectsTest {
         assertThat(query.getImageVersion(),is(IMAGE_VERSION));
         assertThat(query.getPlatformChipset(),is(PLATFORM_CHIPSET));
         assertThat(query.getLimit(),is(100));
-        
-        
     }
     
+    @Test
+    public void create_image_statistics() {
+        ReleaseRef release = mock(ReleaseRef.class);
+        ImageStatisticsElementGroupImageCount groupCount = mock(ImageStatisticsElementGroupImageCount.class);
+        ImageInfo image = mock(ImageInfo.class);
+        
+        ImageStatistics stats = newImageStatistics()
+                                .withImage(image)
+                                .withReleases(asList(release))
+                                .withElementGroupCounters(asList(groupCount))
+                                .build();
+        
+        assertThat(stats.getImage(),is(image));
+        assertThat(stats.getGroups(),containsExactly(groupCount));
+        assertThat(stats.getReleases(),containsExactly(release));
+    }
+    
+    @Test
+    public void create_image_element_group_count() {
+        ImageStatisticsElementGroupImageCount stats = newElementGroupImageCount()
+                                                      .withActiveCount(1)
+                                                      .withCachedCount(2)
+                                                      .withPullCount(3)
+                                                      .build();
+        
+        assertThat(stats.getActiveCount(),is(1));
+        assertThat(stats.getCachedCount(),is(2));
+        assertThat(stats.getPullCount(),is(3));
+        assertThat(stats.getTotalCount(),is(6));
+    }
+    
+    @Test
+    public void create_image_statistics_element_group_element_image_stats() {
+        
+        ImageInfo image = mock(ImageInfo.class);
+        ImageStatisticsElementGroupElementImageState element = mock(ImageStatisticsElementGroupElementImageState.class);
+        
+        ImageStatisticsElementGroupElementImages stats = newElementGroupElementImages()
+                                                         .withElements(asList(element))
+                                                         .withImage(image)
+                                                         .build();
+        
+        assertThat(stats.getImage(),is(image));
+        assertThat(stats.getElements(),containsExactly(element));
+    }
+    
+    @Test
+    public void create_element_image_lifecycle_state() {
+        ImageStatisticsElementGroupElementImageState state = newElementGroupElementImageState()
+                                                             .withElementAlias(ELEMENT_ALIAS)
+                                                             .withElementId(ELEMENT_ID)
+                                                             .withElementImageState(ACTIVE)
+                                                             .withElementName(ELEMENT_NAME)
+                                                             .withElementRole(ELEMENT_ROLE)
+                                                             .build();
+        
+        assertThat(state.getElementAlias(),is(ELEMENT_ALIAS));
+        assertThat(state.getElementId(),is(ELEMENT_ID));
+        assertThat(state.getElementName(),is(ELEMENT_NAME));
+        assertThat(state.getElementRole(),is(ELEMENT_ROLE));
+        assertThat(state.getElementImageState(),is(ACTIVE));
+        
+    }
 }

@@ -1,8 +1,8 @@
 package io.leitstand.inventory.service;
 
-import static io.leitstand.inventory.service.PackageInfo.newPackageInfo;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.PackageVersionRef.newPackageVersionRef;
+import static io.leitstand.inventory.service.PackageVersions.newPackageVersions;
 import static io.leitstand.inventory.service.Version.version;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.containsExactly;
 import static java.util.Arrays.asList;
@@ -38,8 +38,68 @@ public class PackageValueObjectsTest {
         assertThat(ref.getOrganization(), is(ORGANIZATION));
         assertThat(ref.getPackageName(),is(PACKAGE_NAME));
         assertThat(ref.getPackageVersion(),is(PACKAGE_VERSION));
+    }
+
+    @Test
+    public void compare_package_version_ref_by_organization() {
+        PackageVersionRef a = newPackageVersionRef()
+                              .withOrganization("A")
+                              .withPackageName(PACKAGE_NAME)
+                              .withPackageVersion(PACKAGE_VERSION)
+                              .build();
+        
+        PackageVersionRef b = newPackageVersionRef()
+                              .withOrganization("B")
+                              .withPackageName(PACKAGE_NAME)
+                              .withPackageVersion(PACKAGE_VERSION)
+                              .build();
+        
+        assertThat(a.compareTo(a),is(0));
+        assertThat(a.compareTo(b),is(-1));
+        assertThat(b.compareTo(a),is(1));
         
     }
+    
+    @Test
+    public void compare_package_version_ref_by_package_name() {
+        PackageVersionRef a = newPackageVersionRef()
+                              .withOrganization(ORGANIZATION)
+                              .withPackageName("a")
+                              .withPackageVersion(PACKAGE_VERSION)
+                              .build();
+        
+        PackageVersionRef b = newPackageVersionRef()
+                              .withOrganization(ORGANIZATION)
+                              .withPackageName("b")
+                              .withPackageVersion(PACKAGE_VERSION)
+                              .build();
+        
+        assertThat(a.compareTo(a),is(0));
+        assertThat(a.compareTo(b),is(-1));
+        assertThat(b.compareTo(a),is(1));
+        
+    }
+    
+    @Test
+    public void compare_package_version_ref_by_version() {
+        PackageVersionRef a = newPackageVersionRef()
+                              .withOrganization(ORGANIZATION)
+                              .withPackageName(PACKAGE_NAME)
+                              .withPackageVersion(version("1.0.0"))
+                              .build();
+        
+        PackageVersionRef b = newPackageVersionRef()
+                              .withOrganization(ORGANIZATION)
+                              .withPackageName(PACKAGE_NAME)
+                              .withPackageVersion(version("2.0.0"))
+                              .build();
+        
+        assertThat(a.compareTo(a),is(0));
+        assertThat(a.compareTo(b),is(-1));
+        assertThat(b.compareTo(a),is(1));
+        
+    }
+    
     
     @Test
     public void create_package_version_info() {
@@ -69,13 +129,13 @@ public class PackageValueObjectsTest {
     public void create_package_info() {
         PackageVersionRef ref = mock(PackageVersionRef.class);
         
-        PackageInfo pkg = newPackageInfo()
-                          .withName(PACKAGE_NAME)
-                          .withOrganization(ORGANIZATION)
-                          .withVersions(asList(ref))
-                          .build();
+        PackageVersions pkg = newPackageVersions()
+                              .withPackageName(PACKAGE_NAME)
+                              .withOrganization(ORGANIZATION)
+                              .withVersions(asList(ref))
+                              .build();
         
-        assertThat(pkg.getName(),is(PACKAGE_NAME));
+        assertThat(pkg.getPackageName(),is(PACKAGE_NAME));
         assertThat(pkg.getOrganization(),is(ORGANIZATION));
         assertThat(pkg.getVersions(),containsExactly(ref));
                           

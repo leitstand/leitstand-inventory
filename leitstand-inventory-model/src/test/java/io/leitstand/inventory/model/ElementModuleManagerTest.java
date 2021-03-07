@@ -19,6 +19,7 @@ import static io.leitstand.inventory.model.ModuleDataMother.testModule;
 import static io.leitstand.inventory.service.ReasonCode.IVT0312I_ELEMENT_MODULE_REMOVED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.any;
@@ -90,12 +91,12 @@ public class ElementModuleManagerTest {
 		assertEquals(moduleData.getHardwareRevision(),module.getHardwareRevision());
 		assertEquals(moduleData.getManufacturerName(),module.getManufacturerName());
 		assertEquals(moduleData.getModelName(),module.getModelName());
-		assertEquals(moduleData.getParentModule(),module.getParentModule());
 		assertEquals(moduleData.getLocation(),module.getLocation());
 		assertEquals(moduleData.getSerialNumber(),module.getSerialNumber());
 		assertEquals(moduleData.getSoftwareRevision(),module.getSoftwareRevision());
 		assertEquals(moduleData.getVendorType(),module.getVendorType());
 		assertEquals(moduleData.isFieldReplaceableUnit(),module.isFieldReplaceableUnit());
+		assertNull(module.getParentModule());
 	}
 	
 	@Test

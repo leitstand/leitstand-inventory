@@ -105,7 +105,7 @@ public class QualifiedPackageName extends CompositeValue implements Comparable<Q
 	
 	/**
 	 * Returns the string representation of the qualified name by concatenating organization and package names using a dot (.) as delimiter.
-	 * @returns the string representation of the qualified name by concatenating organization and package names using a dot (.) as delimiter.
+	 * @return the string representation of the qualified name by concatenating organization and package names using a dot (.) as delimiter.
 	 */
 	@Override
 	public String toString() {

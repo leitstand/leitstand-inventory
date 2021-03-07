@@ -51,7 +51,7 @@ public class ElementId extends Scalar<String> {
 	 * <p>
 	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param id the element ID
-	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @return the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static ElementId elementId(String id) {
 		return valueOf(id);
@@ -60,11 +60,11 @@ public class ElementId extends Scalar<String> {
 	/**
 	 * Creates an <code>ElementId</code> from the specified string.
 	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
-	 * @param id the element ID
-	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param elementId the element ID
+	 * @return the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
-	public static ElementId valueOf(String id) {
-		return fromString(id, ElementId::new);
+	public static ElementId valueOf(String elementId) {
+		return fromString(elementId, ElementId::new);
 	}
 
 	@NotNull(message="{element_id.required}")

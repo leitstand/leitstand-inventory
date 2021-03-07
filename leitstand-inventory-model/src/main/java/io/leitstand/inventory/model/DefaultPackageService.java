@@ -18,7 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.model.Package.findByName;
 import static io.leitstand.inventory.model.Package_Version.findPackageVersion;
-import static io.leitstand.inventory.service.PackageInfo.newPackageInfo;
+import static io.leitstand.inventory.service.PackageVersions.newPackageVersions;
 import static io.leitstand.inventory.service.PackageVersionRef.newPackageVersionRef;
 import static io.leitstand.inventory.service.PackageVersionInfo.newPackageVersionInfo;
 import static io.leitstand.inventory.service.QualifiedPackageName.newQualifiedPackageName;
@@ -36,7 +36,7 @@ import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.db.DatabaseService;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.model.Service;
-import io.leitstand.inventory.service.PackageInfo;
+import io.leitstand.inventory.service.PackageVersions;
 import io.leitstand.inventory.service.PackageService;
 import io.leitstand.inventory.service.PackageVersionRef;
 import io.leitstand.inventory.service.PackageVersionInfo;
@@ -93,7 +93,7 @@ public class DefaultPackageService implements PackageService {
 	}
 
 	@Override
-	public PackageInfo getPackage(String org, String name, String ext) {
+	public PackageVersions getPackage(String org, String name, String ext) {
 		Package pkg = repository.execute(findByName(org, 
 										            name,
 										            ext,
@@ -111,9 +111,9 @@ public class DefaultPackageService implements PackageService {
 						 .build());
 		}
 		
-		return newPackageInfo()
+		return newPackageVersions()
 			   .withOrganization(pkg.getOrganization())
-			   .withName(pkg.getPackageName())
+			   .withPackageName(pkg.getPackageName())
 			   .withVersions(versions)
 			   .build();
 		

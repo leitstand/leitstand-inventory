@@ -39,6 +39,10 @@ import static io.leitstand.inventory.service.ElementPhysicalInterfaceData.newPhy
 import static io.leitstand.inventory.service.ElementPhysicalInterfaceSubmission.newPhysicalInterfaceSubmission;
 import static io.leitstand.inventory.service.ElementPhysicalInterfaces.newPhysicalInterfaces;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.ElementServiceContext.newElementServiceContext;
+import static io.leitstand.inventory.service.ElementServiceStack.newElementServiceStack;
+import static io.leitstand.inventory.service.ElementServiceSubmission.newElementServiceSubmission;
+import static io.leitstand.inventory.service.ElementServices.newElementServices;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 import static io.leitstand.inventory.service.EnvironmentInfo.newEnvironmentInfo;
@@ -57,6 +61,8 @@ import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.RoutingInstanceName.routingInstance;
+import static io.leitstand.inventory.service.ServiceName.serviceName;
+import static io.leitstand.inventory.service.ServiceType.DAEMON;
 import static io.leitstand.inventory.service.Version.version;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.containsExactly;
 import static java.util.Arrays.asList;
@@ -80,43 +86,45 @@ import org.junit.Test;
 
 public class ElementValueObjectTest {
     
-    private static final String              ALIAS             = "alias";
-    private static final String              CATEGORY          = "category";
-    private static final InterfaceName       IFP_NAME          = interfaceName("ifp-0/0/1");
-    private static final InterfaceName       IFL_NAME          = interfaceName("ifl-0/0/1/1/1");
-    private static final InterfaceName       IFC_NAME          = interfaceName("ifc-0/0/1/1");
-    private static final String              VENDOR_TYPE       = "vendor-type";
-    private static final String              SOFTWARE_REV      = "software-rev";
-    private static final String              SERIALNUMBER      = "serial";
-    private static final ModuleName          MODULE_NAME       = moduleName("module");
-    private static final ModuleName          PARENT_MODULE     = moduleName("parent_module");
-    private static final String              MODULE_CLASS      = "module-class";
-    private static final String              MODEL_NAME        = "model-name";
-    private static final String              MANUFACTURER_NAME = "manufacturer";
-    private static final String              LOCATION          = "location";
-    private static final String              HARDWARE_REV      = "hardware-rev";
-    private static final String              FIRMWARE_REV      = "firmware-rev";
-    private static final ElementGroupId      GROUP_ID          = randomGroupId();
-    private static final ElementGroupName    GROUP_NAME        = groupName("group");
-    private static final ElementGroupType    GROUP_TYPE        = groupType("pod");
-    private static final ElementId           ELEMENT_ID        = randomElementId();
-    private static final ElementName         ELEMENT_NAME      = elementName("element");
-    private static final ElementAlias        ELEMENT_ALIAS     = elementAlias(ALIAS);
-    private static final ElementRoleName     ELEMENT_ROLE      = elementRoleName("role");
-    private static final String              DESCRIPTION       = "description";
-    private static final Date                DATE_MODIFIED     = new Date();
-    private static final Date                BUILD_DATE        = new Date();
-    private static final PlatformId          PLATFORM_ID       = randomPlatformId();
-    private static final PlatformName        PLATFORM_NAME     = platformName("platform");
-    private static final MACAddress          MAC_ADDRESS       = macAddress("11:22:33:44:55:66");
-    private static final ImageId             IMAGE_ID          = randomImageId();
-    private static final ImageName           IMAGE_NAME        = imageName("image");
-    private static final ImageType           IMAGE_TYPE        = imageType("image-type");
-    private static final EnvironmentId       ENVIRONMENT_ID    = randomEnvironmentId();
-    private static final EnvironmentName     ENVIRONMENT_NAME  = environmentName("environment");
-    private static final String              ASSET_ID          = "asset-id";
-    private static final Date                DATE_MANUFACTURED = new Date();
-    private static final RoutingInstanceName INSTANCE_NAME     = routingInstance("instance");
+    private static final String              ALIAS                = "alias";
+    private static final String              CATEGORY             = "category";
+    private static final InterfaceName       IFP_NAME             = interfaceName("ifp-0/0/1");
+    private static final InterfaceName       IFL_NAME             = interfaceName("ifl-0/0/1/1/1");
+    private static final InterfaceName       IFC_NAME             = interfaceName("ifc-0/0/1/1");
+    private static final String              VENDOR_TYPE          = "vendor-type";
+    private static final String              SOFTWARE_REV         = "software-rev";
+    private static final String              SERIALNUMBER         = "serial";
+    private static final ModuleName          MODULE_NAME          = moduleName("module");
+    private static final ModuleName          PARENT_MODULE        = moduleName("parent_module");
+    private static final String              MODULE_CLASS         = "module-class";
+    private static final String              MODEL_NAME           = "model-name";
+    private static final String              MANUFACTURER_NAME    = "manufacturer";
+    private static final String              LOCATION             = "location";
+    private static final String              HARDWARE_REV         = "hardware-rev";
+    private static final String              FIRMWARE_REV         = "firmware-rev";
+    private static final ElementGroupId      GROUP_ID             = randomGroupId();
+    private static final ElementGroupName    GROUP_NAME           = groupName("group");
+    private static final ElementGroupType    GROUP_TYPE           = groupType("pod");
+    private static final ElementId           ELEMENT_ID           = randomElementId();
+    private static final ElementName         ELEMENT_NAME         = elementName("element");
+    private static final ElementAlias        ELEMENT_ALIAS        = elementAlias(ALIAS);
+    private static final ElementRoleName     ELEMENT_ROLE         = elementRoleName("role");
+    private static final String              DESCRIPTION          = "description";
+    private static final Date                DATE_MODIFIED        = new Date();
+    private static final Date                BUILD_DATE           = new Date();
+    private static final PlatformId          PLATFORM_ID          = randomPlatformId();
+    private static final PlatformName        PLATFORM_NAME        = platformName("platform");
+    private static final MACAddress          MAC_ADDRESS          = macAddress("11:22:33:44:55:66");
+    private static final ImageId             IMAGE_ID             = randomImageId();
+    private static final ImageName           IMAGE_NAME           = imageName("image");
+    private static final ImageType           IMAGE_TYPE           = imageType("image-type");
+    private static final EnvironmentId       ENVIRONMENT_ID       = randomEnvironmentId();
+    private static final EnvironmentName     ENVIRONMENT_NAME     = environmentName("environment");
+    private static final String              ASSET_ID             = "asset-id";
+    private static final Date                DATE_MANUFACTURED    = new Date();
+    private static final RoutingInstanceName INSTANCE_NAME        = routingInstance("instance");
+    private static final ServiceName         SERVICE_NAME         = serviceName("service");
+    private static final String              SERVICE_CONTEXT_TYPE = "service_context_type";
 
     
     
@@ -674,7 +682,60 @@ public class ElementValueObjectTest {
         assertThat(ifl.getOperationalState(),is(DOWN));
         assertThat(ifl.getRoutingInstance(),is(INSTANCE_NAME));
         assertThat(ifl.getVlans(),containsExactly(vlan));
-                                                
+    }
+    
+    @Test
+    public void create_element_service_submission() {
+        JsonObject context = mock(JsonObject.class);
+        ElementServiceReference parent = mock(ElementServiceReference.class);
+        
+        ElementServiceSubmission service = newElementServiceSubmission()
+                                           .withAdministrativeState(UP)
+                                           .withOperationalState(DOWN)
+                                           .withParentService(parent)
+                                           .withServiceContext(context)
+                                           .withServiceContextType(SERVICE_CONTEXT_TYPE)
+                                           .withServiceName(SERVICE_NAME)
+                                           .withServiceType(DAEMON)
+                                           .build();
+                                           
+        assertThat(service.getAdministrativeState(),is(UP));
+        assertThat(service.getOperationalState(),is(DOWN));
+        assertThat(service.getParentService(),is(parent));
+        assertThat(service.getServiceContext(),is(context));
+        assertThat(service.getServiceContextType(),is(SERVICE_CONTEXT_TYPE));
+        assertThat(service.getServiceName(),is(SERVICE_NAME));
+        assertThat(service.getServiceType(),is(DAEMON));
+    }
+    
+    @Test
+    public void create_element_service_context() {
+        ServiceSettings service = mock(ServiceSettings.class);
+        ElementServiceContext context = newElementServiceContext()
+                                        .withService(service)
+                                        .build();
+        
+        assertThat(context.getService(),is(service));
+    }
+    
+    @Test
+    public void create_element_services() {
+        ServiceInfo serviceInfo = mock(ServiceInfo.class);
+        ElementServices services = newElementServices()
+                                   .withServices(serviceInfo)
+                                   .build();
+        
+        assertThat(services.getServices(),containsExactly(serviceInfo));
+    }
+    
+    @Test
+    public void create_element_service_stack() {
+        ServiceInfo serviceInfo = mock(ServiceInfo.class);
+        ElementServiceStack stack = newElementServiceStack()
+                                    .withServices(serviceInfo)
+                                    .build();
+        
+        assertThat(stack.getServices(),containsExactly(serviceInfo));
     }
     
 }

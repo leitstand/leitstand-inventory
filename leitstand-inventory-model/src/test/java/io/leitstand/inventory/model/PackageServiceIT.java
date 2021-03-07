@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import io.leitstand.commons.EntityNotFoundException;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.inventory.service.PackageInfo;
+import io.leitstand.inventory.service.PackageVersions;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.Version;
 
@@ -51,9 +51,9 @@ public class PackageServiceIT extends InventoryIT{
 	public void create_package_with_revision(){
 		service.storePackageVersion(initialVersion(IT_PKG_ORG, IT_PKG_NAME ,IT_PKG_EXT));
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
+			PackageVersions pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(1,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 		});
@@ -104,9 +104,9 @@ public class PackageServiceIT extends InventoryIT{
 			service.storePackageVersion(newMajorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
+			PackageVersions pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 			assertEquals(new Version(2,0,0),pkg.getVersions().get(1).getPackageVersion());
@@ -122,9 +122,9 @@ public class PackageServiceIT extends InventoryIT{
 			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
+			PackageVersions pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getPackageVersion());
@@ -140,9 +140,9 @@ public class PackageServiceIT extends InventoryIT{
 			service.storePackageVersion(initialVersionPatch(IT_PKG_ORG, IT_PKG_NAME, IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
+			PackageVersions pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 			assertEquals(new Version(1,0,1),pkg.getVersions().get(1).getPackageVersion());
@@ -208,9 +208,9 @@ public class PackageServiceIT extends InventoryIT{
 			service.storePackageVersion(newMinorVersion(IT_PKG_ORG, IT_PKG_NAME,IT_PKG_EXT));
 		});
 		transaction(()->{
-			PackageInfo pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
+			PackageVersions pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(2,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 			assertEquals(new Version(1,1,0),pkg.getVersions().get(1).getPackageVersion());
@@ -219,7 +219,7 @@ public class PackageServiceIT extends InventoryIT{
 			beginTransaction();
 			pkg = service.getPackage(IT_PKG_ORG,IT_PKG_NAME,IT_PKG_EXT);
 			assertEquals(IT_PKG_ORG,pkg.getOrganization());
-			assertEquals(IT_PKG_NAME,pkg.getName());
+			assertEquals(IT_PKG_NAME,pkg.getPackageName());
 			assertEquals(1,pkg.getVersions().size());
 			assertEquals(new Version(1,0,0),pkg.getVersions().get(0).getPackageVersion());
 		});

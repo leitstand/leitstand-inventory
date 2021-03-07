@@ -97,7 +97,6 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
-import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
@@ -367,10 +366,10 @@ public class DefaultImageService implements ImageService {
 	}
 
 	@Override
-	public ImageInfo removeImage(ImageId id) {
+	public void removeImage(ImageId id) {
 		Image image = repository.execute(findImageById(id));
 		if(image == null){
-			return null;
+			return;
 		}
 		long elementImageCount = repository.execute(countElementImageReferences(image));
 		if(elementImageCount > 0) {
@@ -402,7 +401,6 @@ public class DefaultImageService implements ImageService {
 								   image.getImageName()));
 		fire(newImageRemovedEvent(),
 			 info);
-		return info;
 	}
 
 	@Override

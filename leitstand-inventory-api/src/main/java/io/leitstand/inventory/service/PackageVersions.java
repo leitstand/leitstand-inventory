@@ -24,54 +24,48 @@ import javax.json.bind.annotation.JsonbProperty;
 
 
 /**
- * The <code>PackageInfo</code> consists of the package name, the organization that has issued the package 
- * and a list of existing package versions.
- * <p>
- * Every package is unambiguously identified by the name of the organization, that has published the package,
- * and the package name.
- * </p>
+ * All versions of a package.
  */
-
-public class PackageInfo {
+public class PackageVersions {
 
 	/**
-	 * Returns a new builder to create an immutable <code>PackageInfo</code> instance.
-	 * @return a new builder to create an immutable <code>PackageInfo</code> instance.
+	 * Returns a new builder for an immutable <code>PackageVersions</code> value object.
+	 * @return a new builder for an immutable <code>PackageVersions</code> value object.
 	 */
-	public static Builder newPackageInfo(){
+	public static Builder newPackageVersions(){
 		return new Builder();
 	}
 	
 	/**
-	 * A builder to create an immutable <code>PackageInfo</code> instance.
+	 * A builder for an immutable <code>PackageVersions</code> value object.
 	 */
 	public static class Builder{
 		
-		private PackageInfo data = new PackageInfo();
+		private PackageVersions data = new PackageVersions();
 		
 		/**
-		 * Sets the name of the organization which has published the package.
-		 * @param org - the name of the organization which has published the package.
+		 * Sets the name of the organization that has published the package.
+		 * @param organization the name of the organization that has published the package.
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withOrganization(String org){
-			data.org = org;
+		public Builder withOrganization(String organization){
+			data.organization = organization;
 			return this;
 		}
 		
 		/**
-		 * Sets the name of the package.
-		 * @param name - the package's name
+		 * Sets the package name.
+		 * @param name the package name
 		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withName(String name){
-			data.name = name;
+		public Builder withPackageName(String name){
+			data.packageName = name;
 			return this;
 		}
 		
 		/**
-		 * Sets a list of available versions for this package.
-		 * @param versions - the list of existing versions.
+		 * Sets the existing package versions.
+		 * @param versions the package versions.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withVersions(List<PackageVersionRef> versions){
@@ -80,12 +74,11 @@ public class PackageInfo {
 		}
 		
 		/**
-		 * Returns an immutable <code>PackageInfo</code> instance and
-		 * invalidates this builder. Subsequent invocations of the <code>build</code> method
-		 * or any other method of the builder will cause an <code>NullPointerException</code>.
-		 * @return an immutable <code>PackageInfo</code> instance.
+		 * Creates an immutable <code>PackageVersions</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+         * @return the immutable <code>PackageVersions</code> value object and invalidates this builder.
 		 */
-		public PackageInfo build(){
+		public PackageVersions build(){
 			try{
 				return data;
 			} finally {
@@ -96,9 +89,9 @@ public class PackageInfo {
 	}
 	
 	@JsonbProperty
-	private String org;
+	private String organization;
 	@JsonbProperty
-	private String name;
+	private String packageName;
 	@JsonbProperty
 	private List<PackageVersionRef> versions; 
 	
@@ -107,20 +100,20 @@ public class PackageInfo {
 	 * @return the name of the organization which has published this package.
 	 */
 	public String getOrganization() {
-		return org;
+		return organization;
 	}
 	
 	/**
-	 * Returns the name of this package.
-	 * @return the name ot this package.
+	 * Returns the package name.
+	 * @return the package name.
 	 */
-	public String getName() {
-		return name;
+	public String getPackageName() {
+		return packageName;
 	}
 	
 	/**
-	 * Returns an immutable list of versions of this package.
-	 * @return an immutable list of versions of this package.
+	 * Returns the package versions.
+	 * @return the package versions.
  	 */
 	public List<PackageVersionRef> getVersions() {
 		return unmodifiableList(versions);

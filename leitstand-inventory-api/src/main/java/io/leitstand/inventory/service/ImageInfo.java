@@ -450,7 +450,7 @@ public class ImageInfo extends ValueObject{
 	
 	/**
 	 * Returns the packages shipped with this image.
-	 * @returns the packages shipped with this image.
+	 * @return the packages shipped with this image.
 	 */
 	public List<PackageVersionInfo> getPackages() {
 		return unmodifiableList(packages);
@@ -522,7 +522,7 @@ public class ImageInfo extends ValueObject{
 	
 	/**
 	 * Returns the image category.
-     * @returns the image category.
+     * @return the image category.
 	 */
 	public String getCategory() {
 		return category;
@@ -538,7 +538,7 @@ public class ImageInfo extends ValueObject{
 	
 	/**
 	 * Returns the image checksums.
-	 * @returns the image checksums.
+	 * @return the image checksums.
 	 */
 	public Map<String,String> getChecksums() {
 		return unmodifiableMap(checksums);

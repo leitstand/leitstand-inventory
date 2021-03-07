@@ -188,8 +188,8 @@ public class PhysicalInterface extends ValueObject implements Comparable<Physica
 	
 	/**
 	 * Compares two physical interfaces by their name.
-	 * @param ifp the physical inteface to be compare with this physical interface.
-	 * @returns a negative, zero or positive integer depending on whether this interface is lower, equal or greater than the specified physical interface.
+	 * @param ifp the physical interface to be compare with this physical interface.
+	 * @return a negative, zero or positive integer depending on whether this interface is lower, equal or greater than the specified physical interface.
 	 */
 	@Override
 	public int compareTo(PhysicalInterface ifp) {

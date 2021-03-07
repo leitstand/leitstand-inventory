@@ -33,40 +33,28 @@ import io.leitstand.commons.model.ValueObject;
 
 
 /**
- * The <code>PackageVersionInfo</code> contains the informations of a revision
- *  of a router software package.
- * <p>
- * Each package is unambiguously identified by the organization which has published
- * the package, the name of the package and the installed revision of the
- * package.
- * </p>
- * <p>
- * For each revision additional informations such as the build date, the build-id,
- * the SHA256 checksum and optionally an exiper date are availabe.
- * </p>
+ * Package version metadata.
  */
-
 public class PackageVersionInfo extends ValueObject {
 	
 	/**
-	 * Returns a builder to create a new <code>PackageVersionInfo</code>.
-	 * @return a builder to create a new <code>PackageVersionInfo</code>.
+	 * Returns a builder for an immutable <code>PackageVersionInfo</code> value object.
+	 * @return a builder for an immutable <code>PackageVersionInfo</code> value object. 
 	 */
 	public static Builder newPackageVersionInfo(){
 		return new Builder();
 	}
 
 	/**
-	 * A builder to create an immutable <code>PackageVersionInfo</code> instance.
+	 * A builder for an immutable <code>PackageVersionInfo</code> value object.
 	 */
 	public static class Builder {
 		
 		private PackageVersionInfo rev = new PackageVersionInfo();
 		
 		/**
-		 * Sets the name of the organization which has published the deployed package.The name must not have more than
-		 * 128 characters and may only contain small letters, digits, dots (.), hyphens (-) and underscores (_).
-		 * @param org - the name of the organization.
+		 * Sets the organization that has published this package.
+		 * @param org the organization name.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withOrganization(String org){
@@ -75,19 +63,22 @@ public class PackageVersionInfo extends ValueObject {
 			return this;
 		}
 		
-		/**
-		 * Sets the name of the deployed package. The name must not have more than
-		 * 128 characters and may only contain small letters, digits, dots (.), hyphens (-) and underscores (_).
-		 * @param organization - the name of the package.
-		 * @return a reference to this builder to continue object creation.
-		 */
+        /**
+         * Sets the package name.
+         * @param name the package name.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withPackageName(String name){
 			assertNotInvalidated(getClass(), rev);
 			rev.packageName = name;
 			return this;
 		}
 
-		
+        /**
+         * Sets the package extension.
+         * @param ext the package extension.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withPackageExtension(String ext){
 			assertNotInvalidated(getClass(), rev);
 			rev.packageExtension = ext;
@@ -95,8 +86,8 @@ public class PackageVersionInfo extends ValueObject {
 		}
 		
 		/**
-		 * Sets the revision of the package.
-		 * @param rev - the revision of the deployed package.
+		 * Sets the package version
+		 * @param version the package version
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPackageVersion(Version version){
@@ -106,8 +97,8 @@ public class PackageVersionInfo extends ValueObject {
 		}
 
 		/**
-		 * Sets the build date of the deployed package.
-		 * @param rev - the build date of the deployed package.
+		 * Sets package build date.
+		 * @param buildDate the build date.
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withBuildDate(Date buildDate){
@@ -116,6 +107,11 @@ public class PackageVersionInfo extends ValueObject {
 			return this;
 		}
 
+		/**
+		 * Sets the build ID.
+		 * @param buildId the build ID.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withBuildId(String buildId) {
 			assertNotInvalidated(getClass(), rev);
 			rev.buildId = buildId;
@@ -123,9 +119,9 @@ public class PackageVersionInfo extends ValueObject {
 		}
 		
 		/**
-		 * Sets available package checksums
-		 * @param checksums the available checksums
-		 * @return a reference to this builder to continue object creation
+		 * Sets package checksums.
+		 * @param checksums the package checksums.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withChecksums(Map<String,String> checksums){
 			assertNotInvalidated(getClass(), rev);
@@ -134,10 +130,9 @@ public class PackageVersionInfo extends ValueObject {
 		}
 
 		/**
-		 * Returns an immutable <code>PackageVersionInfo</code> instance and
-		 * invalidates this builder. Subsequent invocations of the <code>build</code> method
-		 * or any other method of the builder will cause an <code>NullPointerException</code>.
-		 * @return an immutable <code>PackageVersionInfo</code> instance.
+		 * Creates an immutable <code>PackageVersionInfo</code> value object and
+		 * invalidates this builder. Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>PackageVersionInfo</code> value object.
 		 */
 		public PackageVersionInfo build(){
 			try{
@@ -209,6 +204,10 @@ public class PackageVersionInfo extends ValueObject {
 		return buildDate;
 	}
 	
+	/**
+	 * Returns the package extension.
+	 * @return the package extension.
+	 */
 	public String getPackageExtension() {
 		return packageExtension;
 	}
@@ -221,6 +220,10 @@ public class PackageVersionInfo extends ValueObject {
 		return unmodifiableMap(checksums);
 	}
 	
+	/**
+	 * Returns the build ID.
+	 * @return the build ID.
+	 */
 	public String getBuildId() {
 		return buildId;
 	}
