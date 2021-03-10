@@ -128,8 +128,8 @@ public class PlatformResource {
 	
 	@PUT
 	@Path("/{platform}")
-	public Response storePlatforms(@Valid @PathParam("platform") PlatformName platformName, 
-								   @Valid PlatformSettings settings){
+	public Response storePlatform(@Valid @PathParam("platform") PlatformName platformName, 
+								  @Valid PlatformSettings settings){
 		if(service.storePlatform(settings)) {
 			return created(messages,
 						   "%s", 
@@ -140,7 +140,7 @@ public class PlatformResource {
 
 	@DELETE
 	@Path("/{platform:"+UUID_PATTERN+"}")
-	public Response deletePlatform(@PathParam("platform") @Valid PlatformId platformId) {
+	public Response removePlatform(@PathParam("platform") @Valid PlatformId platformId) {
 		service.removePlatform(platformId);
 		return success(messages);
 	}

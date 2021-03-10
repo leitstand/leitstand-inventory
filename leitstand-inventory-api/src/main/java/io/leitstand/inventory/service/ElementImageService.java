@@ -33,7 +33,7 @@ import javax.persistence.EntityNotFoundException;
  * to be pulled by the element if a software upgrade is available.
  * @see ElementImageState
  */
-public interface ElementImagesService {
+public interface ElementImageService {
 
 	/**
 	 * Returns the image state for the specified image on the specified element.

@@ -65,6 +65,7 @@ import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.ReleaseName;
+import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
 
 @RunWith(Parameterized.class)
@@ -111,6 +112,7 @@ public class StringScalarConverterTest {
 			{new PlatformChipsetNameConverter(),		"unit-chipset",			new PlatformChipsetName("unit-chipset")},
 			{new RackNameConverter(),			 		"unit-rack",			new RackName("unit-rack")},
 			{new ReleaseNameConverter(),                "unit-release",         new ReleaseName("unit-release")},
+			{new RoutingInstanceNameConverter(),        "unit-instance",        new RoutingInstanceName("unit-instance")}
 		};
 		return asList(converters);
 	}

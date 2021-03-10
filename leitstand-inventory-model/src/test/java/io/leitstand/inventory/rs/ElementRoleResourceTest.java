@@ -17,9 +17,13 @@ package io.leitstand.inventory.rs;
 
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.inventory.service.ElementRoleId.randomElementRoleId;
+import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
 import static io.leitstand.inventory.service.ElementRoleSettings.newElementRoleSettings;
+import static io.leitstand.inventory.service.ReasonCode.IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE;
+import static io.leitstand.testing.ut.Answers.ROLLBACK;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -32,6 +36,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementRoleId;
@@ -43,10 +48,11 @@ import io.leitstand.inventory.service.ElementRoleSettings;
 public class ElementRoleResourceTest {
 	
 	private static final ElementRoleId ROLE_ID = randomElementRoleId();
-	private static final ElementRoleName ROLE_NAME = ElementRoleName.valueOf("role");
+	private static final ElementRoleName ROLE_NAME = elementRoleName("role");
 	private static final ElementRoleSettings ROLE = newElementRoleSettings()
 													.withRoleId(ROLE_ID)
-													.withRoleName(ROLE_NAME).build();
+													.withRoleName(ROLE_NAME)
+													.build();
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -61,7 +67,7 @@ public class ElementRoleResourceTest {
 	private ElementRoleResource resource = new ElementRoleResource();
 	
 	@Test
-	public void throw_UnprocessableEntityException_when_attempting_to_change_element_role_id() {
+	public void cannot_change_role_id() {
 		exception.expect(UnprocessableEntityException.class);
 		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
 		
@@ -69,16 +75,51 @@ public class ElementRoleResourceTest {
 	}
 	
 	@Test
-	public void send_created_when_a_new_role_has_been_added() {
+	public void report_unique_key_constraint_violation() {
+	    exception.expect(UniqueKeyConstraintViolationException.class);
+	    exception.expect(reason(IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE));
+
+	    when(service.storeElementRole(ROLE)).then(ROLLBACK);
+	    when(service.getElementRole(ROLE_NAME)).thenReturn(ROLE);
+	    
+	    resource.storeRole(ROLE);
+	}
+	
+	@Test
+	public void add_role() {
 		when(service.storeElementRole(ROLE)).thenReturn(true);
 		Response response = resource.storeRole(ROLE);
 		assertEquals(201,response.getStatus());
 	}
 	
 	@Test
-	public void send_success_when_an_existing_role_was_updated() {
+	public void store_role() {
 		when(service.storeElementRole(ROLE)).thenReturn(true);
 		Response response = resource.storeRole(ROLE);
 		assertEquals(201,response.getStatus());
 	}
+	
+	@Test
+	public void get_element_role_by_id() {
+	    when(service.getElementRole(ROLE_ID)).thenReturn(ROLE);
+	    assertEquals(ROLE,resource.getElementRole(ROLE_ID));
+	}
+	
+	@Test
+	public void get_element_role_by_name() {
+	    when(service.getElementRole(ROLE_NAME)).thenReturn(ROLE);
+	    assertEquals(ROLE,resource.getElementRole(ROLE_NAME));
+	}
+
+    @Test
+    public void remove_element_role_by_id() {
+        resource.removeElementRole(ROLE_ID);
+        verify(service).removeElementRole(ROLE_ID);
+    }
+    
+    @Test
+    public void remove_element_role_by_name() {
+        resource.removeElementRole(ROLE_NAME);
+        verify(service).removeElementRole(ROLE_NAME);
+    }
 }

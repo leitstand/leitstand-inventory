@@ -27,6 +27,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0392I_ELEMENT_ENVIRONMENT_REMOVED;
+import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_EXISTS;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -56,6 +57,7 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
@@ -185,12 +187,20 @@ public class ElementEnvironmentResource {
 												   env.getEnvironmentId());
 		}
 		
-		boolean created = service.storeElementEnvironment(elementId, 
-														  env);
-		if(created) {
-			return created(messages,environmentId);
-		}
-		return success(messages);
+		try {
+    		boolean created = service.storeElementEnvironment(elementId, 
+    														  env);
+    		if(created) {
+    			return created(messages,environmentId);
+    		}
+    		return success(messages);
+		} catch(Exception e) {
+		    givenRollbackException(e)
+	        .whenEntityExists(() -> service.getElementEnvironment(elementId, env.getEnvironmentName()))
+	        .thenThrow(new UniqueKeyConstraintViolationException(IVT0393E_ELEMENT_ENVIRONMENT_EXISTS,
+	                                                             key("environment_name", env.getEnvironmentName())));
+	        throw e;
+	    }	
 	}
 
 	@PUT
@@ -205,53 +215,34 @@ public class ElementEnvironmentResource {
 												   env.getEnvironmentId());
 		}
 		
-		boolean created = service.storeElementEnvironment(elementName, 
-														  env);
-		if(created) {
-			return created(messages,environmentId);
-		}
-		return success(messages);
+		try {
+    		boolean created = service.storeElementEnvironment(elementName, 
+    														  env);
+    		if(created) {
+    			return created(messages,environmentId);
+    		}
+    		return success(messages);
+		} catch(Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getElementEnvironment(elementName, env.getEnvironmentName()))
+            .thenThrow(new UniqueKeyConstraintViolationException(IVT0393E_ELEMENT_ENVIRONMENT_EXISTS,
+                                                                 key("environment_name", env.getEnvironmentName())));
+            throw e;
+        }
 	}
 	
 	@POST
 	@Path("/{element}/environments")
 	public Response storeElementEnvironment(@Valid @PathParam("element") ElementName elementName,
 										   	@Valid Environment env) {
-	    
-	    try {
-    		boolean created = service.storeElementEnvironment(elementName, 
-    														  env);
-    		if(created) {
-    			return created(messages,env.getEnvironmentId());
-    		}
-    		return success(messages);
-	    } catch(Exception e) {
-	        givenRollbackException(e)
-	        .whenEntityExists(() -> service.getElementEnvironment(elementName, env.getEnvironmentName()))
-	        .thenThrow(new UniqueKeyConstraintViolationException(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
-	                                                             key("environment_name", env.getEnvironmentName())));
-	        throw e;
-	    }
+	    return storeElementEnvironment(elementName,env.getEnvironmentId(),env);
 	}
 
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/environments")
 	public Response storeElementEnvironment(@Valid @PathParam("element") ElementId elementId,
 										   	@Valid Environment env) {
-	    try {
-    		boolean created = service.storeElementEnvironment(elementId, 
-    														  env);
-    		if(created) {
-    			return created(messages,env.getEnvironmentId());
-    		}
-    		return success(messages);
-	    } catch(Exception e) {
-            givenRollbackException(e)
-            .whenEntityExists(() -> service.getElementEnvironment(elementId, env.getEnvironmentName()))
-            .thenThrow(new UniqueKeyConstraintViolationException(IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
-                                                                 key("environment_name", env.getEnvironmentName())));
-            throw e;
-        }
+	    return storeElementEnvironment(elementId,env.getEnvironmentId(),env);
 	}
 
 	

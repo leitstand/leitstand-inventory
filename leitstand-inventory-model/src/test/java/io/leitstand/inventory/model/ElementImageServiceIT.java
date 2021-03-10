@@ -65,7 +65,7 @@ import io.leitstand.inventory.service.ElementImage;
 import io.leitstand.inventory.service.ElementImageData;
 import io.leitstand.inventory.service.ElementImageReference;
 import io.leitstand.inventory.service.ElementImages;
-import io.leitstand.inventory.service.ElementImagesService;
+import io.leitstand.inventory.service.ElementImageService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ElementSettings;
@@ -182,7 +182,7 @@ public class ElementImageServiceIT extends InventoryIT{
 		return image;
 	}
 	
-	private ElementImagesService service;
+	private ElementImageService service;
 	
 	@Before
 	public void initTestEnvironment() {
