@@ -78,7 +78,7 @@ public class DefaultElementGroupSettingsServiceTest {
 	public void attempt_to_remove_a_non_existent_group_raises_no_error() {
 		ElementGroupId groupId = randomGroupId();
 		
-		service.remove(groupId);
+		service.removeElementGroup(groupId);
 		
 		verify(groups).tryFetchElementGroup(groupId);
 		verify(inventory,never()).removeElementGroup(any(ElementGroup.class));
@@ -92,7 +92,7 @@ public class DefaultElementGroupSettingsServiceTest {
 		ElementGroupSettings settings = newTestElementGroup();
 		when(groups.tryFetchElementGroup(settings.getGroupId())).thenReturn(group);
 		
-		service.remove(settings.getGroupId());
+		service.removeElementGroup(settings.getGroupId());
 		
 		verify(groups).tryFetchElementGroup(settings.getGroupId());
 		verify(inventory).removeElementGroup(group);
@@ -105,7 +105,7 @@ public class DefaultElementGroupSettingsServiceTest {
 		ElementGroupSettings settings = newTestElementGroup();
 		when(groups.tryFetchElementGroup(settings.getGroupType(), settings.getGroupName())).thenReturn(group);
 		
-		service.remove(settings.getGroupType(),settings.getGroupName());
+		service.removeElementGroup(settings.getGroupType(),settings.getGroupName());
 				
 		verify(groups).tryFetchElementGroup(settings.getGroupType(), settings.getGroupName());
 		verify(inventory).removeElementGroup(group);

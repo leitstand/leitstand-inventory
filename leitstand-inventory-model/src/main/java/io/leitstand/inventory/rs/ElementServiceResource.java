@@ -56,7 +56,7 @@ import io.leitstand.security.auth.Scopes;
 @Path("/elements")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-public class ElementServicesResource{
+public class ElementServiceResource{
 
 	
 	@Inject
@@ -68,7 +68,7 @@ public class ElementServicesResource{
 	@GET
 	@Path("/{id:"+UUID_PATTERN+"}/services/{service_name}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
-	public ElementServiceStack getElementServiceTopology(@Valid @PathParam("id") ElementId id, 
+	public ElementServiceStack getElementServiceStack(@Valid @PathParam("id") ElementId id, 
 	                                                     @Valid @PathParam("service_name") ServiceName serviceName){
 		return service.getElementServiceStack(id,serviceName);
 	}
@@ -77,7 +77,7 @@ public class ElementServicesResource{
 	@GET
 	@Path("/{name}/services/{service_name}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
-	public ElementServiceStack getElementServiceTopology(@Valid @PathParam("name") ElementName name, 
+	public ElementServiceStack getElementServiceStack(@Valid @PathParam("name") ElementName name, 
 	                                                     @Valid @PathParam("service_name") ServiceName serviceName){
 		return service.getElementServiceStack(name,serviceName);
 	}

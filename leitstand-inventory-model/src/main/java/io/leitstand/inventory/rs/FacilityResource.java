@@ -60,8 +60,22 @@ public class FacilityResource {
 	
 	@POST
 	public Response storeFacility(@Valid FacilitySettings settings) {
-		return storeFacility(settings.getFacilityId(),settings);
-	}
+        try {
+            boolean created = service.storeFacility(settings);
+            if(created) {
+                return created(messages,settings.getFacilityId());
+            }
+            return success(messages);
+        } catch (Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getFacility(settings.getFacilityName()))
+            .thenThrow(new UniqueKeyConstraintViolationException(IVT0603E_FACILITY_NAME_ALREADY_IN_USE, 
+                                                                 key("facility_name", 
+                                                                     settings.getFacilityName())));
+            
+            throw e;
+        }	
+    }
 	
 	@PUT
 	@Path("/{facility:"+UUID_PATTERN+"}")
@@ -73,42 +87,16 @@ public class FacilityResource {
 												   facilityId, 
 												   settings.getFacilityId());
 		} 
-		try {
-			boolean created = service.storeFacility(settings);
-			if(created) {
-				return created(messages,facilityId);
-			}
-			return success(messages);
-		} catch (Exception e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getFacility(settings.getFacilityName()))
-			.thenThrow(new UniqueKeyConstraintViolationException(IVT0603E_FACILITY_NAME_ALREADY_IN_USE, 
-																 key("facility_name", 
-																	 settings.getFacilityName())));
-			
-			throw e;
-		}
+		
+		return storeFacility(settings);
+
 	}
 	
 	@PUT
 	@Path("/{facility}")
 	public Response storeFacility(@Valid @PathParam("facility") FacilityName facilityName, 
 								  @Valid FacilitySettings settings) {
-		try {
-			boolean created = service.storeFacility(settings);
-			if(created) {
-				return created(messages,facilityName);
-			}
-			return success(messages);
-		} catch (Exception e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getFacility(settings.getFacilityName()))
-			.thenThrow(new UniqueKeyConstraintViolationException(IVT0603E_FACILITY_NAME_ALREADY_IN_USE, 
-																 key("facility_name", 
-																	 settings.getFacilityName())));
-			
-			throw e;
-		}
+	    return storeFacility(settings);
 	}
 	
 	@DELETE

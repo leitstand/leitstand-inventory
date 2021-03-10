@@ -52,7 +52,7 @@ public interface ElementGroupSettingsService {
 	 * An element group is empty if it contains no elements.
 	 * @param groupId the group ID
 	 */
-	void remove(ElementGroupId groupId);
+	void removeElementGroup(ElementGroupId groupId);
 
 	/**
      * Removes an empty element group. 
@@ -60,7 +60,7 @@ public interface ElementGroupSettingsService {
      * @param groupType the group type
      * @param groupName the group name
      */
-	void remove(ElementGroupType groupType,
+	void removeElementGroup(ElementGroupType groupType,
 				ElementGroupName groupName);
 
 }

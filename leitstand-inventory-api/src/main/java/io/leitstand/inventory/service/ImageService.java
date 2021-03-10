@@ -17,6 +17,8 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import io.leitstand.commons.ConflictException;
 
 /**
@@ -45,6 +47,14 @@ public interface ImageService {
 	 * @throws EntityNotFoundException if the image does not exist.
 	 */
 	ImageInfo getImage(ImageId imageId);
+	
+	/**
+	 * Returns the image metadata.
+	 * @param imageName the image name
+	 * @return the image metadata
+	 * @throws EntityNotFoundException if the image does not exist.
+	 */
+	ImageInfo getImage(ImageName imageName);
 	
 	/**
 	 * Returns the image utilization statistics.
@@ -108,6 +118,13 @@ public interface ImageService {
 	 */
 	void removeImage(ImageId imageId);
 	
+    /**
+     * Removes an image from the inventory.
+     * @param imageName the image name.
+     * @throws ConflictException if the image cannot be removed.
+     */
+    void removeImage(@Valid ImageName imageName);
+	
 	/**
 	 * Stores an image. 
 	 * Returns <code>true</code> if a new image is added and <code>false</code> if an existing image is updated.
@@ -125,5 +142,7 @@ public interface ImageService {
 	 */
 	void updateImageState(ImageId imageId, 
 						  ImageState state);
+
+
 
 }

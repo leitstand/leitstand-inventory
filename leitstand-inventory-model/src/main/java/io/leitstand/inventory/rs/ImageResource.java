@@ -15,8 +15,10 @@
  */
 package io.leitstand.inventory.rs;
 
+import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
+import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.commons.rs.Responses.created;
 import static io.leitstand.commons.rs.Responses.success;
@@ -24,6 +26,7 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_IMAGE;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ImageQuery.newQuery;
+import static io.leitstand.inventory.service.ReasonCode.IVT0206E_IMAGE_NAME_ALREADY_IN_USE;
 import static java.util.Collections.emptyList;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -43,6 +46,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
@@ -52,6 +56,7 @@ import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
+import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
@@ -68,7 +73,7 @@ import io.leitstand.security.auth.Scopes;
 @Path("/images")
 @Consumes(APPLICATION_JSON)
 @Produces(APPLICATION_JSON)
-public class ImagesResource {
+public class ImageResource {
 
 	@Inject
 	private ImageService service;
@@ -107,10 +112,18 @@ public class ImagesResource {
 	@POST
 	@Path("/")
 	public Response storeImage(@Valid ImageInfo image) {
-		if(service.storeImage(image)) {
-			return created(messages,"/images/%s",image.getImageId());
-		}
-		return success(messages);
+        try {
+            if(service.storeImage(image)) {
+                return created(messages,"/images/%s",image.getImageId());
+            }
+            return success(messages);
+        } catch (Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getImage(image.getImageName()))
+            .thenThrow(new UniqueKeyConstraintViolationException(IVT0206E_IMAGE_NAME_ALREADY_IN_USE,
+                                                                 key("image_name", image.getImageName())));
+            throw e;
+        }
 	}
 	
 	@PUT
@@ -123,11 +136,7 @@ public class ImagesResource {
 												   id,
 												   image.getImageId());
 		}
-		
-		if(service.storeImage(image)) {
-			return created(messages,"/images/%s",image.getImageId());
-		}
-		return success(messages);
+		return storeImage(image);
 	}
 	
 	@PUT
@@ -175,10 +184,17 @@ public class ImagesResource {
 	
 	@DELETE
 	@Path("/{image_id:"+UUID_PATTERN+"}")
-	public Response removeImage(@PathParam("image_id") ImageId id){
+	public Response removeImage(@Valid @PathParam("image_id") ImageId id){
 		service.removeImage(id);
 		return success(messages);
 	}
+
+	@DELETE
+	@Path("/{image_name}")
+    public Response removeImage(@Valid @PathParam("image_name") ImageName imageName) {
+        service.removeImage(imageName);
+        return success(messages);        
+    }
 	
 	@GET
 	@Path("/_types")
@@ -196,5 +212,7 @@ public class ImagesResource {
 	    }
 		return service.getImageVersions(imageType);
 	}
+
+
 	
 }

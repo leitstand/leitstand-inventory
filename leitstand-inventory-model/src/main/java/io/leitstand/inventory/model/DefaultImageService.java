@@ -79,6 +79,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
@@ -97,6 +98,7 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
+import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
@@ -626,6 +628,21 @@ public class DefaultImageService implements ImageService {
         ElementGroup group = groups.fetchElementGroup(groupType,groupName);
         return getElementGroupImageStatistics(imageId, group);
 
+    }
+
+    @Override
+    public ImageInfo getImage(ImageName imageName) {
+        Image image = repository.execute(Image.findImageByName(imageName));
+        if(image == null) {
+            throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageName);
+        }
+        return imageInfo(image);
+    }
+
+    @Override
+    public void removeImage(@Valid ImageName imageName) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
