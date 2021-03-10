@@ -17,6 +17,7 @@ import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementI
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
 import static io.leitstand.inventory.service.ImageType.imageType;
+import static io.leitstand.inventory.service.ImageExport.newImageExport;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
@@ -52,6 +53,7 @@ public class ImageValueObjectsTest {
     private static final ElementId           ELEMENT_ID         = randomElementId();
     private static final ElementName         ELEMENT_NAME       = elementName("element");
     private static final ElementAlias        ELEMENT_ALIAS      = elementAlias("alias");
+    private static final Date                DATE_CREATED       = new Date();
     
     @Test
     public void create_role_image() {
@@ -235,5 +237,18 @@ public class ImageValueObjectsTest {
         assertThat(state.getElementRole(),is(ELEMENT_ROLE));
         assertThat(state.getElementImageState(),is(ACTIVE));
         
+    }
+    
+    @Test
+    public void create_element_images_export() {
+        ImageInfo image = mock(ImageInfo.class);
+        
+        ImageExport export = newImageExport()
+                              .withDateCreated(DATE_CREATED)
+                              .withImages(asList(image))
+                              .build();
+        
+        assertThat(export.getDateCreated(),is(DATE_CREATED));
+        assertThat(export.getImages(),containsExactly(image));
     }
 }

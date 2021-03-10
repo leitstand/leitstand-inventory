@@ -16,6 +16,7 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static java.util.regex.Pattern.compile;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +31,7 @@ import io.leitstand.inventory.jsonb.PeriodAdapter;
 @JsonbTypeAdapter(PeriodAdapter.class)
 public class Period extends CompositeValue{
 
-	private static final Pattern PATTERN = Pattern.compile("([1-9]\\d*)([yMwdhms])");
+	private static final Pattern PATTERN = compile("([1-9]\\d*)([yMwdhms])");
 	
 	public enum Unit {
 		YEARS("y"),

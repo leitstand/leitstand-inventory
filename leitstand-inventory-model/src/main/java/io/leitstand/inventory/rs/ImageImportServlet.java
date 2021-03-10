@@ -20,11 +20,11 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 
 import io.leitstand.inventory.service.ImageExportService;
-import io.leitstand.inventory.service.ImagesExport;
+import io.leitstand.inventory.service.ImageExport;
 
 @WebServlet(urlPatterns="/api/v1/import/images")
 @MultipartConfig()
-public class ImageImportServlet extends BaseImportServlet<ImagesExport>{
+public class ImageImportServlet extends BaseImportServlet<ImageExport>{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,8 +32,8 @@ public class ImageImportServlet extends BaseImportServlet<ImagesExport>{
 	private ImageExportService service;
 
 	@Override
-	protected Class<ImagesExport> getImportType() {
-		return ImagesExport.class;
+	protected Class<ImageExport> getImportType() {
+		return ImageExport.class;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class ImageImportServlet extends BaseImportServlet<ImagesExport>{
 	}
 
 	@Override
-	protected void doImport(ImagesExport data) {
+	protected void doImport(ImageExport data) {
 		service.importImages(data);
 	}	
 }
