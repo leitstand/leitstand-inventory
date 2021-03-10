@@ -109,18 +109,7 @@ public class ElementSettingsResource{
 												   settings.getElementId());
 		}
 		
-		try {
-			if(service.storeElementSettings(settings)){
-				return created(messages,"/elements/%s/settings",element);
-			}
-			return success(messages);
-		} catch (Exception e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
-			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
-																  key("element_name", settings.getElementName())));
-			throw e;
-		}
+		return storeElementSettings(settings);
 	}
 	
 	
@@ -135,18 +124,7 @@ public class ElementSettingsResource{
 	@Path("/{element}/settings")
 	public Response storeElementSettings(@PathParam("element") ElementName element, 
 										 @Valid ElementSettings settings){
-		try {
-			if(service.storeElementSettings(settings)){
-				return created(messages,"/elements/%s/settings",element);
-			}
-			return success(messages);
-		} catch (Exception e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
-			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
-																  key("element_name", settings.getElementName())));
-			throw e;
-		}
+	    return storeElementSettings(settings);
 	}
 	
 	
@@ -157,8 +135,18 @@ public class ElementSettingsResource{
 	 */
 	@POST
 	public Response storeElementSettings(@Valid ElementSettings settings){
-		return storeElementSettings(settings.getElementId(),
-							 		settings);
+        try {
+            if(service.storeElementSettings(settings)){
+                return created(messages,"/elements/%s/settings",settings.getElementId());
+            }
+            return success(messages);
+        } catch (Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getElementSettings(settings.getElementName()))
+            .thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
+                                                                  key("element_name", settings.getElementName())));
+            throw e;
+        }
 	}
 
 }
