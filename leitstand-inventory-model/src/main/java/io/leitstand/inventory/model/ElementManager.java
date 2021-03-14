@@ -193,6 +193,16 @@ public class ElementManager {
 						    element.getElementRoleName(),
 						    element.getElementName(),
 						    element.getElementId()));
+		
+		int removedImages = repository.execute(Element_Image.removeElementImages(element));
+        LOG.fine(()->format("Removed %d images of %s %s (%s)",
+                            removedImages,
+                            element.getElementRoleName(),
+                            element.getElementName(),
+                            element.getElementId()));
+		
+		
+		
 		Rack_Item rackItem = repository.execute(Rack_Item.findRackItem(element));
 		if(rackItem != null) {
 			LOG.fine(()->format("Remove rack item %d from rack %s (%s)",

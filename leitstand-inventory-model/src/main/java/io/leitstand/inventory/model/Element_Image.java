@@ -30,7 +30,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -38,6 +37,7 @@ import javax.persistence.Temporal;
 
 import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
+import io.leitstand.commons.model.Update;
 import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
@@ -47,14 +47,13 @@ import io.leitstand.inventory.service.Version;
 @Entity
 @Table(schema="inventory", name="element_image")
 @IdClass(Element_ImagePK.class)
-@NamedQueries({
 @NamedQuery(name="Element_Image.findImages", 
 			query="SELECT ei FROM Element_Image ei "+
-				  "WHERE ei.element=:element"),
+				  "WHERE ei.element=:element")
 @NamedQuery(name="Element_Image.findImageById", 
 			query="SELECT ei FROM Element_Image ei "+
 				  "WHERE ei.element=:element "+
-				  "AND ei.image.uuid=:uuid"),
+				  "AND ei.image.uuid=:uuid")
 @NamedQuery(name="Element_Image.findImageByName", 
 			query="SELECT ei FROM Element_Image ei "+
 				  "WHERE ei.element=:element "+
@@ -62,12 +61,12 @@ import io.leitstand.inventory.service.Version;
 				  "AND ei.image.imageName=:name "+
 				  "AND ei.image.major=:major "+
 				  "AND ei.image.minor=:minor "+
-				  "AND ei.image.patch=:patch "),
+				  "AND ei.image.patch=:patch ")
 @NamedQuery(name="Element_Image.findCachedImages",
 			query= "SELECT ei.element FROM Element_Image ei "+
 			       "WHERE ei.imageState=io.leitstand.inventory.service.ElementImageState.CACHED AND ei.image.uuid=:imageId")
-
-})
+@NamedQuery(name="Element_Image.removeElementImages",
+            query="DELETE FROM Element_Image ei WHERE ei.element=:element")
 public class Element_Image {
 	
 	public static Query<List<Element>> findImageCaches(ImageId imageId) {
@@ -92,6 +91,12 @@ public class Element_Image {
 					   .setParameter("uuid",imageId.toString())
 					   .getSingleResult();
 	}
+	
+    public static Update removeElementImages(Element element) {
+        return em -> em.createNamedQuery("Element_Image.removeElementImages",Element_Image.class)
+                       .setParameter("element", element)
+                       .executeUpdate();
+    }
 	
 	
 	@OneToOne
@@ -207,5 +212,6 @@ public class Element_Image {
 	public void setZtp(boolean ztp) {
         this.ztp = ztp;
     }
+
 	
 }
