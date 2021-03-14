@@ -52,7 +52,7 @@ public class DefaultCloneElementService implements CloneElementService{
 			// Acquire a new element ID
 			return db.getSingleResult(prepare("UPDATE leitstand.sequence "+
 					  					      "SET count = count + 1 "+ 
-											  "WHERE name = 'ID' "+
+											  "WHERE name = 'id' "+
 											  "RETURNING count"),
 											  rs -> rs.getLong(1));
 		}
