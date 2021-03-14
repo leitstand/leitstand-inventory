@@ -554,6 +554,13 @@ export class Element extends Resource {
 				   .POST(record);
 	}
 	
+	cloneElement(params,cloneRequest){
+	    return this.json("/api/v1/elements/{{&element}}/_clone",
+	                     this._cfg,
+	                     params)
+	               .POST(cloneRequest);
+	}
+	
 }
 
 //TODO Documentation
