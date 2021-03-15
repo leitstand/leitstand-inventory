@@ -218,8 +218,6 @@ public class ElementManager {
 							element.getElementName(),
 							element.getElementId()));
 		
-		messages.add(createMessage(IVT0302I_ELEMENT_REMOVED,
-								   element.getElementName()));
 		remove(element);
 	}
 	
