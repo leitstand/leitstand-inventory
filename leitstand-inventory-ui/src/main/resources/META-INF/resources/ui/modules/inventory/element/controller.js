@@ -115,6 +115,10 @@ const elementController = function(){
 				element.saveSettings(this.location.params,
 				                     settings);
 			},
+			"confirm-remove-element":function(){
+			    this.navigate({'view':'confirm-remove-element.html',
+			                   '?':this.location.params});
+			},
 			"remove-element":function(){
 			    const params = this.location.params;
 				params.force = this.input("force").value();
