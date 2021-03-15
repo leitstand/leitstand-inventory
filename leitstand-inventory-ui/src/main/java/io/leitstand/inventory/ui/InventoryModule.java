@@ -79,7 +79,6 @@ public class InventoryModule  {
 			Contribution roleContrib      = contribution("role/menu.yaml");
 			Contribution facilityContrib  = contribution("facility/menu.yaml");
 			Contribution racksContrib	  = contribution("rack/menu.yaml");
-			Contribution toolsContrib     = contribution("tools/menu.yaml");
 			
 			return readModuleDescriptor(moduleDescriptor)
 				   .withContributions(podContrib,
@@ -90,8 +89,7 @@ public class InventoryModule  {
 						   			  platformContrib,
 						   			  roleContrib,
 						   			  facilityContrib,
-						   			  racksContrib,
-						   			  toolsContrib)
+						   			  racksContrib)
 					.build();
 		} catch (IOException e) {
 			LOG.severe(format("%s: Cannot process %s module descriptor. Reason: %s",
