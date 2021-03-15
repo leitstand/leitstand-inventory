@@ -143,24 +143,24 @@ public class DefaultCloneElementService implements CloneElementService{
 				
 		
 		// Copy management interfaces
-		db.executeUpdate(prepare("INSERT INTO inventory.element_management_interface (element_id, name, protocol, port, path) "+
-								 "SELECT ?, name, protocol, port, path "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_management_interface (element_id, name, hostname, protocol, port, path) "+
+								 "SELECT ?, name, hostname, protocol, port, path "+
 								 "FROM inventory.element_management_interface "+
 								 "WHERE element_id = ?",
 								 id,
 								 source.getId()));
 
 		// Copy configuration series
-		db.executeUpdate(prepare("INSERT INTO inventory.element_config (element_id, uuid, name, contenttype, config, tsmodified, comment) "+
-								 "SELECT ?, random_uuid(), name, contenttype, config, tsmodified, comment "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_config (element_id, uuid, name, state, comment, contenttype, contenthash, config, creator, tsmodified) "+
+								 "SELECT ?, random_uuid(), name, 'CANDIDATE', comment, contenttype, contenthash, config, creator, tsmodified "+
 								 "FROM inventory.element_config "+
 								 "WHERE element_id = ?",
 								 id,
 								 source.getId()));
 		
 		// Copy installed images
-		db.executeUpdate(prepare("INSERT INTO inventory.element_image (element_id, image_id, state) "+
-				 				 "SELECT ?, image_id, 'PULL' "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_image (element_id, image_id, state, ztp) "+
+				 				 "SELECT ?, image_id, 'PULL', 'Y'"+
 				 				 "FROM inventory.element_image "+
 				 				 "WHERE element_id = ? "+
 				 				 "AND state='ACTIVE'",
