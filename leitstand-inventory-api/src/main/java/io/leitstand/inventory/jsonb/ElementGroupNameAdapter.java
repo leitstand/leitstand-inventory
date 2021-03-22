@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ElementGroupName;
 
 public class ElementGroupNameAdapter implements JsonbAdapter<ElementGroupName,String> {
@@ -28,7 +29,7 @@ public class ElementGroupNameAdapter implements JsonbAdapter<ElementGroupName,St
 
 	@Override
 	public String adaptToJson(ElementGroupName v) throws Exception {
-		return ElementGroupName.toString(v);
+		return Scalar.toString(v);
 	}
 
 }

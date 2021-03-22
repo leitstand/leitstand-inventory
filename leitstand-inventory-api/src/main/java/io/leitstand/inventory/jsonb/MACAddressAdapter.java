@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.MACAddress;
 
 public class MACAddressAdapter implements JsonbAdapter<MACAddress,String> {
@@ -28,7 +29,7 @@ public class MACAddressAdapter implements JsonbAdapter<MACAddress,String> {
 
 	@Override
 	public String adaptToJson(MACAddress v) throws Exception {
-		return MACAddress.toString(v);
+		return Scalar.toString(v);
 	}
 
 }

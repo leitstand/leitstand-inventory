@@ -21,43 +21,81 @@ import javax.validation.constraints.NotNull;
 import io.leitstand.commons.model.ValueObject;
 
 
+/**
+ * The definition of a service running on an element in the network.
+ */
 public class ServiceDefinition extends ValueObject {
 
+    /**
+     * Creates a builder for an immutable <code>ServiceDefinition</code> value object.
+     * @return a builder for an immutable <code>ServiceDefinition</code> value object.
+     */
 	public static Builder newServiceDefinition(){
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ServiceDefinition</code> value object.
+	 */
 	public static class Builder {
 		
 		private ServiceDefinition info = new ServiceDefinition();
 
-		public Builder withServiceId(ServiceId id){
-			info.serviceId = id;
+		/**
+		 * Sets the service ID.
+		 * @param serviceId the service ID.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withServiceId(ServiceId serviceId){
+			info.serviceId = serviceId;
 			return this;
 		}
 		
-		public Builder withServiceName(ServiceName name){
-			info.serviceName = name;
+		/**
+		 * Sets the service name.
+		 * @param serviceName the service name.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withServiceName(ServiceName serviceName){
+			info.serviceName = serviceName;
 			return this;
 		}
 
+		/**
+		 * Sets the service display name.
+		 * @param displayName the service display name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDisplayName(String displayName){
 			info.displayName = displayName;
 			return this;
 		}
 		
-
+		/**
+		 * Sets the service description.
+		 * @param description the service description.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDescription(String description){
 			info.description= description;
 			return this;
 		}
 		
-
-		public Builder withServiceType(ServiceType type){
-			info.serviceType = type;
+		/**
+		 * Sets the service type.
+		 * @param serviceType the service type.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withServiceType(ServiceType serviceType){
+			info.serviceType = serviceType;
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ServiceDefinition</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ServiceDefinition</code> value object.
+		 */
 		public ServiceDefinition build(){
 			try{
 				return info;
@@ -65,7 +103,6 @@ public class ServiceDefinition extends ValueObject {
 				this.info = null;
 			}
 		}
-
 		
 	}
 	
@@ -83,18 +120,42 @@ public class ServiceDefinition extends ValueObject {
 	
 	private String description;
 	
+	/**
+	 * Returns the service ID.
+	 * @return the service ID.
+	 */
+	public ServiceId getServiceId() {
+        return serviceId;
+    }
+	
+	/**
+	 * Returns the service name.
+	 * @return the service name.
+	 */
 	public ServiceName getServiceName() {
 		return serviceName;
 	}
 	
+	/**
+	 * Returns the service display name.
+	 * @return the service display name.
+	 */
 	public String getDisplayName() {
 		return displayName;
 	}
 	
+	/**
+	 * Returns the service description.
+	 * @return the service description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 	
+	/**
+	 * Returns the service type.
+	 * @return the service type.
+	 */
 	public ServiceType getServiceType() {
 		return serviceType;
 	}

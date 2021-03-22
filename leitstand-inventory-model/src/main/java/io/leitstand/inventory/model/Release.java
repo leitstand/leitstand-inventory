@@ -4,13 +4,11 @@ import static io.leitstand.inventory.service.ReleaseId.releaseId;
 import static io.leitstand.inventory.service.ReleaseState.CANDIDATE;
 import static io.leitstand.inventory.service.ReleaseState.RELEASE;
 import static io.leitstand.inventory.service.ReleaseState.SUPERSEDED;
-import static javax.persistence.EnumType.STRING;
 
 import java.util.List;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;

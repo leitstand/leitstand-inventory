@@ -18,21 +18,20 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
 /**
- * Provides all information of all field replaceable units of a certain element.
+ * A element hardware module.
  */
-
 public class ElementModule extends BaseElementEnvelope {
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementFieldReplaceableUnit</code> instance.
-	 * @return a builder to create an immutable <code>ElementFieldReplaceableUnit</code> instance.
+	 * Creates a builder for an immutable <code>ElementModule</code> value object.
+	 * @return a builder for an immutable <code>ElementModule</code> value object.
 	 */
 	public static Builder newElementModule() {
 		return new Builder();
 	}
 
 	/**
-	 * The builder to create an immutable <code>ElementFieldReplaceableUnit</code> instance.
+     * A builder for an immutable <code>ElementModule</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementModule, Builder> {
 
@@ -42,17 +41,17 @@ public class ElementModule extends BaseElementEnvelope {
 		
 		/**
 		 * Sets the module data.
-		 * @param builder the module data builder
-		 * @return a reference to this builder to continue with object creation
+		 * @param builder the module data builder.
+		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withUnit(ModuleData.Builder builder){
+		public Builder withModule(ModuleData.Builder builder){
 			return withModule(builder.build());
 		}
 		
 		/**
 		 * Sets the module data.
-		 * @param module the module data
-		 * @return a reference to this builder to continue with object creation
+		 * @param module the module data.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withModule(ModuleData module){
 			assertNotInvalidated(getClass(), object);
@@ -65,8 +64,8 @@ public class ElementModule extends BaseElementEnvelope {
 	private ModuleData module;
 
 	/**
-	 * Returns the unit data.
-	 * @return the unit data.
+	 * Returns the module data.
+	 * @return the module data.
 	 */
 	public ModuleData getModule(){
 		return module;

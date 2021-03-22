@@ -18,98 +18,101 @@ package io.leitstand.inventory.service;
 import javax.persistence.EntityNotFoundException;
 
 /**
- * A stateless and transactional service to manage the logical interfaces of an element.
+ * A service for managing logical interfaces.
  */
 public interface ElementLogicalInterfaceService {
 
 	/**
-	 * Finds all logical interfaces for the specified element matching the specified filter.
-	 * @param elementId the element ID
+	 * Finds all logical interfaces.
+	 * @param elementId the element ID.
 	 * @param filter a filter for interface name, IP prefix or VLAN ID.
-	 * @param limit 
+	 * @param limit the maximum number of returned matching interfaces.
 	 * @return the matching logical interfaces.
+	 * @throws EntityNotFoundException if the element does not exist.
 	 */
 	ElementLogicalInterfaces findLogicalInterfaces(ElementId elementId, String filter, int limit);
 	
 	
-	/**
-	 * Finds all logical interfaces for the specified element matching the specified filter.
-	 * @param elementId the element name
-	 * @param filter a filter for interface name, IP prefix or VLAN ID.
-	 * @param limit 
-	 * @param offset 
-	 * @return the matching logical interfaces.
-	 */
+    /**
+     * Finds all logical interfaces.
+     * @param elementName the element name.
+     * @param filter a filter for interface name, IP prefix or VLAN ID.
+     * @param limit the maximum number of returned matching interfaces.
+     * @return the matching logical interfaces.
+     * @throws EntityNotFoundException if the element does not exist.
+     */
 	ElementLogicalInterfaces findLogicalInterfaces(ElementName elementName, String filter, int limit);
 
 	
 	/**
-	 * Returns the logical interface with the specified name at the specified element.
-	 * @param elementId the element ID
-	 * @param name the interface name
-	 * @return the logical interface with the specified name at the specified element
-	 * @throws EntityNotFoundException if the requested element or interface does not exist. 
+	 * Returns the logical interface.
+	 * @param elementId the element ID.
+	 * @param name the interface name.
+	 * @return the logical interface with the specified name at the specified element.
+	 * @throws EntityNotFoundException if the element or interface does not exist. 
 	 */
 	ElementLogicalInterface getLogicalInterface(ElementId elementId, InterfaceName name);
 	
-	/**
-	 * Returns the logical interface with the specified name at the specified element.
-	 * @param elementName the element name
-	 * @param name the interface name
-	 * @return the logical interface with the specified name at the specified element
-	 * @throws EntityNotFoundException if the requested element or interface does not exist. 
-	 */
+    /**
+     * Returns the logical interface.
+     * @param elementName the element name.
+     * @param name the interface name.
+     * @return the logical interface with the specified name at the specified element.
+     * @throws EntityNotFoundException if the element or interface does not exist. 
+     */
 	ElementLogicalInterface getLogicalInterface(ElementName elementName, InterfaceName name);
 	
 	/**
-	 * Removes the specified logical interface from the specified element.
-	 * @param elementId the element ID
-	 * @param name the interface name
-	 * @throws EntityNotFoundException if the specified element does not exist
+	 * Removes a logical interface.
+	 * @param elementId the element ID.
+	 * @param name the interface name.
+	 * @throws EntityNotFoundException if the specified element does not exist.
 	 */
 	void removeLogicalInterface(ElementId elementId, InterfaceName name);
 	
-	/**
-	 * Removes the specified logical interface from the specified element.
-	 * @param elementId the element name
-	 * @param name the interface name
-	 * @throws EntityNotFoundException if the specified element does not exist
-	 */
+    /**
+     * Removes a logical interface.
+     * @param elementName the element name.
+     * @param name the interface name.
+     * @throws EntityNotFoundException if the specified element does not exist.
+     */
 	void removeLogicalInterface(ElementName elementName, InterfaceName name);
 	
 	/**
-	 * Stores a logical interface of the specified element.
-	 * @param elementId the element ID
-	 * @param ifc the logical interface
-	 * @return <code>true</code> if a new interface record was created and 
-	 * 		   <code>false</code> if an existing interface record was updated.
-	 * @throws EntityNotFoundException if the specified element does not exist
+	 * Stores a logical interface.
+	 * Returns <code>true</code> if a new interface is added and <code>false</code> if an existing interface is updated.
+	 * @param elementId the element ID.
+	 * @param ifc the logical interface.
+	 * @return <code>true</code> if a new interface record is added and 
+	 * 		   <code>false</code> if an existing interface record is updated.
+	 * @throws EntityNotFoundException if the element does not exist
 	 */
 	boolean storeLogicalInterface(ElementId elementId, ElementLogicalInterfaceSubmission ifc);
 	
-	/**
-	 * Stores a logical interface of the specified element.
-	 * @param elementName the element name
-	 * @param ifc the logical interface
-	 * @return <code>true</code> if a new interface record was created and 
-	 * 		   <code>false</code> if an existing interface record was updated.
-	 * @throws EntityNotFoundException if the specified element does not exist
-	 */
+    /**
+     * Stores a logical interface.
+     * Returns <code>true</code> if a new interface is added and <code>false</code> if an existing interface is updated.
+     * @param elementName the element name.
+     * @param ifc the logical interface.
+     * @return <code>true</code> if a new interface record is added and 
+     *         <code>false</code> if an existing interface record is updated.
+     * @throws EntityNotFoundException if the element does not exist
+     */
 	boolean storeLogicalInterface(ElementName elementName, ElementLogicalInterfaceSubmission ifc);
 
 	
 	/**
-	 * Removes all logical interfaces of the specified element.
+	 * Removes all logical interfaces from the element.
 	 * @param elementId the element ID
-	 * @param ifcs the logical interface of this element.
+	 * @throws EntityNotFoundException if the element does not exist.
 	 */
 	void removeLogicalInterfaces(ElementId elementId);
 	
-	/**
-	 * Removes all logical interfaces of the specified element.
-	 * @param elementName the element name
-	 * @param ifcs the logical interface of this element.
-	 */
+    /**
+     * Removes all logical interfaces from the element.
+     * @param elementName the element name
+     * @throws EntityNotFoundException if the element does not exist.
+     */
 	void removeLogicalInterfaces(ElementName elementName);
 	
 	

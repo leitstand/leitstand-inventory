@@ -16,24 +16,24 @@
 package io.leitstand.inventory.service;
 
 /**
- * A stateless and transactional service to fetch link information.
+ * A service to query element link information.
  */
 public interface ElementLinkService {
 
 	/** 
 	 * Returns all links of the specified element.
-	 * @param id - the element ID
+	 * @param elementId the element ID
 	 * @return all links of the specified element
-	 * @throws EntityNotFoundException if the specified element does not exist.
+	 * @throws EntityNotFoundException if the element does not exist.
 	 */
-	ElementLinks getElementLinks(ElementId id);
+	ElementLinks getElementLinks(ElementId elementId);
 
 	/** 
 	 * Returns all links of the specified element.
-	 * @param name - the element name
+	 * @param elementName the element name
 	 * @return all links of the specified element
 	 * @throws EntityNotFoundException if the specified element does not exist.
 	 */
-	ElementLinks getElementLinks(ElementName name);
+	ElementLinks getElementLinks(ElementName elementName);
 
 }

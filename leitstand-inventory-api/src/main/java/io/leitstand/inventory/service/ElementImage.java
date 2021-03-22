@@ -21,20 +21,20 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * A summary of an image installed on an element.
+ * Details of an image installed on an element or eligible for deployment.
  */
 public class ElementImage extends BaseElementEnvelope{
 
 	/**
-	 * Returns a new builder to create an immutable <code>ElementInstalledImage</code> instance.
-	 * @return a new builder to create an immutable <code>ElementInstalledImage</code> instance.
+	 * Returns a builder to create an immutable <code>ElementImage</code> value object.
+	 * @return a builder to create an immutable <code>ElementImage</code> value object.
 	 */
 	public static Builder newElementImage(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create a new immutable <code>ElementInstalledImage</code> instance.
+	 * A builder to create an immutable <code>ElementImage</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementImage, Builder>{
 		

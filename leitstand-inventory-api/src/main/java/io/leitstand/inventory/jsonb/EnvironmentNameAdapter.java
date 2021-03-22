@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.EnvironmentName;
 
 /**
@@ -37,11 +38,11 @@ public class EnvironmentNameAdapter implements JsonbAdapter<EnvironmentName, Str
 	/** 
 	 * Translates an <code>EnvironmentName</code> into a string.
 	 * @param name the environment name
-	 * @returns the string value or <code>null</code> if the specified name is <code>null</code>.
+	 * @return the string value or <code>null</code> if the specified name is <code>null</code>.
 	 */
 	@Override
 	public String adaptToJson(EnvironmentName name) throws Exception {
-		return EnvironmentName.toString(name);
+		return Scalar.toString(name);
 	}
 
 }

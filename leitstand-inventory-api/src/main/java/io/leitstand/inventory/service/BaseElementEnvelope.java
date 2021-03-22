@@ -23,18 +23,30 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * The <code>BaseElementEnvelope</code> contains the attributes shared with every element-related message.
+ */
 public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
+    /**
+     * Base class for all element-related value object builders.
+     * @param <T> the value object type
+     * @param <B> the value object builder
+     */
 	@SuppressWarnings("unchecked")
 	public static class BaseElementEnvelopeBuilder<T extends BaseElementEnvelope, B extends BaseElementEnvelope.BaseElementEnvelopeBuilder<T,B>> extends BaseElementGroupEnvelopeBuilder<T, B>{
 		
+	    /**
+	     * Creates a new base builder
+	     * @param object the object under construction
+	     */
 		protected BaseElementEnvelopeBuilder(T object) {
 			super(object);
 		}
 		
 		/**
 		 * Sets the element id.
-		 * @param id - the element id
+		 * @param id the element id
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withElementId(ElementId elementId) {
@@ -45,7 +57,7 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
 		/**
 		 * Sets the element name.
-		 * @param name - the element name
+		 * @param name the element name
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withElementName(ElementName elementName) {
@@ -56,7 +68,7 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
 		/**
 		 * Sets the element alias.
-		 * @param alias - the element alias
+		 * @param alias the element alias
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withElementAlias(ElementAlias elementAlias) {
@@ -67,7 +79,7 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 		
 		/**
 		 * Sets the element role.
-		 * @param role - the element role
+		 * @param role the element role
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withElementRole(ElementRoleName role){
@@ -110,6 +122,25 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
             }
             return (B) this;
         }
+        
+        /**
+         * Copies all setting of the given element envelope to this envelope.
+         * This is a convenience method 
+         * @param envelope
+         * @return
+         */
+        public B withElement(BaseElementEnvelope envelope) {
+            assertNotInvalidated(getClass(), object);
+            super.withGroup(envelope);
+            withAdministrativeState(envelope.getAdministrativeState());
+            withDateModified(envelope.getDateModified());
+            withElementAlias(envelope.getElementAlias());
+            withElementId(envelope.getElementId());
+            withElementName(envelope.getElementName());
+            withElementRole(envelope.getElementRole());
+            withOperationalState(envelope.getOperationalState());
+            return (B) this;
+        }
 		
 	}
 	
@@ -138,31 +169,58 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 
 	private Date dateModified; 
 
-	
+	/**
+	 * Returns the element ID
+	 * @return the element ID
+	 */
 	public ElementId getElementId() {
 		return elementId;
 	}
 	
+	/**
+	 * Returns the element name.
+	 * @return the element name.
+	 */
 	public ElementName getElementName() {
 		return elementName;
 	}
 	
+	/**
+	 * Returns the element role.
+	 * @return the element role.
+	 */
 	public ElementRoleName getElementRole() {
 		return elementRole;
 	}
 	
+	/**
+	 * Returns the element alias.
+	 * @return the element alias.
+	 */
 	public ElementAlias getElementAlias() {
 		return elementAlias;
 	}
 	
+	/**
+	 * Returns the element administrative state.
+	 * @return the element administrative state.
+	 */
 	public AdministrativeState getAdministrativeState() {
         return administrativeState;
     }
 	
+	/**
+	 * Returns the element operational state.
+	 * @return the element operational state.
+	 */
 	public OperationalState getOperationalState() {
         return operationalState;
     }
 	
+	/**
+	 * Returns the last modification date.
+	 * @return the last modification date.
+	 */
 	public Date getDateModified() {
         return dateModified;
     }

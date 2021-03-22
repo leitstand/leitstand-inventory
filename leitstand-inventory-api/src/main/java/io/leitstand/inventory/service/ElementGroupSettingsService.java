@@ -15,18 +15,52 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * A service for managing element group settings.
+ * <p>
+ * The <code>ElementGroupSettingsService</code> allows querying element groups as well as storing and removing element groups.
+ */
 public interface ElementGroupSettingsService {
 
+    /**
+     * Stores the general settings of an element group.
+     * @param settings the general group settings.
+     * @return <code>true</code> when a new element group was created and <code>false</code> if an existing group got updated.
+     */
 	boolean storeElementGroupSettings(ElementGroupSettings settings);
 
+	/**
+	 * Returns the general settings of the specified group.
+	 * @param id the group ID
+	 * @return the general group settings.
+	 * @throws EntityNotFoundException when the element group does not exist.
+	 */
 	ElementGroupSettings getGroupSettings(ElementGroupId id);
 
+	/**
+	 * Returns the general settings of the specified group.
+	 * @param groupType the group type
+	 * @param groupName the group name
+	 * @return the general group settings
+	 * @throws EntityNotFoundException when the element group does not exist.
+	 */
 	ElementGroupSettings getGroupSettings(ElementGroupType groupType,
 										  ElementGroupName groupName);
 
-	void remove(ElementGroupId id);
+	/**
+	 * Removes an empty element group. 
+	 * An element group is empty if it contains no elements.
+	 * @param groupId the group ID
+	 */
+	void removeElementGroup(ElementGroupId groupId);
 
-	void remove(ElementGroupType groupType,
+	/**
+     * Removes an empty element group. 
+     * An element group is empty if it contains no elements.
+     * @param groupType the group type
+     * @param groupName the group name
+     */
+	void removeElementGroup(ElementGroupType groupType,
 				ElementGroupName groupName);
 
 }

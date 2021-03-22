@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.InterfaceName;
 
 @Converter(autoApply=true)
@@ -25,7 +26,7 @@ public class InterfaceNameConverter implements AttributeConverter<InterfaceName,
 
 	@Override
 	public String convertToDatabaseColumn(InterfaceName attribute) {
-		return InterfaceName.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

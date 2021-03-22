@@ -28,30 +28,32 @@ import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.Valid;
 
 /**
- * A summary of all images element on a certain element.
+ * A summary of all images installed on an element or eligible for deployment.
  */
-
 public class ElementImages extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create a summary of element images.
-	 * @return a builder to create a summary of element images.
+	 * Creates a builder for an immutable <code>ElementImages</code> value object.
+	 * @return a builder for an immutable <code>ElementImages</code> value object.
 	 */
 	public static Builder newElementImages(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementInstalledImages</code> instance.
+	 * A builder to create an immutable <code>ElementImages</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementImages, Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementImages</code> value object.
+	     */
 		public Builder() {
 			super(new ElementImages());
 		}
 		
 		/**
-		 * Sets the list of element images.
+		 * Sets the element images.
 		 * @param images the element images.
 		 * @return a reference to this builder to continue with object creation
 		 */
@@ -62,8 +64,8 @@ public class ElementImages extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the list of element images.
-		 * @param images - the element images.
+		 * Sets the element images.
+		 * @param images he element images.
 		 * @return a reference to this builder to continue with object creation
 		 */		
 		public Builder withElementImages(ElementImageData... images) {
@@ -71,8 +73,8 @@ public class ElementImages extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the list of element images.
-		 * @param images - the element images.
+		 * Sets the element images.
+		 * @param images the element images.
 		 * @return a reference to this builder to continue with object creation
 		 */		
 		public Builder withElementImages(List<ElementImageData> images) {
@@ -82,8 +84,9 @@ public class ElementImages extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Returns an immutable list of element images.
-		 * @return an immutable list of element images.
+		 * Returns an immutable <code>ElementImages</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raises an exception.
+		 * @return an immutable <code>ElementImages</code> value object.
 		 */
 		@Override
 		public ElementImages build(){
@@ -102,8 +105,8 @@ public class ElementImages extends BaseElementEnvelope{
 	private List<ElementImageData> images;
 	
 	/**
-	 * Returns the information of the element image.
-	 * @return the information of the element image.
+	 * Returns the element images.
+	 * @return the element images
 	 */
 	public List<ElementImageData> getImages() {
 		return images;

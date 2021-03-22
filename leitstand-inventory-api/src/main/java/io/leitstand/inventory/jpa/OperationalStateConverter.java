@@ -20,6 +20,7 @@ import static io.leitstand.inventory.service.OperationalState.UNKNOWN;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.OperationalState;
 
 @Converter
@@ -39,7 +40,7 @@ public class OperationalStateConverter implements AttributeConverter<Operational
 		if(state == null){
 			return UNKNOWN.getValue();
 		}
-		return OperationalState.toString(state);
+		return Scalar.toString(state);
 	}
 	
 	public static OperationalState toOperationalState(String s) {

@@ -24,6 +24,7 @@ import static io.leitstand.inventory.model.DnsZone.countDnsZoneRecords;
 import static io.leitstand.inventory.model.DnsZone.findDnsZoneElements;
 import static io.leitstand.inventory.model.DnsZone.findDnsZones;
 import static io.leitstand.inventory.model.DnsZone.removeDnsZoneRecords;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.service.DnsRecordSet.newDnsRecordSet;
 import static io.leitstand.inventory.service.DnsZoneElement.newDnsZoneElement;
 import static io.leitstand.inventory.service.DnsZoneElements.newDnsZoneElements;
@@ -122,18 +123,8 @@ public class DnsZoneManager {
  		for(Map.Entry<Element, List<DnsRecordSet>> entry : elements.entrySet()  ) {
  			Element element = entry.getKey();
  			List<DnsRecordSet> sets = entry.getValue();
- 			records.add(newDnsZoneElement()
- 						.withGroupId(element.getGroupId())
- 						.withGroupType(element.getGroupType())
- 						.withGroupName(element.getGroupName())
- 						.withElementRole(element.getElementRoleName())
- 						.withElementId(element.getElementId())
- 						.withElementName(element.getElementName())
- 						.withElementAlias(element.getElementAlias())
- 						.withAdministrativeState(element.getAdministrativeState())
- 						.withOperationalState(element.getOperationalState())
- 						.withDateModified(element.getDateModified())
- 						.withDnsRecordSets(sets)
+ 			records.add(elementValueObject(newDnsZoneElement(), element)
+ 			            .withDnsRecordSets(sets)
  						.build());
  		}
  		

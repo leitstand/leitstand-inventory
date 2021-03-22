@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.IPv6Prefix;
 
 @Converter
@@ -25,7 +26,7 @@ public class IPv6PrefixConverter implements AttributeConverter<IPv6Prefix, Strin
 
 	@Override
 	public String convertToDatabaseColumn(IPv6Prefix attribute) {
-		return IPv6Prefix.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

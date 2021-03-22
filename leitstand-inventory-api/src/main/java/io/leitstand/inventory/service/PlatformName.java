@@ -6,7 +6,7 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.PlatformNameAdapter;
 
 /**
- * Unique name of an element (hardware) platform.
+ * Unique platform name.
  */
 @JsonbTypeAdapter(PlatformNameAdapter.class)
 public class PlatformName extends Scalar<String>{
@@ -14,9 +14,10 @@ public class PlatformName extends Scalar<String>{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates a <code>PlatformName</code>.
-	 * This method is an alias of the {@link #valueOf(String)} method that can be used for static imports.
+	 * Creates a <code>PlatformName</code> from the specified string.
 	 * Returns <code>null</code> if the specified name is <code>null</code> or an empty string.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method that can be used for static imports.
 	 * @param name the platform name
 	 * @return the platform name or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -24,12 +25,14 @@ public class PlatformName extends Scalar<String>{
 		return valueOf(name);
 	}
 	
-	/**
-	 * Creates a <code>PlatformName</code>.
-	 * Returns <code>null</code> if the specified name is <code>null</code> or an empty string.
-	 * @param name the platform name
-	 * @return the platform name or <code>null</code> if the specified string is <code>null</code> or empty.
-	 */
+    /**
+     * Creates a <code>PlatformName</code> from the specified string.
+     * Returns <code>null</code> if the specified name is <code>null</code> or an empty string.
+     * <p>
+     * This method is an alias for the {@link #valueOf(String)} method that can be used for static imports.
+     * @param name the platform name
+     * @return the platform name or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static final PlatformName valueOf(String name) {
 		return fromString(name,PlatformName::new);
 	}

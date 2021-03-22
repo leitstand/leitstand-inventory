@@ -21,16 +21,16 @@ import javax.inject.Inject;
 
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementImagesService;
 import io.leitstand.inventory.service.ElementImage;
 import io.leitstand.inventory.service.ElementImageReference;
 import io.leitstand.inventory.service.ElementImages;
+import io.leitstand.inventory.service.ElementImageService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageReference;
 
 @Service
-public class DefaultElementImagesService implements ElementImagesService {
+public class DefaultElementImagesService implements ElementImageService {
 
 	@Inject
 	private ElementProvider elements;

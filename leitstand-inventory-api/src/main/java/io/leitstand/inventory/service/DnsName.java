@@ -23,31 +23,62 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsNameAdapter;
 
+/**
+ * A DNS name.
+ */
 @JsonbTypeAdapter(DnsNameAdapter.class)
 public class DnsName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a DNS name from the specified string.
+	 * <p>
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param name the DNS name.
+	 * @return the DNS name.
+	 */
 	public static DnsName dnsName(String name) {
 		return valueOf(name);
 	}
 	
+	/**
+	 * Creates a DNS name from the specified string.
+	 * <p>
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param name the DNS name.
+	 * @return the DNS name.
+	 */
 	public static DnsName valueOf(String name) {
-		return Scalar.fromString(name, DnsName::new);
+		return fromString(name, DnsName::new);
 	}
 	
 	@Pattern(regexp=DNS_PATTERN, message="{dns_name.invalid}")
 	private String value;
 	
+	/**
+	 * Creates a new <code>DnsName</code>.
+	 * @param name the DNS name
+	 */
 	public DnsName(String name) {
 		this.value = name;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;
 	}
 
+	/**
+	 * Tests with this DNS name is suffixed by the given DNS zone name.
+	 * @param dnsZoneName the DNS zone name
+	 * @return <code>true</code> if this DNS name ends with the specified DNS zone name, <code>false</code> otherwise.
+	 */
 	public boolean endsWidth(DnsZoneName dnsZoneName) {
 		return getValue().endsWith(dnsZoneName.getValue());
 	}

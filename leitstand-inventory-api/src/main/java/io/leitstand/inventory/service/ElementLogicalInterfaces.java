@@ -28,30 +28,32 @@ import javax.json.bind.annotation.JsonbProperty;
 
 
 /**
- * A summary of all logical interfaces of a certain element.
+ * Logical interfaces of an element.
  */
-
 public class ElementLogicalInterfaces extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementLogicalInterfaces</code> instance.
-	 * @return a builder to create an immutable <code>ElementLogicalInterface</code> instance.
+	 * Returns a builder for an immutable <code>ElementLogicalInterfaces</code> value object.
+	 * @return a builder for an immutable <code>ElementLogicalInterface</code> value object.
 	 */
 	public static Builder newLogicalInterfaces(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementLogicalInterfaces</code> instance.
+	 * A builder for an immutable <code>ElementLogicalInterfaces</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementLogicalInterfaces,Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementLogicalInterfaces</code> value object.
+	     */
 		public Builder() {
 			super(new ElementLogicalInterfaces());
 		}
 		
 		/**
-		 * Sets all logical interfaces available on the element.
+		 * Sets the logical interfaces.
 		 * @param interfaces the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -62,7 +64,7 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 		}
 
 		/**
-		 * Sets all logical interfaces available on the element.
+		 * Sets the logical interfaces.
 		 * @param interfaces the logical interfaces
 		 * @return a reference to this builder to continue object creation.
 		 */
@@ -78,8 +80,8 @@ public class ElementLogicalInterfaces extends BaseElementEnvelope{
 	private List<ElementLogicalInterfaceData> logicalInterfaces = emptyList();
 	
 	/**
-	 * Returns an immutable list of all logical interfaces defined on the element.
-	 * @return the list of all logical interfaces
+	 * Returns the list of logical interfaces.
+	 * @return the list of logical interfaces
 	 */
 	public List<ElementLogicalInterfaceData> getLogicalInterfaces() {
 		return logicalInterfaces;

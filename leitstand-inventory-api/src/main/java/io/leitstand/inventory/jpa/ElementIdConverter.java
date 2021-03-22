@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ElementId;
 
 @Converter
@@ -25,7 +26,7 @@ public class ElementIdConverter implements AttributeConverter<ElementId, String>
 
 	@Override
 	public String convertToDatabaseColumn(ElementId attribute) {
-		return ElementId.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

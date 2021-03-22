@@ -16,8 +16,8 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
-import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv4;
-import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv6;
+import static io.leitstand.inventory.service.AddressInterface.AddressType.IPV4;
+import static io.leitstand.inventory.service.AddressInterface.AddressType.IPV6;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
@@ -31,13 +31,20 @@ import io.leitstand.inventory.jpa.IPvxPrefixConverter;
 
 /**
  * An address interface of a logical interface.
+ * <p>
+ * The interface addresses are provided in <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" title="Open Classless Inter-Domain Routing wikipedia article">CIDR notation</a>
  */
 @Embeddable
 public class AddressInterface extends ValueObject implements Serializable {
 
+    /**
+     * Supported address types.
+     */
 	public static enum AddressType{
-		IPv4,
-		IPv6
+	    /** IPv4 prefix. */
+		IPV4,
+		/** IPv6 prefix. */
+		IPV6
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -51,7 +58,7 @@ public class AddressInterface extends ValueObject implements Serializable {
 	}
 	
 	/**
-	 * The builder to create an <code>AddressInterface</code> instance.
+	 * A builder to create an <code>AddressInterface</code> instance.
 	 */
 	public static class Builder {
 		
@@ -66,13 +73,17 @@ public class AddressInterface extends ValueObject implements Serializable {
 			assertNotInvalidated(getClass(), ifc);
 			ifc.address = address;
 			if(address.isIPv4Prefix()) {
-				ifc.addressType = IPv4;
+				ifc.addressType = IPV4;
 			} else {
-				ifc.addressType = IPv6;
+				ifc.addressType = IPV6;
 			}
 			return this;
 		}
 
+		/**
+		 * Returns the <code>AddressInterface</code> instance.
+		 * @return the immutable <code>AddressInterface</code>.
+		 */
 		public AddressInterface build() {
 			try {
 				assertNotInvalidated(getClass(), ifc);

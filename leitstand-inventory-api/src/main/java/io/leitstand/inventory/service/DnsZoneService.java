@@ -17,18 +17,89 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+import io.leitstand.commons.ConflictException;
+
+/**
+ * A DNS zone management service.
+ * <p>
+ * The <code>DnsZoneService</code> allows querying DNS zones, reading DNS zone settings, storing DNS zone settings and removing DNS zones.
+ * The DNS are stored in the inventory and replicated to a DNS server.
+ */
 public interface DnsZoneService {
 
-	List<DnsZoneSettings> getDnsZones(String filter, int offset, int limit);
+    /**
+     * Filters DNS zones by their name and returns all matching DNS zones.
+     * @param filter regular expression to filter DNS zones by their name
+     * @param offset the read offset for matching zones
+     * @param limit the maximum number of returned matching zones
+     * @return list of matching DNS zones or an empty list if no matching zone exist
+     */
+    List<DnsZoneSettings> getDnsZones(String filter, int offset, int limit);
 	
+    /**
+     * Returns the DNS zone settings.
+     * @param zoneId the DNS zone ID
+     * @return the DNS zone settings.
+     * @throws EntityNotFoundException if the DNS zone does not exist.
+     */
 	DnsZoneSettings getDnsZoneSettings(DnsZoneId zoneId);
+	
+	/**
+	 * Returns the DNS zone settings.
+	 * @param zoneName the DNS zone name
+	 * @return the DNS zone settings.
+	 * @throws EntityNotFoundException if the DNS zone does not exist.
+	 */
 	DnsZoneSettings getDnsZoneSettings(DnsZoneName zoneName);
+	
+	/**
+	 * Returns the elements with DNS records for the specified DNS zone.
+	 * @param zoneId the DNS zone ID
+	 * @return the elements DNS records for the specified DNS zone
+	 * @throws EntityNotFoundException if the DNS zone does not exist.
+	 */
 	DnsZoneElements getDnsZoneElements(DnsZoneId zoneId);
+	
+	/**
+	 * Returns the elements with DNS records for the specified DNS zone.
+	 * @param zoneName the DNS zone name
+	 * @return the elements DNS records for the specified DNS zone.
+	 * @throws EntityNotFoundException if the DNS zone does not exist.
+	 */
 	DnsZoneElements getDnsZoneElements(DnsZoneName zoneName);
+	
+	/**
+	 * Stores DNS zone settings. 
+	 * Returns <code>true</code> if a new DNS zone is created and <code>false</code> otherwise.
+	 * @param settings the DNS zone settings.
+	 * @return <code>true</code> if a new DNS zone is created, <code>false</code> otherwise.
+	 */
 	boolean storeDnsZoneSettings(DnsZoneSettings settings);
+	
+	/**
+	 * Removes an empty DNS zone.
+	 * @param zoneId the DNS zone ID
+	 * @throws ConflictException if the DNS zone contains DNS records.
+	 */
 	void removeDnsZone(DnsZoneId zoneId);
+	
+	/**
+     * Removes an empty DNS zone.
+     * @param zoneName the DNS zone name
+     * @throws ConflictException if the DNS zone contains DNS records.
+     */
 	void removeDnsZone(DnsZoneName zoneName);
+
+	/**
+     * Removes a DNS zone and all its records.
+     * @param zoneId the DNS zone ID
+     */
 	void forceRemoveDnsZone(DnsZoneId zoneId);
+
+	/**
+     * Removes a DNS zone and all its records.
+     * @param zoneId the DNS zone ID
+     */
 	void forceRemoveDnsZone(DnsZoneName zoneName);
 	
 }

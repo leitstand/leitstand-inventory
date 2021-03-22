@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.jsonb;
 
+import static io.leitstand.inventory.service.Bandwidth.bandwidth;
+
 import javax.json.bind.adapter.JsonbAdapter;
 
 import io.leitstand.inventory.service.Bandwidth;
@@ -31,10 +33,7 @@ public class BandwidthAdapter implements JsonbAdapter<Bandwidth,String> {
 
 	@Override
 	public Bandwidth adaptFromJson(String v) throws Exception {
-		if(v == null || v.isEmpty()){
-			return null;
-		}
-		return new Bandwidth(v);	
+	    return bandwidth(v);
 	}
 
 }

@@ -15,9 +15,17 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * Enumeration of conceptual network planes.
+ */
 public enum Plane {
+    
+    /** Control plane contains the services to control the data plane elements.*/
 	CONTROL,
-	DATA, 
-	MANAGEMENT;
 	
+	/** Data plane contains the elements forming the transport network.*/
+	DATA, 
+	
+	/** Management plane contains the management systems.*/
+	MANAGEMENT;
 }

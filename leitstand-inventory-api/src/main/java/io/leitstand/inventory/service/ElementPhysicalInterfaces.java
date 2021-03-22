@@ -27,33 +27,34 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbProperty;
 
 /**
- * A summary of all physical interfaces of a certain element.
+ * The physcial interfaces of an element.
  */
-
 public class ElementPhysicalInterfaces extends BaseElementEnvelope{
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementPhysicalInterfaces</code> instance.
-	 * @return a builder to create an immutable <code>ElementPhysicalInterfaces</code> instance.
+	 * Creates a builder for an immutable <code>ElementPhysicalInterfaces</code> value object.
+	 * @return a builder for an immutable <code>ElementPhysicalInterfaces</code> value object.
 	 */
 	public static Builder newPhysicalInterfaces(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder of an immutable <code>ElementPhysicalInterfaces</code> instance.
+	 * A builder for an immutable <code>ElementPhysicalInterfaces</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementPhysicalInterfaces, Builder>{
 		
-		
+		/**
+		 * Creates a builder for an <code>ElementPhysicalInterfaces</code> value object.
+		 */
 		public Builder() {
 			super(new ElementPhysicalInterfaces());
 		}
 	
 		/**
-		 * Sets the physical interfaces of the element.
-		 * @param interfaces - the physical interfaces
-		 * @return a reference to this builder to continue object creation
+		 * Sets the physical interfaces.
+		 * @param interfaces the physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterface(ElementPhysicalInterfaceData.Builder... interfaces){
 			return withPhysicalInterfaces(stream(interfaces)
@@ -63,9 +64,9 @@ public class ElementPhysicalInterfaces extends BaseElementEnvelope{
 		
 		
 		/**
-		 * Sets the physical interfaces of the element.
-		 * @param interfaces - the physical interfaces
-		 * @return a reference to this builder to continue object creation
+		 * Sets the physical interfaces.
+		 * @param interfaces the physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterface(ElementPhysicalInterfaceData... interfaces){
 			assertNotInvalidated(getClass(), object);
@@ -73,9 +74,9 @@ public class ElementPhysicalInterfaces extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the physical interfaces of the element.
-		 * @param interfaces - the physical interfaces
-		 * @return a reference to this builder to continue object creation
+		 * Sets the physical interfaces.
+		 * @param interfaces the physical interfaces.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPhysicalInterfaces(List<ElementPhysicalInterfaceData> physicalInterface){
 			assertNotInvalidated(getClass(), object);
@@ -86,13 +87,12 @@ public class ElementPhysicalInterfaces extends BaseElementEnvelope{
 	}
 	
 	
-	
 	@JsonbProperty("physical_interfaces")
 	private List<ElementPhysicalInterfaceData> physicalInterfaces;
 	
 	/**
-	 * Returns an immutable list of all
-	 * @return
+	 * Returns the list of physical interfaces.
+	 * @return the list of physical interfaces.
 	 */
 	public List<ElementPhysicalInterfaceData> getPhysicalInterfaces() {
 		return physicalInterfaces;

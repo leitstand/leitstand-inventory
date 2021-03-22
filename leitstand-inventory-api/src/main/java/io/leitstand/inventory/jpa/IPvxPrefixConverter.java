@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.IPvxPrefix;
 
 /**
@@ -33,7 +34,7 @@ public class IPvxPrefixConverter implements AttributeConverter<IPvxPrefix, Strin
 	 */
 	@Override
 	public String convertToDatabaseColumn(IPvxPrefix address) {
-		return IPvxPrefix.toString(address);
+		return Scalar.toString(address);
 	}
 
 	/**

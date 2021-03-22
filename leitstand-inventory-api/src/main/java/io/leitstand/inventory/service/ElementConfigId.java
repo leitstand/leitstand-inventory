@@ -26,19 +26,38 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementConfigIdAdapter;
 
+/**
+ * Unique element configuration identifier.
+ */
 @JsonbTypeAdapter(ElementConfigIdAdapter.class)
 public class ElementConfigId extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a random element configuration ID.
+	 * @return a random element configuration ID.
+	 */
 	public static ElementConfigId randomConfigId() {
 		return valueOf(UUID.randomUUID().toString());
 	}
 	
+	/**
+	 * Creates an element configuration from the specified name.
+	 * <p>
+	 * An alias for the {@link #valueOf(String)} to improve readability.
+	 * @param configId the configuration ID
+	 * @return the element configuration ID
+	 */
 	public static ElementConfigId elementConfigId(String configId) {
 		return valueOf(configId);
 	}
 	
+	/**
+	 * Creates an element configuration ID from the specified string.
+	 * @param configId the configuration ID
+	 * @return the element configuration ID
+	 */
 	public static ElementConfigId valueOf(String configId) {
 		return fromString(configId,ElementConfigId::new);
 	}
@@ -47,10 +66,17 @@ public class ElementConfigId extends Scalar<String>{
 	@Pattern(message="{config_id.invalid}", regexp=UUID_PATTERN)
 	private String value;
 	
+	/**
+	 * Creates an element configuration ID
+	 * @param value the configuration ID
+	 */
 	public ElementConfigId(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

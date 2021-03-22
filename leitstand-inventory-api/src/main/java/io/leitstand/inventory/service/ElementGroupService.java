@@ -17,16 +17,32 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
+/**
+ * A transactional service to query element groups and group statistics.
+ */
 public interface ElementGroupService {
 
-	List<ElementGroupSettings> findGroups(ElementGroupType groupType,
+    /**
+     * Returns the group settings for all matching groups ordered by their name.
+     * @param groupType the group type
+     * @param filter a regular expression to filter groups by name
+     * @param offset the read offset for matching groups. The first offset matching groups are skipped and not included in the result.
+     * @param limit the maximum number of groups to return
+     * @return all matching groups ordered by their name
+     */
+    List<ElementGroupSettings> findGroups(ElementGroupType groupType,
 										  String filter, 
 										  int offset, 
-										  int items);
+										  int limit);
 
-	List<ElementGroupStatistics> getGroupStatistics(@Valid ElementGroupType groupType, 
+    /**
+     * Returns the group statistics for all matching groups. 
+     * The group statistics contain the number of elements grouped by operational state.
+     * @param groupType the group type
+     * @param filter a regular expression to filter groups by name.
+     * @return the group statistics for all matching groups.
+     */
+	List<ElementGroupStatistics> getGroupStatistics(ElementGroupType groupType, 
 													String filter);
 
 

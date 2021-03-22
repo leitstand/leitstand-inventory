@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.RoutingInstanceName;
 
 /**
@@ -33,13 +34,13 @@ public class RoutingInstanceNameConverter implements AttributeConverter<RoutingI
 	 */
 	@Override
 	public String convertToDatabaseColumn(RoutingInstanceName name) {
-		return RoutingInstanceName.toString(name);
+		return Scalar.toString(name);
 	}
 
 	/**
 	 * Creates a <code>RoutingInstanceName</code> from the specified string.
 	 * @param name the routing instance name
-	 * @returns the <code>RoutingInstanceName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @return the <code>RoutingInstanceName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	@Override
 	public RoutingInstanceName convertToEntityAttribute(String name) {

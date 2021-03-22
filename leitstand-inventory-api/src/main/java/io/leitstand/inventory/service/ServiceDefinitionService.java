@@ -17,6 +17,16 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+/**
+ * A service for querying service definitions.
+ * <p>
+ * A service definition describes a service or daemon running on an element.
+ */
 public interface ServiceDefinitionService {
+    /**
+     * Returns a list of all service definitions.
+     * @return a list of all service definitions.
+     */
 	List<ServiceDefinition> getServices();
+
 }

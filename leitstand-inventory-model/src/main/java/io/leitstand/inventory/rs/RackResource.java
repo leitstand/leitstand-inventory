@@ -15,13 +15,12 @@ import static io.leitstand.inventory.service.ElementId.elementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.FacilityId.facilityId;
 import static io.leitstand.inventory.service.FacilityName.facilityName;
-import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0809E_RACK_NAME_ALREADY_IN_USE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -179,7 +178,18 @@ public class RackResource {
 	
 	@POST
 	public Response storeRack(@Valid RackSettings settings) {
-		return storeRack(settings.getRackId(),settings);
+        try {
+            if(service.storeRack(settings)){
+                return created(messages,"/elements/%s/settings",settings.getRackId());
+            }
+            return success(messages);
+        } catch (Exception e) {
+            givenRollbackException(e)
+            .whenEntityExists(() -> service.getRackSettings(settings.getRackName()))
+            .thenThrow( new UniqueKeyConstraintViolationException(IVT0809E_RACK_NAME_ALREADY_IN_USE,
+                                                                  key("rack_name", settings.getRackName())));
+            throw e;
+        }
 	}
 	
 	@PUT
@@ -193,36 +203,14 @@ public class RackResource {
 												   settings.getRackId());
 		}
 		
-		try {
-			if(service.storeRack(settings)){
-				return created(messages,"/elements/%s/settings",settings.getRackId());
-			}
-			return success(messages);
-		} catch (PersistenceException e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getRackSettings(settings.getRackName()))
-			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
-																  key("element_name", settings.getRackName())));
-			throw e;
-		}
+		return storeRack(settings);
 	}
 	
 	@PUT
 	@Path("/{rack}/settings")
 	public Response storeRack(@Valid @PathParam("rack") RackName rackName,
 							  @Valid RackSettings settings) {
-		try {
-			if(service.storeRack(settings)){
-				return created(messages,"/elements/%s/settings",settings.getRackId());
-			}
-			return success(messages);
-		} catch (PersistenceException e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getRackSettings(settings.getRackName()))
-			.thenThrow( new UniqueKeyConstraintViolationException(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE,
-																  key("element_name", settings.getRackName())));
-			throw e;
-		}
+	    return storeRack(settings);
 	}
 	
 	@DELETE

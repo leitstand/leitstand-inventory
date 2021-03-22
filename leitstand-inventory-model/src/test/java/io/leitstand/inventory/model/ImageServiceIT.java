@@ -98,7 +98,6 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageService;
-import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
 import io.leitstand.inventory.service.ImageType;

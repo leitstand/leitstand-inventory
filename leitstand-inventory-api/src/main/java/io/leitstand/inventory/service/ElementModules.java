@@ -25,9 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A collection of all element modules.
+ * A collection of element hardware modules.
  */
-
 public class ElementModules extends BaseElementEnvelope{
 
 	/**

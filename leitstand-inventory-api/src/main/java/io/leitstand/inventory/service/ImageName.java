@@ -23,31 +23,53 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ImageNameAdapter;
 
 /**
- * The name of the software image of a certain {@link ImageType} for further classification of an image.
- * For example, the RBFS LXC image, is the RtBrick Full Stack LXC container image.
+ * Unique image name.
+ * <p>
+ * The image name can be modified provided the new image name is also unique.
+ * @see ImageId
  */
 @JsonbTypeAdapter(ImageNameAdapter.class)
 public class ImageName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates an <code>ImageName</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param name the image name.
+	 * @return the <code>ImageName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static ImageName imageName(String name) {
 		return valueOf(name);
 	}
 
-	
+	/**
+     * Creates an <code>ImageName</code> from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param name the image name.
+     * @return the <code>ImageName</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static ImageName valueOf(String name) {
-		return Scalar.fromString(name, ImageName::new);
+		return fromString(name, ImageName::new);
 	}
 	
 	@NotNull(message="{image_name.required}")
 	@Pattern(message="{image_name.invalid}", regexp="\\p{Print}{1,128}")
 	private String value;	
 	
+	/**
+	 * Creates an image name.
+	 * @param value the image name.
+	 */
 	public ImageName(String value) {
 		this.value = value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

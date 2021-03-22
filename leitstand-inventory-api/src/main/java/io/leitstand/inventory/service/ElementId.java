@@ -25,18 +25,11 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementIdAdapter;
 
 /**
- * A unique identifier for an element stored in the resource inventory.
+ * Unique element ID in UUIDv4 format.
  * <p>
- * The element ID is immutable for an element and hence forms a persistent unique key for an element.
- * The element ID is compatible to the UUIDv4 format.
+ * The element ID is immutable for an element and forms a persistent unique key.
  * </p>
- * @see ElementSettings
- * @see ElementConfig
- * @see ElementImages
- * @see ElementPhysicalInterfaces
- * @see ElementLogicalInterfaces
- * @see ElementModules
- * @see ElementLocation
+ * @see ElementName
  */
 @JsonbTypeAdapter(ElementIdAdapter.class)
 public class ElementId extends Scalar<String> {
@@ -45,7 +38,7 @@ public class ElementId extends Scalar<String> {
 	private static final String PATTERN = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
 	/**
-	 * Returns a random <code>ElementId</code>.
+	 * Creates a random <code>ElementId</code>.
 	 * @return a random <code>ElementId</code>.
 	 */
 	public static ElementId randomElementId() {
@@ -53,11 +46,12 @@ public class ElementId extends Scalar<String> {
 	}
 
 	/**
-	 * Alias for {@link #valueOf(String)} to improve readability.
-	 * <p>
 	 * Creates an <code>ElementId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias for the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param id the element ID
-	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @return the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
 	public static ElementId elementId(String id) {
 		return valueOf(id);
@@ -65,11 +59,12 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Creates an <code>ElementId</code> from the specified string.
-	 * @param id the element ID
-	 * @returns the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param elementId the element ID
+	 * @return the <code>ElementId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
-	public static ElementId valueOf(String id) {
-		return ElementId.fromString(id, ElementId::new);
+	public static ElementId valueOf(String elementId) {
+		return fromString(elementId, ElementId::new);
 	}
 
 	@NotNull(message="{element_id.required}")
@@ -78,7 +73,7 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Create a <code>ElementId</code>.
-	 * @param value - the element id
+	 * @param value the element id
 	 */
 	public ElementId(UUID value) {
 		this(value.toString());
@@ -86,7 +81,7 @@ public class ElementId extends Scalar<String> {
 	
 	/**
 	 * Create a <code>ElementId</code>.
-	 * @param value - the element id
+	 * @param value the element id
 	 */
 	public ElementId(String value){
 		this.value = value;

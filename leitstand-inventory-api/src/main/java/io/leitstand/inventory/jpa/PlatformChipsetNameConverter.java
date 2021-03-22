@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.PlatformChipsetName;
 
 @Converter
@@ -25,7 +26,7 @@ public class PlatformChipsetNameConverter implements AttributeConverter<Platform
 
 	@Override
 	public String convertToDatabaseColumn(PlatformChipsetName platformId) {
-		return PlatformChipsetName.toString(platformId);
+		return Scalar.toString(platformId);
 	}
 	
 	@Override

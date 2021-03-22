@@ -85,10 +85,13 @@ public class ElementGroupSettingsResource {
 	@POST
 	public Response storeElementGroup(ElementGroupSettings settings) {
 		try {
-			service.storeElementGroupSettings(settings);
-			return created("/%s/%s/settings",
-						   settings.getGroupType(),
-						   settings.getGroupId());
+			if(service.storeElementGroupSettings(settings)) {
+			    return created(messages,
+			                   "/%s/%s/settings",
+			                   settings.getGroupType(),
+			                   settings.getGroupId());
+			}
+			return success(messages);
 		} catch (Exception e) {
 			givenRollbackException(e)
 			.whenEntityExists(() -> service.getGroupSettings(settings.getGroupType(), settings.getGroupName()))	
@@ -108,37 +111,30 @@ public class ElementGroupSettingsResource {
 												   groupId, 
 												   settings.getGroupId());
 		}
-		try { 
-			if (service.storeElementGroupSettings(settings)) {
-				return created(messages,
-							   "/%s/%s/settings",
-							   settings.getGroupType(),
-							   settings.getGroupId());	
-			}
-			return success(messages);
-		} catch (Exception e) {
-			givenRollbackException(e)
-			.whenEntityExists(() -> service.getGroupSettings(settings.getGroupType(), settings.getGroupName()))	
-			.thenThrow(new UniqueKeyConstraintViolationException(IVT0103E_GROUP_NAME_ALREADY_IN_USE,
-						 										 key("group_name", settings.getGroupName())));
-			throw e;
-		}
+		return storeElementGroup(settings);
 	}
 
+    @PUT
+    @Path("/{group_name}/settings")
+    public Response storeElementGroup(@Valid @PathParam("group_type") ElementGroupType groupType,
+                                      @Valid @PathParam("group_name") ElementGroupName groupName, 
+                                      @Valid ElementGroupSettings settings) {
+        return storeElementGroup(settings);
+    }	
 
 
 	@DELETE
 	@Path("/{id:" + UUID_PATTERN + "}")
-	public Response removeElementConfig(@Valid @PathParam("id") ElementGroupId id) {
-		service.remove(id);
+	public Response removeElementGroup(@Valid @PathParam("id") ElementGroupId id) {
+		service.removeElementGroup(id);
 		return noContent().build();
 	}
 	
 	@DELETE
 	@Path("/{group_name}")
-	public Response removeElementConfig(@Valid @PathParam("group_type") ElementGroupType groupType,
+	public Response removeElementGroup(@Valid @PathParam("group_type") ElementGroupType groupType,
 										@Valid @PathParam("group_name") ElementGroupName groupName) {
-		service.remove(groupType,
+		service.removeElementGroup(groupType,
 					   groupName);
 		return success(messages);
 	}

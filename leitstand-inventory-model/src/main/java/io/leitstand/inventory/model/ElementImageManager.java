@@ -28,11 +28,11 @@ import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.MINOR;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PATCH;
 import static io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType.PRERELEASE;
+import static io.leitstand.inventory.service.ElementImage.newElementImage;
+import static io.leitstand.inventory.service.ElementImageData.newElementImageData;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.CACHED;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
-import static io.leitstand.inventory.service.ElementImage.newElementImage;
-import static io.leitstand.inventory.service.ElementImageData.newElementInstalledImageData;
 import static io.leitstand.inventory.service.ElementImages.newElementImages;
 import static io.leitstand.inventory.service.ReasonCode.IVT0200E_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0340W_ELEMENT_IMAGE_NOT_FOUND;
@@ -46,7 +46,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -58,10 +57,10 @@ import io.leitstand.commons.model.Repository;
 import io.leitstand.commons.tx.SubtransactionService;
 import io.leitstand.inventory.service.ElementAvailableUpgrade;
 import io.leitstand.inventory.service.ElementAvailableUpgrade.UpgradeType;
-import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ElementImage;
 import io.leitstand.inventory.service.ElementImageData;
 import io.leitstand.inventory.service.ElementImageReference;
+import io.leitstand.inventory.service.ElementImageState;
 import io.leitstand.inventory.service.ElementImages;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageReference;
@@ -118,10 +117,10 @@ public class ElementImageManager {
 						    .withImageState(update.getImageState())
 							.withImageVersion(update.getImageVersion())
 							.withBuildDate(update.getBuildDate())
-							.withUpdateType(type)
+							.withUpgradeType(type)
 							.build());
 			}
-			installed.add(newElementInstalledImageData()
+			installed.add(newElementImageData()
 						  .withOrganization(image.getOrganization())
 						  .withImageId(image.getImageId())
 						  .withImageType(image.getImageType())
@@ -138,7 +137,7 @@ public class ElementImageManager {
 						  .withInstallationDate(elementImage.getDeployDate())
 						  .withBuildDate(image.getBuildDate())
 						  .withPackages(packages)
-						  .withAvailableUpdates(updates)
+						  .withAvailableUpgrades(updates)
 						  .build());
 		}	
 		
@@ -197,7 +196,7 @@ public class ElementImageManager {
 					 	.withImageState(update.getImageState())
 					 	.withImageVersion(update.getImageVersion())
 					 	.withBuildDate(update.getBuildDate())
-						.withUpdateType(type)
+						.withUpgradeType(type)
 						.build());
 		}
 		return newElementImage()
@@ -210,7 +209,7 @@ public class ElementImageManager {
 			   .withElementRole(element.getElementRoleName())
 			   .withAdministrativeState(element.getAdministrativeState())
 			   .withOperationalState(element.getOperationalState())
-			   .withImage(newElementInstalledImageData()
+			   .withImage(newElementImageData()
 					   	  .withImageId(image.getImageId())
 					   	  .withZtp(elementImage.isZtp())
 					   	  .withOrganization(image.getOrganization())
@@ -227,7 +226,7 @@ public class ElementImageManager {
 				   		  .withInstallationDate(elementImage.getDeployDate())
 				   		  .withBuildDate(image.getBuildDate())
 				   		  .withPackages(packages)
-				   		  .withAvailableUpdates(updates))
+				   		  .withAvailableUpgrades(updates))
 			              
 			   .build();
 			

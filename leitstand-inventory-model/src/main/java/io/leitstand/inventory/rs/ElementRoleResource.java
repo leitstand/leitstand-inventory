@@ -20,17 +20,15 @@ import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
 import static io.leitstand.commons.model.RollbackExceptionUtil.givenRollbackException;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
+import static io.leitstand.commons.rs.Responses.created;
+import static io.leitstand.commons.rs.Responses.success;
 import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_SETTINGS;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
 import static io.leitstand.inventory.service.ReasonCode.IVT0404E_ELEMENT_ROLE_NAME_ALREADY_IN_USE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.created;
-import static javax.ws.rs.core.Response.noContent;
-import static javax.ws.rs.core.Response.ok;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -105,15 +103,10 @@ public class ElementRoleResource {
 		}
 		try {
 			if(service.storeElementRole(role)) {
-				if(messages.isEmpty()) {
-					return created(URI.create(role.getRoleId().toString())).build();
-				}
-				return created(URI.create(role.getRoleId().toString())).entity(messages).build();
-			};
-			if(messages.isEmpty()) {
-				return noContent().build();
+			    return created(messages,"/roles/%s",roleId);    
 			}
-			return ok(messages).build();
+			return success(messages);
+			
 		} catch (Exception e) {
 			// Check whether role exist
 			givenRollbackException(e)
@@ -128,21 +121,14 @@ public class ElementRoleResource {
 	@Path("/{role_id:"+UUID_PATTERN+"}")
 	public Response removeElementRole(@Valid @PathParam("role_id") ElementRoleId roleId) {
 		service.removeElementRole(roleId);
-		if(messages.isEmpty()) {
-			return noContent().build();
-		}
-		return ok(messages).build();
+		return success(messages);
 	}
 	
 	@DELETE
 	@Path("/{role_name}")
 	public Response removeElementRole(@Valid @PathParam("role_name") ElementRoleName roleName) {
 		service.removeElementRole(roleName);
-		if(messages.isEmpty()) {
-			return noContent().build();
-		}
-		return ok(messages).build();
+		return success(messages);
 	}
-
 	
 }

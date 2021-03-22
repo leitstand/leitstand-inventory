@@ -42,7 +42,7 @@ public class BandwidthAdapterTest {
 	}
 	
 	@Test
-	public void non_null_type_is_adaptToJsonled_properly() throws Exception{
+	public void write_bandwidth_to_json() throws Exception{
 		assertEquals("100.000 Tbps",adapter.adaptToJson(new Bandwidth(100, Bandwidth.Unit.TBPS)));
 		assertEquals("100.000 Gbps",adapter.adaptToJson(new Bandwidth(100, Bandwidth.Unit.GBPS)));
 		assertEquals("100.000 Mbps",adapter.adaptToJson(new Bandwidth(100, Bandwidth.Unit.MBPS)));
@@ -50,7 +50,7 @@ public class BandwidthAdapterTest {
 	}
 	
 	@Test
-	public void non_null_string_is_adaptFromJsonled_properly() throws Exception{
+	public void create_bandwidth_from_json() throws Exception{
 		assertEquals(new Bandwidth(100, Bandwidth.Unit.TBPS),adapter.adaptFromJson("100.000 Tbps"));
 		assertEquals(new Bandwidth(100, Bandwidth.Unit.GBPS),adapter.adaptFromJson("100.000 Gbps"));
 		assertEquals(new Bandwidth(100, Bandwidth.Unit.MBPS),adapter.adaptFromJson("100.000 Mbps"));

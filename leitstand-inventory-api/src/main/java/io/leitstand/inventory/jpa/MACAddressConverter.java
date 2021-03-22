@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.MACAddress;
 
 @Converter
@@ -25,7 +26,7 @@ public class MACAddressConverter implements AttributeConverter<MACAddress, Strin
 
 	@Override
 	public String convertToDatabaseColumn(MACAddress attribute) {
-		return MACAddress.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

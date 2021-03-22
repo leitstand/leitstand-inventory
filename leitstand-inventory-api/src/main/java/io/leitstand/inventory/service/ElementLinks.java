@@ -27,32 +27,34 @@ import java.util.List;
 import javax.validation.Valid;
 
 /**
- * A summary of all lists of a certain element.
+ * All links of an element.
  */
-
 public class ElementLinks extends BaseElementEnvelope {
 	
 	/**
-	 * Returns a builder to create an immutable <code>ElementLinks</code> instance.
-	 * @return a builder to create an immutable <code>ElementLinks</code> instance.
+	 * Returns a builder to create an immutable <code>ElementLinks</code> value object.
+	 * @return a builder to create an immutable <code>ElementLinks</code> value object.
 	 */
 	public static Builder newElementLinks(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementLinks</code> instance.
+	 * A builder to create an immutable <code>ElementLinks</code> value object.
 	 */
 	public static final class Builder extends BaseElementEnvelopeBuilder<ElementLinks, Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementLinks</code> value object.
+	     */
 		public Builder() {
 			super(new ElementLinks());
 		}
 		
 		/**
-		 * Sets the list of element links.
-		 * @param links - the links of this element
-		 * @return a reference to this builder to continue object creation
+		 * Sets the element links.
+		 * @param links the element links.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withLinks(ElementLinkData.Builder... links){
 			return withLinks(stream(links)
@@ -61,34 +63,25 @@ public class ElementLinks extends BaseElementEnvelope {
 		}
 		
 		/**
-		 * Sets the list of element links.
-		 * @param links - the links of this element
-		 * @return a reference to this builder to continue object creation
+		 * Sets the element links.
+		 * @param links the links of this element.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withLinks(ElementLinkData... links){
 			return withLinks(asList(links));
 		}
 		
 		/**
-		 * Sets the list of element links.
-		 * @param links - the links of this element
-		 * @return a reference to this builder to continue object creation
-		 */
+         * Sets the element links.
+         * @param links the links of this element.
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withLinks(List<ElementLinkData> links){
 			assertNotInvalidated(getClass(), object);
 			object.links = unmodifiableList(new ArrayList<ElementLinkData>(links));
 			return this;
 		}
 		
-		@Override
-		public ElementLinks build(){
-			try{
-				assertNotInvalidated(getClass(), object);
-				return object;
-			} finally {
-				object = null;
-			}
-		}
 	}
 
 	@Valid
@@ -96,7 +89,7 @@ public class ElementLinks extends BaseElementEnvelope {
 	
 	/**
 	 * Returns an unmodifiable list of all element links.
-	 * @return the list of element links.
+	 * @return the element links.
 	 */
 	public List<ElementLinkData> getLinks() {
 		return unmodifiableList(links);

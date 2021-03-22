@@ -15,9 +15,33 @@
  */
 package io.leitstand.inventory.service;
 
+/**
+ * A service to retire an element.
+ * <p>
+ * Retiring an element applies the following changes to the inventory:
+ * <ul>
+ *  <li>The administrative state of all interfaces changes is set to DOWN.</li>
+ *  <li>The operational state of all interfaces changes is set to DOWN.</li>
+ *  <li>The administrative state of all services is set to DOWN.</li>
+ *  <li>The operational state of all services is set to DOWN.</li>
+ *  <li>The administrative state of the element is set to RETIRED.</li>
+ *  <li>The operational state of the element changes to DOWN.</li>
+ * </ul>
+ */
 public interface RetireElementService {
 
+    /**
+     * Marks an element as retired.
+     * @param elementId the element ID
+     * @throws EntityNotFoundException if the element does not exist.
+     */
 	void retireElement(ElementId elementId);
+	
+	/**
+	 * Marks an element as retired.
+	 * @param elementName the element name.
+	 * @throws EntityNotFoundException if the element does not exist.
+	 */
 	void retireElement(ElementName elementName);
 	
 }

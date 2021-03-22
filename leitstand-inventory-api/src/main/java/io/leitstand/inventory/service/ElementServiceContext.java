@@ -18,26 +18,45 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
 /**
- * Contains all properties of a service instance.
+ * A service running on an element.
  */
 public class ElementServiceContext extends BaseElementEnvelope {
 
+    /**
+     * Creates a builder for an immutable <code>ElementServiceContext</code> value object.
+     * @return a builder for an immutable <code>ElementServiceContext</code> value object.
+     */
 	public static Builder newElementServiceContext(){
 		return new Builder();
 	}
 
-	
+	/**
+	 * A builder for an immutable <code>ElementServiceContext</code> value object.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementServiceContext, Builder>{
 		
+	    /**
+	     * Create a builder for an immutable <code>ElementServiceContext</code> value object.
+	     */
 		protected Builder() {
 			super(new ElementServiceContext());
 		}
 		
-		public Builder withService(ServiceData.Builder service) {
+		/**
+		 * Sets the service settings.
+		 * @param service the service settings.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withService(ServiceSettings.Builder service) {
 			return withService(service.build());
 		}
-		
-		public Builder withService(ServiceData service) {
+
+	    /**
+         * Sets the service settings.
+         * @param service the service settings.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withService(ServiceSettings service) {
 			assertNotInvalidated(getClass(), object);
 			object.service = service;
 			return this;
@@ -46,9 +65,13 @@ public class ElementServiceContext extends BaseElementEnvelope {
 	}
 	
 	
-	private ServiceData service;
+	private ServiceSettings service;
 	
-	public ServiceData getService() {
+	/**
+	 * Returns the service settings.
+	 * @return the service settings.
+	 */
+	public ServiceSettings getService() {
 		return service;
 	}
 	

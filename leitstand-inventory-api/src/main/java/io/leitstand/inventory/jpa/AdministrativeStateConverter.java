@@ -21,6 +21,7 @@ import static io.leitstand.inventory.service.AdministrativeState.UNKNOWN;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.AdministrativeState;
 
 @Converter
@@ -40,7 +41,7 @@ public class AdministrativeStateConverter implements AttributeConverter<Administ
 	}
 
 	public static String administrativeStateDbString(AdministrativeState state) {
-		return AdministrativeState.toString(state);
+		return Scalar.toString(state);
 	}
 	
 	public static AdministrativeState toAdministrativeState(String s) {

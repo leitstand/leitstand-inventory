@@ -21,33 +21,34 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Provides all information of logical interface.
+ * Logical interface of an element.
  */
-
 public class ElementLogicalInterface extends BaseElementEnvelope{
 	
 	/**
-	 * Returns a builder to create a new logical interface.
-	 * @return a builder to create a new logical interface.
+	 * Creates a builder for an immutable <code>ElementLogicalInterface</code> value object.
+	 * @return a builder for an immutable <code>ElementLogicalInterface</code> value object.
 	 */
 	public static Builder newLogicalInterface(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementLogicalInterface</code> instance.
+	 * A builder for an immutable <code>ElementLogicalInterface</code> value object.
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementLogicalInterface, Builder> {
 		
-		
+		/**
+		 * Creates a builder for an immutable <code>ElementLogicalInterface</code> value object.
+		 */
 		public Builder() {
 			super(new ElementLogicalInterface());
 		}
 		
 		/**
-		 * Sets the interface data
-		 * @param logicalInterface - the logical interface data
-		 * @return a reference to this builder to continue object creation
+		 * Sets the logical interface.
+		 * @param logicalInterface the logical interface data.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withLogicalInterface(ElementLogicalInterfaceData.Builder logicalInterface){
 			assertNotInvalidated(getClass(), object);
@@ -56,9 +57,9 @@ public class ElementLogicalInterface extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the interface data
-		 * @param logicalInterface - the logical interface data
-		 * @return a reference to this builder to continue object creation
+		 * Sets the logical interface.
+		 * @param logicalInterface the logical interface data.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withLogicalInterface(ElementLogicalInterfaceData logicalInterface){
 			assertNotInvalidated(getClass(), object);
@@ -67,8 +68,9 @@ public class ElementLogicalInterface extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Returns the immutable logical interface data.
-		 * @return the immutable logical interface data.
+		 * Creates an immutable <code>ElementLogicalInterface</code> value object and invalidates this builder.
+		 * Subsequent invocation of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementLogicalInterface</code> value object.
 		 */
 		@Override
 		public ElementLogicalInterface build(){
@@ -86,6 +88,10 @@ public class ElementLogicalInterface extends BaseElementEnvelope{
 	@NotNull(message="{logical_interface.required}")
 	private ElementLogicalInterfaceData logicalInterface;
 	
+	/**
+	 * Returns the logical interface settings.
+ 	 * @return the logical interface settings.
+	 */
 	public ElementLogicalInterfaceData getLogicalInterface() {
 		return logicalInterface;
 	}

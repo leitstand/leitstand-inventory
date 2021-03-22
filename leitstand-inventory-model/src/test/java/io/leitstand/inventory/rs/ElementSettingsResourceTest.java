@@ -19,6 +19,8 @@ import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
+import static io.leitstand.inventory.service.ReasonCode.IVT0307E_ELEMENT_NAME_ALREADY_IN_USE;
+import static io.leitstand.testing.ut.Answers.ROLLBACK;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -33,12 +35,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import io.leitstand.commons.UniqueKeyConstraintViolationException;
 import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
+import io.leitstand.inventory.service.ReasonCode;
+import io.leitstand.testing.ut.Answers;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElementSettingsResourceTest {
@@ -62,7 +67,7 @@ public class ElementSettingsResourceTest {
 	private ElementSettingsResource resource = new ElementSettingsResource();
 	
 	@Test
-	public void throws_UnprocessableEntityException_when_attempting_to_change_the_element_id() {
+	public void cannot_modify_element_id() {
 		exception.expect(UnprocessableEntityException.class);
 		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
 		
@@ -70,7 +75,7 @@ public class ElementSettingsResourceTest {
 	}
 	
 	@Test
-	public void send_created_response_when_a_new_element_identified_by_id_has_been_added() {
+	public void add_element_by_id() {
 		when(service.storeElementSettings(ELEMENT_SETTINGS)).thenReturn(true);
 		
 		Response response = resource.storeElementSettings(ELEMENT_ID,ELEMENT_SETTINGS);
@@ -79,7 +84,7 @@ public class ElementSettingsResourceTest {
 	}
 	
 	@Test
-	public void send_success_response_when_an_existing_element_identified_by_id_was_updated() {
+	public void store_element_by_id() {
 		when(service.storeElementSettings(ELEMENT_SETTINGS)).thenReturn(false);
 		
 		Response response = resource.storeElementSettings(ELEMENT_ID,ELEMENT_SETTINGS);
@@ -87,7 +92,7 @@ public class ElementSettingsResourceTest {
 	}
 	
 	@Test
-	public void send_created_response_when_a_new_element_identified_by_name_has_been_added() {
+	public void add_element_by_name() {
 		when(service.storeElementSettings(ELEMENT_SETTINGS)).thenReturn(true);
 		
 		Response response = resource.storeElementSettings(ELEMENT_NAME,ELEMENT_SETTINGS);
@@ -96,11 +101,22 @@ public class ElementSettingsResourceTest {
 	}
 	
 	@Test
-	public void send_success_response_when_an_existing_element_identified_by_name_was_updated() {
+	public void store_element_by_name() {
 		when(service.storeElementSettings(ELEMENT_SETTINGS)).thenReturn(false);
 		
 		Response response = resource.storeElementSettings(ELEMENT_NAME,ELEMENT_SETTINGS);
 		assertEquals(200, response.getStatus());
+	}
+	
+	@Test
+	public void report_element_name_unique_key_constraint_violation() {
+	    exception.expect(UniqueKeyConstraintViolationException.class);
+	    exception.expect(reason(IVT0307E_ELEMENT_NAME_ALREADY_IN_USE));
+	    
+	    when(service.storeElementSettings(ELEMENT_SETTINGS)).then(ROLLBACK);
+	    when(service.getElementSettings(ELEMENT_NAME)).thenReturn(ELEMENT_SETTINGS);
+	    
+	    resource.storeElementSettings(ELEMENT_SETTINGS);
 	}
 
 	

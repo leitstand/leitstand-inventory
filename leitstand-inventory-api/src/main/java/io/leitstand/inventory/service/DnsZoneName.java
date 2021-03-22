@@ -24,15 +24,32 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsZoneNameAdapter;
 
+/**
+ * A DNS zone name.
+ */
 @JsonbTypeAdapter(DnsZoneNameAdapter.class)
 public class DnsZoneName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a DNS zone name from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param name the DNS zone name
+	 * @return the DNS zone name or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static final DnsZoneName dnsZoneName(String name) {
 		return valueOf(name);
 	}
 	
+	/**
+	 * Creates a DNS zone name from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param name the DNS zone name
+	 * @return the DNS zone name or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static final DnsZoneName valueOf(String name) {
 		return Scalar.fromString(name, DnsZoneName::new);
 	}
@@ -41,10 +58,17 @@ public class DnsZoneName extends Scalar<String>{
 	@Pattern(regexp=DNS_PATTERN, message="{dns_zone_name.invalid}")
 	private String value;
 	
+	/**
+	 * Creates a DNS zone name.
+	 * @param name the DNS zone name.
+	 */
 	public DnsZoneName(String name) {
 		this.value = name;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

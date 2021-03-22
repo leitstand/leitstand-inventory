@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.jpa;
 
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
@@ -37,7 +39,7 @@ public class ServiceTypeConverter implements AttributeConverter<ServiceType, Str
 	}
 
 	public static ServiceType parse(String s) {
-		if(s == null || s.isEmpty()) {
+		if(isEmptyString(s)) {
 			return null;
 		}
 		switch (s) {

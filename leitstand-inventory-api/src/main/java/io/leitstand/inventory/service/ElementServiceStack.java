@@ -26,29 +26,56 @@ import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+/**
+ * The service hierarchy of a service running on an element.
+ */
 public class ElementServiceStack extends BaseElementEnvelope {
 
+    /**
+     * Creates a builder for an immutable <code>ElementServiceStack</code> value object.
+     * @return a builder for an immutable <code>ElementServiceStack</code> value object.
+     */
 	public static Builder newElementServiceStack(){
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementServiceStack</code> value object.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementServiceStack, Builder> {
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementServiceStack</code> value object.
+	     */
 		public Builder() {
 			super(new ElementServiceStack());
 		}
 		
+		/**
+		 * Sets the services.
+		 * @param services the services
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withServices(ServiceInfo... services){
 			return withServices(asList(services));
 		}
-
+		
+	    /**
+         * Sets the services.
+         * @param services the services
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withServices(ServiceInfo.Builder... services){
 			return withServices(stream(services)
 							    .map(ServiceInfo.Builder::build)
 							    .collect(toList()));
 		}
 
-		
+        /**
+         * Sets the services.
+         * @param services the services
+         * @return a reference to this builder to continue object creation.
+         */
 		public Builder withServices(List<ServiceInfo> services){
 			assertNotInvalidated(getClass(), object);
 			object.services = services;
@@ -61,6 +88,10 @@ public class ElementServiceStack extends BaseElementEnvelope {
 	@JsonbProperty("stack")
 	private List<ServiceInfo> services = emptyList();
 	
+	/**
+	 * Returns the services.
+	 * @return the services.
+	 */
 	public List<ServiceInfo> getServices() {
 		return unmodifiableList(services);
 	}

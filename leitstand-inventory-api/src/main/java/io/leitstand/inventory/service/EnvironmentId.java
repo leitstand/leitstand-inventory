@@ -24,6 +24,9 @@ import io.leitstand.inventory.jsonb.EnvironmentIdAdapter;
 
 /**
  * Unique environment ID in UUIDv4 format.
+ * <p>
+ * The environment ID is immutable and forms a persistent key to access an element environment.
+ * @see EnvironmentName
  */
 @JsonbTypeAdapter(EnvironmentIdAdapter.class)
 public class EnvironmentId extends Scalar<String>{

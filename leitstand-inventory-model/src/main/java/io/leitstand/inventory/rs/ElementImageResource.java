@@ -39,10 +39,10 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementId;
-import io.leitstand.inventory.service.ElementImagesService;
 import io.leitstand.inventory.service.ElementImage;
 import io.leitstand.inventory.service.ElementImageReference;
 import io.leitstand.inventory.service.ElementImages;
+import io.leitstand.inventory.service.ElementImageService;
 import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.security.auth.Scopes;
@@ -57,7 +57,7 @@ public class ElementImageResource{
 
 	
 	@Inject
-	private ElementImagesService service;
+	private ElementImageService service;
 	
 	@Inject
 	private Messages messages;
@@ -123,7 +123,7 @@ public class ElementImageResource{
 	
 	@DELETE
 	@Path("/{name}/images/{image:"+UUID_PATTERN+"}")
-	public Response removeElementImages(@Valid @PathParam("name") ElementName elementName, 
+	public Response removeElementImage(@Valid @PathParam("name") ElementName elementName, 
 	                                    @Valid @PathParam("image") ImageId imageId){
 		service.removeElementImage(elementName, 
 		                           imageId);

@@ -26,31 +26,62 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.DnsZoneIdAdapter;
 
+/**
+ * Unique DNS zone ID in UUIDv4 format.
+ * <p>
+ * The DNS zone ID is an immutable identifier for DNS zones stored in the inventory.
+ * It simplifies renaming DNS zones and is not shared with the DNS server.
+ */
 @JsonbTypeAdapter(DnsZoneIdAdapter.class)
 public class DnsZoneId extends Scalar<String> {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a random DNS zone ID.
+	 * @return a random DNS zone ID.
+	 */
 	public static DnsZoneId randomDnsZoneId() {
 		return valueOf(UUID.randomUUID().toString());
 	}
 	
-	public static  DnsZoneId dnsZoneId(String name) {
-		return valueOf(name);
+	/**
+	 * Creates a DNS zone ID from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param id the DNS zone ID.
+	 * @return the DNS zone ID.
+	 */
+	public static  DnsZoneId dnsZoneId(String id) {
+		return valueOf(id);
 	}
 	
-	public static final DnsZoneId valueOf(String name) {
-		return Scalar.fromString(name, DnsZoneId::new);
+	/**
+	 * Creates a DNS zone ID from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * @param id the DNS zone ID
+	 * @return
+	 */
+	public static final DnsZoneId valueOf(String id) {
+		return fromString(id, DnsZoneId::new);
 	}
 	
 	@NotNull(message="{dns_zone_id.required}")
 	@Pattern(regexp=UUID_PATTERN, message="{dns_zone_id.invalid}")
 	private String value;
 	
-	public DnsZoneId(String name) {
-		this.value = name;
+	/**
+	 * Creates a <code>DnsZoneId</code>
+	 * @param id the DNS zone ID
+	 */
+	public DnsZoneId(String id) {
+		this.value = id;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

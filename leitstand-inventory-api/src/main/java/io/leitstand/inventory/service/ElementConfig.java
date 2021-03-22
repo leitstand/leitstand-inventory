@@ -110,22 +110,6 @@ public class ElementConfig extends BaseElementEnvelope{
 			return this;
 		}
 		
-		/**
-		 * Returns an immutable element configuration.
-		 * @return an immutable element configuration.
-		 */
-		@Override
-		public ElementConfig build(){
-			try{
-				assertNotInvalidated(getClass(), object);
-				return object;
-			} finally {
-				this.object = null;
-			}
-		}
-
-
-
 	}
 	
 	private ElementConfigId configId;

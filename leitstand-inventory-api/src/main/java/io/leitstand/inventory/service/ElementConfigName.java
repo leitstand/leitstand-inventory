@@ -20,30 +20,50 @@ import javax.json.bind.annotation.JsonbTypeAdapter;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementConfigNameAdapter;
 
+/**
+ * An element configuration name.
+ * <p>
+ * The element configuration name is unique per element.
+ */
 @JsonbTypeAdapter(ElementConfigNameAdapter.class)
 public class ElementConfigName extends Scalar<String>{
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
-
+	/**
+	 * Creates an element configuration from the specified string.
+	 * <p>
+	 * Alias for {@link #valueOf(String)} to improve readability.
+	 * @param name the configuration name
+	 * @return the element configuration name
+	 */
 	public static ElementConfigName elementConfigName(String name) {
 		return valueOf(name);
 	}
-
 	
+	/**
+	 * Creates an element configuration name from the specified string.
+	 * @param name the configuration name
+	 * @return an element configuration name
+	 */
 	public static ElementConfigName valueOf(String name) {
 		return Scalar.fromString(name, ElementConfigName::new);
 	}
 	
-	public static String toString(ElementConfigName name) {
-		return Scalar.toString(name);
-	}
 	
+	private String value;
+
+	/**
+	 * Creates a new element configuration name.
+	 * @param name the configuration name
+	 */
 	public ElementConfigName(String name) {
 		this.value = name;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

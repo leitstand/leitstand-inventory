@@ -207,7 +207,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		
 		transaction(()->{
 			assertNotNull(service.getGroupSettings(GROUP_ID));
-			service.remove(GROUP_ID);
+			service.removeElementGroup(GROUP_ID);
 			assertEquals(IVT0102I_GROUP_REMOVED.getReasonCode(),messageCaptor.getValue().getReason());
 		});
 		
@@ -232,7 +232,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		transaction(()->{
 			assertNotNull(service.getGroupSettings(GROUP_TYPE,
 												   GROUP_NAME));
-			service.remove(GROUP_TYPE,
+			service.removeElementGroup(GROUP_TYPE,
 						   GROUP_NAME);
 			assertEquals(IVT0102I_GROUP_REMOVED.getReasonCode(),messageCaptor.getValue().getReason());
 		});
@@ -250,8 +250,8 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	@Test
 	public void do_nothing_when_removing_nonexistent_group() {
 		transaction(()->{
-		    service.remove(GROUP_ID);
-		    service.remove(GROUP_TYPE,
+		    service.removeElementGroup(GROUP_ID);
+		    service.removeElementGroup(GROUP_TYPE,
 		                   GROUP_NAME);	
 		});
 		verifyZeroInteractions(messages);
@@ -283,7 +283,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 	    exception.expect(reason(IVT0103E_GROUP_NOT_REMOVABLE));
 		
 		transaction(() -> {
-			service.remove(GROUP_ID);
+			service.removeElementGroup(GROUP_ID);
 		});
 	}
 	
@@ -313,7 +313,7 @@ public class ElementGroupSettingsServiceIT extends InventoryIT{
 		exception.expect(reason(IVT0103E_GROUP_NOT_REMOVABLE));
 		
 		transaction(() -> {
-			service.remove(groupType("unittest"),
+			service.removeElementGroup(groupType("unittest"),
 						   groupName("group"));
 		});
 	}

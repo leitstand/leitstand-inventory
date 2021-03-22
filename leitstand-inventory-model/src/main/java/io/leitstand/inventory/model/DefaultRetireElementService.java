@@ -22,6 +22,7 @@ import static io.leitstand.inventory.model.Element_Service.findElementServices;
 import static io.leitstand.inventory.service.AdministrativeState.RETIRED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0305I_ELEMENT_RETIRED;
 import static java.lang.String.format;
+import static java.util.logging.Logger.getLogger;
 import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
 
 import java.util.logging.Logger;
@@ -42,7 +43,7 @@ import io.leitstand.inventory.service.RetireElementService;
 @Service
 public class DefaultRetireElementService implements RetireElementService {
 	
-	private static final Logger LOG = Logger.getLogger(DefaultRetireElementService.class.getName());
+	private static final Logger LOG = getLogger(DefaultRetireElementService.class.getName());
 	
 	@Inject
 	private ElementProvider elements;

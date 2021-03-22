@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ImageType;
 
 @Converter
@@ -25,7 +26,7 @@ public class ImageTypeConverter implements AttributeConverter<ImageType, String>
 
 	@Override
 	public String convertToDatabaseColumn(ImageType attribute) {
-		return ImageType.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.IPv4Prefix;
 
 @Converter
@@ -25,7 +26,7 @@ public class IPv4PrefixConverter implements AttributeConverter<IPv4Prefix, Strin
 
 	@Override
 	public String convertToDatabaseColumn(IPv4Prefix attribute) {
-		return IPv4Prefix.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

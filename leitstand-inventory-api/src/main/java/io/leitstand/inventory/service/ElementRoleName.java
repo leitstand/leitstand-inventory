@@ -22,15 +22,34 @@ import javax.validation.constraints.Pattern;
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ElementRoleNameAdapter;
 
+/**
+ * Unique element role name.
+ * <p>
+ * The element role name can be modified provided the new name is also unique.
+ */
 @JsonbTypeAdapter(ElementRoleNameAdapter.class)
 public class ElementRoleName extends Scalar<String> {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates an element role name from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
+	 * @param role the element role name
+	 * @return the element role name or <code>null</code> if the specified string is <code>null</code> or empty.
+	 */
 	public static ElementRoleName elementRoleName(String role) {
 		return valueOf(role);
 	}
-	
+
+	/**
+     * Creates an element role name from the specified string.
+     * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+     * @param role the element role name
+     * @return the element role name or <code>null</code> if the specified string is <code>null</code> or empty.
+     */
 	public static ElementRoleName valueOf(String role) {
 		return fromString(role,ElementRoleName::new);
 	}
@@ -39,10 +58,17 @@ public class ElementRoleName extends Scalar<String> {
 	@Pattern(regexp="[A-Za-z0-9_-]{1,64}", message="{element_type.invalid}")
 	private String value;
 	
+	/**
+	 * Creates an element role name.
+	 * @param role the role name
+	 */
 	public ElementRoleName(String role){
 		this.value = role.toLowerCase();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getValue() {
 		return value;

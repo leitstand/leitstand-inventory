@@ -18,39 +18,42 @@ package io.leitstand.inventory.service;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Provides information of a certain element role. 
+ * A element role reference.
+ * <p>
+ * The <code>ElementRoleRef</code> consists of the the role name and the plane the role belongs to.
+ * @see Plane
  */
-public class ElementRoleInfo extends ValueObject {
+public class ElementRoleRef extends ValueObject {
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementRoleInfo</code> instance. 
-	 * @return a builder to create an immutable <code>ElementRoleInfo</code> instance.
+	 * Creates a builder for an immutable <code>ElementRoleRef</code> value object. 
+	 * @return a builder for an immutable <code>ElementRoleRef</code> value object.
 	 */
-	public static Builder newElementRoleInfo() {
+	public static Builder newElementRoleRef() {
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementRoleInfo</code> instance.
+	 * A builder for an immutable <code>ElementRoleRef</code> value object.
 	 */
 	public static class Builder {
 		
-		private ElementRoleInfo info = new ElementRoleInfo();
+		private ElementRoleRef info = new ElementRoleRef();
 		
 		/**
 		 * Sets the element role name. 
-		 * @param role - the element role.
-		 * @return a reference to this builder to continue object creation
+		 * @param roleName the element role name.
+		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withElementRole(ElementRoleName role) {
-			info.elementRole = role;
+		public Builder withElementRole(ElementRoleName roleName) {
+			info.elementRole = roleName;
 			return this;
 		}
 
 		/**
-		 * Sets the plane elements of the specified roles are located at.
-		 * @param plane - the plane
-		 * @return a reference to this builder to continue object creation
+		 * Sets the plane elements of the specified roles belongs to.
+		 * @param plane the plane.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPlane(Plane plane) {
 			info.plane = plane;
@@ -58,11 +61,11 @@ public class ElementRoleInfo extends ValueObject {
 		}
 		
 		/**
-		 * Returns an immutable <code>ElementRoleInfo</code> instance and invalidates this builder.
-		 * Any further interaction with this builder raises an exception.
-		 * @return an immutable <code>ElementRoleInfo</code> instance.
+		 * Returns an immutable <code>ElementRoleRef</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raises an exception.
+		 * @return the immutable <code>ElementRoleRef</code> value object.
 		 */
-		public ElementRoleInfo build() {
+		public ElementRoleRef build() {
 			try {
 				return info;
 			} finally {
@@ -73,12 +76,11 @@ public class ElementRoleInfo extends ValueObject {
 	}
 	
 	private Plane plane;
-	
 	private ElementRoleName elementRole;
 
 	/**
-	 * Returns the plane where the element role is located at.
-	 * @return the plane where the element role is located at.
+	 * Returns the plane elements of this role belong to.
+     * @return the plane elements of this role belong to.
 	 */
 	public Plane getPlane() {
 		return plane;

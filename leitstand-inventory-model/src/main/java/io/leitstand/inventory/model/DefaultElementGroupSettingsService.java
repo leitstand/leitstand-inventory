@@ -69,7 +69,7 @@ public class DefaultElementGroupSettingsService implements ElementGroupSettingsS
 	}
 
 	@Override
-	public void remove(ElementGroupId id) {
+	public void removeElementGroup(ElementGroupId id) {
 		ElementGroup group = groups.tryFetchElementGroup(id);
 		if(group != null) {
 			inventory.removeElementGroup(group);
@@ -77,7 +77,7 @@ public class DefaultElementGroupSettingsService implements ElementGroupSettingsS
 	}
 
 	@Override
-	public void remove(ElementGroupType groupType,
+	public void removeElementGroup(ElementGroupType groupType,
 					   ElementGroupName groupName) {
 		ElementGroup group = groups.tryFetchElementGroup(groupType,
 														 groupName);

@@ -3,6 +3,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ReleaseName;
 
 @Converter
@@ -10,7 +11,7 @@ public class ReleaseNameConverter implements AttributeConverter<ReleaseName, Str
 
     @Override
     public String convertToDatabaseColumn(ReleaseName attribute) {
-        return ReleaseName.toString(attribute);
+        return Scalar.toString(attribute);
     }
 
     @Override

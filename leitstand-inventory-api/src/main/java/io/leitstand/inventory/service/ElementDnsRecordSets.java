@@ -28,23 +28,47 @@ import javax.validation.Valid;
 
 import io.leitstand.commons.model.BuilderUtil;
 
+/**
+ * All DNS records of an element.
+ */
 public class ElementDnsRecordSets extends BaseElementEnvelope {
 
+    /**
+     * Creates a builder for an immutable <code>ElementDnsRecordSets</code> value object.
+     * @return a builder for an immutable <code>ElementDnsRecordSets</code> value object.
+     */
 	public static Builder newElementDnsRecordSets() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementDnsRecordSets</code> value object.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementDnsRecordSets, Builder>{
-		protected Builder() {
+		
+	    /**
+	     * Creates a builder for an immutable <code>ElementDnsRecordSets</code> value object.
+	     */
+	    protected Builder() {
 			super(new ElementDnsRecordSets());
 		}
-	
+
+		/**
+		 * Sets the DNS records.
+		 * @param sets the DNS records
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDnsRecordSets(DnsRecordSet.Builder... sets) {
 			return withDnsRecordSets(stream(sets)
 									 .map(DnsRecordSet.Builder::build)
 									 .collect(toList()));
 		}
 		
+		/**
+		 * Sets the DNS records.
+		 * @param sets the DNS records
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDnsRecordSets(List<DnsRecordSet> sets) {
 			BuilderUtil.assertNotInvalidated(getClass(),object);
 			object.dnsRecordSets = new ArrayList<>(sets);
@@ -56,7 +80,10 @@ public class ElementDnsRecordSets extends BaseElementEnvelope {
 	@JsonbProperty("dns_recordsets")
 	private List<DnsRecordSet> dnsRecordSets = emptyList();
 	
-	
+	/**
+	 * Returns the DNS records.
+	 * @return the DNS records.
+	 */
 	public List<DnsRecordSet> getDnsRecordSets() {
 		return unmodifiableList(dnsRecordSets);
 	} 

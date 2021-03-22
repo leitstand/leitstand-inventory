@@ -20,30 +20,52 @@ import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * A reference to an existing service.
+ * A reference to a service running on an element.
  */
 public class ElementServiceReference extends ValueObject{
 
+    /**
+     * Creates a builder for an immutable <code>ElementServiceReference</code> value object.
+     * @return a builder for an immutable <code>ElementServiceReference</code> value object.
+     */
 	public static Builder newElementServiceReference() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementServiceReference</code> value object.
+	 */
 	public static class Builder {
 		
 		private ElementServiceReference reference = new ElementServiceReference();
-		
+
+		/**
+		 * Sets the element name.
+		 * @param elementName the element name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withElementName(ElementName elementName) {
 			assertNotInvalidated(getClass(), reference);
 			reference.elementName = elementName;
 			return this;
 		}
 		
+		/**
+		 * Sets the service name.
+		 * @param serviceName the service name.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withServiceName(ServiceName serviceName) {
 			assertNotInvalidated(getClass(), reference);
 			reference.serviceName = serviceName;
 			return this;
 		}
 		
+		/**
+		 * Creates an immutable <code>ElementServiceReference</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementServiceReference</code> value object.
+		 */
 		public ElementServiceReference build() {
 			try {
 				assertNotInvalidated(getClass(), reference);

@@ -17,6 +17,7 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.IPvxPrefix;
 
 /**
@@ -31,7 +32,7 @@ public class IPvxPrefixAdapter implements JsonbAdapter<IPvxPrefix, String>{
 	 */
 	@Override
 	public String adaptToJson(IPvxPrefix address) {
-		return IPvxPrefix.toString(address);
+		return Scalar.toString(address);
 	}
 
 	/**

@@ -17,9 +17,40 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+/**
+ * A service for managing packages shipped with an image.
+ */
 public interface PackageService {
-	List<QualifiedPackageName> getPackages();
-	PackageInfo getPackage(String org, String name, String ext);
-	PackageVersionInfo getPackageVersion(String org, String name, Version rev);
+
+    /**
+     * Returns a list of known packages.
+     * @return a list of known packages.
+     */
+    List<QualifiedPackageName> getPackages();
+    
+    /**
+     * Returns the version list of a package.
+     * @param organization the organization that published the package.
+     * @param packageName the package name.
+     * @param ext the package file extension.
+     * @return the versions of the package.
+     * @throws EntityNotFoundException if the package does not exist.
+     */
+	PackageVersions getPackage(String organization, String packageName, String ext);
+	
+	/**
+	 * Returns the package metadata.
+	 * @param organization the organization that published the package.
+	 * @param packageName the package name.
+	 * @param packageVersion the package version.
+	 * @return the package metadata.
+	 * @throws EntityNotFoundException if the package does not exist.
+	 */
+	PackageVersionInfo getPackageVersion(String organization, String packageName, Version packageVersion);
+	
+	/**
+	 * Stores package version metadata. 
+	 * @param info the package version metadata.
+	 */
 	void storePackageVersion(PackageVersionInfo info);
 }

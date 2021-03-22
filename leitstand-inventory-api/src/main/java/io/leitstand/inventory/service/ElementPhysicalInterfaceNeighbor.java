@@ -15,6 +15,8 @@
  */
 package io.leitstand.inventory.service;
 
+import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+
 import javax.json.bind.annotation.JsonbProperty;
 
 import io.leitstand.commons.model.ValueObject;
@@ -25,15 +27,15 @@ import io.leitstand.commons.model.ValueObject;
 public class ElementPhysicalInterfaceNeighbor extends ValueObject{
 
 	/**
-	 * Returns a builder to create an immutable <code>ElementPhysicalInterfaceNeighbor</code> instance.
-	 * @return a builder to create an immutable <code>ElementPhysicalInterfaceNeighbor</code> instance.
+	 * Returns a builder for an immutable <code>ElementPhysicalInterfaceNeighbor</code> value object.
+	 * @return a builder for an immutable <code>ElementPhysicalInterfaceNeighbor</code> value object.
 	 */
 	public static Builder newPhysicalInterfaceNeighbor() {
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementPhysicalInterfaceNeighbor</code> instance.
+	 * A builder for an immutable <code>ElementPhysicalInterfaceNeighbor</code> value object.
 	 */
 	public static class Builder {
 		
@@ -41,40 +43,45 @@ public class ElementPhysicalInterfaceNeighbor extends ValueObject{
 		
 		/**
 		 * Sets the neighbor element ID.
-		 * @param elementId - the element ID
-		 * @return a reference to this builder to continue object creation 
+		 * @param elementId the neighbor element ID.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withElementId(ElementId elementId) {
+            assertNotInvalidated(getClass(), neighbor);
 			neighbor.elementId = elementId;
 			return this;
 		}
 
 		/**
 		 * Sets the neighbor element name.
-		 * @param elementName - the element name
-		 * @return a reference to this builder to continue object creation 
+		 * @param elementName the element name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withElementName(ElementName elementName) {
+            assertNotInvalidated(getClass(), neighbor);
 			neighbor.elementName = elementName;
 			return this;
 		}
 		
 		/**
 		 * Sets the neighbor physical interface name.
-		 * @param ifpName - the interface name
-		 * @return a reference to this builder to continue object creation 
+		 * @param ifpName the interface name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withInterfaceName(InterfaceName ifpName) {
+            assertNotInvalidated(getClass(), neighbor);
 			neighbor.ifpName = ifpName;
 			return this;
 		}
 		
 		/**
-		 * Returns the immutable neighbor information of a physical interface.
-		 * @return the immutable neighbor information of a physical interface.
+		 * Creates an immutable <code>ElementPhysicalInterfaceNeighbor</code> value object and invalidated this builder.
+		 * Subsequent invocation of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ElementPhysicalInterfaceNeighbor</code> value object.
 		 */
 		public ElementPhysicalInterfaceNeighbor build() {
 			try {
+			    assertNotInvalidated(getClass(), neighbor);
 				return neighbor;
 			} finally {
 				this.neighbor = null;

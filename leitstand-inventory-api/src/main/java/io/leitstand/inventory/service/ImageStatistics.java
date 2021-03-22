@@ -26,13 +26,24 @@ import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
 
+/**
+ * Image utilization statistics.
+ * <p>
+ * The image statistics provides information about which releases and element groups use the image.
+ */
 public class ImageStatistics extends ValueObject {
 
-	
+    /**
+     * Creates a builder for an immutable <code>ImageStatistics</code> value object.
+     * @return a builder for an immutable <code>ImageStatistics</code> value object.
+     */
 	public static Builder newImageStatistics() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ImageStatistics</code> value object.
+	 */
 	public static class Builder {
 		
 		private ImageStatistics stats = new ImageStatistics();
@@ -41,37 +52,67 @@ public class ImageStatistics extends ValueObject {
 			return withImage(image.build());
 		}
 		
+		/**
+		 * Sets the image information.
+		 * @param image the image information.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImage(ImageInfo image) {
 			assertNotInvalidated(getClass(), stats);
 			stats.image = image;
 			return this;
 		}
-		
-		public Builder withElementGroupCounters(ImageStatisticsElementGroupImageCount.Builder... groups) {
-		    return withElementGroupCounters(stream(groups)
+
+	    /**
+         * Sets the image count per element group.
+         * @param imagesPerGroup the image count per element group.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withElementGroupCounters(ImageStatisticsElementGroupImageCount.Builder... imagesPerGroup) {
+		    return withElementGroupCounters(stream(imagesPerGroup)
 		                                    .map(ImageStatisticsElementGroupImageCount.Builder::build)
 		                                    .collect(toList()));
 		}
-		
-        public Builder withElementGroupCounters(Collection<ImageStatisticsElementGroupImageCount> groups) {
+
+	    /**
+         * Sets the image count per element group.
+         * @param imagesPerGroup the image count per element group.
+         * @return a reference to this builder to continue object creation.
+         */
+        public Builder withElementGroupCounters(Collection<ImageStatisticsElementGroupImageCount> imagesPerGroup) {
             assertNotInvalidated(getClass(), stats);
-            stats.groups = unmodifiableList(new ArrayList<>(groups));
+            stats.groups = unmodifiableList(new ArrayList<>(imagesPerGroup));
             return this;
         }
         
+        /**
+         * Sets the releases using the image.
+         * @param releases the releases using the image.
+         * @return a reference to this builder to continue object creation.
+         */
         public Builder withReleases(ReleaseRef.Builder... releases) {
             return withReleases(stream(releases)
                                 .map(ReleaseRef.Builder::build)
                                 .collect(toList()));
         }
         
+        
+        /**
+         * Sets the releases using the image.
+         * @param releases the releases using the image.
+         * @return a reference to this builder to continue object creation.
+         */
         public Builder withReleases(List<ReleaseRef> releases) {
             assertNotInvalidated(getClass(),stats);
             stats.releases = unmodifiableList(new ArrayList<>(releases));
             return this;
         }
 		
-		
+		/**
+		 * Creates an immutable <code>ImageStatistics</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ImageStatistics</code> value object.
+		 */
 		public ImageStatistics build() {
 			try {
 				assertNotInvalidated(getClass(), stats);
@@ -88,14 +129,26 @@ public class ImageStatistics extends ValueObject {
 	private List<ImageStatisticsElementGroupImageCount> groups;
 	private List<ReleaseRef> releases;
 	
+	/**
+	 * Returns the image information.
+	 * @return the image information.
+	 */
 	public ImageInfo getImage() {
 		return image;
 	}
 	
+	/**
+	 * Returns the image utilization statistics per element group.
+	 * @return the image utilization statistics per element group.
+	 */
 	public List<ImageStatisticsElementGroupImageCount> getGroups() {
         return groups;
     }
 	
+	/**
+	 * Returns the releases using the image.
+	 * @return the releases using the image.
+	 */
 	public List<ReleaseRef> getReleases() {
         return releases;
     }

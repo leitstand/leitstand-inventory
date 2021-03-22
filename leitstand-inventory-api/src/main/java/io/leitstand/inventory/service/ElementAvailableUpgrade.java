@@ -28,12 +28,12 @@ import io.leitstand.commons.jsonb.IsoDateAdapter;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * A summary of an existing software upgrade for a certain element.
+ * Summary of an available element software upgrade.
  */
 public class ElementAvailableUpgrade extends ValueObject {
 
 	/**
-	 * An enumeration of update types.
+	 * An enumeration of upgrade types.
 	 */
 	public enum UpgradeType {
 		/** A major software upgrade.*/
@@ -48,95 +48,98 @@ public class ElementAvailableUpgrade extends ValueObject {
 	}
 	
 	/**
-	 * Returns a builder for an immutable <code>ElementAvailableUpgrade</code> instance.
-	 * @return a builder for an immutable <code>ElementAvailableUpgrade</code> instance.
+	 * Returns a builder for a <code>ElementAvailableUpgrade</code> instance.
+	 * @return a builder for a <code>ElementAvailableUpgrade</code> instance.
 	 */
 	public static Builder newElementAvailableUpgrade(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder for an immutable <code>ElementAvailableUpdate</code> instance.
+	 * A builder for an immutable <code>ElementAvailableUpdate</code> instance.
 	 */
 	public static class Builder {
 		
-		private ElementAvailableUpgrade update = new ElementAvailableUpgrade();
+		private ElementAvailableUpgrade upgrade = new ElementAvailableUpgrade();
 		
 		/** 
-		 * Sets the image id of the available update.
-		 * @param id the image id
-		 * @return a reference to this builder to continue with object creation
+		 * Sets the image ID.
+		 * @param id the image ID
+		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withImageId(ImageId id){
-			assertNotInvalidated(getClass(),update);
-			update.imageId = id;
+			assertNotInvalidated(getClass(),upgrade);
+			upgrade.imageId = id;
 			return this;
 		}
 
 		/**
-		 * Sets the image name of the available update.
+		 * Sets the image name.
 		 * @param name the image name
-		 * @return a reference to this builder to continue with object creation
+		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withImageName(ImageName name){
-			assertNotInvalidated(getClass(),update);
-			update.imageName = name;
+			assertNotInvalidated(getClass(),upgrade);
+			upgrade.imageName = name;
 			return this;
 		}
 		
 		/**
-		 * Sets the image state of the available update.
+		 * Sets the image state.
 		 * @param state the image state
-		 * @return a reference to this builder to continue with object creation
+		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withImageState(ImageState state){
-			assertNotInvalidated(getClass(),update);
-			update.imageState = state;
+			assertNotInvalidated(getClass(),upgrade);
+			upgrade.imageState = state;
 			return this;
 		}
 		
 		/** 
-		 * Sets the image version of the available update.
+		 * Sets the image version.
 		 * @param version the image version
-		 * @return a reference to this builder to continue with object creation
+		 * @return a reference to this builder to continue object creation
 		 */
 		public Builder withImageVersion(Version version){
-			assertNotInvalidated(getClass(),update);
-			update.imageVersion = version;
+			assertNotInvalidated(getClass(),upgrade);
+			upgrade.imageVersion = version;
 			return this;
 		}
 		
-		
 		/** 
-		 * Sets the build date of the available update.
-		 * @param date- the image build date
+		 * Sets the build date of the image
+		 * @param date the image build date
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public Builder withBuildDate(Date date){
-			assertNotInvalidated(getClass(),update);
+			assertNotInvalidated(getClass(),upgrade);
 			if(date != null) {
-				update.buildDate = new Date(date.getTime());
+				upgrade.buildDate = new Date(date.getTime());
 			}
 			return this;
 		}
 		
 		/** 
-		 * Sets the type of the available update.
-		 * @param type the update type
+		 * Sets the upgrade type
+		 * @param type the upgrade type
 		 * @return a reference to this builder to continue with object creation
 		 */
-		public Builder withUpdateType(UpgradeType type){
-			assertNotInvalidated(getClass(),update);
-			update.upgradeType = type;
+		public Builder withUpgradeType(UpgradeType type){
+			assertNotInvalidated(getClass(),upgrade);
+			upgrade.upgradeType = type;
 			return this;
 		}
 		
+		/**
+		 * Returns an immutable <code>ElementAvailableUpgrade</code> instance.
+		 * @return an immutable <code>ElementAvailableUpgrade</code> instance.
+		 */
 		public ElementAvailableUpgrade build(){
 			try{
-				assertNotInvalidated(getClass(),update);
-				return update;
+				assertNotInvalidated(getClass(),upgrade);
+				return upgrade;
 			} finally {
-				this.update = null;
+				this.upgrade = null;
 			}
 		}
 		
@@ -178,7 +181,7 @@ public class ElementAvailableUpgrade extends ValueObject {
 	 * Returns the revision of the available update.
 	 * @return the revision of the available update.
 	 */
-	public Version getRevision(){
+	public Version getImageVersion(){
 		return imageVersion;
 	}
 	
@@ -210,13 +213,13 @@ public class ElementAvailableUpgrade extends ValueObject {
 	}
 	
 	/**
-	 * Returns the update type.
-	 * @return the update type.
+	 * Returns the upgrade type.
+	 * @return the upgrade type.
 	 * @see #isMajorUpdate()
 	 * @see #isMinorUpdate()
 	 * @see #isPatch()
 	 */
-	public UpgradeType getUpdateType() {
+	public UpgradeType getUpgradeType() {
 		return upgradeType;
 	}
 	
@@ -228,6 +231,10 @@ public class ElementAvailableUpgrade extends ValueObject {
 		return imageName;
 	}
 	
+	/**
+	 * Returns the image state.
+	 * @return the image state.
+	 */
 	public ImageState getImageState() {
 		return imageState;
 	}

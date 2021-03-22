@@ -53,7 +53,7 @@ public class DefaultElementGroupService implements ElementGroupService {
 	}
 
 	@Override
-	public List<ElementGroupStatistics> getGroupStatistics(@Valid ElementGroupType groupType, 
+	public List<ElementGroupStatistics> getGroupStatistics(ElementGroupType groupType, 
 														   String filter) {
 		return manager.getGroupStatistics(groupType,
 										  filter);

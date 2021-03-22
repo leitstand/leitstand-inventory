@@ -24,28 +24,54 @@ import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
 
-public class ImagesExport extends ValueObject {
 
-	public static Builder newImagesExport() {
+/**
+ * Image inventory export.
+ */
+public class ImageExport extends ValueObject {
+
+    /**
+     * Creates a builder for an immutable <code>ImageExport</code> value object.
+     * @return a builder for an immutable <code>ImageExport</code> value object.
+     */
+	public static Builder newImageExport() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ImageExport</code> value object.
+	 */
 	public static class Builder {
-		private ImagesExport export = new ImagesExport();
-		
+		private ImageExport export = new ImageExport();
+
+		/**
+		 * Sets the export creation date.
+		 * @param date the creation date.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withDateCreated(Date date) {
 			assertNotInvalidated(getClass(), export);
 			export.dateCreated = new Date(date.getTime());
 			return this;
 		}
 		
+		/**
+		 * Sets the exported images.
+		 * @param images the exported images.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withImages(List<ImageInfo> images) {
 			assertNotInvalidated(getClass(), export);
 			export.images = new LinkedList<>(images);
 			return this;
 		}
 		
-		public ImagesExport build() {
+		/**
+		 * Creates an immutable <code>ImagesExport</code> value object and invalidates this builder.
+		 * Subsequent invocations of the <code>build()</code> method raise an exception.
+		 * @return the immutable <code>ImagesExport</code> value object.
+		 */
+		public ImageExport build() {
 			try {
 				assertNotInvalidated(getClass(), export);
 				return export;
@@ -58,11 +84,18 @@ public class ImagesExport extends ValueObject {
 	private Date dateCreated = new Date();
 	private List<ImageInfo> images;
 	
-	
+	/**
+	 * Returns the export creation date.
+	 * @return the export creation date.
+	 */
 	public Date getDateCreated() {
 		return new Date(dateCreated.getTime());
 	}
 	
+	/**
+	 * Returns the exported images.
+	 * @return the exported images.
+	 */
 	public List<ImageInfo> getImages() {
 		return unmodifiableList(images);
 	}

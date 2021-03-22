@@ -21,6 +21,7 @@ import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -37,7 +38,9 @@ import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.ElementId;
 import io.leitstand.inventory.service.ElementName;
+import io.leitstand.inventory.service.ElementServiceStack;
 import io.leitstand.inventory.service.ElementServiceSubmission;
+import io.leitstand.inventory.service.ElementServices;
 import io.leitstand.inventory.service.ElementServicesService;
 import io.leitstand.inventory.service.ServiceName;
 
@@ -61,15 +64,45 @@ public class ElementServiceResourceTest {
 	private ElementServicesService service;
 	
 	@InjectMocks
-	private ElementServicesResource resource = new ElementServicesResource();
+	private ElementServiceResource resource = new ElementServiceResource();
 	
+	@Test
+	public void get_element_services_by_id() {
+	    ElementServices services = mock(ElementServices.class);
+	    when(service.getElementServices(ELEMENT_ID)).thenReturn(services);
+	    assertEquals(services,resource.getServices(ELEMENT_ID));
+	}
+	
+	@Test
+    public void get_element_services_by_name() {
+        ElementServices services = mock(ElementServices.class);
+        when(service.getElementServices(ELEMENT_NAME)).thenReturn(services);
+        assertEquals(services,resource.getServices(ELEMENT_NAME));
+    }
+		
+	@Test
+	public void get_element_service_stack_by_element_id() {
+	    ElementServiceStack stack = mock(ElementServiceStack.class);
+	    when(service.getElementServiceStack(ELEMENT_ID, SERVICE_NAME)).thenReturn(stack);
+	    
+	    assertEquals(stack,resource.getElementServiceStack(ELEMENT_ID, SERVICE_NAME));
+	}
+	
+	   
+    @Test
+    public void get_element_service_stack_by_element_name() {
+        ElementServiceStack stack = mock(ElementServiceStack.class);
+        when(service.getElementServiceStack(ELEMENT_NAME, SERVICE_NAME)).thenReturn(stack);
+        
+        assertEquals(stack,resource.getElementServiceStack(ELEMENT_NAME, SERVICE_NAME));
+    }
 	
 	@Test
 	public void throws_UnprocessableEntityException_when_attempting_to_change_a_service_name_for_an_element_identified_by_id() {
 		exception.expect(UnprocessableEntityException.class);
 		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
 		
-		resource.storeElementService(ELEMENT_ID, ServiceName.valueOf("other"), SERVICE);
+		resource.storeElementService(ELEMENT_ID, serviceName("other"), SERVICE);
 	}
 	
 	@Test
@@ -77,7 +110,7 @@ public class ElementServiceResourceTest {
 		exception.expect(UnprocessableEntityException.class);
 		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
 		
-		resource.storeElementService(ELEMENT_ID, ServiceName.valueOf("other"), SERVICE);
+		resource.storeElementService(ELEMENT_ID, serviceName("other"), SERVICE);
 	}
 	
 	@Test

@@ -67,6 +67,9 @@ public enum ReasonCode implements Reason{
 	/** The image cannot be removed.*/
     IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE, 
     
+    /** The image name is already in use.*/
+    IVT0206E_IMAGE_NAME_ALREADY_IN_USE,
+    
 	/** The release does not exist.*/
 	IVT0210E_RELEASE_NOT_FOUND,
 	
@@ -261,6 +264,9 @@ public enum ReasonCode implements Reason{
 	/** No rack item for element found.*/
 	IVT0808E_ELEMENT_RACK_ITEM_NOT_FOUND,
 	
+	/** Rack name already in use.*/
+	IVT0809E_RACK_NAME_ALREADY_IN_USE,
+	
 	/** The platform does not exist.*/
 	IVT0900E_PLATFORM_NOT_FOUND,
 	
@@ -303,8 +309,11 @@ public enum ReasonCode implements Reason{
 	/** The environment has been removed.*/
 	IVT0392I_ELEMENT_ENVIRONMENT_REMOVED,
 
-	/** The environment with the specified name already exists.*/
+	/** An environment with the specified name already exists.*/
     IVT0393E_ELEMENT_ENVIRONMENT_EXISTS,
+    
+    /** The element environment violates the environment schema constraints.*/ 
+    IVT0394E_ELEMENT_ENVIRONMENT_INVALID,
 	
 	/** The DNS record does not exist.*/
 	IVT3001E_ELEMENT_DNS_RECORD_NOT_FOUND,

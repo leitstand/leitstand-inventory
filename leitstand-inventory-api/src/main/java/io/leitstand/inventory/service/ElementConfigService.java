@@ -18,7 +18,9 @@ package io.leitstand.inventory.service;
 import javax.ws.rs.core.MediaType;
 
 /**
- * A stateless and transactional service to manage element configurations.
+ * A service for managing element configurations.
+ * <p>
+ * The <code>ElementConfigService</code> allows reading, storing and removing element configurations.
  */
 public interface ElementConfigService {
 	

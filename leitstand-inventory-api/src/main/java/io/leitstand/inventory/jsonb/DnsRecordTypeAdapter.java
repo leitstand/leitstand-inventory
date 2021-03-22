@@ -17,13 +17,14 @@ package io.leitstand.inventory.jsonb;
 
 import javax.json.bind.adapter.JsonbAdapter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.DnsRecordType;
 
 public class DnsRecordTypeAdapter implements JsonbAdapter<DnsRecordType, String> {
 
 	@Override
 	public String adaptToJson(DnsRecordType type) throws Exception {
-		return DnsRecordType.toString(type);
+		return Scalar.toString(type);
 	}
 
 	@Override

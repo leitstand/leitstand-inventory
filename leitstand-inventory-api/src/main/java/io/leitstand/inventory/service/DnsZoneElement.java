@@ -25,23 +25,47 @@ import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+/**
+ * Contains all DNS record sets of an element in a DNS zone.
+ */
 public class DnsZoneElement extends BaseElementEnvelope {
 
+    /**
+     * Returns a builder to create a <code>DnsZoneElement</code> instance.
+     * @return a builder to create a <code>DnsZoneElement</code> instance.
+     */
 	public static Builder newDnsZoneElement() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder to create an immutable <code>DnsZoneElement</code> instance.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<DnsZoneElement, Builder>{
-		protected Builder() {
+
+	    /**
+	     * Creates a builder for a <code>DnsZoneElement</code> instance.
+	     */
+	    protected Builder() {
 			super(new DnsZoneElement());
 		}
 		
+	    /**
+	     * Sets the element DNS record sets.
+	     * @param dnsRecordSets the DNS record sets.
+	     * @return a reference to this builder to continue object creation
+	     */
 		public Builder withDnsRecordSets(DnsRecordSet.Builder... dnsRecordSets) {
 			return withDnsRecordSets(stream(dnsRecordSets)
 									 .map(DnsRecordSet.Builder::build)
 									 .collect(toList()));
 		}
 		
+		/**
+		 * Sets the element DNS record sets.
+		 * @param dnsRecordSets the DNS record sets.
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withDnsRecordSets(List<DnsRecordSet> dnsRecordSets) {
 			assertNotInvalidated(getClass(), object);
 			object.dnsRecordSets = new ArrayList<>(dnsRecordSets);
@@ -52,6 +76,10 @@ public class DnsZoneElement extends BaseElementEnvelope {
 	@JsonbProperty("dns_recordsets")
 	private List<DnsRecordSet> dnsRecordSets; 
 	
+	/**
+	 * Returns the DNS record sets.
+	 * @return the DNS record sets.
+	 */
 	public List<DnsRecordSet> getDnsRecordSets(){
 		return unmodifiableList(dnsRecordSets);
 	}

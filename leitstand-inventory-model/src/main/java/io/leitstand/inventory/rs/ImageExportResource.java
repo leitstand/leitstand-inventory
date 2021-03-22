@@ -40,7 +40,7 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageExportService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
-import io.leitstand.inventory.service.ImagesExport;
+import io.leitstand.inventory.service.ImageExport;
 import io.leitstand.inventory.service.Version;
 import io.leitstand.security.auth.Scopes;
 
@@ -65,7 +65,7 @@ public class ImageExportResource {
 			 						 @QueryParam("image_state") ImageState state,
 			 						 @QueryParam("element_role") @Valid ElementRoleName role){
 		
-		ImagesExport export = inventory.exportImages(filter,
+		ImageExport export = inventory.exportImages(filter,
 													 role,
 													 type,
 													 state,
@@ -78,7 +78,7 @@ public class ImageExportResource {
 	
 	@PUT
 	@Path("/images")
-	public Response importImagesJson(ImagesExport export) {
+	public Response importImagesJson(ImageExport export) {
 		inventory.importImages(export);
 		return success(messages);
 	}

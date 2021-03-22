@@ -24,24 +24,47 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Contains the DNS records sets for all elements in a DNS zone.
+ */
 public class DnsZoneElements extends DnsZoneSettings {
 
+    /**
+     * Creates a builder for a <code>DnsZoneElements</code> instance.
+     * @return a builder for a <code>DnsZoneElements</code> instance.
+     */
 	public static Builder newDnsZoneElements() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder to create an immutable <code>DnsZoneElements</code> instance.
+	 */
 	public static class Builder extends DnsZoneSettingsBuilder<DnsZoneElements, Builder>{
-	
+
+	    /**
+	     * Creates a <code>DnsZoneElements</code> builder.
+	     */
 		protected Builder() {
 			super(new DnsZoneElements());
 		}
 		
+		/**
+		 * Sets the DNS entries of the DNS zone.
+		 * @param entries the DNS entries.
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withDnsEntries(DnsZoneElement.Builder... entries) {
 			return withDnsEntries(stream(entries)
 								  .map(DnsZoneElement.Builder::build)
 								  .collect(toList()));
 		}
 		
+        /**
+         * Sets the DNS entries of the DNS zone.
+         * @param entries the DNS entries.
+         * @return a reference to this builder to continue object creation
+         */		
 		public Builder withDnsEntries(List<DnsZoneElement> entries) {
 			assertNotInvalidated(getClass(), zone);
 			zone.dnsEntries = new ArrayList<>(entries);
@@ -52,6 +75,10 @@ public class DnsZoneElements extends DnsZoneSettings {
 	
 	private List<DnsZoneElement> dnsEntries = emptyList();
 	
+	/**
+	 * Returns the DNS entries.
+	 * @return the DNS entries.
+	 */
 	public List<DnsZoneElement> getDnsEntries() {
 		return unmodifiableList(dnsEntries);
 	}

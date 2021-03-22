@@ -24,24 +24,48 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Summary of all environments of an element.
+ */
 public class ElementEnvironments extends BaseElementEnvelope{
 
+    /**
+     * Returns a builder for an immutable <code>ElementEnvironments</code> value object.
+     * @return a builder for an immutable <code>ElementEnvironments</code> value object.
+     */
 	public static Builder newElementEnvironments() {
 		return new Builder();
 	}
 	
+	/**
+	 * A builder for an immutable <code>ElementEnvironments</code> value object.
+	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementEnvironments,Builder>{
 		
+	    /**
+	     * Creates a builder for an immutable <code>ElementEnvironments</code> value object.
+	     */
 		protected Builder() {
 			super(new ElementEnvironments());
 		}
 		
+		/**
+		 * Sets the environments of the element.
+		 * @param envs the environments
+		 * @return a reference to this builder to continue object creation
+		 */
 		public Builder withEnvironments(EnvironmentInfo.Builder... envs) {
 			return withEnvironments(stream(envs)
 									.map(EnvironmentInfo.Builder::build)
 									.collect(toList()));
 		}
 		
+	    /**
+         * Sets the environments of the element.
+         * @param envs the environments
+         * @return a reference to this buidler to continue object creation
+         */
 		public Builder withEnvironments(List<EnvironmentInfo> envs) {
 			assertNotInvalidated(getClass(), object);
 			object.environments = new ArrayList<>(envs);
@@ -52,6 +76,10 @@ public class ElementEnvironments extends BaseElementEnvelope{
 	
 	private List<EnvironmentInfo> environments = emptyList();
 	
+	/**
+	 * Returns the list of element environments.
+	 * @return the list of element environments.
+	 */
 	public List<EnvironmentInfo> getEnvironments() {
 		return unmodifiableList(environments);
 	}

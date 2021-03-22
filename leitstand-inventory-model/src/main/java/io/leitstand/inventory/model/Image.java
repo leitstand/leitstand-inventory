@@ -69,6 +69,8 @@ import io.leitstand.inventory.service.Version;
 @Table(schema="inventory", name="image")
 @NamedQuery(name="Image.findByImageId", 
 		    query="SELECT d FROM Image d WHERE d.uuid=:id")
+@NamedQuery(name="Image.findByImageName", 
+            query="SELECT d FROM Image d WHERE d.imageName=:name")
 @NamedQuery(name="Image.markElementImageSuperseded",
 			query="UPDATE Image d "+ 
 			      "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
@@ -370,6 +372,14 @@ public class Image extends VersionableEntity{
 					   .setParameter("id", id.toString())
 					   .getSingleResult();
 	}
+	
+    public static Query<Image> findImageByName(ImageName imageName) {
+        return em -> em.createNamedQuery("Image.findByImageName",
+                                         Image.class)
+                       .setParameter("name", imageName)
+                       .getSingleResult();    
+    }
+
 	
 	public static Query<Image> findByElementAndImageTypeAndVersion(Element element,
 																   ImageType imageType, 

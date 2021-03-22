@@ -33,6 +33,7 @@ import javax.persistence.Table;
 
 import io.leitstand.commons.jpa.BooleanConverter;
 import io.leitstand.commons.model.Query;
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.commons.model.VersionableEntity;
 import io.leitstand.inventory.jpa.AdministrativeStateConverter;
 import io.leitstand.inventory.jpa.RackNameConverter;
@@ -66,7 +67,7 @@ public class Rack extends VersionableEntity {
 	
 	public static Query<Rack> findRackById(RackId rackId) {
 		return em -> em.createNamedQuery("Rack.findById",Rack.class)
-					   .setParameter("uuid", RackId.toString(rackId))
+					   .setParameter("uuid", Scalar.toString(rackId))
 					   .getSingleResult();
 	}
 	

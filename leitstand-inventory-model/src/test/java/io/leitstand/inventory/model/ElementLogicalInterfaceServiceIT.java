@@ -7,7 +7,7 @@ import static io.leitstand.inventory.model.Element_ContainerInterface.findIfcByN
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpByName;
 import static io.leitstand.inventory.model.Platform.findPlatformById;
 import static io.leitstand.inventory.service.AddressInterface.newAddressInterface;
-import static io.leitstand.inventory.service.AddressInterface.AddressType.IPv4;
+import static io.leitstand.inventory.service.AddressInterface.AddressType.IPV4;
 import static io.leitstand.inventory.service.Bandwidth.bandwidth;
 import static io.leitstand.inventory.service.ElementAlias.elementAlias;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
@@ -183,7 +183,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals("ifl alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("192.168.10.1/16"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
-			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
+			assertEquals(IPV4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			
 			Message message = messageCaptor.getValue();
 			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED.getReasonCode()));
@@ -254,7 +254,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals("Updated alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP2_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("10.0.100.1/8"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
-			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
+			assertEquals(IPV4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			
 			Message message = messageCaptor.getValue();
 			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED.getReasonCode()));
@@ -306,7 +306,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals("ifl alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("192.168.10.1/16"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
-			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
+			assertEquals(IPV4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			assertEquals(vlanTPID(0x0810),ifl.getLogicalInterface().getVlans().get(0).getVlanTpid());
 			assertEquals(vlanID(42),ifl.getLogicalInterface().getVlans().get(0).getVlanId());
 			
@@ -382,7 +382,7 @@ public class ElementLogicalInterfaceServiceIT extends InventoryIT {
 			assertEquals("Updated alias",ifl.getLogicalInterface().getIflAlias());
 			assertEquals(IFP2_NAME,ifl.getLogicalInterface().getPhysicalInterfaces().get(0).getIfpName());
 			assertEquals(cidr("10.0.100.1/8"),ifl.getLogicalInterface().getAddresses().get(0).getAddress());
-			assertEquals(IPv4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
+			assertEquals(IPV4,ifl.getLogicalInterface().getAddresses().get(0).getAddressType());
 			
 			Message message = messageCaptor.getValue();
 			assertThat(message.getReason(),is(IVT0361I_ELEMENT_IFL_STORED.getReasonCode()));

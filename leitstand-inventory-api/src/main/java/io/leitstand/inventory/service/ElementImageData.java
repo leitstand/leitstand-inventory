@@ -37,29 +37,29 @@ import io.leitstand.commons.jsonb.IsoDateAdapter;
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Provides all details of an installed image.
+ * Provides details for an image eligible for deployment or already installed on an element.
  */
-
 public class ElementImageData extends ValueObject{
 
 	/**
-	 * Returns a builder to create a new immutable <code>ElementInstalledImageData</code> instance.
-	 * @return a builder to create a new immutable <code>ElementInstalledImageData</code> instance.
+	 * Returns a builder to create an immutable <code>ElementImageData</code> value object.
+	 * @return a builder to create an immutable <code>ElementIamgeData</code> value object.
 	 */
-	public static Builder newElementInstalledImageData(){
+	public static Builder newElementImageData(){
 		return new Builder();
 	}
 	
 	/**
-	 * The builder to create an immutable <code>ElementInstalledImageData</code> instance.
+	 * A builder to create an immutable <code>ElementInstalledImageData</code> value object.
 	 */
 	public static class Builder{
-		private ElementImageData image = new ElementImageData();
+		
+	    private ElementImageData image = new ElementImageData();
 
 		/**
 		 * Sets the image id.
-		 * @param id - the image id
-		 * @return a reference to this builder to continue object creation
+		 * @param id the image id.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageId(ImageId id){
 			assertNotInvalidated(getClass(), image);
@@ -68,9 +68,9 @@ public class ElementImageData extends ValueObject{
 		}
 		
 		/**
-		 * Sets the packages constituting the image.
-		 * @param packages - the packages
-		 * @return a reference to this builder to continue object creation
+		 * Sets the packages shipped with the image.
+		 * @param packages the packages.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPackages(PackageVersionInfo.Builder... packages){
 			return withPackages(stream(packages)
@@ -79,18 +79,18 @@ public class ElementImageData extends ValueObject{
 		}
 
 		/**
-		 * Sets the packages constituting the image.
-		 * @param packages - the packages
-		 * @return a reference to this builder to continue object creation
+		 * Sets the packages shipped with the image.
+		 * @param packages the packages.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPackages(PackageVersionInfo... packages){
 			return withPackages(asList(packages));
 		}
 
 		/**
-		 * Sets the packages constituting the image.
-		 * @param packages - the packages
-		 * @return a reference to this builder to continue object creation
+		 * Sets the packages shipped with the image.
+		 * @param packages the packages.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withPackages(List<PackageVersionInfo> packages) {
 			assertNotInvalidated(getClass(), image);
@@ -99,40 +99,40 @@ public class ElementImageData extends ValueObject{
 		}
 	
 		/**
-		 * Sets the available updates for this image.
-		 * @param updates - the available updates
-		 * @return a reference to this builder to continue object creation
+		 * Sets the available image upgrades.
+		 * @param upgrades the available image upgrades.
+		 * @return a reference to this builder to continue object creation.
 		 */
-		public Builder withAvailableUpdates(ElementAvailableUpgrade.Builder... updates){
-			return withAvailableUpdates(stream(updates)
+		public Builder withAvailableUpgrades(ElementAvailableUpgrade.Builder... updates){
+			return withAvailableUpgrades(stream(updates)
 									    .map(ElementAvailableUpgrade.Builder::build)
 									    .collect(toList()));
 		}
 		
-		/**
-		 * Sets the available updates for this image.
-		 * @param updates - the available updates
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withAvailableUpdates(ElementAvailableUpgrade... updates){
-			return withAvailableUpdates(asList(updates));
+        /**
+         * Sets the available image upgrades.
+         * @param upgrades the available image upgrades.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withAvailableUpgrades(ElementAvailableUpgrade... updates){
+			return withAvailableUpgrades(asList(updates));
 		}
 
-		/**
-		 * Sets the available updates for this image.
-		 * @param updates - the available updates
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withAvailableUpdates(List<ElementAvailableUpgrade> updates) {
+        /**
+         * Sets the available image upgrades. 
+         * @param upgrades the available image upgrades.
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withAvailableUpgrades(List<ElementAvailableUpgrade> updates) {
 			assertNotInvalidated(getClass(), image);
 			image.availableUpgrades = unmodifiableList(new LinkedList<>(updates));
 			return this;
 		}
 
 		/**
-		 * Sets whether this image is currently active or not.
-		 * @param state - the installation state of the image
-		 * @return a reference to this builder to continue object creation
+		 * Sets the status of this image for the selected element.
+		 * @param state the element image state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withElementImageState(ElementImageState state) {
 			assertNotInvalidated(getClass(), image);
@@ -141,9 +141,9 @@ public class ElementImageData extends ValueObject{
 		}
 		
 		/**
-		 * Sets the organization that issued this image.
-		 * @param org - the organization that has issued this image as reverse domain name (e.g. net.rtbrick).
-		 * @return a reference to this builder to continue object creation
+		 * Sets the organization that published this image.
+		 * @param org the organization name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withOrganization(String org){
 			assertNotInvalidated(getClass(), image);
@@ -152,9 +152,9 @@ public class ElementImageData extends ValueObject{
 		}
 		
 		/**
-		 * Sets the image revision
-		 * @param version - the image revision
-		 * @return a reference to this builder to continue object creation
+		 * Sets the image version.
+		 * @param version the image version.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageVersion(Version version){
 			assertNotInvalidated(getClass(), image);
@@ -164,8 +164,8 @@ public class ElementImageData extends ValueObject{
 		
 		/**
 		 * Sets the image type.
-		 * @param type - image type
-		 * @return a reference to this builder to continue object creation
+		 * @param type image type.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageType(ImageType type){
 			assertNotInvalidated(getClass(), image);
@@ -174,9 +174,9 @@ public class ElementImageData extends ValueObject{
 		}
 
 		/**
-		 * Sets the image lifecylce state of the installed image.
-		 * @param state - the image lifecycle state
-		 * @return a reference to this builder to continue object creation
+		 * Sets the image lifecycle state.
+		 * @param state - the image lifecycle state.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageState(ImageState state) {
 			assertNotInvalidated(getClass(), image);
@@ -186,8 +186,8 @@ public class ElementImageData extends ValueObject{
 		
 		/**
 		 * Sets the image name.
-		 * @param name - image name
-		 * @return a reference to this builder to continue object creation
+		 * @param name image name.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageName(ImageName name){
 			assertNotInvalidated(getClass(), image);
@@ -196,9 +196,9 @@ public class ElementImageData extends ValueObject{
 		}
 		
 		/**
-		 * Sets the available checksums for this installed image.
-		 * @param checksums the available checksums
-		 * @return a reference to this builder to continue object creation
+		 * Sets the image checksums.
+		 * @param checksums the image checksums.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withChecksums(Map<String,String> checksums){
 			assertNotInvalidated(getClass(), image);
@@ -208,8 +208,8 @@ public class ElementImageData extends ValueObject{
 
 		/**
 		 * Sets the installation date of the image.
-		 * @param date - the installation date
-		 * @return a reference to this builder to continue object creation
+		 * @param date the installation date.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withInstallationDate(Date date){
 			assertNotInvalidated(getClass(), image);
@@ -220,9 +220,9 @@ public class ElementImageData extends ValueObject{
 		}
 
 		/**
-		 * Sets the build date  of the image.
-		 * @param date - the build date
-		 * @return a reference to this builder to continue object creation
+		 * Sets the build date of the image.
+		 * @param date the build date.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withBuildDate(Date date){
 			assertNotInvalidated(getClass(), image);
@@ -233,9 +233,9 @@ public class ElementImageData extends ValueObject{
 		}
 
 		/**
-		 * Sets the extension of the image file.
-		 * @param ext - the image file extension
-		 * @return a reference to this builder to continue object creation
+		 * Sets the image file extension.
+		 * @param ext the image file extension.
+		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withImageExtension(String ext) {
 			assertNotInvalidated(getClass(), image);
@@ -243,6 +243,11 @@ public class ElementImageData extends ValueObject{
 			return this;
 		}
 		
+		/**
+		 * Sets whether this image shall be installed via zero-touch provisioning (ZTP).
+		 * @param ztp whether this image shall be installed via ZTP.
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withZtp(boolean ztp) {
 		    assertNotInvalidated(getClass() , image);
 		    image.ztp = ztp;
@@ -250,9 +255,9 @@ public class ElementImageData extends ValueObject{
 		}
 		
 		/**
-		 * Creates an immutable <code>ElementInstalledImageData</code> instance and invalidates this constructor.
-		 * Any further interaction with this builder raises an exception.
-		 * @return the immutable <code>ElementInstalledImageData</code> instance.
+		 * Creates an immutable <code>ElementInstalledImageData</code> value object and invalidates this builder.
+		 * Subsquence invocations of the <code>buils()</code> raise an exception.
+		 * @return the immutable <code>ElementInstalledImageData</code> value object.
 		 */
 		public ElementImageData build(){
 			try{
@@ -322,8 +327,8 @@ public class ElementImageData extends ValueObject{
 	}
 	
 	/**
-	 * Returns the packages constituting the image.
-	 * @return the packages constituting the image.
+	 * Returns the packages shipped with the image.
+	 * @return the packages shipped with the image.
 	 */
 	public List<PackageVersionInfo> getPackages() {
 		return packages;
@@ -339,8 +344,8 @@ public class ElementImageData extends ValueObject{
 	}
 	
 	/**
-	 * Returns the image revision.
-	 * @return the image revision.
+	 * Returns the image version.
+	 * @return the image version.
 	 */
 	public Version getImageVersion() {
 		return imageVersion;
@@ -372,9 +377,8 @@ public class ElementImageData extends ValueObject{
 	}
 	
 	/**
-	 * Returns the name of the organization that has issued the image.
-	 * The name is typically specified in reverse domain order (e.g. net.rtbrick).
-	 * @return the organization that has issued the image.
+	 * Returns the name of the organization that has published the image.
+	 * @return the organization that has published the image.
 	 */
 	public String getOrganization() {
 		return organization;
@@ -388,30 +392,43 @@ public class ElementImageData extends ValueObject{
 		return elementImageState == ACTIVE;
 	}
 	
+	/**
+	 * Returns the element image lifecycle state.
+	 * @return the element image lifecycle state.
+	 * @see ElementImageState
+	 */
 	public ElementImageState getElementImageState() {
 		return elementImageState;
 	}
 	
 	/**
-	 * Returns the file extension of the image file.
-	 * @return the file extension of the image file.
+	 * Returns the image file extension.
+	 * @return the image file extension.
 	 */
-	public String getExtension() {
+	public String getImageExtension() {
 		return imageExtension;
 	}
 	
 	/**
-	 * Returns the lifecycle state of the installed image.
+	 * Returns the image lifecycle state.
 	 * @return the image lifecycle state.
 	 */
 	public ImageState getImageState() {
 		return imageState;
 	}
 	
+	/**
+	 * Returns the image checksums.
+	 * @return the image checksums.
+	 */
 	public Map<String, String> getChecksums() {
 		return unmodifiableMap(checksums);
 	}
 	
+	/**
+	 * Returns whether this image is installed over ZTP.
+	 * @return <code>true</code> if this image is installed over ZTP, <code>false</code> otherwise.
+	 */
 	public boolean isZtp() {
         return ztp;
     }

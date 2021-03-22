@@ -21,14 +21,12 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ApplicationNameAdapter;
 
 /**
- * The unique name of an application that can be enabled with a certain software image.
+ * The unique name of an application a software image supports.
  * <p>
- * A software image is constituted by a set of packages and configurations. 
- * The packages included with an image define what applications can be enabled.
- * Sample applications are routing protocols such as <code>BGP</code>, <code>ISIS</code> or
- * <code>OSPF</code> for example. The {@link ImageInfo} provides a list supported applications
- * such that this information does not have to be derived from the packages list manually.
- * </p>
+ * A software image typically supports multiple applications. 
+ * Only applications supported by the installed image can be configured on an element.
+ * Example applications are network protocols like routing protocols (BGP, IS-IS or OSPF) and access protocols (PPPoE)
+ * 
  */
 @JsonbTypeAdapter(ApplicationNameAdapter.class)
 public class ApplicationName extends Scalar<String>{
@@ -37,23 +35,21 @@ public class ApplicationName extends Scalar<String>{
 
 	/**
 	 * Creates an <code>ApplicationName</code> from the specified string.
-	 * This method is an alias of the {@link #valueOf(String)} method to avoid static import conflicts.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
-	 * @param  name - the application name
-	 * @return the application name instance
-	 * @see Scalar#fromString(String, java.util.function.Function)
+	 * @param  name the application name
+	 * @return the application name
 	 */
 	public static ApplicationName applicationName(String name) {
 		return valueOf(name);
 	}
-	
 
 	/**
 	 * Creates an <code>ApplicationName</code> from the specified string.
 	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
-	 * @param  name - the application name
+	 * @param  name the application name
 	 * @return the application name instance
-	 * @see Scalar#fromString(String, java.util.function.Function)
 	 */
 	public static ApplicationName valueOf(String name) {
 		return fromString(name,ApplicationName::new);

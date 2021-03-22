@@ -23,13 +23,10 @@ import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ImageIdAdapter;
 
 /**
- * A unique identifier for an image stored in the resource inventory.
+ * Unique image ID in UUIDv4 format.
  * <p>
- * The image ID is immutable for a image and hence forms a persistent unique key for a image.
- * The image ID is compatible to the UUIDv4 format.
- * </p>
- * @see ImageInfo
- * @see ImageType
+ * The image ID is immutable and forms a persistent unique image identifier.
+ * @see ImageName
  */
 @JsonbTypeAdapter(ImageIdAdapter.class)
 public class ImageId extends Scalar<String>{
@@ -39,7 +36,9 @@ public class ImageId extends Scalar<String>{
 	
 	/**
 	 * Creates an <code>ImageId</code> from the specified string.
-	 * This method is an alias of the {@link #valueOf(String)} method to avoid static import conflicts.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
+	 * <p>
+	 * This method is an alias of the {@link #valueOf(String)} method to improve readability by avoiding static import conflicts.
 	 * @param id the image ID
 	 * @return the <code>ImageId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -49,6 +48,7 @@ public class ImageId extends Scalar<String>{
 	
 	/**
 	 * Creates an <code>ImageId</code> from the specified string.
+	 * Returns <code>null</code> if the specified string is <code>null</code> or empty.
 	 * @param id the image ID
 	 * @return the <code>ImageId</code> or <code>null</code> if the specified string is <code>null</code> or empty.
 	 */
@@ -56,12 +56,10 @@ public class ImageId extends Scalar<String>{
 		return fromString(id,ImageId::new);
 	}
 
-	
-	
 	private String value;
 
 	/**
-	 * Returns a random image ID.
+	 * Creates a random image ID.
 	 * @return a random image ID.
 	 */
 	public static ImageId randomImageId() {

@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.EnvironmentId;
 
 /**
@@ -33,7 +34,7 @@ public class EnvironmentIdConverter implements AttributeConverter<EnvironmentId,
 	 */
 	@Override
 	public String convertToDatabaseColumn(EnvironmentId id) {
-		return EnvironmentId.toString(id);
+		return Scalar.toString(id);
 	}
 
 	/**

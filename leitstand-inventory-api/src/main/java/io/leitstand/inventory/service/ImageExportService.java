@@ -30,7 +30,7 @@ public interface ImageExportService {
 	 * @param state - an optional image state
 	 * @return an export of all matching images or an empty report if no matching image exists
 	 */
-	ImagesExport exportImages(String filter, 
+	ImageExport exportImages(String filter, 
 							  ElementRoleName role,
 							  ImageType type, 
 							  ImageState state,
@@ -40,6 +40,6 @@ public interface ImageExportService {
 	 * Imports an image export.
 	 * @param export - the image export to be imported
 	 */
-	void importImages(ImagesExport export);
+	void importImages(ImageExport export);
 	
 }

@@ -18,6 +18,7 @@ package io.leitstand.inventory.jpa;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.service.ModuleName;
 
 @Converter
@@ -25,7 +26,7 @@ public class ModuleNameConverter implements AttributeConverter<ModuleName, Strin
 
 	@Override
 	public String convertToDatabaseColumn(ModuleName attribute) {
-		return ModuleName.toString(attribute);
+		return Scalar.toString(attribute);
 	}
 
 	@Override

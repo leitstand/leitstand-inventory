@@ -23,20 +23,33 @@ import javax.validation.constraints.NotNull;
 
 import io.leitstand.commons.model.ValueObject;
 
+/**
+ * The <code>BaseElementGroupEnvelope</code> contains the attributes shared with every group-related message.
+ */
 public class BaseElementGroupEnvelope extends ValueObject {
 
+    /**
+     * A base builder for a element group value object.
+     *
+     * @param <T> the element group value object type
+     * @param <B> the element group value object builder
+     */
 	@SuppressWarnings("unchecked")
 	public static class BaseElementGroupEnvelopeBuilder<T extends BaseElementGroupEnvelope,B extends BaseElementGroupEnvelopeBuilder<T,B>>{
 		
 		protected T object;
 		
+		/**
+		 * Creates an element group builder
+		 * @param object the value object under construction
+		 */
 		protected BaseElementGroupEnvelopeBuilder(T object) {
 			this.object = object;
 		}
 		
 		/**
 		 * Sets the element group id.
-		 * @param id - the element group id
+		 * @param groupId the element group id
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withGroupId(ElementGroupId groupId) {
@@ -47,7 +60,7 @@ public class BaseElementGroupEnvelope extends ValueObject {
 
 		/**
 		 * Sets the element group name.
-		 * @param name - the element group name
+		 * @param groupName the element group name
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withGroupName(ElementGroupName groupName) {
@@ -56,10 +69,9 @@ public class BaseElementGroupEnvelope extends ValueObject {
 			return (B) this;
 		}
 		
-		
 		/**
 		 * Sets the element group type.
-		 * @param name - the element group name
+		 * @param groupType the element group type
 		 * @return a reference to this builder to continue with object creation
 		 */
 		public B withGroupType(ElementGroupType groupType) {
@@ -67,7 +79,24 @@ public class BaseElementGroupEnvelope extends ValueObject {
 			((BaseElementGroupEnvelope)object).groupType = groupType;
 			return (B) this;
 		}
+		
+		/**
+		 * Copies all values of the given group envelope to this envelope.
+		 * This method is a convenience method to simplify value object creation.
+		 * @return a reference to this builder to continue object creation
+		 */
+		public B withGroup(BaseElementGroupEnvelope env) {
+		    assertNotInvalidated(getClass(),object);
+		    withGroupId(env.getGroupId());
+		    withGroupName(env.getGroupName());
+		    withGroupType(env.getGroupType());
+		    return (B) this;
+		}
 
+		/**
+		 * Creates the immutable value object instance and invalidates the builder. Subsequent calls of the <code>build()</code> method raise an exception.
+		 * @return the immutable value object instance.
+		 */
 		public T build() {
 			try {
 				assertNotInvalidated(getClass(), object);
@@ -92,14 +121,26 @@ public class BaseElementGroupEnvelope extends ValueObject {
 	@NotNull(message="{group_type.required}")
 	private ElementGroupType groupType;
 	
+	/**
+	 * Returns the element group ID
+	 * @return the element group ID
+	 */
 	public ElementGroupId getGroupId() {
 		return groupId;
 	}
 	
+	/**
+	 * Returns the element group name.
+	 * @return the element group name.
+	 */
 	public ElementGroupName getGroupName() {
 		return groupName;
 	}
 	
+	/**
+	 * Returns the element group type.
+	 * @return the element group type.
+	 */
 	public ElementGroupType getGroupType() {
 		return groupType;
 	}

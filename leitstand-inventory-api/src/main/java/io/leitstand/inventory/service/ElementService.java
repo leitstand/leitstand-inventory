@@ -18,7 +18,7 @@ package io.leitstand.inventory.service;
 import java.util.List;
 
 /**
- * A stateless and transactional service to query for elements.
+ * A service for querying elements.
  */
 public interface ElementService {
 
@@ -26,14 +26,13 @@ public interface ElementService {
 	 * Searches for elements that match the specified filter expression and returns the element settings of all matches.
 	 * The filter expression is a POSIX regular expression and applied to the element name and element alias.
 	 * <p>
-	 * This method supports pagination by specifying an <code>offset</code> and the number of items to be returned. 
+	 * This method supports pagination by specifying a read <code>offset</code> and the number of items to be returned. 
 	 * The list is sorted by the element name in ascending order.
 	 * </p>
-	 * @param filter a regular expression to filter elements by the element name or element alias
-	 * @param offset the search offset
-	 * @param items the number of items to be returned at maximum
-	 * @return an immutable list that contains the element settings of all matching elements or 
-	 * 		   an empty list if no matches were found.
+	 * @param filter a regular expression to filter elements by the element name or element alias.
+	 * @param offset the search offset.
+	 * @param items the number of items to be returned at maximum.
+	 * @return the list of matching elements.
 	 */
 	List<ElementSettings> findElementsByName(String filter, int offset, int items);
 	
@@ -47,8 +46,7 @@ public interface ElementService {
 	 * @param filter a regular expression to filter elements by the element name, element alias or element tags.
 	 * @param offset the search offset
 	 * @param items the number of items to be returned at maximum
-	 * @return an immutable list that contains the element settings of all matching elements or 
-	 * 		   an empty list if no matches were found.
+	 * @return the list of matching elements.
 	 */
 	List<ElementSettings> findElementsByNameOrTag(String filter, int offset, int items);
 
@@ -62,8 +60,7 @@ public interface ElementService {
 	 * @param filter a regular expression to filter elements by the assigned asset ID
 	 * @param offset the search offset
 	 * @param items the number of items to be returned at maximum
-	 * @return an immutable list that contains the element settings of all matching elements or 
-	 * 		   an empty list if no matches were found.
+     * @return the list of matching elements.
 	 */
 	List<ElementSettings> findElementsByAssetId(String filter, int offset, int items);
 	
@@ -77,8 +74,7 @@ public interface ElementService {
 	 * @param filter a regular expression to filter elements by the assigned serial number
 	 * @param offset the search offset
 	 * @param items the number of items to be returned at maximum
-	 * @return an immutable list that contains the element settings of all matching elements or 
-	 * 		   an empty list if no matches were found.
+     * @return the list of matching elements.
 	 */
 	List<ElementSettings> findElementsBySerialNumber(String filter, int offset, int items);
 	
@@ -92,8 +88,7 @@ public interface ElementService {
 	 * @param filter a regular expression to filter elements by management IP address / hostname
 	 * @param offset the search offset
 	 * @param items the number of items to be returned at maximum
-	 * @return an immutable list that contains the element settings of all matching elements or 
-	 * 		   an empty list if no matches were found.
+     * @return the list of matching elements.
 	 */
 	List<ElementSettings> findElementsByManagementIP(String filter, int offset, int items);
 
@@ -117,9 +112,19 @@ public interface ElementService {
 	 */
 	void removeElement(ElementName elementName);
 	
-	void updateElementOperationalState(ElementId id, OperationalState state);
-	
-	void updateElementOperationalState(ElementName name, OperationalState state);
+	/**
+	 * Sets the operational state of an element.
+	 * @param elementId the element ID.
+	 * @param state the operational state.
+	 */
+	void updateElementOperationalState(ElementId elementId, OperationalState state);
+
+	/**
+     * Sets the operational state of an element.
+     * @param elementName the element name.
+     * @param state the operational state.
+     */
+	void updateElementOperationalState(ElementName elementName, OperationalState state);
 
 	/**
 	 * Removes the specified element and its assigned resources.
