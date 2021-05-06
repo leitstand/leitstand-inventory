@@ -13,22 +13,18 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<style>
-
-
-</style>
-<ui-module>
+<ui-module class="split_layout">
 <div class="row">
-<ui-module-menu></ui-module-menu>
+    <ui-module-menu></ui-module-menu>
 </div>
-<div class="row columns">
-	<div id="menu" class="column one-fifth" role="navigation">
+<div class="row">
+	<div id="menu" class="navigation pane" role="navigation">
 		<h2 class="hidden">Inventory Menus</h2>
 		<ui-view-menu>
 			<!--  Render context-sensitive menu -->
 		</ui-view-menu>
 	</div>
-	<div class="column four-fifths" role="main">
+	<div class="content pane" role="main">
 		<ui-view>
 			<!--  Render view -->
 		</ui-view>
