@@ -63,17 +63,17 @@ class FacilityLocation extends Control {
 								<ui-note>The location of the facility</ui-note>
 								<ui-button name="lookup">Lookup</ui-button>
 							  </ui-input>
-							  <div id="${id}" style="display:block; clear: both; position:relative; width:750px; height:600px; margin:auto; background-color: #EFEFEF"></div>
+							  <div id="${id}" style="display:block; clear: both; position:relative; width:750px; height:600px; margin-left: 10px; background-color: #EFEFEF"></div>
 							  <div class="row">
-								<div class="one-half column">
-									<ui-input name="longitude" bind="geolocation.longitude" readonly>
-										<ui-label>Longitude</ui-label>
-									</ui-input>
+							    <div style="display: inline-block; width: 375px; padding-left: 15px;">
+								    <ui-input name="longitude" bind="geolocation.longitude" readonly>
+									    <ui-label>Longitude</ui-label>
+								    </ui-input>
 								</div>
-								<div class="one-half column" >
-								<ui-input name="latitude" bind="geolocation.latitude" readonly>
-									<ui-label>Latitude</ui-label>
-								</ui-input>
+								<div style="display: inline-block; padding-left: 15px; width: 375px;">
+			                        <ui-input name="latitude" bind="geolocation.latitude" readonly>
+									    <ui-label>Latitude</ui-label>
+								    </ui-input>
 								</div>
 							  </div>`;
 		}

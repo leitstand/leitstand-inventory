@@ -74,7 +74,7 @@ by other elements thereby forming a distributed system.</ui-note>
 		<tr>
 			<th class="text">Element</th>
 			<th class="text">Service</th>
-			<th class="tiny">State</th>
+			<th class="check">State</th>
 			<th class="tiny">Type</th>
 		</tr>
 	</thead>
@@ -83,7 +83,7 @@ by other elements thereby forming a distributed system.</ui-note>
 		<tr>
 			<td class="text"><a href="element-services.html?group={{group_id}}&element={{element_id}}" title="Show all element services">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a></td>
 			<td class="text"><a href="element-service.html?group={{group_id}}&element={{element_id}}&service_name={{service_name}}" title="Show service details">{{display_name}}</a></td>
-			<td class="tiny"><span class="{{operational_state}}">{{operational_state}}</span></td>
+			<td><span class="{{operational_state}}">{{operational_state}}</span></td>
 			<td><span class="type">{{service_type}}</span></td>
 		</tr>
 		<!-- {{/stack}} -->

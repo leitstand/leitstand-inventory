@@ -13,24 +13,30 @@
  License for the specific language governing permissions and limitations under
  the License.
 -->
-<div class="row">
-    <ui-module-menu></ui-module-menu>
-</div>
-<div class="columns">
-    <!-- {{#multipleChoices}}-->
-    <div id="menu" class="column one-fifth" role="navigation">
-        <ui-view-menu>
-        </ui-view-menu>
-    </div>
-    <div class="column four-fifths" role="main">
-        <ui-view>
-        </ui-view>
-    </div>
-    <!-- {{/multipleChoices}}-->
-    <!-- {{^multipleChoices}}-->
-    <div class="single-column" role="main">
-        <ui-view>
-        </ui-view>
-    </div>
-    <!-- {{/multipleChoices}}-->
-</div>
+<ui-module class="split_layout">
+	<div class="row">
+	    <ui-module-menu></ui-module-menu>
+	</div>
+	<div class="row">
+	    <!-- {{#multipleChoices}}-->
+	    <div id="menu" class="navigation pane" role="navigation">
+	        <h2 class="hidden">Image Menus</h2>
+	        <ui-view-menu>
+	            <!--  Render context-sensitive menu -->
+	        </ui-view-menu>
+	    </div>
+	    <div class="content pane" role="main">
+	        <ui-view>
+	            <!--  Render view -->
+	        </ui-view>
+	    </div>
+	    <!-- {{/multipleChoices}}-->
+	    <!-- {{^multipleChoices}}-->
+	    <div class="single-column" role="main">
+	        <ui-view>
+	            <!-- Render view -->
+	        </ui-view>
+	    </div>
+	    <!-- {{/multipleChoices}}-->
+	</div>
+</ui-module>

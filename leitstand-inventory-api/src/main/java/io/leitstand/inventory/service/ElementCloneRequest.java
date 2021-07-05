@@ -18,6 +18,9 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import io.leitstand.commons.model.CompositeValue;
 
 /**
@@ -110,7 +113,10 @@ public class ElementCloneRequest extends CompositeValue{
 	}
 	
 	private ElementId elementId = randomElementId();
+	@Valid
+	@NotNull(message="{element_name.required}")
 	private ElementName elementName;
+
 	private ElementAlias elementAlias;
 	private MACAddress mgmtMacAddress;
 	private String serialNumber;

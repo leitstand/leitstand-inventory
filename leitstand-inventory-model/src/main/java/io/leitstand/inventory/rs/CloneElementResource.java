@@ -23,6 +23,7 @@ import static java.lang.String.format;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,30 +55,29 @@ public class CloneElementResource {
 	
 	@POST
 	@Path("/{element:"+UUID_PATTERN+"}/_clone")
-	public Response cloneElement(@PathParam("element") ElementId elementId,
-								 ElementCloneRequest request) {
+	public Response cloneElement(@Valid @PathParam("element") ElementId elementId,
+								 @Valid ElementCloneRequest request) {
 
 		ElementId cloneId = service.cloneElement(elementId, 
 												 request);
 		
 		
-		return created(format("/elements/%s/settings", 
-							  cloneId),
-					   messages);
+		return created(messages,
+		               format("/elements/%s/settings", 
+							  cloneId));
 	}
 	
 	@POST
 	@Path("/{element}/_clone")
-	public Response cloneElement(@PathParam("element") ElementName elementName,
-								 ElementCloneRequest request) {
+	public Response cloneElement(@Valid @PathParam("element") ElementName elementName,
+								 @Valid ElementCloneRequest request) {
 		
 		ElementId cloneId = service.cloneElement(elementName, 
 				 								 request);
 
-		return created(format("/elements/%s/settings", 
-							  cloneId),
-					   messages);
-		
+		return created(messages,
+		               format("/elements/%s/settings", 
+							  cloneId));
 	}
 	
 }
