@@ -14,7 +14,7 @@
  * the License.
  */
 import {Select,UIElement,Control,html} from '/ui/js/ui-components.js';
-import {Metadata,Platforms,Facilities,Panel} from '/ui/modules/inventory/inventory.js';
+import {Metadata,Platforms,Facilities,Panel, Pod} from '/ui/modules/inventory/inventory.js';
 import {Element} from '/ui/js/ui-dom.js';
 
 class PlatformSelector extends Select {
@@ -62,6 +62,55 @@ class ElementRoleSelector extends Select {
 
 }
 customElements.define("element-role",ElementRoleSelector);
+
+class TerminalPanel extends UIElement {
+    
+    constructor(){
+        super();
+    }
+    
+    renderDom(){
+        this.addEventListener('click',evt => {
+            if (evt.target.nodeName == 'BUTTON'){
+                evt.preventDefault();
+                evt.stopPropagation();
+                const options = this.querySelector("ui-select");
+                window.open(options.selected.value);                
+            }
+        });
+        
+        const module = document.querySelector("ui-module");
+        
+        module.addEventListener('UIRenderMenu',evt => {
+            const params = evt.detail.viewModel
+            const group = params["group_id"];
+            if (group) {
+                // Load all element settings to discover SSH endpoints.
+                // Render a drop-down list and open terminal button for all elements with SSH endpoints.
+                // Do not display a drop-down list if not SSH endpoints exist.
+                const pod = new Pod({"scope":"elements"});
+                pod.load({"group":group})
+                   .then(pod => {
+                       // Select all elements with configured SSH endpoint
+                       const options = pod.elements
+                                          .filter(element => element.mgmt_interfaces && element.mgmt_interfaces.SSH)
+                                          .map(element => html `<ui-option default="${ (element.element_id == params['element_id']) ? 'true' : 'false'}" value="/ui/terminal/$${element.mgmt_interfaces.SSH.mgmt_hostname}?title=$${element.element_name}">$${element.element_name}</ui-option>`)
+                                          .reduce((a,b)=>a+b,'')
+                       if(options) {
+                           document.querySelector('element-quick-links').innerHTML=`<ui-select name="element_selected"><ui-label></ui-label>${options}<ui-button>Open terminal</ui-button></ui-select>`
+                       }
+                   })
+                  
+            } else {
+                document.querySelector('element-quick-links').innerHTML = ''
+            }
+        });
+                    
+   }
+    
+}
+
+customElements.define('element-quick-links', TerminalPanel);
 
 class InventoryPanel extends UIElement {
     renderDom(){
