@@ -55,9 +55,24 @@ const elementServiceController = function(){
 			//Expose top of stack to simplify UI template.
 			model.service_name = this.transient(model.stack[0].service_name);
 			model.display_name = this.transient(model.stack[0].display_name);
-			model.operational_state = this.transient(model.stack[0].operational_state);
+			model.service_state = this.transient(model.stack[0].operational_state);
+			model.stopable = () => {return model.stack[0].operational_state != "DOWN" }
+	        model.startable = ()=> {return model.stack[0].operational_state != "UP" }
+	        model.restartable = ()=> {return model.stack[0].operational_state == "UP" }
 			return model;
+		},
+		buttons:{
+		    "start":function(){
+		        document.dispatchEvent(new CustomEvent('Service.Start',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    },
+		    "stop":function(){
+                document.dispatchEvent(new CustomEvent('Service.Stop',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    },
+		    "restart":function(){
+                document.dispatchEvent(new CustomEvent('Service.Restart',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    }
 		}
+		    
 	});
 };
 

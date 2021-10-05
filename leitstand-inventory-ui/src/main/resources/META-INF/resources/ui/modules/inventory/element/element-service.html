@@ -52,17 +52,19 @@
     </ui-property>
     <ui-property>
         <ui-label>Operational State</ui-label>
-        <ui-value><span class="{{operational_state}}">{{operational_state}}</span></ui-value>
+        <ui-value><span class="{{service_state}}">{{service_state}}</span></ui-value>
     </ui-property>    
 	<ui-property>
 		<ui-label>Description</ui-label>
 		<ui-value>{{description}}</ui-value>
 	</ui-property>
-	<ui-property>
-		<ui-label>Status</ui-label>
-		<ui-value><a href="service_events.html?group={{group_id}}&element={{element_id}}&service_name={{service_name}}" title="View all events of this service"><span class="{{operational_state}}">{{operational_state}}</span></a></ui-value>
-	</ui-property>
 </ui-details>
+<ui-actions>
+    <ui-button name="restart" when="restartable" small primary>Restart</ui-button>
+    <ui-button name="start" when="startable" small primary>Start</ui-button>
+    <ui-button name="stop" when="stopable" small danger>Stop</ui-button>
+</ui-actions>
+
 <h3>Service stack</h3>
 <ui-note>
 The service stack lists all services in hierarchical order on which this service depends. 
