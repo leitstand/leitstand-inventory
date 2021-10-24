@@ -79,6 +79,7 @@ public class ElementSettingsManager {
 			   .withTags(element.getTags())
 			   .withPlatformId(optional(element.getPlatform(), Platform::getPlatformId))
 			   .withPlatformName(optional(element.getPlatform(), Platform::getPlatformName))
+			   .withPlatformChipsetName(optional(element.getPlatform(),Platform::getChipset))
 			   .build();
 	}
 	
@@ -142,7 +143,7 @@ public class ElementSettingsManager {
 		element.setOperationalState(settings.getOperationalState());
 		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
 														   settings.getPlatformName(),
-														   null));
+														   settings.getPlatformChipset()));
 		
 		repository.add(element);
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED, 
