@@ -368,7 +368,20 @@ const elementIfpsController = function(){
 const elementIfpController = function(){
 	const ifp = new ElementPhysicalInterface();
 	return new Controller({
-		resource:ifp
+		resource:ifp,
+		viewModel:function(model){
+		    model.enabled = function(){return this.physical_interface.operational_state == "UP"}
+		    model.disabled = function(){return this.physical_interface.operational_state == "DOWN"}
+		    return model
+		},
+		buttons:{
+		    "enable":function(){
+                document.dispatchEvent(new CustomEvent('PhysicalInterface.Enable',{'detail': {'controller':this, 'element':this.location.param('element'), 'ifp_name':this.location.param('ifp_name')}}))
+		    },
+		    "disable":function(){
+                document.dispatchEvent(new CustomEvent('PhysicalInterface.Disable',{'detail': {'controller':this, 'element':this.location.param('element'), 'ifp_name':this.location.param('ifp_name')}}))
+		    }
+		}
 	});
 };
 
