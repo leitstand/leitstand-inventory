@@ -85,6 +85,7 @@ public class DefaultPlatformService implements PlatformService{
 			   .withModelName(platform.getModel())
 			   .withDescription(platform.getDescription())
 			   .withRackUnits(platform.getHeight())
+			   .withPortMappings(platform.getPorts())
 			   .build();
 	}
 
@@ -130,6 +131,7 @@ public class DefaultPlatformService implements PlatformService{
 			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
 			platform.setRackUnits(settings.getRackUnits());
+			platform.setPorts(settings.getPortMappings());
 			messages.add(createMessage(IVT0901I_PLATFORM_STORED, 
 									   settings.getPlatformName()));
 			

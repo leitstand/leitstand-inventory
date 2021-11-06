@@ -42,7 +42,7 @@ import io.leitstand.inventory.jsonb.BandwidthAdapter;
  */
 @Embeddable
 @JsonbTypeAdapter(BandwidthAdapter.class)
-public class Bandwidth extends CompositeValue implements Serializable{
+public class Bandwidth extends CompositeValue implements Serializable, Comparable<Bandwidth>{
 
 	private static final Pattern BANDWITH_PATTERN = compile("^(\\d+(?:\\.\\d{3})?)\\s?([KMGT]bps)$");
 
@@ -236,5 +236,15 @@ public class Bandwidth extends CompositeValue implements Serializable{
 	public String toString() {
 		return format(ENGLISH,"%.3f %s",value,unit.getLabel());
 	}
+
+    @Override
+    public int compareTo(Bandwidth o) {
+        int d = Float.compare(value, o.value);
+        if (d != 0) {
+            return d;
+        }
+        return unit.compareTo(o.unit);
+        
+    }
 }
 

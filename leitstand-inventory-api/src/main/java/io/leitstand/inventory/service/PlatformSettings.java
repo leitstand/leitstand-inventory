@@ -17,6 +17,15 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptySortedSet;
+import static java.util.Collections.unmodifiableSortedSet;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -123,6 +132,28 @@ public class PlatformSettings extends ValueObject {
 		}
 		
 		/**
+		 * Sets the platform port mappings.
+		 * @param ports the port mappings
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withPortMappings(PlatformPortMapping.Builder... ports) {
+		    return withPortMappings(stream(ports)
+		                            .map(PlatformPortMapping.Builder::build)
+		                            .collect(toList()));
+		}
+
+		/**
+         * Sets the platform port mappings.
+         * @param ports the port mappings
+         * @return a reference to this builder to continue object creation.
+         */
+		public Builder withPortMappings(Collection<PlatformPortMapping> ports) {
+		    assertNotInvalidated(getClass(),settings);
+		    settings.portMappings = new TreeSet<>(ports);
+		    return this;
+		}
+		
+		/**
 		 * Creates an immutable <code>PlatformSettings</code> value object and invalidates this builder.
 		 * Subsequent invocations of the <code>build()</code> method raise an exception.
 		 * @return an immutable <code>PlatformSettings</code> value object.
@@ -154,6 +185,8 @@ public class PlatformSettings extends ValueObject {
 	
 	@Min(value=1, message="{rack_units.must_be_greater_than_zero}")
 	private int rackUnits;
+	
+	private SortedSet<PlatformPortMapping> portMappings = emptySortedSet();
 	
 	/**
 	 * Returns the platform ID.
@@ -211,5 +244,12 @@ public class PlatformSettings extends ValueObject {
 		return rackUnits;
 	}
 	
+	/**
+	 * Returns the platform ports.
+	 * @return the platform ports
+	 */
+	public Set<PlatformPortMapping> getPortMappings(){
+	    return unmodifiableSortedSet(portMappings);
+	}
 }
 
