@@ -37,10 +37,10 @@ import javax.ws.rs.core.Response;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.rs.Resource;
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.ImageExport;
 import io.leitstand.inventory.service.ImageExportService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
-import io.leitstand.inventory.service.ImageExport;
 import io.leitstand.inventory.service.Version;
 import io.leitstand.security.auth.Scopes;
 

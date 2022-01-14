@@ -449,7 +449,7 @@ public class PlatformServiceIT extends InventoryIT{
 	    PlatformPortMapping portA = newPlatformPortMapping()
 	                                .withChassisId("chassis-1")
 	                                .withFace(PlatformPortMapping.Face.FRONT)
-	                                .withPanelId("panel-id")
+	                                .withPanelBlockId("panel-id")
 	                                .withPortId("port-A")
 	                                .withIfpName(interfaceName("ifp-0/0/1"))
 	                                .withPortAlias("port-alias-A")
@@ -459,7 +459,7 @@ public class PlatformServiceIT extends InventoryIT{
 	    PlatformPortMapping portB = newPlatformPortMapping()
                                     .withChassisId("chassis-1")
                                     .withFace(PlatformPortMapping.Face.FRONT)
-                                    .withPanelId("panel-id")
+                                    .withPanelBlockId("panel-id")
                                     .withPortId("port-B")
                                     .withIfpName(interfaceName("ifp-0/0/2"))
                                     .withPortAlias("port-alias-B")
@@ -471,7 +471,7 @@ public class PlatformServiceIT extends InventoryIT{
 	                                   .withPlatformName(PLATFORM_NAME)
 	                                   .withVendorName(VENDOR)
 	                                   .withModelName("model")
-	                                   .withPorts(asList(portA,portB))
+	                                   .withPortMappings(asList(portA,portB))
 	                                   .build();
 	                                   
         transaction(() -> {

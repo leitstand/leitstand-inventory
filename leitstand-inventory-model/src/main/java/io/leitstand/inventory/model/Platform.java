@@ -19,7 +19,6 @@ import static io.leitstand.commons.model.StringUtil.isEmptyString;
 import static java.util.Collections.unmodifiableSortedSet;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -43,7 +42,6 @@ import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.PlatformPortMapping;
-import io.leitstand.inventory.service.PlatformPortMapping.Builder;
 
 @Entity
 @Table(schema="inventory",
