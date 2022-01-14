@@ -45,17 +45,58 @@
 			<ui-note>A description of the platform.</ui-note>
 		</ui-textarea>	
 	</ui-group>
+    <ui-group>
+        <ui-label>Dimensions</ui-label>
+        <ui-select name="rack_units">
+            <ui-label>Rack Units</ui-label>
+            <ui-note>The chassis height in rack units</ui-note>
+            <ui-option value="1">1 RU</ui-option>
+            <ui-option value="2">2 RU</ui-option>
+            <ui-option value="3">3 RU</ui-option>
+            <ui-option value="4">4 RU</ui-option>
+            <ui-option value="5">5 RU</ui-option>
+        </ui-select>
+    </ui-group>
 	<ui-group>
-		<ui-label>Dimensions</ui-label>
-		<ui-select name="rack_units">
-			<ui-label>Rack Units</ui-label>
-			<ui-note>The chassis height in rack units</ui-note>
-			<ui-option value="1">1 RU</ui-option>
-			<ui-option value="2">2 RU</ui-option>
-			<ui-option value="3">3 RU</ui-option>
-			<ui-option value="4">4 RU</ui-option>
-			<ui-option value="5">5 RU</ui-option>
-		</ui-select>
+	   <ui-label>Port Mapping</ui-label>
+	   <ui-note>The port mapping maps physical ports to physical interfaces</ui-note>
+	   <!-- {{#port_mappings.length}} -->
+       <table class="list">
+       <thead>
+        <tr>
+            <th class="text extra-small">Chassis</th>
+            <th class="text extra-small">Panel</th>
+            <th class="text extra-small">Port</th>
+            <th  class="extra-small">Bandwidth</th>
+            <th class="text extra-small">Port Alias</th>
+            <th class="text extra-small">Physical Interface</th>
+            <th class="text">Description</th>
+        </tr>
+       </thead>
+       <tbody>
+        <!-- {{#port_mappings}} -->
+        <tr>
+            <td class="text">{{chassis_id}}</td>
+            <td class="text">{{panel_block_id}}</td>
+            <td class="text">{{port_id}}</td>
+            <td>{{bandwidth}}</td>
+            <td class="text">{{port_alias}}</td>
+            <td class="text">{{ifp_name}}</td>
+            <td class="text">{{description}}</td>
+        </tr>
+        <!-- {{/port_mappings}} -->
+       </tbody>
+       </table>
+       <!-- {{/port_mappings.length}} -->
+       <!-- {{^port_mappings.length}} -->
+       <ui-blankslate>
+        <ui-title>No port mappings found</ui-title>
+        <ui-note>No port mappings exist for this platform.</ui-note>
+       </ui-blankslate>
+       <!-- {{/port_mappings.length}} -->
+       <ui-actions>
+        <ui-button small name="Add" title="Add port mapping">Add</ui-button>
+       </ui-actions>
 	</ui-group>
 	<ui-actions>
 		<ui-button name="save" primary>Save settings</ui-button>
