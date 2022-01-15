@@ -61,14 +61,14 @@ import io.leitstand.inventory.service.Plane;
 
 public class ElementEnvironmentServiceIT extends InventoryIT {
 	
-	private static final ElementGroupId GROUP_ID = randomGroupId();
-	private static final ElementGroupType GROUP_TYPE = groupType("unittest");
-	private static final ElementGroupName GROUP_NAME = groupName("group");
-	private static final ElementId ELEMENT_ID = randomElementId();
-	private static final ElementName ELEMENT_NAME = elementName("element");
-	private static final ElementRoleName ELEMENT_ROLE = elementRoleName("role");
-	private static final EnvironmentId ENVIRONMENT_ID = randomEnvironmentId();
-	private static final EnvironmentName ENVIRONMENT_NAME = environmentName("environment");
+	private static final ElementGroupId   GROUP_ID         = randomGroupId();
+	private static final ElementGroupType GROUP_TYPE       = groupType("unittest");
+	private static final ElementGroupName GROUP_NAME       = groupName("group");
+	private static final ElementId        ELEMENT_ID       = randomElementId();
+	private static final ElementName      ELEMENT_NAME     = elementName("element");
+	private static final ElementRoleName  ELEMENT_ROLE     = elementRoleName("role");
+	private static final EnvironmentId    ENVIRONMENT_ID   = randomEnvironmentId();
+	private static final EnvironmentName  ENVIRONMENT_NAME = environmentName("environment");
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none(); 
@@ -124,7 +124,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals(env.getCategory(),reloaded.getCategory());
 			assertEquals(env.getType(),reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());
 			
 		});
 	}
@@ -165,7 +165,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals(env.getCategory(),reloaded.getCategory());
 			assertEquals(env.getType(),reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());		
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());		
 		});
 	}
 	
@@ -230,7 +230,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals(env.getCategory(),reloaded.getCategory());
 			assertEquals(env.getType(),reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());		
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());		
 		});
 	}
 	
@@ -269,7 +269,9 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals("other_category",reloaded.getCategory());
 			assertEquals(env.getType(),reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());		
+			System.out.println(env.getVariables().equals(reloaded.getVariables()));
+            System.out.println(reloaded.getVariables().equals(env.getVariables()));
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());		
 		});
 	}
 	
@@ -309,7 +311,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals(env.getCategory(),reloaded.getCategory());
 			assertEquals("other_type",reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());		
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());		
 		});
 	}
 	
@@ -373,7 +375,7 @@ public class ElementEnvironmentServiceIT extends InventoryIT {
 			assertEquals(env.getCategory(),reloaded.getCategory());
 			assertEquals(env.getType(),reloaded.getType());
 			assertEquals(env.getDescription(),reloaded.getDescription());
-			assertEquals(env.getVariables(),reloaded.getVariables());		
+			assertEquals(env.getVariables().toString(),reloaded.getVariables().toString());		
 		});
 		
 	}
