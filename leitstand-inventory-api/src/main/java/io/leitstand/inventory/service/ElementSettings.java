@@ -79,6 +79,17 @@ public class ElementSettings extends BaseElementEnvelope{
 			return this;
 		}
 		
+		/**
+		 * Sets the platform chipset name.
+		 * @param platformChipsetName the platform chipset name.
+		 * @return a reference to this builder to continue object creation
+		 */
+		public Builder withPlatformChipsetName(PlatformChipsetName platformChipsetName) {
+		    assertNotInvalidated(getClass(), object);
+		    object.platformChipset = platformChipsetName;
+		    return this;
+		}
+		
 	    /**
          * Sets the element serial number.
          * @param serialNumber the serial number
@@ -206,6 +217,9 @@ public class ElementSettings extends BaseElementEnvelope{
 
     @Valid
 	private PlatformName platformName;
+    
+    @Valid
+    private PlatformChipsetName platformChipset;
 	
 	public String getDescription() {
 		return description;
@@ -296,5 +310,13 @@ public class ElementSettings extends BaseElementEnvelope{
 	public String getAssetId() {
 		return assetId;
 	}
+	
+	/**
+	 * Returns the platform chipset name.
+	 * @return the platform chipset name.
+	 */
+	public PlatformChipsetName getPlatformChipset() {
+        return platformChipset;
+    }
 	
 }

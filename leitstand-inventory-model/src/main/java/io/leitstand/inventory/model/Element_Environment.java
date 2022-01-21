@@ -15,7 +15,7 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.commons.json.SerializableJsonObject.serializable;
+import static io.leitstand.commons.json.SerializableJsonStructure.serializable;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.TemporalType.TIMESTAMP;
@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.json.JsonObject;
+import javax.json.JsonStructure;
 import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -37,8 +37,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.UniqueConstraint;
 
-import io.leitstand.commons.jpa.SerializableJsonObjectConverter;
-import io.leitstand.commons.json.SerializableJsonObject;
+import io.leitstand.commons.jpa.SerializableJsonStructureConverter;
+import io.leitstand.commons.json.SerializableJsonStructure;
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Update;
 import io.leitstand.inventory.jpa.EnvironmentIdConverter;
@@ -106,8 +106,8 @@ public class Element_Environment implements Serializable {
 	private String description;
 	
 	@Basic(fetch=LAZY)
-	@Convert(converter=SerializableJsonObjectConverter.class)
-	private SerializableJsonObject variables;
+	@Convert(converter=SerializableJsonStructureConverter.class)
+	private SerializableJsonStructure variables;
 	
 	@Temporal(TIMESTAMP)
 	private Date tsmodified;
@@ -167,12 +167,12 @@ public class Element_Environment implements Serializable {
 		return name;
 	}
 	
-	public void setVariables(JsonObject variables) {
+	public void setVariables(JsonStructure variables) {
 		this.variables = serializable(variables);
 	}
 	
-	public SerializableJsonObject getVariables() {
-		return variables;
+	public JsonStructure getVariables() {
+		return variables.unwrap();
 	}
 	
 	public Date getDateModified() {

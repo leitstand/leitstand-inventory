@@ -90,6 +90,7 @@
 	</ui-group>
 	<ui-group>
 		<ui-label>Management Interfaces</ui-label>
+		<!-- {{^mgmt_ifc}} -->
 		<ui-note>Configure management interfaces of this element.</ui-note>
 			<!--  {{#mgmt_interface_list_length}} -->
 			<table class="list">
@@ -105,7 +106,7 @@
 				<tbody>
 					<!-- {{#mgmt_interface_list}} -->
 						<tr>
-							<td><a href="element-mgmt.html?group={{group_id}}&element={{element_id}}&mgmt_name={{mgmt_name}}" title="Edit management interface properties">{{mgmt_name}}</a></td>
+							<td><a name="{{mgmt_name}}" href="element-mgmt.html?group={{group_id}}&element={{element_id}}&mgmt_name={{mgmt_name}}" title="Edit management interface properties">{{mgmt_name}}</a></td>
 							<td>{{mgmt_protocol}}</td>
 							<td>{{mgmt_hostname}}</td>
 							<td>{{mgmt_port}}</td>
@@ -124,9 +125,44 @@
 			<ui-actions>
 				<ui-button name="add-mgmt" title="Add new management interface" small scopesAllowed="ivt ivt.element ivt.element.settings">Add</ui-button>
 			</ui-actions>
+			<!-- {{/mgmt_ifc}} -->
+		    <!-- {{#mgmt_ifc}} -->
+		        <ui-note>Configure {{mgmt_name}} settings.</ui-note>
+		            <ui-input name="mgmt_name" bind="mgmt_ifc.mgmt_name">
+		                <ui-label>Name</ui-label>
+		                <ui-note>The name of this management interface</ui-note>
+		            </ui-input>
+		            <ui-select name="mgmt_protocol" bind="mgmt_ifc.mgmt_protocol">
+		                <ui-label>Protocol</ui-label>
+		                <ui-note>The network protocol of this management interface</ui-note>
+		                <ui-option value="ssh">SSH</ui-option>
+		                <ui-option value="http">HTTP</ui-option>
+		                <ui-option value="https">HTTPS</ui-option>
+		                <ui-option value="grpc">gRPC</ui-option>
+		            </ui-select>            
+		            <ui-input name="mgmt_hostname" bind="mgmt_ifc.mgmt_hostname">
+		                <ui-label>Hostname</ui-label>
+		                <ui-note>The IP address or hostname of this management interface</ui-note>
+		            </ui-input>
+		            <ui-number name="mgmt_port" bind="mgmt_ifc.mgmt_port">
+		                <ui-label>Port</ui-label>
+		                <ui-note>The network port of this management interface</ui-note>
+		            </ui-number>
+		            <ui-input name="path" bind="mgmt_ifc.mgmt_path">
+		                <ui-label>Path</ui-label>
+		                <ui-note>Optional path segment of this management interface URL</ui-note>
+		            </ui-input>
+		    <ui-actions>
+		        <ui-button name="save-mgmt" title="Apply management interface settings" small>Apply</ui-button>
+		        <ui-button name="cancel-mgmt" title="Return to management interface list" small>Cancel</ui-button>
+		        <ui-button name="remove-mgmt" small when="mgmt_ifc.mgmt_name" title="Remove management interface">Remove</ui-button>
+		    </ui-actions>   
+		    <!-- {{/mgmt_ifc}} -->
+			
 		</ui-group>
 	<ui-actions>
 		<ui-button name="save-element" primary>Save settings</ui-button>
 		<ui-button name="confirm-remove-element" danger>Remove element</ui-button>
 	</ui-actions>
+
 </ui-form>

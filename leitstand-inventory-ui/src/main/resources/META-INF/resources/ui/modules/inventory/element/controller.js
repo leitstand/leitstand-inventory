@@ -55,9 +55,24 @@ const elementServiceController = function(){
 			//Expose top of stack to simplify UI template.
 			model.service_name = this.transient(model.stack[0].service_name);
 			model.display_name = this.transient(model.stack[0].display_name);
-			model.operational_state = this.transient(model.stack[0].operational_state);
+			model.service_state = this.transient(model.stack[0].operational_state);
+			model.stopable = () => {return model.stack[0].operational_state != "DOWN" }
+	        model.startable = ()=> {return model.stack[0].operational_state != "UP" }
+	        model.restartable = ()=> {return model.stack[0].operational_state == "UP" }
 			return model;
+		},
+		buttons:{
+		    "start":function(){
+		        document.dispatchEvent(new CustomEvent('Service.Start',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    },
+		    "stop":function(){
+                document.dispatchEvent(new CustomEvent('Service.Stop',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    },
+		    "restart":function(){
+                document.dispatchEvent(new CustomEvent('Service.Restart',{'detail': {'controller':this, 'element':this.location.param('element'), 'service':this.location.param('service_name')}}))
+		    }
 		}
+		    
 	});
 };
 
@@ -96,15 +111,19 @@ const elementController = function(){
 			const form = this.element("ui-form");
 			form.addEventListener("click",(evt) => {
 				if(evt.target.nodeName === 'A'){
-					const platform = this.input("element-platform").unwrap();
-                    if(platform){
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                        const settings = this.getViewModel();
-                        settings.platform_name = platform.selected.label;
-                        element.saveSettings(this.location.params,settings)
-                               .then(() => { this.navigate(evt.target.href)});                      
-                    }
+				    evt.preventDefault();
+				    evt.stopPropagation();
+				    if (evt.target.name){
+				        const mgmt_ifcs = this.getViewModel("mgmt_interfaces")
+				        this.updateViewModel({"mgmt_ifc":mgmt_ifcs[evt.target.name]});
+				        this.renderView();
+				    } else {
+				        const settings = this.getViewModel()
+				        element.saveSettings(this.location.params,settings)
+				               .then(() => {
+				                   this.navigate(evt.target.href)      
+				               })
+				    }
 				}
 			});
 		},
@@ -126,11 +145,26 @@ const elementController = function(){
 			},
 			"add-mgmt":function(){
 				// Store view model to avoid loosing unsaved changes!
-				const settings = this.getViewModel();
-				settings.platform_name = this.input("element-platform").unwrap().selected.label;
-				element.saveSettings(this.location.params,settings)
-					   .then(() => { this.navigate({"view" : "/ui/views/inventory/element/element-mgmt.html",
-							   						"?" : this.location.params})});
+			    this.updateViewModel({'mgmt_ifc':{}})
+			    this.renderView()
+			},
+			"save-mgmt":function(){
+			    const mgmt_ifc = this.getViewModel('mgmt_ifc');
+			    const mgmt_ifcs = this.getViewModel('mgmt_interfaces');
+			    mgmt_ifcs[mgmt_ifc.mgmt_name] = mgmt_ifc;
+			    this.updateViewModel({'mgmt_ifc':null})
+			    this.renderView();
+			},
+			"remove-mgmt":function(){
+	            const mgmt_ifc = this.getViewModel('mgmt_ifc');
+	            const mgmt_ifcs = this.getViewModel('mgmt_interfaces');
+	            delete mgmt_ifcs[mgmt_ifc.mgmt_name];
+	            this.updateViewModel({'mgmt_ifc':null})
+	            this.renderView();
+			},
+			"cancel-mgmt":function(){
+			    this.updateViewModel({'mgmt_ifc':null})
+                this.renderView()
 			}
 		},
 		onRemoved:function(){
@@ -139,66 +173,6 @@ const elementController = function(){
 		},
 		onSuccess:function(){
 			this.reload();
-		}
-	});
-};
-
-const elementMgmtController = function(){
-
-	const element = new Element({"scope":"settings"});
-	
-	return new Controller({
-		resource:element,
-		viewModel:function(settings){
-
-			// Augment settings with available management protocols.
-			settings.mgmt_protocols = this.transient([{"label":"HTTP",
-													   "value":"http"},
-													  {"label":"HTTPS",
-													   "value":"https"},
-													  {"label":"gNMI",
-													   "value":"gnmi"},
-													  {"label":"SSH",
-													   "value":"ssh"}]);
-			const mgmt_name = this.location.param("mgmt_name");
-			settings.mgmt_ifc = settings.mgmt_interfaces[mgmt_name];
-			return settings;
-		},
-		buttons:{
-			"save-mgmt":function(){
-				// Read element settings
-				const settings = this.getViewModel();
-				// Read mgmt_name 
-				const mgmt_name = this.location.param("mgmt_name");
-				if(mgmt_name){
-					//Remove existing mgmt interface and add it again.
-					delete settings.mgmt_interfaces[mgmt_name]					
-				}
-				// Register management interface. Rename is handled implicitly due to previous remove operation.
-				settings.mgmt_interfaces[settings.mgmt_ifc.mgmt_name] = settings.mgmt_ifc;
-				// Finally delete temporary mgmt_ifc binding to be compliant with REST API.
-				delete settings.mgmt_ifc
-				element.saveSettings(this.location.params,
-									 settings);
-			},
-			"remove-mgmt":function(){
-				const settings = this.getViewModel();
-				const mgmt_name = this.location.param("mgmt_name");
-				if(mgmt_name){
-					delete settings.mgmt_interfaces[mgmt_name];
-					element.saveSettings(this.location.params,
-										 settings);
-				} else {
-					this.navigate({"view":"/ui/views/inventory/element/element.html",
-						   "?": {"group":this.location.param("group"),
-							   	 "element":this.location.param("element")}});
-				}
-			}
-		},
-		onSuccess:function(){
-			this.navigate({"view":"/ui/views/inventory/element/element.html",
-						   "?": {"group":this.location.param("group"),
-							   	 "element":this.location.param("element")}});
 		}
 	});
 };
@@ -394,7 +368,20 @@ const elementIfpsController = function(){
 const elementIfpController = function(){
 	const ifp = new ElementPhysicalInterface();
 	return new Controller({
-		resource:ifp
+		resource:ifp,
+		viewModel:function(model){
+		    model.enabled = function(){return this.physical_interface.operational_state == "UP"}
+		    model.disabled = function(){return this.physical_interface.operational_state == "DOWN"}
+		    return model
+		},
+		buttons:{
+		    "enable":function(){
+                document.dispatchEvent(new CustomEvent('PhysicalInterface.Enable',{'detail': {'controller':this, 'element':this.location.param('element'), 'ifp_name':this.location.param('ifp_name')}}))
+		    },
+		    "disable":function(){
+                document.dispatchEvent(new CustomEvent('PhysicalInterface.Disable',{'detail': {'controller':this, 'element':this.location.param('element'), 'ifp_name':this.location.param('ifp_name')}}))
+		    }
+		}
 	});
 };
 
@@ -468,8 +455,7 @@ const modulesMenu = {
 
 const elementMenu = {
 	"master" : elementController(),
-	"details" : {"element-mgmt.html" : elementMgmtController(),
-				 "element-pod.html" : elementPodController(),
+	"details" : {"element-pod.html" : elementPodController(),
 				 "confirm-remove-element.html" : elementController()}
 };
 const elementIfpsMenu = {

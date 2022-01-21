@@ -26,13 +26,12 @@ import static io.leitstand.inventory.rs.Scopes.IVT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT;
 import static io.leitstand.inventory.rs.Scopes.IVT_ELEMENT_CONFIG;
 import static io.leitstand.inventory.rs.Scopes.IVT_READ;
-import static io.leitstand.inventory.service.ReasonCode.IVT0392I_ELEMENT_ENVIRONMENT_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_EXISTS;
 import static io.leitstand.inventory.service.ReasonCode.IVT0393E_ELEMENT_ENVIRONMENT_OWNED_BY_OTHER_ELEMENT;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.inject.Inject;
-import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -57,7 +56,6 @@ import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.Environment;
 import io.leitstand.inventory.service.EnvironmentId;
 import io.leitstand.inventory.service.EnvironmentName;
-import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
@@ -109,8 +107,8 @@ public class ElementEnvironmentResource {
 	@GET
 	@Path("/{element:"+UUID_PATTERN+"}/environments/{env}/variables")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public JsonObject getElementEnvironmentVariables(@Valid @PathParam("element") ElementId elementId,
-													 @Valid @PathParam("env") EnvironmentName environmentName) {
+	public JsonValue getElementEnvironmentVariables(@Valid @PathParam("element") ElementId elementId,
+													@Valid @PathParam("env") EnvironmentName environmentName) {
 		return service.getElementEnvironment(elementId,
 										     environmentName)
 					  .getVariables();
@@ -119,8 +117,8 @@ public class ElementEnvironmentResource {
 	@GET
 	@Path("/{element}/environments/{env}/variables")
 	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public JsonObject getElementEnvironmentVariables(@Valid @PathParam("element") ElementName elementName,
-													 @Valid @PathParam("env") EnvironmentName environmentName) {
+	public JsonValue getElementEnvironmentVariables(@Valid @PathParam("element") ElementName elementName,
+													@Valid @PathParam("env") EnvironmentName environmentName) {
 		return service.getElementEnvironment(elementName,
 											 environmentName)
 					  .getVariables();

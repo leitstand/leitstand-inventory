@@ -22,7 +22,7 @@ extensions:
 - extend:
     module: inventory
     menu: element
-    after: element-ifl
+    before: element-location
   items:
   - item: element-dns
     label: DNS

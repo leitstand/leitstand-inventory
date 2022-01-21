@@ -114,7 +114,6 @@ public class DefaultPlatformService implements PlatformService{
 
 	@Override
 	public boolean storePlatform(PlatformSettings settings) {
-		try {
 			boolean created = false;
 			Platform platform = repository.execute(findPlatformById(settings.getPlatformId()));
 			if(platform == null) {
@@ -122,6 +121,7 @@ public class DefaultPlatformService implements PlatformService{
 										settings.getPlatformName(),
 										settings.getPlatformChipset());
 				repository.add(platform);
+				repository.flush();
 				created = true;
 			}
 			platform.setPlatformName(settings.getPlatformName());
@@ -130,8 +130,6 @@ public class DefaultPlatformService implements PlatformService{
 			platform.setModel(settings.getModelName());
 			platform.setDescription(settings.getDescription());
 			platform.setRackUnits(settings.getRackUnits());
-			return created;
-		} finally {
 			messages.add(createMessage(IVT0901I_PLATFORM_STORED, 
 									   settings.getPlatformName()));
 			
@@ -139,8 +137,8 @@ public class DefaultPlatformService implements PlatformService{
 								  IVT0901I_PLATFORM_STORED.getReasonCode(),
 								  settings.getPlatformName(),
 								  settings.getPlatformId()));
+			return created;
 			
-		}
 	}
 	
 
