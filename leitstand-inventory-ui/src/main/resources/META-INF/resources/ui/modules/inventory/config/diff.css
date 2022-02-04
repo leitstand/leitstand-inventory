@@ -1,0 +1,66 @@
+.compare .a{
+	background-color: #e2fab9;
+}
+
+.compare .d{
+	background-color: #ffd1d1;
+}
+
+.compare div.lines {
+	position: absolute;
+	width: 4em;
+	border: 1px solid #CCCCCC;
+	background-color: #f7f7f7;
+	color: #AAAAAA;
+}
+
+.compare div.content {
+	border: 1px solid #CCCCCC;
+	display:block;
+	margin-left: 4em;
+}
+
+.compare div.lines pre {
+	text-align: right;
+}
+
+.compare div.lines a {
+	text-align: right;
+	display:block;
+	width: 100%;
+	font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+	font-size: 12px
+}
+
+
+.compare div#diff{
+	position:relative;
+	width: 100%;
+	margin:auto;
+}
+
+.compare #diff {
+	overflow: scroll;
+	height: 55em;
+}
+
+.compare div, 
+.compare pre {
+	margin: 0px;
+	padding: 0px;
+}
+
+.compare pre{
+	padding-left: 1em;
+}
+
+.compare a {
+	font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+	font-size: 12px;
+	display:block;
+}
+
+
+.compare div.content a {
+	margin-left: 1em;
+}
