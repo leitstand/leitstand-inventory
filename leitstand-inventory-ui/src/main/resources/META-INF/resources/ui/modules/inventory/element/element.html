@@ -36,10 +36,12 @@
 		<ui-input name="element_name">
 			<ui-label>Element Name</ui-label>
 			<ui-note>The unique name of the element</ui-note>
+			<ui-copy>Copy</ui-copy>
 		</ui-input>
 		<ui-input name="element_alias">
 			<ui-label>Element Alias</ui-label>
 			<ui-note>An optional unique element alias.</ui-note>
+			<ui-copy>Copy</ui-copy>
 		</ui-input>
 		<element-role name="element_role">
 			<ui-label>Element Role</ui-label>
@@ -78,14 +80,17 @@
 		<ui-input name="serial_number" >
 			<ui-label>Serial Number</ui-label>
 			<ui-note>The serial number of the element.</ui-note>
+			<ui-copy>Copy</ui-copy>
 		</ui-input>	
 		<ui-input name="asset_id" >
 			<ui-label>Asset ID</ui-label>
 			<ui-note>The asset identifier for this element.</ui-note>
+			<ui-copy>Copy</ui-copy>
 		</ui-input>	
 		<ui-input name="mgmt_mac">
 			<ui-label>MAC Address</ui-label>
 			<ui-note>The MAC address of the element management-port.</ui-note>
+			<ui-copy>Copy</ui-copy>
 		</ui-input>	
 	</ui-group>
 	<ui-group>
@@ -108,7 +113,7 @@
 						<tr>
 							<td><a name="{{mgmt_name}}" href="element-mgmt.html?group={{group_id}}&element={{element_id}}&mgmt_name={{mgmt_name}}" title="Edit management interface properties">{{mgmt_name}}</a></td>
 							<td>{{mgmt_protocol}}</td>
-							<td>{{mgmt_hostname}}</td>
+							<td><span class="copy_on_hover">{{mgmt_hostname}} <ui-copy small value="{{mgmt_hostname}}">Copy</ui-copy></span></td>
 							<td>{{mgmt_port}}</td>
 							<td>{{mgmt_path}}</td>
 						</tr>
@@ -158,11 +163,9 @@
 		        <ui-button name="remove-mgmt" small when="mgmt_ifc.mgmt_name" title="Remove management interface">Remove</ui-button>
 		    </ui-actions>   
 		    <!-- {{/mgmt_ifc}} -->
-			
 		</ui-group>
 	<ui-actions>
 		<ui-button name="save-element" primary>Save settings</ui-button>
 		<ui-button name="confirm-remove-element" danger>Remove element</ui-button>
 	</ui-actions>
-
 </ui-form>
