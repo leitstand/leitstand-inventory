@@ -56,40 +56,7 @@ public class ElementSettings extends BaseElementEnvelope{
 		public Builder() {
 			super(new ElementSettings());
 		}
-		
-		/**
-		 * Sets the element platform ID.
-		 * @param platformId the platform ID
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withPlatformId(PlatformId platformId) {
-			assertNotInvalidated(getClass(),object);
-			object.platformId = platformId;
-			return this;
-		}
-		
-		/**
-		 * Sets the element platform name.
-		 * @param platformName the platform name
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withPlatformName(PlatformName platformName) {
-			assertNotInvalidated(getClass(),object);
-			object.platformName = platformName;
-			return this;
-		}
-		
-		/**
-		 * Sets the platform chipset name.
-		 * @param platformChipsetName the platform chipset name.
-		 * @return a reference to this builder to continue object creation
-		 */
-		public Builder withPlatformChipsetName(PlatformChipsetName platformChipsetName) {
-		    assertNotInvalidated(getClass(), object);
-		    object.platformChipset = platformChipsetName;
-		    return this;
-		}
-		
+				
 	    /**
          * Sets the element serial number.
          * @param serialNumber the serial number
@@ -212,14 +179,6 @@ public class ElementSettings extends BaseElementEnvelope{
 	@JsonbProperty
 	private Set<String> tags = emptySet();
 	
-	@Valid
-	private PlatformId platformId;
-
-    @Valid
-	private PlatformName platformName;
-    
-    @Valid
-    private PlatformChipsetName platformChipset;
 	
 	public String getDescription() {
 		return description;
@@ -247,22 +206,6 @@ public class ElementSettings extends BaseElementEnvelope{
 	 */
 	public Set<String> getTags() {
 		return unmodifiableSet(tags);
-	}
-	
-	/**
-	 * Returns the element platform ID
-	 * @return the element platform ID
-	 */
-	public PlatformId getPlatformId() {
-		return platformId;
-	}
-	
-	/**
-	 * Returns the element platform name.
-	 * @return the element platform name.
-	 */
-	public PlatformName getPlatformName() {
-		return platformName;
 	}
 	
 	/**
@@ -311,12 +254,5 @@ public class ElementSettings extends BaseElementEnvelope{
 		return assetId;
 	}
 	
-	/**
-	 * Returns the platform chipset name.
-	 * @return the platform chipset name.
-	 */
-	public PlatformChipsetName getPlatformChipset() {
-        return platformChipset;
-    }
 	
 }

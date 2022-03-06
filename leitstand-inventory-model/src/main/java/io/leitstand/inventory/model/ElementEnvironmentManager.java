@@ -19,6 +19,7 @@ import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.event.ElementEnvironmentRemovedEvent.newElementEnvironmentRemovedEvent;
 import static io.leitstand.inventory.event.ElementEnvironmentStoredEvent.newElementEnvironmentStoredEvent;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Environment.findEnvironmentById;
 import static io.leitstand.inventory.model.Element_Environment.findEnvironmentByName;
 import static io.leitstand.inventory.model.Element_Environment.findEnvironments;
@@ -100,17 +101,7 @@ public class ElementEnvironmentManager {
 	
 	private ElementEnvironment elementEnvironment(Element_Environment env) {
 		Element element = env.getElement();
-		return newElementEnvironment()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementEnvironment(),element)
    			   .withEnvironmentId(env.getEnvironmentId())
    			   .withEnvironmentName(env.getEnvironmentName())
    			   .withCategory(env.getCategory())
@@ -265,17 +256,7 @@ public class ElementEnvironmentManager {
 													   .map(env -> environmentInfo(env))
 													   .collect(toList());
 		
-		return newElementEnvironments()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementEnvironments(),element)
 			   .withEnvironments(environments)
 			   .build();
 	

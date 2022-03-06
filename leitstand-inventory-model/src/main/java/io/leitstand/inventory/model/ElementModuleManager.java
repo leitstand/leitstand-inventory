@@ -17,6 +17,7 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Module.findModule;
 import static io.leitstand.inventory.model.Element_Module.findModules;
 import static io.leitstand.inventory.service.AdministrativeState.ACTIVE;
@@ -68,16 +69,7 @@ public class ElementModuleManager {
 			modules.add(moduleData(module));
 		}
 		
-		return newElementModules()
-			   .withGroupId(element.getGroupId())
-			   .withGroupName(element.getGroupName())
-			   .withGroupType(element.getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementModules(),element)
 			   .withModules(modules)
 			   .build();
 	}
@@ -221,17 +213,7 @@ public class ElementModuleManager {
 
 	private ElementModule mapModule(Element element, Element_Module module) {
 
-		return newElementModule()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementModule(), element) 
 			   .withModule(moduleData(module))
 			   .build();
 	}

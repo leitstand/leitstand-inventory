@@ -16,6 +16,7 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_ContainerInterface.findIfcByName;
 import static io.leitstand.inventory.model.Element_LogicalInterface.findIflByName;
 import static io.leitstand.inventory.model.Element_LogicalInterface.findIfls;
@@ -122,17 +123,7 @@ public class ElementLogicalInterfaceManager {
 										   .withPhysicalInterfaces(ifps)
 										   .build();
 		
-		return newLogicalInterface()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newLogicalInterface(), element) 
 			   .withLogicalInterface(data)
 			   .build();
 		
@@ -207,17 +198,7 @@ public class ElementLogicalInterfaceManager {
 											   			   
 		
 		
-		return newLogicalInterfaces()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newLogicalInterfaces(),element)
 			   .withLogicalInterfaces(ifls
 					   				  .stream()
 					   				  .limit(limit)

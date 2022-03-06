@@ -1,5 +1,7 @@
 package io.leitstand.inventory.model;
 
+import static io.leitstand.commons.model.ObjectUtil.optional;
+
 import io.leitstand.inventory.service.BaseElementEnvelope;
 import io.leitstand.inventory.service.BaseElementEnvelope.BaseElementEnvelopeBuilder;
 
@@ -18,7 +20,10 @@ final class ElementValueObjects {
                       .withGroupId(element.getGroupId())
                       .withGroupName(element.getGroupName())
                       .withGroupType(element.getGroupType())
-                      .withOperationalState(element.getOperationalState());        
+                      .withOperationalState(element.getOperationalState())
+                      .withPlatformId(optional(element.getPlatform(), Platform::getPlatformId))
+                      .withPlatformName(optional(element.getPlatform(), Platform::getPlatformName))
+                      .withPlatformChipsetName(optional(element.getPlatform(),Platform::getChipset));
     }
     
     

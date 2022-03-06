@@ -15,8 +15,8 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static io.leitstand.inventory.service.ImageExport.newImageExport;
+import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static java.lang.Integer.MAX_VALUE;
 
 import java.util.Date;
@@ -27,13 +27,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.ImageExport;
 import io.leitstand.inventory.service.ImageExportService;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
 import io.leitstand.inventory.service.ImageType;
-import io.leitstand.inventory.service.ImageExport;
 import io.leitstand.inventory.service.Version;
 
 @ApplicationScoped

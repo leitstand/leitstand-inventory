@@ -23,6 +23,7 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+
 /**
  * The <code>BaseElementEnvelope</code> contains the attributes shared with every element-related message.
  */
@@ -110,6 +111,39 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
             return (B) this;
         }
         
+		/**
+		 * Sets the element platform ID.
+		 * @param platformId the platform ID
+		 * @return a reference to this builder to continue object creation
+		 */
+		public B withPlatformId(PlatformId platformId) {
+			assertNotInvalidated(getClass(),object);
+			((BaseElementEnvelope)object).platformId = platformId;
+			return (B) this;
+		}
+		
+		/**
+		 * Sets the element platform name.
+		 * @param platformName the platform name
+		 * @return a reference to this builder to continue object creation
+		 */
+		public B withPlatformName(PlatformName platformName) {
+			assertNotInvalidated(getClass(),object);
+			((BaseElementEnvelope)object).platformName = platformName;
+			return (B) this;
+		}
+		
+		/**
+		 * Sets the platform chipset name.
+		 * @param platformChipsetName the platform chipset name.
+		 * @return a reference to this builder to continue object creation
+		 */
+		public B withPlatformChipsetName(PlatformChipsetName platformChipsetName) {
+		    assertNotInvalidated(getClass(), object);
+		    ((BaseElementEnvelope)object).platformChipset = platformChipsetName;
+		    return (B) this;
+		}
+        
         /**
          * Sets the date when this element has been last modified.
          * @param administrativeState the administrative state
@@ -139,6 +173,9 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
             withElementName(envelope.getElementName());
             withElementRole(envelope.getElementRole());
             withOperationalState(envelope.getOperationalState());
+            withPlatformChipsetName(envelope.getPlatformChipset());
+            withPlatformId(envelope.getPlatformId());
+            withPlatformName(envelope.getPlatformName());
             return (B) this;
         }
 		
@@ -168,6 +205,15 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 	private OperationalState operationalState;
 
 	private Date dateModified; 
+	
+	@Valid
+	private PlatformId platformId;
+	
+	@Valid
+	private PlatformName platformName;
+	
+	@Valid
+	private PlatformChipsetName platformChipset;
 
 	/**
 	 * Returns the element ID
@@ -224,5 +270,29 @@ public class BaseElementEnvelope extends BaseElementGroupEnvelope {
 	public Date getDateModified() {
         return dateModified;
     }
+	
+	/**
+	 * Returns the platform ID.
+	 * @return the platform ID.
+	 */
+	public PlatformId getPlatformId() {
+		return platformId;
+	}
+	
+	/**
+	 * Returns the platform name.
+	 * @return the platform name.
+	 */
+	public PlatformName getPlatformName() {
+		return platformName;
+	}
+	
+	/**
+	 * Returns the platform chipset name.
+	 * @return the platform chipset name.
+	 */
+	public PlatformChipsetName getPlatformChipset() {
+		return platformChipset;
+	}
 	
 }

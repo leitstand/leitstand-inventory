@@ -19,6 +19,7 @@ import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.event.DnsRecordSetUpdate.newDnsRecordSetUpdate;
 import static io.leitstand.inventory.event.ElementDnsRecordSetModifiedEvent.newDnsRecordSetChangedEvent;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_DnsRecordSet.findDnsRecordSet;
 import static io.leitstand.inventory.model.Element_DnsRecordSet.findDnsRecordSets;
 import static io.leitstand.inventory.service.DnsRecord.newDnsRecord;
@@ -102,17 +103,7 @@ public class ElementDnsRecordSetManager {
 											   .map( set -> dnsRescordSet(set))
 											   .collect(toList());
 				
-		return newElementDnsRecordSets()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementDnsRecordSets(),element)
 			   .withDnsRecordSets(records)
 			   .build();
 	}
@@ -127,18 +118,9 @@ public class ElementDnsRecordSetManager {
 											  id);
 		}
 		Element element = record.getElement();
-		return newElementDnsRecordSet()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
-			   .withDnsRecordSet(dnsRescordSet(record)).build();	
+		return elementValueObject(newElementDnsRecordSet(),element)
+			   .withDnsRecordSet(dnsRescordSet(record))
+			   .build();	
 
 	}
 	
@@ -158,17 +140,7 @@ public class ElementDnsRecordSetManager {
 			throw new EntityNotFoundException(IVT3001E_ELEMENT_DNS_RECORD_NOT_FOUND,
 											  dnsName);
 		}
-		return newElementDnsRecordSet()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementDnsRecordSet(),element)
 			   .withDnsRecordSet(dnsRescordSet(record))
 			   .build();
 		
