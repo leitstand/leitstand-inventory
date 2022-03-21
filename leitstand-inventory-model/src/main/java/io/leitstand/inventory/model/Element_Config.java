@@ -55,8 +55,6 @@ import io.leitstand.security.auth.jpa.UserNameConverter;
 			query="SELECT c FROM Element_Config c WHERE c.element=:element AND c.name=:configName ORDER BY c.tsmodified DESC")
 @NamedQuery(name="Element_Config.findActiveConfig",
 			query="SELECT c FROM Element_Config c WHERE c.element=:element AND c.name=:configName AND c.state=io.leitstand.inventory.service.ConfigurationState.ACTIVE")
-
-
 public class Element_Config implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -162,7 +160,6 @@ public class Element_Config implements Serializable {
 		return element;
 	}
 	
-	
 	public String getContentType() {
 		return content.getContentType();
 	}
@@ -206,6 +203,5 @@ public class Element_Config implements Serializable {
 	public UserName getCreator() {
 		return creator;
 	}
-	
 
 }

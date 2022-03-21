@@ -40,7 +40,7 @@ const elementConfigController = function(){
 	const config = new Element({scope:"configs/{{config}}"});
 	return new Controller({
 		resource: config,
-		viewModel:function(config){
+		viewModel:async function(config){
 			config.removable = function(){
 				return this.config_state == 'CANDIDATE' || this.config_state == 'SUPERSEDED';
 			};
@@ -49,10 +49,17 @@ const elementConfigController = function(){
 				return this.config_state == 'SUPERSEDED';
 			};
 			
-			config.content = function(){ 
+			const response = await fetch(`/api/v1/elements/${config.element_id}/configs/${config.config_id}/config`)
+			if (response.status == 200){
+				config.content_type = response.headers.get("Content-Type");
+				config.config = await response.text();
+			}
+
+			
+			config.content = function(){
 	  			if(this.content_type == "application/json"){
-	  				return JSON.stringify(this.config,null,"  ");
-	  			}
+	  				return JSON.stringify(this.config,null,"  ");			
+				}
 	  			return this.config;
 			};
 			return config;
