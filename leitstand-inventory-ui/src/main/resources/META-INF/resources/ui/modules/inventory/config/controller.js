@@ -15,65 +15,8 @@
  */
 import {Controller,Menu} from '/ui/js/ui.js';
 import {Element} from '/ui/modules/inventory/inventory.js';
-import {UIElement,Control,html} from '/ui/js/ui-components.js';
 import '../inventory-components.js';
-class Diff extends UIElement {
-	
-	connectedCallback(){
-
-		try{
-		const source = this.viewModel.getProperty(this.getAttribute('source'));
-		const target = this.viewModel.getProperty(this.getAttribute('target'));
-		if(source && target){
-
-			const read = function(c){
-				if(c && c.content_type=='application/json'){
-					return JSON.stringify(c.config,null,' ');
-				}
-				return c.config;
-			};
-			
-			source.content = read(source);
-			target.content = read(target);
-			
-			const diff = JsDiff.diffLines(target.content,
-										  source.content)
-					           .map(part => html `<span style="background-color:${part.added ? 'Lime' : (part.removed ? '#ffd6cc' : 'None')}">$${part.value}</span>`)
-					           .reduce((a,b)=>a+b);
-			this.innerHTML=html `<div id="comparator">
-							       <div>
-							        <div style="background-color:lime; font-weight:bold; font-size: 1em; padding: 5px;">Added to $${target.config_name} at <ui-date readonly dateTime>${target.date_modified}</ui-date></div> 
-							        <div style="background-color: #ffd6cc; font-weight: bold; font-size: 1em; padding: 5px;">Removed from $${source.config_name} from <ui-date dateTime readonly>${source.date_modified}</ui-date></div>
-							       </div>
-							      <code id="diff" class="hl" style="height: 45em; overflow: scroll"><pre>${diff}</pre></code>
-							     </div>`;
-			hljs.highlightBlock(this.querySelector('#diff'));
-
-		}
-		}catch(e){
-			console.log(e);
-		}
-	}
-}
-
-class Editor extends Control {
-    connectedCallback(){
-        const config = this.viewModel.getProperty(this.binding)||{};
-        this.innerHTML=`<textarea>${JSON.stringify(config,null,' ')}</textarea>`;
-        const editor = CodeMirror.fromTextArea(this.querySelector("textarea"), {
-            lineNumbers: true,
-            styleActiveLine: true,
-            matchBrackets: true,
-            mode:{name:'javascript', json:true}
-        });
-        this.form.addEventListener('UIPreExecuteAction',() => {
-            this.viewModel.setProperty(this.binding,JSON.parse(editor.getValue()));
-        });
-    }
-}
-
-customElements.define('config-diff',Diff);
-customElements.define('config-editor',Editor);
+import './config-components.js';
 
 const elementConfigsController = function(){
 	const configs = new Element({scope:"configs"});
@@ -193,16 +136,16 @@ const addElementConfigController = function(){
 };
 
 const elementConfigHistoryCompareController = function(){
-	const source = new Element({scope:"configs/{{a}}"});
+	const target = new Element({scope:"configs/{{a}}"});
 	return new Controller({
-		resource: source,
-		viewModel:async function(source){
-			const compare = source;
+		resource: target,
+		viewModel:async function(target){
+			const compare = target;
 			// Add a back reference to improve template readability.
-			compare.source = source;
+			compare.target = target;
 			// Load the target configuration to be compared with the selected configuration
-			const target = new Element({scope:"configs/{{b}}"});
-			compare.target = await target.load(this.location.params);
+			const source = new Element({scope:"configs/{{b}}"});
+			compare.source = await source.load(this.location.params);
 			return compare;
 		}
 	});

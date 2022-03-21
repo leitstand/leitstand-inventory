@@ -115,6 +115,7 @@ public class Element_Config implements Serializable {
 	@Temporal(TIMESTAMP)
 	private Date tsmodified;
 
+	@Column(name="content_hash")
 	private String contentHash;
 	private String contentType;
 	@Enumerated(STRING)

@@ -19,6 +19,7 @@ import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Service.findElementService;
 import static io.leitstand.inventory.model.Element_Service.findElementServices;
 import static io.leitstand.inventory.model.Element_ServiceContext.findServiceContext;
@@ -32,9 +33,9 @@ import static io.leitstand.inventory.service.ElementServices.newElementServices;
 import static io.leitstand.inventory.service.ReasonCode.IVT0320E_ELEMENT_SERVICE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0321I_ELEMENT_SERVICE_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0322I_ELEMENT_SERVICE_REMOVED;
-import static io.leitstand.inventory.service.ServiceSettings.newServiceSettings;
 import static io.leitstand.inventory.service.ServiceInfo.newServiceInfo;
 import static io.leitstand.inventory.service.ServiceName.serviceName;
+import static io.leitstand.inventory.service.ServiceSettings.newServiceSettings;
 import static java.lang.String.format;
 
 import java.util.LinkedList;
@@ -166,17 +167,7 @@ public class ElementServicesManager {
 						  											.withDisplayName(rs.getString(5))
 						  											.withOperationalState(toOperationalState(rs.getString(6)))
 																	.build());
-		return newElementServiceStack()
-			   .withGroupId(group.getGroupId())
-			   .withGroupName(group.getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementServiceStack(),element)
 			   .withServices(services)
 			   .build();
 	}
@@ -296,17 +287,7 @@ public class ElementServicesManager {
 													 		   .withServiceName(parent.getServiceName())
 													 		   .build());
 		
-		return newElementServiceContext()
-			   .withGroupId(element.getGroupId())
-			   .withGroupType(element.getGroupType())
-			   .withGroupName(element.getGroupName())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementServiceContext(),element)
 			   .withService(newServiceSettings()
 					   		.withServiceType(service.getServiceType())
 					   		.withServiceName(service.getServiceName())
@@ -317,7 +298,7 @@ public class ElementServicesManager {
 					   		.withServiceContextType(service.getServiceContextType())
 					   		.withServiceContext(service.getServiceContext())
 					   		.withParent(parentRef))
-			.build();
+			   .build();
 
 	}
 }

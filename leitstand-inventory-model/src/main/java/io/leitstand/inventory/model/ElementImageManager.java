@@ -19,6 +19,7 @@ import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.inventory.model.DefaultImageService.referenceOf;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Image.findElementImage;
 import static io.leitstand.inventory.model.Element_Image.findElementImages;
 import static io.leitstand.inventory.model.Image.findImageById;
@@ -141,16 +142,7 @@ public class ElementImageManager {
 						  .build());
 		}	
 		
-		 return newElementImages()
-				.withGroupId(group.getGroupId())
-				.withGroupName(group.getGroupName())
-				.withGroupType(group.getGroupType())
-				.withElementId(element.getElementId())
-				.withElementName(element.getElementName())
-				.withElementAlias(element.getElementAlias())
-				.withAdministrativeState(element.getAdministrativeState())
-				.withOperationalState(element.getOperationalState())
-				.withDateModified(element.getDateModified())
+		 return elementValueObject(newElementImages(),element)
 				.withElementImages(installed)
 				.build(); 
 		
@@ -199,16 +191,7 @@ public class ElementImageManager {
 						.withUpgradeType(type)
 						.build());
 		}
-		return newElementImage()
-			   .withGroupId(group.getGroupId())
-			   .withGroupName(group.getGroupName())
-			   .withGroupType(group.getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
+		return elementValueObject(newElementImage(),element)
 			   .withImage(newElementImageData()
 					   	  .withImageId(image.getImageId())
 					   	  .withZtp(elementImage.isZtp())

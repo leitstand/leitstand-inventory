@@ -328,18 +328,8 @@ public enum ReasonCode implements Reason{
 	IVT3003I_ELEMENT_DNS_RECORD_OWNED_BY_OTHER_ELEMENT,
 
 	/** The DNS record cannot be assigned to this DNS zone.*/
-	IVT3004E_ELEMENT_DNS_RECORD_ZONE_MISMATCH,
+	IVT3004E_ELEMENT_DNS_RECORD_ZONE_MISMATCH;
 	
-	/** The heart beats watchdog has been started.*/
-	IVT8000I_HEARTBEAT_WATCHDOG_STARTED,
-	
-	/** The heart beats watchdog has been stopped.*/
-	IVT8001I_HEARTBEAT_WATCHDOG_STOPPED,
-	
-	/** The heart beats watchdog reported a problem.*/
-	IVT8002E_HEARTBEAT_WATCHDOG_FAILED;
-	
-
 	private static final ResourceBundle MESSAGES = getBundle("InventoryMessages");
 	
 	/**

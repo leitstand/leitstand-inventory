@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.inventory.jpa.AdministrativeStateConverter.toAdministrativeState;
 import static io.leitstand.inventory.jpa.OperationalStateConverter.toOperationalState;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.service.Bandwidth.bandwidth;
 import static io.leitstand.inventory.service.ElementGroupId.groupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
@@ -80,17 +81,7 @@ public class ElementLinksManager {
 																  	  element.getId()), 
 								 							  mapping);
 		
-		return newElementLinks()
-			   .withGroupId(group.getGroupId())
-			   .withGroupName(group.getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementLinks(),element)
 			   .withLinks(links)
 			   .build();
 	}

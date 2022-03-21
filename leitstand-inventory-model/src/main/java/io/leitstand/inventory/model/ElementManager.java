@@ -28,6 +28,7 @@ import static io.leitstand.inventory.model.Element_Config.removeAllConfiguration
 import static io.leitstand.inventory.model.Element_ContainerInterface.removeIfcs;
 import static io.leitstand.inventory.model.Element_DnsRecordSet.removeDnsRecordSets;
 import static io.leitstand.inventory.model.Element_Environment.removeEnvironments;
+import static io.leitstand.inventory.model.Element_Image.removeElementImages;
 import static io.leitstand.inventory.model.Element_Module.removeModules;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.removeIfps;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.removeNeighbors;
@@ -194,7 +195,7 @@ public class ElementManager {
 						    element.getElementName(),
 						    element.getElementId()));
 		
-		int removedImages = repository.execute(Element_Image.removeElementImages(element));
+		int removedImages = repository.execute(removeElementImages(element));
         LOG.fine(()->format("Removed %d images of %s %s (%s)",
                             removedImages,
                             element.getElementRoleName(),
@@ -205,10 +206,14 @@ public class ElementManager {
 		
 		Rack_Item rackItem = repository.execute(Rack_Item.findRackItem(element));
 		if(rackItem != null) {
-			LOG.fine(()->format("Remove rack item %d from rack %s (%s)",
+		    repository.remove(rackItem);
+			LOG.fine(()->format("Removed rack item %d from rack %s (%s) for %s %s (%s)",
 								rackItem.getPosition(),
 								rackItem.getRack().getRackName(),
-								rackItem.getRack().getRackId()));
+								rackItem.getRack().getRackId(),
+								element.getElementRoleName(),
+								element.getElementName(),
+								element.getElementId()));
 		}
 		
 		

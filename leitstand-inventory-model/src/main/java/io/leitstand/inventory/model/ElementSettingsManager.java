@@ -18,12 +18,12 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.UniqueKeyConstraintViolationException.key;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
-import static io.leitstand.commons.model.ObjectUtil.optional;
 import static io.leitstand.commons.rs.ReasonCode.VAL0003E_IMMUTABLE_ATTRIBUTE;
 import static io.leitstand.inventory.event.ElementMovedEvent.newElementMovedEvent;
 import static io.leitstand.inventory.event.ElementOperationalStateChangedEvent.newElementOperationalStateChangedEvent;
 import static io.leitstand.inventory.event.ElementRenamedEvent.newElementRenamedEvent;
 import static io.leitstand.inventory.event.ElementRoleChangedEvent.newElementRoleChangedEvent;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.service.ElementGroupSettings.newElementGroupSettings;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementSettings.newElementSettings;
@@ -59,17 +59,7 @@ public class ElementSettingsManager {
 	private static final Logger LOG = Logger.getLogger(ElementSettingsManager.class.getName());
 
 	protected static ElementSettings settingsOf(Element element) {
-		return newElementSettings()
-			   .withGroupId(element.getGroupId())
-			   .withGroupName(element.getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementSettings(), element)
 			   .withPlane(element.getElementRole().getPlane())
 			   .withSerialNumber(element.getSerialNumber())
 			   .withAssetId(element.getAssetId())
@@ -77,8 +67,6 @@ public class ElementSettingsManager {
 			   .withManagementInterfaces(element.getManagementInterfaces())
 			   .withDescription(element.getDescription())
 			   .withTags(element.getTags())
-			   .withPlatformId(optional(element.getPlatform(), Platform::getPlatformId))
-			   .withPlatformName(optional(element.getPlatform(), Platform::getPlatformName))
 			   .build();
 	}
 	
@@ -142,7 +130,7 @@ public class ElementSettingsManager {
 		element.setOperationalState(settings.getOperationalState());
 		element.setPlatform(platforms.findOrCreatePlatform(settings.getPlatformId(), 
 														   settings.getPlatformName(),
-														   null));
+														   settings.getPlatformChipset()));
 		
 		repository.add(element);
 		messages.add(createMessage(IVT0301I_ELEMENT_STORED, 

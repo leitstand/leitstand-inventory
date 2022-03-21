@@ -17,7 +17,7 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
-import javax.json.JsonObject;
+import javax.json.JsonStructure;
 
 /**
  * An element environment.
@@ -50,7 +50,7 @@ public class Environment extends EnvironmentInfo {
 		 * @param variables the environment variables.
 		 * @return a reference to this builder to continue objectcreation.
 		 */
-		public Builder withVariables(JsonObject variables) {
+		public Builder withVariables(JsonStructure variables) {
 			assertNotInvalidated(getClass(), env);
 			env.variables = variables;
 			return this;
@@ -58,13 +58,13 @@ public class Environment extends EnvironmentInfo {
 	}
 	
 	
-	private JsonObject variables;
+	private JsonStructure variables;
 	
 	/**
 	 * Returns the environment variables.
 	 * @return the environment variables.
 	 */
-	public JsonObject getVariables() {
+	public JsonStructure getVariables() {
 		return variables;
 	}
 }

@@ -82,6 +82,7 @@
 		<class>io.leitstand.security.auth.jpa.UserNameConverter</class>
 		<class>io.leitstand.commons.jpa.BooleanConverter</class>
 		<class>io.leitstand.commons.jpa.SerializableJsonObjectConverter</class>
+        <class>io.leitstand.commons.jpa.SerializableJsonStructureConverter</class>
 		<class>io.leitstand.commons.jpa.URLConverter</class>
 		<class>io.leitstand.commons.model.AbstractEntity</class>
 		<class>io.leitstand.commons.model.VersionableEntity</class>

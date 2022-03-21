@@ -18,7 +18,6 @@ package io.leitstand.inventory.model;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 
 import io.leitstand.commons.model.Service;
 import io.leitstand.inventory.service.ElementGroupService;

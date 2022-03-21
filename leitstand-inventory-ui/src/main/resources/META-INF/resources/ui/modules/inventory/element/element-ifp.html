@@ -28,6 +28,7 @@
 
 <element-panel panel="ifp"></element-panel>
 
+<ui-form>
 <!-- {{#physical_interface}} -->	
 <ui-details>
 	<ui-property>
@@ -90,3 +91,9 @@
 	</ui-property>
 <!-- {{/physical_interface}} -->	
 </ui-details>
+<ui-actions>
+    <ui-button name="enable" title="Enable physical interface" primary when="disabled">Enable</ui-button>
+    <ui-button name="disable" title="Disable physical interface" danger when="enabled">Disable</ui-button>
+    <ui-refresh>Refresh</ui-refresh>
+</ui-actions>
+</ui-form>

@@ -18,7 +18,9 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -100,6 +102,17 @@ public class ElementEnvironment extends BaseElementEnvelope {
 			return this;
 		}
 		
+	    /**
+         * Sets the environment variables.
+         * @param variables the environment variables
+         * @return a reference to this builder to continue object creation
+         */
+        public Builder withVariables(JsonArray variables) {
+            assertNotInvalidated(getClass(), object);
+            object.variables = variables;
+            return this;
+        }
+		
 		/**
 		 * Sets the environment variables.
 		 * @param variables the environment variables
@@ -110,7 +123,18 @@ public class ElementEnvironment extends BaseElementEnvelope {
 			object.variables = variables;
 			return this;
 		}
-		
+
+		/**
+         * Sets the environment variables.
+         * @param variables the environment variables
+         * @return a reference to this builder to continue object creation
+         */
+        public Builder withVariables(JsonValue variables) {
+            assertNotInvalidated(getClass(), object);
+            object.variables = variables;
+            return this;
+        }
+
 	}
 	
 	private EnvironmentId environmentId = randomEnvironmentId();
@@ -121,7 +145,7 @@ public class ElementEnvironment extends BaseElementEnvelope {
 	private String type;
 	private String description;
 	@NotNull(message="{variables.required}")
-	private JsonObject variables;
+	private JsonValue variables;
 	
 	/**
 	 * Returns the environment ID.
@@ -167,7 +191,7 @@ public class ElementEnvironment extends BaseElementEnvelope {
 	 * Returns the environment variables.
 	 * @return the environment variables.
 	 */
-	public JsonObject getVariables() {
+	public JsonValue getVariables() {
 		return variables;
 	}
 	

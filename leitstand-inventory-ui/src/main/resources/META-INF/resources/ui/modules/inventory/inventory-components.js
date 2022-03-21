@@ -23,10 +23,8 @@ class PlatformSelector extends Select {
 		const platforms = new Platforms();
 		return platforms.load()
 				 		.then(platforms => {
-				 					return platforms.map(platform => { 
-				 							return {"value":platform.platform_id,
-				 							        "label":platform.platform_name}
-				 					});
+				 		            const options = [{"label":"-","value":""}]
+				 					return options.concat(platforms.map(p => ({"value":p.platform_id, "label":p.platform_name})));
 				 				});
 	}
 	

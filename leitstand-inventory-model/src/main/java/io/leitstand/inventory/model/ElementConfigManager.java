@@ -25,6 +25,7 @@ import static io.leitstand.commons.rs.ResourceUtil.tryParseInt;
 import static io.leitstand.inventory.event.ElementConfigRemovedEvent.newElementConfigRemovedEvent;
 import static io.leitstand.inventory.event.ElementConfigRevisionRemovedEvent.newElementConfigRevisionRemovedEvent;
 import static io.leitstand.inventory.event.ElementConfigStoredEvent.newElementConfigStoredEvent;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Config.findActiveConfig;
 import static io.leitstand.inventory.model.Element_Config.findElementConfig;
 import static io.leitstand.inventory.model.Element_Config.findLatestConfig;
@@ -137,16 +138,7 @@ public class ElementConfigManager {
 									 								 	   .withDateModified(rs.getTimestamp(7))
 									 								 	   .build());
 		
-		return newElementConfigs()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
+		return elementValueObject(newElementConfigs(),element)
 			   .withDateModified(element.getDateModified())
 			   .withConfigs(configs)
 			   .build();
@@ -177,17 +169,7 @@ public class ElementConfigManager {
 											  configName);
 		}
 		
-		return newElementConfigRevisions()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementConfigRevisions(),element)
 			   .withElementConfigName(configName)
 			   .withElementConfigRevisions(revisions)
 			   .build();
@@ -214,17 +196,7 @@ public class ElementConfigManager {
 	}
 
 	private ElementConfig config(Element element, Element_Config config) {
-		return newElementConfig()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newElementConfig(), element)
 			   .withConfigId(config.getConfigId())
 			   .withConfigName(config.getName())
 			   .withContentType(config.getContentType())

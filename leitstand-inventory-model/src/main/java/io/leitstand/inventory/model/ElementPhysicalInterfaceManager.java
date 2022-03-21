@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.inventory.event.ElementPhysicalInterfaceRemovedEvent.newPhysicalInterfaceRemovedEvent;
 import static io.leitstand.inventory.event.ElementPhysicalInterfaceStoredEvent.newPhysicalInterfaceStoredEvent;
+import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.countLogicalInterfaces;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfpByName;
 import static io.leitstand.inventory.model.Element_PhysicalInterface.findIfps;
@@ -114,17 +115,7 @@ public class ElementPhysicalInterfaceManager {
 											  .withNeighbor(ifp.getNeighbor())
 											  .build();
 		
-		return newPhysicalInterface()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withElementRole(element.getElementRoleName())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newPhysicalInterface(),element)
 			   .withPhysicalInterface(ifpData)
 			   .build();
 	}
@@ -149,17 +140,7 @@ public class ElementPhysicalInterfaceManager {
 		
 		ifps.sort((a,b) -> a.getIfpName().compareTo(b.getIfpName()));
 		
-		return newPhysicalInterfaces()
-			   .withGroupId(element.getGroup().getGroupId())
-			   .withGroupName(element.getGroup().getGroupName())
-			   .withGroupType(element.getGroup().getGroupType())
-			   .withElementId(element.getElementId())
-			   .withElementRole(element.getElementRoleName())
-			   .withElementName(element.getElementName())
-			   .withElementAlias(element.getElementAlias())
-			   .withAdministrativeState(element.getAdministrativeState())
-			   .withOperationalState(element.getOperationalState())
-			   .withDateModified(element.getDateModified())
+		return elementValueObject(newPhysicalInterfaces(),element)
 			   .withPhysicalInterfaces(ifps)
 			   .build();
 	}
