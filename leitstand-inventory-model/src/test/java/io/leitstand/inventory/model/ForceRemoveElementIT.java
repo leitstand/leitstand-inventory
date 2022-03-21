@@ -30,6 +30,8 @@ import static io.leitstand.inventory.service.DnsRecordType.dnsRecordType;
 import static io.leitstand.inventory.service.DnsZoneId.randomDnsZoneId;
 import static io.leitstand.inventory.service.DnsZoneName.dnsZoneName;
 import static io.leitstand.inventory.service.DnsZoneSettings.newDnsZoneSettings;
+import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
+import static io.leitstand.inventory.service.ElementConfigName.elementConfigName;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
@@ -59,7 +61,6 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -79,8 +80,6 @@ import io.leitstand.inventory.service.DnsRecordSet;
 import io.leitstand.inventory.service.DnsZoneId;
 import io.leitstand.inventory.service.DnsZoneName;
 import io.leitstand.inventory.service.DnsZoneService;
-import io.leitstand.inventory.service.ElementConfigName;
-import io.leitstand.inventory.service.ElementConfigService;
 import io.leitstand.inventory.service.ElementDnsRecordSetService;
 import io.leitstand.inventory.service.ElementEnvironmentService;
 import io.leitstand.inventory.service.ElementGroupId;
@@ -105,7 +104,6 @@ import io.leitstand.inventory.service.ModuleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.RoutingInstanceName;
 import io.leitstand.inventory.service.ServiceName;
-import io.leitstand.security.auth.UserContext;
 
 public class ForceRemoveElementIT extends InventoryIT{
 
@@ -274,24 +272,20 @@ public class ForceRemoveElementIT extends InventoryIT{
 		
 		// Add configuration
 		transaction(()->{
-			UserContext userContext = mock(UserContext.class);
-			when(userContext.getUserName()).thenReturn(userName("junit"));
+			Element element = repository.execute(findElementById(ELEMENT_ID));
 			
-			ElementConfigManager configManager = new ElementConfigManager(repository, 
-																		  database, 
-																		  userContext, 
-																		  event, 
-																		  messages);	
-			ElementConfigService configService = new DefaultElementConfigService(elements, 
-																				 configManager);
-			
-			
-			configService.storeElementConfig(ELEMENT_ID, 
-											 ElementConfigName.valueOf("config"), 
-											 TEXT_PLAIN_TYPE, 
-											 CANDIDATE, 
-											 "dummy", 
-											 "dummy configuration");
+			Content metadata = new Content(TEXT_PLAIN_TYPE.toString(), "hash", 0L);
+			metadata = repository.merge(metadata);
+					
+			Element_Config config = new Element_Config(
+									element,
+									randomConfigId(),
+									elementConfigName("config"), 
+									CANDIDATE,
+									userName("junit"),
+									metadata,
+							   		"dummy configuration");
+			repository.add(config);
 			
 		});
 		

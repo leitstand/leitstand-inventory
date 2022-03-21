@@ -204,7 +204,6 @@ public class ElementConfigManager {
 			   .withDateModified(config.getDateModified())
 			   .withComment(config.getComment())
 			   .withCreator(config.getCreator())
-			   .withConfig(config.isJsonConfig() ? parseJson(config.getConfig()) : config.getConfig()) 
 			   .withConfigState(config.getConfigState())
 			   .build();
 	}
@@ -229,144 +228,21 @@ public class ElementConfigManager {
 	}
 	
 	public ElementConfig getElementConfig(Element element, ElementConfigName configName) {
-	       Element_Config config = repository.execute(findLatestConfig(element, configName));
-	        
-	       if(config == null) {
-	            LOG.fine(() -> format("%s: No %s configuration for element %s found.",
-	                                  IVT0333E_ELEMENT_CONFIG_NOT_FOUND,
-	                                  configName,
-	                                  element.getElementName()));
-	            
-	            throw new EntityNotFoundException(IVT0333E_ELEMENT_CONFIG_NOT_FOUND, 
-	                                              element.getElementName(), 
-	                                              configName);
-	        }
-	        
-	        return config(element,
-	                      config);
-	    
-	    }
-	
-
-	public StoreElementConfigResult storeElementConfig(Element element, 
-													   ElementConfigName configName,
-													   MediaType contentType,
-													   ConfigurationState configState,
-													   String configData,
-													   String comment) {
-		String contentHash = new BigInteger(md5().hash(configData)).abs().toString(16);
-		
-		Element_Config config = repository.execute(findLatestConfig(element, configName ));
-		if(config != null ) {
-			if(configState == ACTIVE) {
-				// New active configuration detected.
-				if(config.isActiveConfig()) {
-					if(config.isSameContentHash(contentHash)) {
-						// Do nothing when active config is reported again
-						return configUpdated(config.getConfigId());
-					}
-					config.setConfigState(SUPERSEDED);
-				} else {
-					// New active configuration reported.
-					// Existing active config, if any, must be set to superseded.
-					Element_Config active = repository.execute(findActiveConfig(element, configName));
-					if(active != null) {
-						// No active config exists, if only a first candidate is available.
-						active.setConfigState(SUPERSEDED);
-					}
-				}
-			}
-
-			if (config.isCandidateConfig()) {
-				// Update existing candidate configuration. 
-				// Config must be fetched first because it is being lazy loaded.
-				// Otherwise changes made to the entity (e.g. comment update) get lost.
-				config.setConfig(configData);
-	
-				// An operator uploads new CANDIDATE configs.
-				// There is only one candidate config, i.e. an existing candidate will be updated.
-				// A device sends a config whenever it has been changed to confirm configuration activation.
-				if(comment != null || configState == CANDIDATE) {
-					// A device sends no comment, i.e. comment is null, when confirming configuration activation.
-					// This null check averts that comments are accidentally removed by devices.
-					// Operators create candidate configs. Null-values for CANDIDATE configs are considered intentional.
-					config.setComment(comment);
-				}
-				config.setConfigState(configState);
-				config.setContentType(contentType);
-				config.setContentHash(contentHash);
-				config.setCreator(creator.getUserName());
-				LOG.fine(() -> format("%s: Updated %s configuration for element %s (%s)",
-			 			  			  IVT0330I_ELEMENT_CONFIG_REVISION_STORED.getReasonCode(),
-			 			  			  configName,
-			 			  			  element.getElementName(), 
-			 			  			  contentHash));
-				messages.add(createMessage(IVT0330I_ELEMENT_CONFIG_REVISION_STORED,
-						  				   element.getElementName(),
-						  				   configName,
-						  				   isoDateFormat(config.getDateModified())));
-				
-				event.fire(newElementConfigStoredEvent()
-						   .withGroupId(element.getGroupId())
-						   .withGroupName(element.getGroupName())
-						   .withGroupType(element.getGroupType())
-						   .withElementId(element.getElementId())
-						   .withElementName(element.getElementName())
-						   .withElementAlias(element.getElementAlias())
-						   .withElementRole(element.getElementRoleName())
-						   .withAdministrativeState(element.getAdministrativeState())
-						   .withOperationalState(element.getOperationalState())
-						   .withDateModified(element.getDateModified())
-						   .withConfigId(config.getConfigId())
-						   .withConfigName(configName)
-						   .withConfigState(configState)
-						   .withConfigDate(config.getDateModified())
-						   .withContentType(contentType.toString())
-						   .withCreator(config.getCreator())
-						   .build());
-				
-				return configUpdated(config.getConfigId());
-			}
-			
-		}
-		
-		
-		// Create a new configuration
-		config = new Element_Config(element,
-									configName,
-									configState,
-									contentType,
-									contentHash,
-									configData,
-									creator.getUserName());
-		config.setComment(comment);
-		repository.add(config);
-		LOG.fine(() -> format("%s: Stored new %s configuration for element %s (%s)",
-				 			  IVT0330I_ELEMENT_CONFIG_REVISION_STORED.getReasonCode(),
-				 			  configName,
-				 			  element.getElementName(),
-				 			  contentHash));
-		messages.add(createMessage(IVT0330I_ELEMENT_CONFIG_REVISION_STORED, 
-								   element.getElementName(),
-								   configName,
-								   contentHash));
-			
-		event.fire(newElementConfigStoredEvent()
-				   .withGroupId(element.getGroupId())
-				   .withGroupName(element.getGroupName())
-				   .withGroupType(element.getGroupType())
-				   .withElementId(element.getElementId())
-				   .withElementName(element.getElementName())
-				   .withElementRole(element.getElementRoleName())
-				   .withConfigId(config.getConfigId())
-				   .withConfigName(configName)
-				   .withConfigState(configState)
-				   .withContentType(contentType.toString())
-				   .withCreator(config.getCreator())
-				   .withDateModified(config.getDateModified())
-				   .build());
-
-		return configCreated(config.getConfigId());
+       Element_Config config = repository.execute(findLatestConfig(element, configName));
+        
+       if(config == null) {
+            LOG.fine(() -> format("%s: No %s configuration for element %s found.",
+                                  IVT0333E_ELEMENT_CONFIG_NOT_FOUND,
+                                  configName,
+                                  element.getElementName()));
+            
+            throw new EntityNotFoundException(IVT0333E_ELEMENT_CONFIG_NOT_FOUND, 
+                                              element.getElementName(), 
+                                              configName);
+        }
+        
+        return config(element,
+                      config);
 	}
 	
 
@@ -467,8 +343,8 @@ public class ElementConfigManager {
 	}
 
 	public StoreElementConfigResult restoreElementConfig(Element element, 
-													  ElementConfigId configId, 
-													  String comment) {
+													  	 ElementConfigId configId, 
+													  	 String comment) {
 		Element_Config config = findConfig(element, configId);
 		if(config.getConfigState() != ConfigurationState.SUPERSEDED) {
 		    LOG.fine(() -> format("%s: Cannot restore %s %s configuration. Only superseded configurations are restorable.",
@@ -478,45 +354,10 @@ public class ElementConfigManager {
 		    
 		    throw new ConflictException(IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,config.getName(),config.getConfigState());
 		}
-		return storeElementConfig(element, 
-								  config.getName(), 
-								  MediaType.valueOf(config.getContentType()), 
-								  CANDIDATE, 
-								  config.getConfig(), 
-								  comment);
+		Element_Config candidate = new Element_Config(config,creator.getUserName(),comment);
+		repository.add(candidate);
+		
+		return configCreated(candidate.getConfigId());
 	}
 
-	
-	public void purgeOutdatedConfigurations(Element element, 
-	                                        ElementConfigName configName) {
-	    
-	   int removedConfigs = database.executeUpdate(
-	                                 prepare("WITH outdated (uuid) AS ( " +
-	                                         "  SELECT c.uuid "+
-	                                         "  FROM inventory.element_config c "+
-	                                         "  JOIN inventory.element e "+
-	                                         "  ON c.element_id = e.id "+
-	                                         "  WHERE e.id = ? "+
-	                                         "  AND c.name = ? "+
-	                                         "  ORDER BY c.tsmodified DESC "+
-	                                         "  OFFSET ? )"+
-	                                         "DELETE FROM inventory.element_config "+
-	                                         "WHERE uuid "+
-	                                         "IN ( SELECT uuid FROM outdated )",
-	                                         element.getId(),
-	                                         configName, 
-	                                         CONFIG_HISTORY_SIZE));
-	   
-	   LOG.fine(() -> format("%s: %d %s configuration(s) removed for element %s.",
-	                         IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED.getReasonCode(),
-	                         removedConfigs,
-	                         configName,
-	                         element.getElementName()));
-	   
-	   if(removedConfigs > 0) {
-	       messages.add(createMessage(IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED, element.getElementName(),configName,removedConfigs));
-	   }
-	    
-	    
-	}
 }

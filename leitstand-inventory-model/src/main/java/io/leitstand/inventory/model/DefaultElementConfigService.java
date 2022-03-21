@@ -130,38 +130,6 @@ public class DefaultElementConfigService implements ElementConfigService {
 	}
 
 	@Override
-	public StoreElementConfigResult storeElementConfig(ElementId elementId, 
-													   ElementConfigName configName,
-													   MediaType contentType,
-													   ConfigurationState configState,
-													   String config,
-													   String comment) {
-		Element element = elements.fetchElement(elementId);
-		return manager.storeElementConfig(element,
-										  configName,
-										  contentType,
-										  configState,
-										  config,
-										  comment);
-	}
-	
-	@Override
-	public StoreElementConfigResult storeElementConfig(ElementName elementName, 
-									  				   ElementConfigName configName,
-									  				   MediaType contentType,
-									  				   ConfigurationState configState,
-									  				   String config,
-									  				   String comment) {
-		Element element = elements.fetchElement(elementName);
-		return manager.storeElementConfig(element,
-										  configName,
-										  contentType,
-										  configState,
-										  config,
-										  comment);
-	}
-	
-	@Override
 	public void setElementConfigComment(ElementId elementId,
 										ElementConfigId configId, 
 										String comment) { 
@@ -229,16 +197,4 @@ public class DefaultElementConfigService implements ElementConfigService {
         return manager.getElementConfig(element, configName);
     }
     
-    @Override
-    public void purgeOutdatedElementConfigs(ElementId elementId, ElementConfigName configName) {
-        Element element = elements.fetchElement(elementId);
-        manager.purgeOutdatedConfigurations(element, configName);
-    }
-    
-    @Override
-    public void purgeOutdatedElementConfigs(ElementName elementName, ElementConfigName configName) {
-        Element element = elements.fetchElement(elementName);
-        manager.purgeOutdatedConfigurations(element, configName);
-    }
-	
 }

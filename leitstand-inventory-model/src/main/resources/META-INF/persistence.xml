@@ -7,6 +7,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>java:/jdbc/leitstand</jta-data-source>
 		<class>io.leitstand.inventory.model.Application</class>
+		<class>io.leitstand.inventory.model.Content</class>
 		<class>io.leitstand.inventory.model.DnsZone</class>
 		<class>io.leitstand.inventory.model.Element</class>
 		<class>io.leitstand.inventory.model.ElementGroup</class>

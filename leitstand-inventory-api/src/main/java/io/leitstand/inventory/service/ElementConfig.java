@@ -46,10 +46,15 @@ public class ElementConfig extends BaseElementEnvelope{
 	 */
 	public static class Builder extends BaseElementEnvelopeBuilder<ElementConfig, Builder>{
 		
-		public Builder() {
+		protected Builder() {
 			super(new ElementConfig());
 		}
 
+		/**
+		 * Sets the configuration ID, which is unique among all element configurations.
+		 * @param configId the configuration ID
+		 * @return a reference to this builder to continue with the object creation.
+		 */
 		public Builder withConfigId(ElementConfigId configId) {
 			assertNotInvalidated(getClass(), object);
 			object.configId = configId;
@@ -57,24 +62,44 @@ public class ElementConfig extends BaseElementEnvelope{
 		}
 		
 		
+		/**
+		 * Sets the configuration name.
+		 * @param configName the configuration name
+		 * @return a reference to this builder to continue with the object creation.
+		 */		
 		public Builder withConfigName(ElementConfigName configName) {
 			assertNotInvalidated(getClass(), object);
 			object.configName = configName;
 			return this;
 		}
 
+		/**
+		 * Sets the configuration content hash.
+		 * @param contentHash the configuration content hash
+		 * @return a reference to this builder to continue with the object creation.
+		 */
 		public Builder withContentHash(String contentHash) {
 			assertNotInvalidated(getClass(), object);
 			object.contentHash = contentHash;
 			return this;		
 		}
 
+		/**
+		 * Sets the configuration lifecycle state.
+		 * @param configState the configuration lifecycle state.
+		 * @return a reference to this builder to continue with the object creation.
+		 */
 		public Builder withConfigState(ConfigurationState configState) {
 			assertNotInvalidated(getClass(), object);
 			object.configState = configState;
 			return this;		
 		}
 		
+		/**
+		 * Sets teh configuration content type.
+		 * @param contentType the content type.
+		 * @return a reference to this builder to continue with the object creation.
+		 */
 		public Builder withContentType(String contentType) {
 			assertNotInvalidated(getClass(), object);
 			object.contentType = contentType;
@@ -82,28 +107,32 @@ public class ElementConfig extends BaseElementEnvelope{
 		}
 		
 		/**
-		 * Sets the configuration data.
-		 * @param config - the configuration data
-		 * @return a reference to this builder to continue with object creation
+		 * Sets the configuration modification date.
+		 * @param dateModified the modification date
+		 * @return a reference to this builder to continue with the object creation.
 		 */
-		public Builder withConfig(Object config){
-			assertNotInvalidated(getClass(), object);
-			object.config = config;
-			return this;
-		}
-		
 		public Builder withDateModified(Date dateModified) {
 			assertNotInvalidated(getClass(), object);
 			object.dateModified = new Date(dateModified.getTime());
 			return this;
 		}
 		
+		/**
+		 * Sets the comment that describes the configuration change.
+		 * @param comment the configuration comment
+		 * @return a reference to this builder to continue with object creation.
+		 */
 		public Builder withComment(String comment) {
 			assertNotInvalidated(getClass(), object);
 			object.comment = comment;
 			return this;
 		}
 		
+		/**
+		 * Sets the creator of the configuration.
+		 * @param creator the user name of the configuration creator
+		 * @return a reference to this builder to continue object creation.
+		 */
 		public Builder withCreator(UserName creator) {
 			assertNotInvalidated(getClass(), object);
 			object.creator = creator;
@@ -123,29 +152,40 @@ public class ElementConfig extends BaseElementEnvelope{
 	private String contentHash;
 	private String comment;
 	
-	@NotNull(message="{config.required}")
-	private Object config;
-	
 	private UserName creator;
 	
 	private Date dateModified;
 	
-	
+	/**
+	 * Returns the configuration ID. 
+	 * The configuration ID is unique among all element configurations.
+	 * @return the configuration ID.
+	 */
 	public ElementConfigId getConfigId() {
 		return configId;
 	}
 	
 	
+	/**
+	 * Returns the configuration lifecycle state.
+	 * @return the configuration lifecycle state.
+	 */
 	public ConfigurationState getConfigState() {
 		return configState;
 	}
 	
+	/**
+	 * Returns the configuration content hash.
+	 * The content hash is a Base36-encoded SHA-256 hash of the configuration content
+	 * and used as key to access the configuration content in the configuration store.
+	 * @return the configuration content hash.
+	 */
 	public String getContentHash() {
 		return contentHash;
 	}
 	
 	/**
-	 * Returns the symbolic configuration name.
+	 * Returns the configuration name.
 	 * @return the configuration name
 	 */
 	public ElementConfigName getConfigName() {
@@ -153,25 +193,33 @@ public class ElementConfig extends BaseElementEnvelope{
 	}
 	
 	/**
-	 * Returns the element configuration for the specified element in the specified group.
-	 * @return the element configuration.
+	 * Returns the configuration comment, which describes the changes that have been applied by this configuration.
+	 * @return the configuration comment.
 	 */
-	public Object getConfig() {
-		return config;
-	}
-	
 	public String getComment() {
 		return comment;
 	}
 	
+	/**
+	 * Returns the timestamp when the configuration got applied to the element.
+	 * @return the timestamp when the configuration got applied to the element.
+	 */
 	public Date getDateModified() {
 		return new Date(dateModified.getTime());
 	}
 
+	/**
+	 * Returns the configuration content type.
+	 * @return the configuration content type.
+	 */
 	public String getContentType() {
 		return contentType;
 	}
 	
+	/**
+	 * Returns the username of the user who created the configuration.
+	 * @return the username of the user who created the configuration.
+	 */
 	public UserName getCreator() {
 		return creator;
 	}

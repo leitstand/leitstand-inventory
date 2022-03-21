@@ -19,14 +19,11 @@ import static io.leitstand.inventory.service.ConfigurationState.ACTIVE;
 import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -37,7 +34,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.ws.rs.core.MediaType;
 
 import io.leitstand.commons.model.Query;
 import io.leitstand.commons.model.Update;
@@ -115,53 +111,47 @@ public class Element_Config implements Serializable {
 	@Temporal(TIMESTAMP)
 	private Date tsmodified;
 
-	@Column(name="content_hash")
-	private String contentHash;
-	private String contentType;
 	@Enumerated(STRING)
 	private ConfigurationState state;
-	@Basic(fetch=LAZY)
-	private String config;
 	private String comment;
 	@Convert(converter=UserNameConverter.class)
 	private UserName creator;
+	
+	@ManyToOne
+	@JoinColumn(name="content_hash")
+	private Content content;
 	
 	protected Element_Config(){
 		// JPA
 	}
 	
-	public Element_Config(Element element, 
-						  ElementConfigName name, 
-						  ConfigurationState configState,
-						  MediaType contentType,
-						  String contentHash,
-						  String config,
-						  UserName creator){
-		this(element,
-			 name,
-			 configState,
-			 contentType.toString(),
-			 contentHash,
-			 config,
-			 creator);
+	protected Element_Config(Element element, 
+							 ElementConfigId configId, 
+							 ElementConfigName name, 
+							 ConfigurationState configState, 
+							 UserName creator,
+							 Content content,
+							 String comment) {
+		this.element = element;
+		this.configId = configId;
+		this.name = name;
+		this.state = configState;
+		this.creator = creator;
+		this.content = content;
+		this.comment = comment;
+		this.tsmodified = new Date();
+		
 	}
 	
-	public Element_Config(Element element, 
-			  			  ElementConfigName name, 
-						  ConfigurationState configState,
-						  String contentType,
-			  			  String contentHash,
-			  			  String config,
-			  			  UserName creator){
+	protected Element_Config(Element_Config src, UserName creator, String comment) {
+		this.element = src.element;
 		this.configId = randomConfigId();
-		this.element = element;
-		this.name = name;
-		this.contentType = contentType;
-		this.contentHash = contentHash;
-		this.state = configState;
-		this.config = config;
-		this.creator = creator;
+		this.name = src.name;
 		this.tsmodified = new Date();
+		this.state = CANDIDATE;
+		this.comment = comment;
+		this.creator = creator;
+		this.content = src.content;
 	}
 	
 	public ElementConfigName getName() {
@@ -172,24 +162,9 @@ public class Element_Config implements Serializable {
 		return element;
 	}
 	
-	public String getConfig() {
-		return config;
-	}
 	
 	public String getContentType() {
-		return contentType;
-	}
-	
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	public void setContentType(MediaType contentType) {
-		setContentType(contentType.toString());
-	}
-
-	public void setConfigState(ConfigurationState state) {
-		this.state = state;
+		return content.getContentType();
 	}
 	
 	public ConfigurationState getConfigState() {
@@ -197,7 +172,7 @@ public class Element_Config implements Serializable {
 	}
 	
 	public String getContentHash() {
-		return contentHash;
+		return content.getContentHash();
 	}
 	
 	public void setComment(String comment) {
@@ -208,11 +183,6 @@ public class Element_Config implements Serializable {
 		return comment;
 	}
 	
-	public void setConfig(String config) {
-		this.config = config;
-		this.tsmodified = new Date();
-	}
-	
 	public Date getDateModified() {
 		return new Date(tsmodified.getTime());
 	}
@@ -221,10 +191,6 @@ public class Element_Config implements Serializable {
 		return "application/json".equalsIgnoreCase(getContentType());
 	}
 	
-	public boolean isSameContentHash(String contentHash){
-		return Objects.equals(this.contentHash, contentHash);
-	}
-
 	public boolean isCandidateConfig() {
 		return getConfigState() == CANDIDATE;
 	}
@@ -237,15 +203,9 @@ public class Element_Config implements Serializable {
 		return configId;
 	}
 
-	public void setContentHash(String contentHash) {
-		this.contentHash = contentHash;
-	}
-	
 	public UserName getCreator() {
 		return creator;
 	}
 	
-	public void setCreator(UserName creator) {
-        this.creator = creator;
-    }
+
 }
