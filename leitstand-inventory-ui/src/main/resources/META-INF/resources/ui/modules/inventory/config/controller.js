@@ -150,9 +150,22 @@ const elementConfigHistoryCompareController = function(){
 			const compare = target;
 			// Add a back reference to improve template readability.
 			compare.target = target;
-			// Load the target configuration to be compared with the selected configuration
+			// Load target configuration
+			const targetResponse = await fetch(`/api/v1/elements/${target.element_id}/configs/${this.location.param("a")}/config`)
+			if (targetResponse.status == 200){
+				compare.target.content_type = targetResponse.headers.get("Content-Type");
+				compare.target.config = await targetResponse.text();
+				
+			}
+			// Load the source configuration to be compared with the selected configuration
 			const source = new Element({scope:"configs/{{b}}"});
 			compare.source = await source.load(this.location.params);
+			// Load the source content
+			const sourceResponse = await fetch(`/api/v1/elements/${target.element_id}/configs/${this.location.param("b")}/config`)
+			if (sourceResponse.status == 200){
+				compare.source.content_type = sourceResponse.headers.get("Content-Type");
+				compare.source.config = await sourceResponse.text();
+			}
 			return compare;
 		}
 	});
