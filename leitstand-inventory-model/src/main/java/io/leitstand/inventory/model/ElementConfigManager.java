@@ -16,23 +16,16 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
-import static io.leitstand.commons.etc.Environment.getSystemProperty;
-import static io.leitstand.commons.jpa.SerializableJsonObjectConverter.parseJson;
 import static io.leitstand.commons.jsonb.IsoDateAdapter.isoDateFormat;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
-import static io.leitstand.commons.rs.ResourceUtil.tryParseInt;
 import static io.leitstand.inventory.event.ElementConfigRemovedEvent.newElementConfigRemovedEvent;
 import static io.leitstand.inventory.event.ElementConfigRevisionRemovedEvent.newElementConfigRevisionRemovedEvent;
-import static io.leitstand.inventory.event.ElementConfigStoredEvent.newElementConfigStoredEvent;
 import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
-import static io.leitstand.inventory.model.Element_Config.findActiveConfig;
-import static io.leitstand.inventory.model.Element_Config.findElementConfig;
-import static io.leitstand.inventory.model.Element_Config.findLatestConfig;
 import static io.leitstand.inventory.model.Element_Config.removeConfigRevisions;
-import static io.leitstand.inventory.service.ConfigurationState.ACTIVE;
-import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
-import static io.leitstand.inventory.service.ConfigurationState.SUPERSEDED;
+import static io.leitstand.inventory.model.Element_Config_Revision.findActiveConfig;
+import static io.leitstand.inventory.model.Element_Config_Revision.findElementConfig;
+import static io.leitstand.inventory.model.Element_Config_Revision.findLatestConfig;
 import static io.leitstand.inventory.service.ConfigurationState.configurationState;
 import static io.leitstand.inventory.service.ElementConfig.newElementConfig;
 import static io.leitstand.inventory.service.ElementConfigId.elementConfigId;
@@ -47,22 +40,17 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0333E_ELEMENT_CONFIG_
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
-import static io.leitstand.inventory.service.ReasonCode.IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configCreated;
-import static io.leitstand.inventory.service.StoreElementConfigResult.configUpdated;
 import static io.leitstand.security.auth.UserName.userName;
-import static io.leitstand.security.crypto.SecureHashes.md5;
 import static java.lang.String.format;
 import static java.util.logging.Logger.getLogger;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
 
 import io.leitstand.commons.ConflictException;
 import io.leitstand.commons.EntityNotFoundException;
@@ -84,8 +72,6 @@ import io.leitstand.security.auth.UserContext;
 public class ElementConfigManager {
 
 	private static final Logger LOG = getLogger(ElementConfigManager.class.getName());
-	private static final int CONFIG_HISTORY_SIZE = tryParseInt(getSystemProperty("LEITSTAND_CONFIGSTORE_HISTORY_SIZE"), 50);
-	
 	
 	private Repository repository;
 	private DatabaseService database;
@@ -115,17 +101,19 @@ public class ElementConfigManager {
 		
 		List<ElementConfigReference> configs = database.executeQuery(prepare("WITH history AS ("+ 
 																			 "SELECT element_id, name, max(tsmodified) AS tsmodified "+
-																			 "FROM inventory.element_config "+
+																			 "FROM inventory.element_config_revision "+
 																			 "WHERE element_id = ? "+
 																			 "AND name ~ ? "+
 																			 "GROUP BY element_id, name )"+
-																			 "SELECT c.uuid, c.name, c.state, c.creator, c.comment, c.contenttype, c.tsmodified "+
+																			 "SELECT r.uuid, r.name, r.state, r.creator, r.comment, c.type, r.tsmodified "+
 																			 "FROM history h "+
-																			 "JOIN inventory.element_config c "+
-																			 "ON h.name = c.name "+
-																			 "AND h.element_id = c.element_id "+
-																			 "AND h.tsmodified = c.tsmodified "+
-																			 "ORDER BY c.name ",	
+																			 "JOIN inventory.element_config_revision r "+
+																			 "ON h.name = r.name "+
+																			 "AND h.element_id = r.element_id "+
+																			 "AND h.tsmodified = r.tsmodified "+
+																			 "JOIN inventory.content c "+
+																			 "ON r.content_hash = c.hash "+
+																			 "ORDER BY r.name",	
 																			 element.getId(),
 																			 filter),
 									 								 rs -> newElementConfigReference()
@@ -149,7 +137,7 @@ public class ElementConfigManager {
 														 	ElementConfigName configName){
 		
 		List<ElementConfigReference> revisions = database.executeQuery(prepare("SELECT uuid,state,creator,comment,tsmodified "+
-																			   "FROM inventory.element_config "+
+																			   "FROM inventory.element_config_revision "+
 																			   "WHERE element_id=? "+
 																			   "AND name=? "+
 																			   "ORDER BY tsmodified DESC",
@@ -177,7 +165,7 @@ public class ElementConfigManager {
 	
 	
 	public ElementConfig getElementConfig(Element element, ElementConfigId configId) {
-		Element_Config config = repository.execute(findElementConfig(configId));
+		Element_Config_Revision config = repository.execute(findElementConfig(configId));
 		
 		if(config == null) {
 			LOG.fine(() -> format("%s: %s configuration for element %s not found.",
@@ -195,7 +183,7 @@ public class ElementConfigManager {
 	
 	}
 
-	private ElementConfig config(Element element, Element_Config config) {
+	private ElementConfig config(Element element, Element_Config_Revision config) {
 		return elementValueObject(newElementConfig(), element)
 			   .withConfigId(config.getConfigId())
 			   .withConfigName(config.getName())
@@ -209,7 +197,7 @@ public class ElementConfigManager {
 	}
 	
 	public ElementConfig getActiveElementConfig(Element element, ElementConfigName configName) {
-		Element_Config config = repository.execute(findActiveConfig(element,configName));
+		Element_Config_Revision config = repository.execute(findActiveConfig(element,configName));
 		
 		if(config == null) {
 			LOG.fine(() -> format("%s: No active %s configuration for element %s found.",
@@ -228,7 +216,7 @@ public class ElementConfigManager {
 	}
 	
 	public ElementConfig getElementConfig(Element element, ElementConfigName configName) {
-       Element_Config config = repository.execute(findLatestConfig(element, configName));
+       Element_Config_Revision config = repository.execute(findLatestConfig(element, configName));
         
        if(config == null) {
             LOG.fine(() -> format("%s: No %s configuration for element %s found.",
@@ -248,7 +236,7 @@ public class ElementConfigManager {
 
 	public void removeElementConfig(Element element, 
 									ElementConfigId configId) {
-		Element_Config config = repository.execute(findElementConfig(configId));
+		Element_Config_Revision config = repository.execute(findElementConfig(configId));
 		if(config != null) {
 			LOG.fine(() -> format("%s: Removed %s configuration %s for element %s (Date modified: %s)",
 								  IVT0331I_ELEMENT_CONFIG_REVISION_REMOVED.getReasonCode(),
@@ -285,7 +273,7 @@ public class ElementConfigManager {
 	public void setElementConfigComment(Element element,
 										ElementConfigId configId, 
 										String comment) {
-		Element_Config config = findConfig(element, configId);
+		Element_Config_Revision config = findConfig(element, configId);
 		LOG.fine(() -> format("%s: Updated comment %s configuration (%s) for element %s (Date modified: %s)",
 		 					  IVT0330I_ELEMENT_CONFIG_REVISION_STORED.getReasonCode(),
 		 					  config.getName(),
@@ -298,8 +286,8 @@ public class ElementConfigManager {
 		config.setComment(comment);
 	}
 
-	private Element_Config findConfig(Element element, ElementConfigId configId) {
-		Element_Config config = repository.execute(findElementConfig(configId));
+	private Element_Config_Revision findConfig(Element element, ElementConfigId configId) {
+		Element_Config_Revision config = repository.execute(findElementConfig(configId));
 		if(config == null) {
 			LOG.fine(() -> format("%s: Configuration %s for element %s not found",
 								  IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND.getReasonCode(),
@@ -314,7 +302,7 @@ public class ElementConfigManager {
 	}
 
 	public int removeElementConfigRevisions(Element element, 
-									  		 ElementConfigName configName) {
+									  		ElementConfigName configName) {
 		int count = repository.execute(removeConfigRevisions(element,configName));
 		if(count > 0) {
 			event.fire(newElementConfigRemovedEvent()
@@ -345,7 +333,7 @@ public class ElementConfigManager {
 	public StoreElementConfigResult restoreElementConfig(Element element, 
 													  	 ElementConfigId configId, 
 													  	 String comment) {
-		Element_Config config = findConfig(element, configId);
+		Element_Config_Revision config = findConfig(element, configId);
 		if(config.getConfigState() != ConfigurationState.SUPERSEDED) {
 		    LOG.fine(() -> format("%s: Cannot restore %s %s configuration. Only superseded configurations are restorable.",
 		                          IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE.getReasonCode(),
@@ -354,7 +342,7 @@ public class ElementConfigManager {
 		    
 		    throw new ConflictException(IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,config.getName(),config.getConfigState());
 		}
-		Element_Config candidate = new Element_Config(config,creator.getUserName(),comment);
+		Element_Config_Revision candidate = new Element_Config_Revision(config,creator.getUserName(),comment);
 		repository.add(candidate);
 		
 		return configCreated(candidate.getConfigId());

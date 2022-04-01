@@ -12,6 +12,7 @@
 		<class>io.leitstand.inventory.model.Element</class>
 		<class>io.leitstand.inventory.model.ElementGroup</class>
 		<class>io.leitstand.inventory.model.Element_Config</class>
+		<class>io.leitstand.inventory.model.Element_Config_Revision</class>
 		<class>io.leitstand.inventory.model.Element_ContainerInterface</class>
 		<class>io.leitstand.inventory.model.Element_DnsRecordSet</class>
 		<class>io.leitstand.inventory.model.Element_Environment</class>

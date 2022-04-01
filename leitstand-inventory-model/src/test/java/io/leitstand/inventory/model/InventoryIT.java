@@ -62,7 +62,8 @@ public class InventoryIT extends JpaIT {
 	@After
 	public void clearDatabase() {
 	    transaction(()->{
-    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_config"));
+    	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_config_revision"));
+	    	getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_config"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_dns_record"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_dns"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element_env"));

@@ -18,6 +18,7 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.Element.findElementByName;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupByName;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
+import static io.leitstand.inventory.model.Element_Config.findElementConfigByName;
 import static io.leitstand.inventory.service.ConfigurationState.ACTIVE;
 import static io.leitstand.inventory.service.ConfigurationState.CANDIDATE;
 import static io.leitstand.inventory.service.ConfigurationState.SUPERSEDED;
@@ -60,7 +61,6 @@ import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
 import io.leitstand.inventory.event.ElementConfigEvent;
 import io.leitstand.inventory.event.ElementConfigRevisionRemovedEvent;
-import io.leitstand.inventory.event.ElementConfigStoredEvent;
 import io.leitstand.inventory.service.ConfigurationState;
 import io.leitstand.inventory.service.ElementConfig;
 import io.leitstand.inventory.service.ElementConfigId;
@@ -106,14 +106,14 @@ public class ElementConfigServiceIT extends InventoryIT {
 			Element element = elements.fetchElement(elementId);
 			Content metadata = new Content(contentType.toString(), "hash"+abs(content.hashCode()), Long.valueOf(content.length()));
 			metadata = repository.merge(metadata);
-			Element_Config config = new Element_Config( element,
-					randomConfigId(),
-					configName,
-					configState,
-					USER_NAME,
-					metadata,
-					comment);
-			repository.add(config);
+			Element_Config config = repository.addIfAbsent(findElementConfigByName(element,configName),
+														   () -> new Element_Config(element,configName));
+			config.addRevision( randomConfigId(),
+								metadata,
+								configState,
+								USER_NAME,
+								comment);
+			repository.merge(config);
 		});
 		
 	}
@@ -223,7 +223,7 @@ public class ElementConfigServiceIT extends InventoryIT {
 	}
 	
 	@Test
-	public void do_not_remove_active_config() {
+	public void do_not_remove_active_and_candidate_configs() {
 			storeElementConfig(ELEMENT_ID, 
 							   CONFIG_NAME, 
 							   TEXT_PLAIN_TYPE, 
@@ -258,8 +258,9 @@ public class ElementConfigServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementConfigRevisions revisions = service.getElementConfigRevisions(ELEMENT_ID, CONFIG_NAME);
-			assertEquals(1,revisions.getRevisions().size());
-			assertEquals(ACTIVE,revisions.getRevisions().get(0).getConfigState());
+			assertEquals(2,revisions.getRevisions().size());
+			assertEquals(CANDIDATE,revisions.getRevisions().get(0).getConfigState());
+			assertEquals(ACTIVE,revisions.getRevisions().get(1).getConfigState());
 		});
 		
 	}

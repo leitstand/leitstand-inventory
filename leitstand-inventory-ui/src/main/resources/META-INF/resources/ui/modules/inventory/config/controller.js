@@ -48,20 +48,20 @@ const elementConfigController = function(){
 			config.restorable = function(){
 				return this.config_state == 'SUPERSEDED';
 			};
+
+			config.content = function(){
+	  			if(this.content_type == "application/json"){
+	  				return JSON.stringify(JSON.parse(this.config),null,'  ');			
+				}
+	  			return this.config;
+			};
 			
-			const response = await fetch(`/api/v1/elements/${config.element_id}/configs/${config.config_id}/config`)
+			const response = await fetch(`/api/v1/elements/${config.element_id}/configs/${config.config_id}/config`);
 			if (response.status == 200){
 				config.content_type = response.headers.get("Content-Type");
 				config.config = await response.text();
 			}
 
-			
-			config.content = function(){
-	  			if(this.content_type == "application/json"){
-	  				return JSON.stringify(this.config,null,"  ");			
-				}
-	  			return this.config;
-			};
 			return config;
 		},
 		buttons: {
@@ -154,8 +154,7 @@ const elementConfigHistoryCompareController = function(){
 			const targetResponse = await fetch(`/api/v1/elements/${target.element_id}/configs/${this.location.param("a")}/config`)
 			if (targetResponse.status == 200){
 				compare.target.content_type = targetResponse.headers.get("Content-Type");
-				compare.target.config = await targetResponse.text();
-				
+				compare.target.config = await targetResponse.text();					
 			}
 			// Load the source configuration to be compared with the selected configuration
 			const source = new Element({scope:"configs/{{b}}"});

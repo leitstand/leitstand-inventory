@@ -277,14 +277,12 @@ public class ForceRemoveElementIT extends InventoryIT{
 			Content metadata = new Content(TEXT_PLAIN_TYPE.toString(), "hash", 0L);
 			metadata = repository.merge(metadata);
 					
-			Element_Config config = new Element_Config(
-									element,
-									randomConfigId(),
-									elementConfigName("config"), 
-									CANDIDATE,
-									userName("junit"),
-									metadata,
-							   		"dummy configuration");
+			Element_Config config = new Element_Config(element,elementConfigName("config"));
+			config.addRevision(randomConfigId(),
+							   metadata,
+							   CANDIDATE,
+							   userName("junit"),
+							   "dummy configuration");
 			repository.add(config);
 			
 		});
