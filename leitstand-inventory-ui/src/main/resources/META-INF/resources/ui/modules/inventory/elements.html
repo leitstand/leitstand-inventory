@@ -21,14 +21,14 @@
 	<ui-filter name="filter" bind="filter.filter" placeholder="Enter a regular expression">
 		<ui-label>Filter</ui-label>
 		<ui-options>
-			<ui-note>Select the property to filter elements for.</ui-note>
+			<ui-note>Filter elements by <b>{{filter_display_name}}</b>. </ui-note>
 			<ui-radio name="by" bind="filter.by" value="name">
 				<ui-label>Name</ui-label>
-				<ui-note>Filter elements by element name and element alias</ui-note>
+				<ui-note>Filter elements by element name and element alias.</ui-note>
 			</ui-radio>
 			<ui-radio name="by" bind="filter.by" value="ip">
 				<ui-label>Management IP address / hostname</ui-label>
-				<ui-note>Filter elements by management IP address or hostname</ui-note>
+				<ui-note>Filter elements by management IP address or hostname.</ui-note>
 			</ui-radio>
 			<ui-radio name="by" bind="filter.by" value="tag" default>
 				<ui-label>Tag</ui-label>
@@ -76,13 +76,9 @@
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_alias}}</a></td>
 					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
-					<td><span class="{{operational_state}}">{{operational_state}}</span>
-					<td class="text"><ol class="tags">
+					<td><span class="{{operational_state}}">{{operational_state}}</span></td>
 					<!-- {{#render_description}} -->	
-					<!-- {{#tags}}  -->
-						<li>{{.}}</li>
-					<!-- {{/tags}} -->
-					</ol>{{description}}</td>
+					<td class="text"><ui-tags tags="{{tags}}" readonly></ui-tags>{{description}}</td>
 					<!-- {{/render_description}} -->	
 					<!-- {{#render_serial}} -->	
 					<td class="text">{{serial_number}}</td>

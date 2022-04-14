@@ -44,9 +44,9 @@
 					<td class="text wrap"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element settings">{{element_name}}</a></td>
 					<td class="text capitalize-first-letter">{{element_role}}</td>
 					<td class="text wrap">{{element_alias}}</td>
-					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
-					<td><a href="/ui/views/inventory/element/element-events.html?group={{group_id}}&element={{element_id}}" class="{{operational_state}}" title="Show element log events">{{operational_state}}</a></td>
-					<td class="text wrap"><ol class="tags">{{#tags}}<li>{{.}}</li>{{/tags}}</ol></td>
+					<td class="text"><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
+					<td class="text"><a href="/ui/views/inventory/element/element-events.html?group={{group_id}}&element={{element_id}}" class="{{operational_state}}" title="Show element log events">{{operational_state}}</a></td>
+					<td class="text wrap"><ui-tags tags="{{tags}}" readonly></ui-tags></td>
 					<td class="text wrap"> {{description}}</td>					
 				</tr>
 				<!-- {{/elements}}  -->
