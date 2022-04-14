@@ -122,6 +122,16 @@ const elementsController = function() {
 			const by = this.location.param("by") || "name";
 			return { "elements"	: items,
 					 "filter" : this.location.params,
+					 "filter_display_name":function(){
+						switch (by){
+							case "assetid": return "asset ID";
+							case "serial": return "serial number";
+							case "ntag": return "element name, alias or tags";
+							case "ip": return "hostname or managemetn IP address";
+							case "name": return "element name or alias";
+						}
+						return "element name or alias"
+					 },
 					 "render_description":function(){
 						return by == "name" || by == "ntag";
 					 },
