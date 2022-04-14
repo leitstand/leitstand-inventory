@@ -74,6 +74,12 @@ class Diff extends UIElement {
 				
 				writeBlockLines(block.value,'d');	
 			} else {
+				if(!block.count){
+					// JSDiff returns a single block without line count if both files are equal.
+					// Count lines to work around this problem.
+					block.count = block.value.split("\n").length
+				}
+				
 				// 10 line blocks are always displayed and collapsing a block of 11 lines does not make sense
 				// because the link to expand a block also consumes one line. Set block size limit to 12 lines
 				// to collapse at least 2 lines.
