@@ -27,7 +27,7 @@ const podsController = function() {
 				    "filter" : filter};
 		},
 		postRender:function(){
-			const pods = new Pods({'scope':'_statistics'});
+			const pods = new Pods({'scope':'statistics'});
 			pods.load()
 				.then(stats => {
 					const groups = {};
@@ -44,12 +44,12 @@ const podsController = function() {
 						const groupElements = groups[groupId];
 						if(groupElements && groupElements.total){
 						    if(groupElements.total > 1){
-						        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">${groupElements.total} elements.</a>`);
+						        element.html(`${groupElements.total} elements`);
 						    } else {
-		                        element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">1 element.</a>`);
+		                        element.html("1 element");
 						    }
 						} else {
-							element.html(`<a href="pod/pod-elements.html?group=${groupId}" title="Show element list">No elements.</a>`);
+							element.html("No elements.");
 						}
 					});
 				});

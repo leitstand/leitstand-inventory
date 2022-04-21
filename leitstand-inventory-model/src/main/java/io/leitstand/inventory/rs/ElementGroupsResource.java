@@ -63,7 +63,7 @@ public class ElementGroupsResource {
 	}
 	
 	@GET
-	@Path("/_statistics")
+	@Path("/statistics")
 	public List<ElementGroupStatistics> getGroupStatistics(@Valid @PathParam("group") ElementGroupType groupType,
 			 											   @QueryParam("filter") @DefaultValue("") String filter){
 		return service.getGroupStatistics(groupType,
