@@ -53,10 +53,11 @@
 					<th class="text">Pod</th>
 					<th class="text">Element</th>
 					<th class="text">Alias</th>
+					<th class="text tiny">Role</th>
 					<th class="check">Adm.-State</th>
 					<th class="check">Op.-State</th>
 					<!-- {{#render_description}} -->	
-					<th class="text">Tags / Description</th>
+					<th class="text">Tags</th>
 					<!-- {{/render_description}} -->	
 					<!-- {{#render_serial}} -->	
 					<th class="text">Serial Number</th>
@@ -74,11 +75,12 @@
 				<tr style="vertical-align:top">
 					<td class="text"><a href="/ui/views/inventory/pod/pod-elements.html?group={{group_id}}" title="Show {{group_type}} details">{{group_name}}</a></td>
 					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_name}}</a></td>
-					<td class="text"><a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{element_alias}}</a></td>
+					<td class="text">{{#element_alias}}<a href="/ui/views/inventory/element/element.html?group={{group_id}}&element={{element_id}}" title="Show element details">{{.}}</a>{{/element_alias}}{{^element_alias}}-{{/element_alias}}</td>
+					<td class="text">{{element_role}}</td>
 					<td><span class="admin {{administrative_state}}">{{administrative_state}}</span></td>
 					<td><span class="{{operational_state}}">{{operational_state}}</span></td>
 					<!-- {{#render_description}} -->	
-					<td class="text"><ui-tags tags="{{tags}}" readonly></ui-tags>{{description}}</td>
+					<td class="text" title="{{description}}"><ui-tags tags="{{tags}}" readonly></ui-tags></td>
 					<!-- {{/render_description}} -->	
 					<!-- {{#render_serial}} -->	
 					<td class="text">{{serial_number}}</td>
