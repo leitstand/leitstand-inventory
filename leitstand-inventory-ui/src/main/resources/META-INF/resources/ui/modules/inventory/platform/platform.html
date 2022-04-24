@@ -61,42 +61,81 @@
 	   <ui-label>Port Mapping</ui-label>
 	   <ui-note>The port mapping maps physical ports to physical interfaces</ui-note>
 	   <!-- {{#port_mappings.length}} -->
-       <table class="list">
-       <thead>
-        <tr>
-            <th class="text extra-small">Chassis</th>
-            <th class="text extra-small">Panel</th>
-            <th class="text extra-small">Port</th>
-            <th  class="extra-small">Bandwidth</th>
-            <th class="text extra-small">Port Alias</th>
-            <th class="text extra-small">Physical Interface</th>
-            <th class="text">Description</th>
-        </tr>
-       </thead>
-       <tbody>
-        <!-- {{#port_mappings}} -->
-        <tr>
-            <td class="text">{{chassis_id}}</td>
-            <td class="text">{{panel_block_id}}</td>
-            <td class="text">{{port_id}}</td>
-            <td>{{bandwidth}}</td>
-            <td class="text">{{port_alias}}</td>
-            <td class="text">{{ifp_name}}</td>
-            <td class="text">{{description}}</td>
-        </tr>
-        <!-- {{/port_mappings}} -->
-       </tbody>
-       </table>
-       <!-- {{/port_mappings.length}} -->
-       <!-- {{^port_mappings.length}} -->
-       <ui-blankslate>
-        <ui-title>No port mappings found</ui-title>
-        <ui-note>No port mappings exist for this platform.</ui-note>
-       </ui-blankslate>
-       <!-- {{/port_mappings.length}} -->
-       <ui-actions>
-        <ui-button small name="Add" title="Add port mapping">Add</ui-button>
-       </ui-actions>
+       <div id="port-mappings">
+	       <table class="list">
+	       <thead>
+	        <tr>
+	            <th class="text extra-small">Chassis/Panel/Port</th>
+	            <th class="text extra-small">Port Alias</th>
+	            <th class="text extra-small">Physical Interface</th>
+	            <th class="extra-small">Bandwidth</th>
+	            <th class="text">Description</th>
+	        </tr>
+	       </thead>
+	       <tbody>
+	        <!-- {{#indexed_port_mappings}} -->
+	        <tr>
+	            <td class="text"><a name="edit-port" href="#{{index}}" data-index="{{index}}">{{port.chassis_id}}{{^port.chassis_id}}-{{/port.chassis_id}}/{{port.panel_block_id}}{{^port.panel_block_id}}-{{/port.panel_block_id}}/{{port.port_id}}{{^port.port_id}}-{{/port.port_id}}</a></td>
+	            <td class="text">{{port.port_alias}}</td>
+	            <td class="text">{{port.ifp_name}}</td>
+	            <td>{{port.bandwidth}}</td>
+	            <td class="text">{{port.description}}</td>
+	        </tr>
+	        <!-- {{/indexed_port_mappings}} -->
+	       </tbody>
+	       </table>
+	       <!-- {{/port_mappings.length}} -->
+	       <!-- {{^port_mappings.length}} -->
+	       <ui-blankslate>
+	        <ui-title>No port mappings found!</ui-title>
+	        <ui-note>No port mappings exist for this platform.</ui-note>
+	       </ui-blankslate>
+	       <!-- {{/port_mappings.length}} -->
+           <ui-actions>
+        	<ui-button small name="add-port" title="Add port mapping">Add</ui-button>
+       	   </ui-actions>
+       </div>
+       <!-- {{#edit}} -->
+       <div id="add-port-mapping">
+       <ui-input name="new.chassis_id">
+       	<ui-label>Chassis ID</ui-label>		
+       	<ui-note>Enter chassis ID.</ui-note>
+       </ui-input>
+       <ui-input name="new.panel_block_id">
+       	<ui-label>Panel Block ID</ui-label>		
+       	<ui-note>Enter panel block ID.</ui-note>
+       </ui-input>
+       <ui-input name="new.port_id">
+       	<ui-label>Port ID</ui-label>		
+       	<ui-note>Enter port ID.</ui-note>
+       </ui-input>
+       <ui-input name="new.bandwidth_value" style="display: inline-block; margin-top:-10px; margin-bottom:-10px;">
+	       	<ui-label>Bandwidth</ui-label>		 
+	       	<ui-note>Enter port bandwith.</ui-note>
+	   </ui-input>
+	   <ui-select name="new.bandwidth_unit" style="display: inline-block;margin-top:-10px; margin-bottom:-10px;">
+	       	<ui-label>Unit</ui-label>		
+	       	<ui-note>Select bandwith unit.</ui-note>
+	       	<ui-option value="Mbps">Mpbs</ui-option>
+	       	<ui-option value="Gbps" default>Gbps</ui-option>
+	    </ui-select>
+	  	<ui-input name="new.port_alias">
+       	<ui-label>Alias</ui-label>		
+       	<ui-note>Enter an optional port alias. The alias can be used to connect the port with other management systems.</ui-note>
+       </ui-input>
+       <ui-input name="new.ifp_name">
+       	<ui-label>Physical Interface</ui-label>		
+       	<ui-note>Enter physical interface name.</ui-note>
+       </ui-input>
+	   <ui-textarea name="description">
+	   	<ui-label>Description</ui-label>
+	   	<ui-note>Enter optional port description.</ui-note>
+	   </ui-textarea>
+	   <ui-actions>
+       	<ui-button small name="save-port" title="Save port mapping">Save</ui-button>
+        </ui-actions>
+       </div>
+       <!-- {{/edit}} -->
 	</ui-group>
 	<ui-actions>
 		<ui-button name="save" primary>Save settings</ui-button>

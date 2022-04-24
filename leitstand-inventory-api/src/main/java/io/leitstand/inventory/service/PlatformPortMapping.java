@@ -1,6 +1,7 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static io.leitstand.inventory.service.PlatformPortMapping.Face.FRONT;
 import static javax.persistence.EnumType.STRING;
 
 import javax.persistence.AttributeOverride;
@@ -149,7 +150,7 @@ public class PlatformPortMapping extends ValueObject implements Comparable<Platf
     private InterfaceName ifpName;
     private String chassisId;
     @Enumerated(STRING)
-    private Face face;
+    private Face face = FRONT;
     private String panelBlockId;
     private String portId;
     private String portAlias;
