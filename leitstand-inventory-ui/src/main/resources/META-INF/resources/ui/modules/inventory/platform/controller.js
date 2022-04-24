@@ -49,6 +49,8 @@ const platformController = function() {
 		},
 		buttons: {
 			"save":function(){
+				const settings = this.getViewModel();
+				delete settings.tmp;
 				platform.saveSettings(this.location.params,
 									  this.getViewModel());
 			},
@@ -57,7 +59,7 @@ const platformController = function() {
 			},
 			"add-port":function(){
 				portIndex=-1;
-				this.updateViewModel({"new":{},"edit":true});
+				this.updateViewModel({"tmp":{},"edit":true});
 				this.renderView();
 			},
 			"edit-port":function(location,element){
@@ -68,40 +70,47 @@ const platformController = function() {
 					portMapping.bandwidth_value=bw[0];
 					portMapping.bandwidth_unit=bw[1];
 				}
-				this.updateViewModel({"new":portMapping,"edit":true});
+				this.updateViewModel({"tmp":portMapping,"edit":true});
+				this.renderView();
+			},
+			"remove-port":function(){
+				if(portIndex > 0){
+					this.getViewModel("port_mappings").splice(portIndex,1);
+				}	
+				this.updateViewModel({"tmp":{},"edit":false});
 				this.renderView();
 			},
 			"save-port":function(){
-				const newPortMapping = this.getViewModel("new");
+				const portMapping = this.getViewModel("tmp");
 				const mappings = this.getViewModel("port_mappings");
-				const ifpName = newPortMapping.ifp_name;
-				const bandwidth = newPortMapping.bandwidth_value ? newPortMapping.bandwidth_value+" "+newPortMapping.bandwidth_unit : null;
-				delete newPortMapping.bandwidth_value;
-				delete newPortMapping.bandwidth_unit;
+				const ifpName = portMapping.ifp_name;
+				const bandwidth = portMapping.bandwidth_value ? portMapping.bandwidth_value+" "+portMapping.bandwidth_unit : null;
+				delete portMapping.bandwidth_value;
+				delete portMapping.bandwidth_unit;
 				let valid = true;
-				if (!newPortMapping.chassis_id){
+				if (!portMapping.chassis_id){
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.chassis_id',
+						property:'tmp.chassis_id',
 						message:'Enter a valid chassis ID.'
 					});
 				}
 				
-				if (!newPortMapping.panel_block_id){
+				if (!portMapping.panel_block_id){
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.chassis_id',
+						property:'tmp.panel_block_id',
 						message:'Enter a valid block ID.'
 					});
 				}
 				
-				if (!newPortMapping.port_id){
+				if (!portMapping.port_id){
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.port_id',
+						property:'tmp.port_id',
 						message:'Enter a valid port ID.'
 					});
 				}
@@ -110,7 +119,7 @@ const platformController = function() {
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.ifp_name',
+						property:'tmp.ifp_name',
 						message:'Enter a physical interface name.'
 					});
 				}
@@ -119,7 +128,7 @@ const platformController = function() {
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.ifp_name',
+						property:'tmp.ifp_name',
 						message:'Invalid physical interface name.'
 					});
 				}
@@ -127,18 +136,18 @@ const platformController = function() {
 					valid = false;
 					this.message({
 						severity:'ERROR',
-						property:'new.bandwidth_value',
+						property:'tmp.bandwidth_value',
 						message:'Invalid bandwidth value.'
 					});
 				} else {
-					newPortMapping.bandwidth=bandwidth;
+					portMapping.bandwidth=bandwidth;
 				}
 				
 				if (valid){
 					if (portIndex < 0){
-						mappings.push(Object.assign({},newPortMapping));				
+						mappings.push(Object.assign({},portMapping));				
 					} else {
-						mappings[portIndex]=Object.assign({},newPortMapping);
+						mappings[portIndex]=Object.assign({},portMapping);
 					}
 					this.updateViewModel({"port_mappings":mappings,"edit":false});
 					this.renderView();					
