@@ -67,10 +67,12 @@ public class SettingsModule {
 	public ModuleDescriptor getSettingsModule() {
 		try {
 			Contribution platformContrib  = contribution("platform/menu.yaml");
+			Contribution roleContrib      = contribution("role/menu.yaml");
 			
 			return readModuleDescriptor(currentThread().getContextClassLoader()
 													   .getResource(format(MODULE_PATH,"module.yaml")))
-				   .withContributions(platformContrib)
+				   .withContributions(platformContrib,
+						   			  roleContrib)
 				   .build();
 		} catch (IOException e) {
 			LOG.severe(format("%s: Cannot load image module. Reason: %s",

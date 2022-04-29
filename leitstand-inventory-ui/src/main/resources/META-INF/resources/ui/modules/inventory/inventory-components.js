@@ -32,7 +32,7 @@ class PlatformSelector extends Select {
     nooptions(){
         this.innerHTML=`<ui-blankslate>
                             <ui-title>No platforms found</ui-title>
-                            <ui-note>Please <a href="/ui/views/inventory/platform/platforms.html" title="Manage platforms">add a platform</a> before you continue adding a first element.</ui-note>
+                            <ui-note>Please <a href="/ui/views/settings/platform/platforms.html" title="Manage platforms">add a platform</a> before you continue adding a first element.</ui-note>
                         </ui-blankslate>`;
     }
 	
@@ -54,7 +54,7 @@ class ElementRoleSelector extends Select {
 	nooptions(){
 	    this.innerHTML=`<ui-blankslate>
 	                        <ui-title>No roles found</ui-title>
-	                        <ui-note>Please <a href="/ui/views/inventory/role/roles.html" title="Manage roles">add a role</a> before you continue adding a first element.</ui-note>
+	                        <ui-note>Please <a href="/ui/views/settings/role/roles.html" title="Manage roles">add a role</a> before you continue adding a first element.</ui-note>
 	                    </ui-blankslate>`;
 	}
 
