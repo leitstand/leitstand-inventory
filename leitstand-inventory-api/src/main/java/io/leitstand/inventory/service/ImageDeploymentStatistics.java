@@ -31,7 +31,7 @@ import io.leitstand.commons.model.ValueObject;
  * <p>
  * The image statistics provides information about which releases and element groups use the image.
  */
-public class ImageStatistics extends ValueObject {
+public class ImageDeploymentStatistics extends ValueObject {
 
     /**
      * Creates a builder for an immutable <code>ImageStatistics</code> value object.
@@ -46,7 +46,7 @@ public class ImageStatistics extends ValueObject {
 	 */
 	public static class Builder {
 		
-		private ImageStatistics stats = new ImageStatistics();
+		private ImageDeploymentStatistics stats = new ImageDeploymentStatistics();
 		
 		public Builder withImage(ImageInfo.Builder image) {
 			return withImage(image.build());
@@ -113,7 +113,7 @@ public class ImageStatistics extends ValueObject {
 		 * Subsequent invocations of the <code>build()</code> method raise an exception.
 		 * @return the immutable <code>ImageStatistics</code> value object.
 		 */
-		public ImageStatistics build() {
+		public ImageDeploymentStatistics build() {
 			try {
 				assertNotInvalidated(getClass(), stats);
 				return stats;

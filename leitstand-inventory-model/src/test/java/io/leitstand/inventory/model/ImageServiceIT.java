@@ -98,7 +98,7 @@ import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageService;
-import io.leitstand.inventory.service.ImageStatistics;
+import io.leitstand.inventory.service.ImageDeploymentStatistics;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PlatformChipsetName;
@@ -649,7 +649,7 @@ public class ImageServiceIT extends InventoryIT{
 		});
 		
 		transaction(()->{
-			ImageStatistics stats = service.getImageStatistics(IMAGE_ID);
+			ImageDeploymentStatistics stats = service.getDeploymentStatistics(IMAGE_ID);
 			assertEquals(stats.getImage(),service.getImage(IMAGE_ID));
 			assertEquals(GROUP_ID,stats.getGroups().get(0).getGroupId());
 			assertEquals(GROUP_TYPE,stats.getGroups().get(0).getGroupType());
@@ -698,7 +698,7 @@ public class ImageServiceIT extends InventoryIT{
 		});
 		
 		transaction(()->{
-            ImageStatistics stats = service.getImageStatistics(IMAGE_ID);
+            ImageDeploymentStatistics stats = service.getDeploymentStatistics(IMAGE_ID);
             assertEquals(stats.getImage(),service.getImage(IMAGE_ID));
             assertEquals(GROUP_ID,stats.getGroups().get(0).getGroupId());
             assertEquals(GROUP_TYPE,stats.getGroups().get(0).getGroupType());
@@ -747,7 +747,7 @@ public class ImageServiceIT extends InventoryIT{
         });
         
         transaction(()->{
-            ImageStatistics stats = service.getImageStatistics(IMAGE_ID);
+            ImageDeploymentStatistics stats = service.getDeploymentStatistics(IMAGE_ID);
             assertEquals(stats.getImage(),service.getImage(IMAGE_ID));
             assertEquals(GROUP_ID,stats.getGroups().get(0).getGroupId());
             assertEquals(GROUP_TYPE,stats.getGroups().get(0).getGroupType());
@@ -782,7 +782,7 @@ public class ImageServiceIT extends InventoryIT{
         });
         
         transaction(() -> {
-           ImageStatistics stats = service.getImageStatistics(IMAGE_ID);
+           ImageDeploymentStatistics stats = service.getDeploymentStatistics(IMAGE_ID);
            assertEquals(stats.getImage(),service.getImage(IMAGE_ID));
            assertEquals(RELEASE_ID,stats.getReleases().get(0).getReleaseId());
            assertEquals(RELEASE_NAME,stats.getReleases().get(0).getReleaseName());

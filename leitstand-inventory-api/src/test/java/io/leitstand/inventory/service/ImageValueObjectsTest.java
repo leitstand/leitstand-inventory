@@ -12,7 +12,7 @@ import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
-import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
+import static io.leitstand.inventory.service.ImageDeploymentStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState.newElementGroupElementImageState;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
@@ -181,7 +181,7 @@ public class ImageValueObjectsTest {
         ImageStatisticsElementGroupImageCount groupCount = mock(ImageStatisticsElementGroupImageCount.class);
         ImageInfo image = mock(ImageInfo.class);
         
-        ImageStatistics stats = newImageStatistics()
+        ImageDeploymentStatistics stats = newImageStatistics()
                                 .withImage(image)
                                 .withReleases(asList(release))
                                 .withElementGroupCounters(asList(groupCount))

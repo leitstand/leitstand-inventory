@@ -1,0 +1,55 @@
+<!--
+ Copyright 2022 RtBrick Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+-->
+<ui-view-header>
+  <ui-title>Deployment Statistics</ui-title>
+  <ui-subtitle>Explore the images being deployed in the network.</ui-subtitle>
+</ui-view-header>
+<ui-form>
+	<ui-filter name="filter" placeholder="Enter a filter expression">
+		<ui-label>Filter</ui-label>
+		<ui-note>Search for images by adding a regular expression to filter the deployment statistics by the image name.</ui-note>
+		
+	</ui-filter>
+	<!-- {{#images.length}} -->
+	<ui-group>
+		<ui-label>Images</ui-label>	
+		<table class="list">
+			<thead>
+				<tr>
+					<th class="text">Name</th>
+					<th class="check">State</th>
+					<th>Deployments</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--  {{#images}}-->
+				<tr>
+					<td class="text top"><a href="image-stats.html?image={{image_id}}" title="Show image details">{{image_name}}</a></td>
+					<td class="top"><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="top">{{elements}}</td>
+				</tr>
+				<!--  {{/images}}-->
+			</tbody>
+		</table>
+	</ui-group>
+	<!-- {{/images.length}} -->
+	<!-- {{^images.length}} -->
+ 	<ui-blankslate>
+		<ui-title>No images found.</ui-title>
+		<ui-note>No images have been registered in the resource inventory.</ui-note>
+	</ui-blankslate>
+	<!-- {{/images.length}} -->
+</ui-form>

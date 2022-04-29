@@ -57,12 +57,19 @@ public interface ImageService {
 	ImageInfo getImage(ImageName imageName);
 	
 	/**
-	 * Returns the image utilization statistics.
+	 * Returns the deployment count for all images with an image name matching the given filter expression.
+	 * @param filter a regular expression to filter images by name.
+	 * @return the deployment count for all matching images
+	 */
+	List<ImageDeploymentCount> getDeploymentStatistics(String filter);
+	
+	/**
+	 * Returns the image deployment statistics.
 	 * @param imageId the image ID
-	 * @return the image utilization statistics.
+	 * @return the image deployment statistics.
 	 * @throws EntityNotFoundException if the image does not exist.
 	 */
-	ImageStatistics getImageStatistics(ImageId imageId);
+	ImageDeploymentStatistics getDeploymentStatistics(ImageId imageId);
 	
 	/**
 	 * Returns the image utilization details for an element group.
