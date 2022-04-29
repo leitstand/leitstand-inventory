@@ -151,9 +151,16 @@ public class DefaultCloneElementService implements CloneElementService{
 								 source.getId()));
 
 		// Copy configuration series
-		db.executeUpdate(prepare("INSERT INTO inventory.element_config (element_id, uuid, name, state, comment, contenttype, contenthash, config, creator, tsmodified) "+
-								 "SELECT ?, random_uuid(), name, 'CANDIDATE', comment, contenttype, contenthash, config, creator, tsmodified "+
-								 "FROM inventory.element_config "+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_config (element_id, name, tsmodified) "+
+				 				 "SELECT ?, name, tsmodified "+
+				 				 "FROM inventory.element_config "+
+				 				 "WHERE element_id = ?",
+				 				 id,
+				 				 source.getId()));
+
+		db.executeUpdate(prepare("INSERT INTO inventory.element_config_revision (element_id, uuid, name, state, comment, content_hash, creator, tsmodified) "+
+								 "SELECT ?, random_uuid(), name, state, comment, content_hash, creator, tsmodified "+
+								 "FROM inventory.element_config_revision "+
 								 "WHERE element_id = ?",
 								 id,
 								 source.getId()));

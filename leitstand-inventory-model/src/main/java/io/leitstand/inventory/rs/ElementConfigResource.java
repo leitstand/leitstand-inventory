@@ -202,41 +202,41 @@ public class ElementConfigResource {
 	}
 	
 	
-	@GET
-	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/config")
-	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public Response downloadElementConfig(@Valid @PathParam("element") ElementId elementId,
-										  @Valid @PathParam("config_id") ElementConfigId configId,
-										  @QueryParam("pretty") boolean pretty){
-		
-		ElementConfig config = service.getElementConfig(elementId, configId);
-		
-		return ok(formattedConfig(config,pretty), config.getContentType())
-			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
-					   								 config.getConfigName(),
-					   								 isoDateFormat(config.getDateModified()),
-					   								 ext(config)))
-			   .build();
-		
-	}
-	
-	
-	
-	@GET
-	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
-	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
-	public Response downloadElementConfig(@Valid @PathParam("element") ElementName elementName,
-								     	  @Valid @PathParam("config_id") ElementConfigId configId,
-								     	  @QueryParam("pretty") boolean pretty){
-		ElementConfig config = service.getElementConfig(elementName, configId);
-		
-		return ok(formattedConfig(config, pretty), config.getContentType())
-			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
-					   								 config.getConfigName(),
-					   								 isoDateFormat(config.getDateModified()),
-					   								 ext(config)))
-			   .build();
-	}
+//	@GET
+//	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_id:"+UUID_PATTERN+"}/config")
+//	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
+//	public Response downloadElementConfig(@Valid @PathParam("element") ElementId elementId,
+//										  @Valid @PathParam("config_id") ElementConfigId configId,
+//										  @QueryParam("pretty") boolean pretty){
+//		
+//		ElementConfig config = service.getElementConfig(elementId, configId);
+//		
+//		return ok(formattedConfig(config,pretty), config.getContentType())
+//			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
+//					   								 config.getConfigName(),
+//					   								 isoDateFormat(config.getDateModified()),
+//					   								 ext(config)))
+//			   .build();
+//		
+//	}
+//	
+//	
+//	
+//	@GET
+//	@Path("/{element}/configs/{config_id:"+UUID_PATTERN+"}/config")
+//	@Scopes({IVT_READ, IVT, IVT_ELEMENT,IVT_ELEMENT_CONFIG})
+//	public Response downloadElementConfig(@Valid @PathParam("element") ElementName elementName,
+//								     	  @Valid @PathParam("config_id") ElementConfigId configId,
+//								     	  @QueryParam("pretty") boolean pretty){
+//		ElementConfig config = service.getElementConfig(elementName, configId);
+//		
+//		return ok(formattedConfig(config, pretty), config.getContentType())
+//			   .header("Content-Disposition", format("attachment; filename=\"%s_%s.%s\"",
+//					   								 config.getConfigName(),
+//					   								 isoDateFormat(config.getDateModified()),
+//					   								 ext(config)))
+//			   .build();
+//	}
 	
 	protected static String ext(ElementConfig config) {
 		if(config.getContentType().contains("json")) {
@@ -251,96 +251,65 @@ public class ElementConfigResource {
 		return "txt";
 	}
 	
-	protected static Object formattedConfig(ElementConfig config, boolean prettyPrint) {
-	    if(prettyPrint && config.getContentType().contains("json")) {
-	        Map<String,Object> settings = new HashMap<>();
-	        settings.put(PRETTY_PRINTING, true);
-	        try(StringWriter buffer = new StringWriter();
-	            JsonWriter prettyPrinter = createWriterFactory(settings)
-	                                       .createWriter(buffer)){
-	            JsonObject object = (JsonObject) config.getConfig();
-	            prettyPrinter.writeObject(object);
-	            return buffer.toString();
-	            
-	        } catch (IOException e) {
-	            LOG.fine(() -> "Failed to format JSON configuration due to IO exception: "+e);
-	            // Use default implementation to format the output
-	        }
-	        
-	    }
-	    return config.getConfig();
-	    
-	}
+//	@POST
+//	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
+//	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
+//	public Response storeElementConfig(@Valid @PathParam("element") ElementId elementId, 
+//									   @Valid @PathParam("config_name") ElementConfigName configName,
+//									   @NotNull @HeaderParam("Content-Type") String contentType,
+//									   @QueryParam("state") @DefaultValue("ACTIVE") ConfigurationState state,
+//									   @QueryParam("comment") String comment,
+//									   String config){ 
+//		
+//		
+//		StoreElementConfigResult result = service.storeElementConfig(elementId, 
+//								   									 configName, 
+//								   									 MediaType.valueOf(contentType), 
+//								   									 state,
+//								   									 config,
+//								   									 comment);
+//		
+//		
+//		if(result.isCreated()) {
+//			return created(messages,result.getConfigId());
+//		}
+//        return success(messages);
+//	}
 	
-	@POST
-	@Path("/{element:"+UUID_PATTERN+"}/configs/{config_name}")
-	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
-	public Response storeElementConfig(@Valid @PathParam("element") ElementId elementId, 
-									   @Valid @PathParam("config_name") ElementConfigName configName,
-									   @NotNull @HeaderParam("Content-Type") String contentType,
-									   @QueryParam("state") @DefaultValue("ACTIVE") ConfigurationState state,
-									   @QueryParam("comment") String comment,
-									   String config){ 
-		
-		
-		StoreElementConfigResult result = service.storeElementConfig(elementId, 
-								   									 configName, 
-								   									 MediaType.valueOf(contentType), 
-								   									 state,
-								   									 config,
-								   									 comment);
-		
-		
-		if(result.isCreated()) {
-			return created(messages,result.getConfigId());
-		}
-        try {
-            return success(messages);
-        } finally {
-            try {
-                service.purgeOutdatedElementConfigs(elementId, 
-                                                    configName);
-            } catch (Exception e) {
-                LOG.fine(() -> format("Failed to purge outdated configurations. %s",e.getMessage()));
-                LOG.log(FINER,e, () -> e.getMessage());
-            }
-        }
-	}
-	
-	@POST
-	@Path("/{element}/configs/{config_name}")
-	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
-	public Response storeElementConfig(@Valid @PathParam("element") ElementName elementName, 
-									   @Valid @PathParam("config_name") ElementConfigName configName,
-									   @NotNull @HeaderParam("Content-Type") String contentType,
-									   @QueryParam("state") @DefaultValue("ACTIVE") ConfigurationState state,
-									   @QueryParam("comment") String comment,
-									   String config){
-
-		StoreElementConfigResult result = service.storeElementConfig(elementName, 
-					 												 configName, 
-					 												 MediaType.valueOf(contentType), 
-					 												 state,
-					 												 config,
-					 												 comment);
-
-		if(result.isCreated()) {
-			return created(messages,
-						   result.getConfigId());
-		}
-
-		try {
-		    return success(messages);
-		} finally {
-		    try {
-    		    service.purgeOutdatedElementConfigs(elementName, 
-    		                                        configName);
-            } catch (Exception e) {
-                LOG.fine(() -> format("Failed to purge outdated configurations. %s",e.getMessage()));
-                LOG.log(FINER,e, () -> e.getMessage());
-            }
-		}
-	}
+//	@POST
+//	@Path("/{element}/configs/{config_name}")
+//	@Consumes({"text/*","application/json","application-vmd/yaml","application/xml"})
+//	public Response storeElementConfig(@Valid @PathParam("element") ElementName elementName, 
+//									   @Valid @PathParam("config_name") ElementConfigName configName,
+//									   @NotNull @HeaderParam("Content-Type") String contentType,
+//									   @QueryParam("state") @DefaultValue("ACTIVE") ConfigurationState state,
+//									   @QueryParam("comment") String comment,
+//									   String config){
+//
+//		StoreElementConfigResult result = service.storeElementConfig(elementName, 
+//					 												 configName, 
+//					 												 MediaType.valueOf(contentType), 
+//					 												 state,
+//					 												 config,
+//					 												 comment);
+//
+//		if(result.isCreated()) {
+//			return created(messages,
+//						   result.getConfigId());
+//		}
+//
+//		try {
+//		    return success(messages);
+//		} finally {
+//		    try {
+//    		    service.purgeOutdatedElementConfigs(elementName, 
+//    		                                        configName);
+//            } catch (Exception e) {
+//                LOG.fine(() -> format("Failed to purge outdated configurations. %s",e.getMessage()));
+//                LOG.log(FINER,e, () -> e.getMessage());
+//            }
+//		}
+//	}
 	
 	
 	@PUT

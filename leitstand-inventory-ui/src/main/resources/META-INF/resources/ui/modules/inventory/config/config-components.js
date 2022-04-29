@@ -136,7 +136,7 @@ class Diff extends UIElement {
 
 				const read = function(c){
 					if(c && c.content_type=='application/json'){
-						return JSON.stringify(c.config,null,' ');
+						return JSON.stringify(JSON.parse(c.config),null,' ');
 					}
 					return c.config;
 				};

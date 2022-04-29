@@ -1,11 +1,9 @@
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.service.ConfigurationState.ACTIVE;
 import static io.leitstand.inventory.service.ElementConfigId.randomConfigId;
 import static io.leitstand.inventory.service.ElementConfigName.elementConfigName;
 import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementName.elementName;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,40 +79,6 @@ public class DefaultElementConfigManagerTest {
         when(providers.fetchElement(ELEMENT_NAME)).thenReturn(ELEMENT);
         service.getElementConfig(ELEMENT_NAME, CONFIG_ID);
         verify(manager).getElementConfig(ELEMENT, CONFIG_ID);
-    }
-    
-    @Test
-    public void store_element_config_by_element_id() {
-        when(providers.fetchElement(ELEMENT_ID)).thenReturn(ELEMENT);
-        service.storeElementConfig(ELEMENT_ID, 
-                                   CONFIG_NAME, 
-                                   TEXT_PLAIN_TYPE, 
-                                   ACTIVE, 
-                                   "config",
-                                   "comment");
-        verify(manager).storeElementConfig(ELEMENT, 
-                                           CONFIG_NAME, 
-                                           TEXT_PLAIN_TYPE, 
-                                           ACTIVE, 
-                                           "config",
-                                           "comment");
-    }
-    
-    @Test
-    public void store_element_config_by_element_name() {
-        when(providers.fetchElement(ELEMENT_NAME)).thenReturn(ELEMENT);
-        service.storeElementConfig(ELEMENT_NAME, 
-                                   CONFIG_NAME, 
-                                   TEXT_PLAIN_TYPE, 
-                                   ACTIVE, 
-                                   "config",
-                                   "comment");
-        verify(manager).storeElementConfig(ELEMENT, 
-                                           CONFIG_NAME, 
-                                           TEXT_PLAIN_TYPE, 
-                                           ACTIVE, 
-                                           "config",
-                                           "comment");
     }
     
     @Test

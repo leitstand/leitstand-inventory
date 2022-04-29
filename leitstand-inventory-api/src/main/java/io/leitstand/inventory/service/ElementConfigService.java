@@ -82,47 +82,6 @@ public interface ElementConfigService {
 
 	
 	/**
-	 * Stores an element configuration for the specified element.
-	 * @param element the element ID
-	 * @param configName the name of the configuration
-	 * @param contentType the configuration content type.
-	 * @param configState the configuration state
-	 * @param config the element configuration
-	 * @param comment a brief description of the configuration change.
-	 * @return storage result with a pointer to the config and a creation flag 
-	 * 		   which is set to <code>true</code> when a new configuration was created and 
-	 * 		   <code>false</code> if an existing configuration was updated 
-	 * 		   (e.g. state changed from candidate to active)
-	 */
-	StoreElementConfigResult storeElementConfig(ElementId elementId, 
-							   					ElementConfigName configName, 
-							   					MediaType contentType,
-							   					ConfigurationState configState,
-							   					String config,
-							   					String comment);
-
-	
-	/**
-	 * Stores an element configuration for the specified element.
-	 * @param elementName the element name
-	 * @param configName the name of the configuration
-	 * @param contentType the configuration contentType
-	 * @param configState the configuration state
-	 * @param config the element configuration
-	 * @param comment a brief description of the configuration change.
-	 * @return storage result with a pointer to the config and a creation flag 
-	 * 		   which is set to <code>true</code> when a new configuration was created and 
-	 * 		   <code>false</code> if an existing configuration was updated 
-	 * 		   (e.g. state changed from candidate to active)
-	 */
-	StoreElementConfigResult storeElementConfig(ElementName elementName, 
-							   					ElementConfigName configName,
-							   					MediaType contentType,
-							   					ConfigurationState configState,
-							   					String config,
-							   					String comment);
-	
-	/**
 	 * Removes an element configuration.
 	 * An <em>active</em> configuration cannot be removed.
 	 * @param elementId the element ID
@@ -245,22 +204,4 @@ public interface ElementConfigService {
 								  ElementConfigId configId,
 								  String comment);
 	
-	/**
-	 * Purges all outdated configurations with the specified name for the specified element.
-     * A configuration is considered outdated if its position in the configuration history exceeds the history size limit.
- 	 * @param elementId the element ID
- 	 * @param configName the configuration name
-	 */
-	void purgeOutdatedElementConfigs(ElementId elementId,
-	                                 ElementConfigName configName);
-	
-	/**
-     * Purges all outdated configurations with the specified name for the specified element.
-     * A configuration is considered outdated if its position in the configuration history exceeds the history size limit.
-     * @param elementName the element name
-     * @param configName the configuration name
-     */
-    void purgeOutdatedElementConfigs(ElementName elementName,
-                                     ElementConfigName configName);
-
 }
