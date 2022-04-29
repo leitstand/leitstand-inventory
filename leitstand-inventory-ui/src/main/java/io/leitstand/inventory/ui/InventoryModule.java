@@ -7,6 +7,7 @@ import static io.leitstand.ui.model.ReasonCode.UIM0002E_CANNOT_PROCESS_MODULE_EX
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.util.logging.Level.FINE;
+import static java.util.logging.Logger.getLogger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +32,7 @@ public class InventoryModule  {
 	private static final String MODULE_PATH = "/META-INF/resources/ui/modules/inventory/%s";
 	private static final String MODULE_NAME = "inventory";
 	
-	private static final Logger LOG = Logger.getLogger(InventoryModule.class.getName());
+	private static final Logger LOG = getLogger(InventoryModule.class.getName());
 
 	/**
 	 * Loads a default inventory application.
