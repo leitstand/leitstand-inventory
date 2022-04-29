@@ -76,7 +76,6 @@ public class InventoryModule  {
 			Contribution configContrib 	  = contribution("config/menu.yaml");
 			Contribution envContrib		  = contribution("env/menu.yaml");
 			Contribution dnsContrib 	  = contribution("dns/menu.yaml");
-			Contribution platformContrib  = contribution("platform/menu.yaml");
 			Contribution roleContrib      = contribution("role/menu.yaml");
 			Contribution facilityContrib  = contribution("facility/menu.yaml");
 			Contribution racksContrib	  = contribution("rack/menu.yaml");
@@ -87,7 +86,6 @@ public class InventoryModule  {
 						   			  configContrib,
 						   			  envContrib,
 						   			  dnsContrib,
-						   			  platformContrib,
 						   			  roleContrib,
 						   			  facilityContrib,
 						   			  racksContrib)
