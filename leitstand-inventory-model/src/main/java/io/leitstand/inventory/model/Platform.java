@@ -16,12 +16,19 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static java.util.Collections.unmodifiableSortedSet;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -34,6 +41,7 @@ import io.leitstand.inventory.jpa.PlatformNameConverter;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
+import io.leitstand.inventory.service.PlatformPortMapping;
 
 @Entity
 @Table(schema="inventory",
@@ -112,6 +120,13 @@ public class Platform extends VersionableEntity{
 	private String model;
 	private String description;	
 	private int rackUnits;
+	
+	
+    @ElementCollection
+    @CollectionTable(schema="inventory", 
+                     name="platform_port", 
+                     joinColumns=@JoinColumn(name="platform_id", referencedColumnName="id"))
+    private TreeSet<PlatformPortMapping> ports;
 
 	protected Platform() {
 		// JPA
@@ -124,6 +139,7 @@ public class Platform extends VersionableEntity{
 		this.name = platformName;
 		this.chipset = platformChipset;
 		this.rackUnits = 1;
+		this.ports = new TreeSet<>();
 	}
 	
 	public PlatformName getPlatformName() {
@@ -162,6 +178,10 @@ public class Platform extends VersionableEntity{
 		this.rackUnits = rackUnits;
 	}
 	
+	void setPorts(Collection<PlatformPortMapping> ports) {
+	    this.ports = new TreeSet<>(ports);
+	}
+	
 	public int getHeight() {
 		return this.rackUnits;
 	}
@@ -177,5 +197,9 @@ public class Platform extends VersionableEntity{
 	public PlatformChipsetName getChipset() {
 		return chipset;
 	}
+
+    public SortedSet<PlatformPortMapping> getPorts() {
+        return unmodifiableSortedSet(ports);
+    }
 	
 }

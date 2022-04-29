@@ -19,8 +19,8 @@ import javax.inject.Inject;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 
-import io.leitstand.inventory.service.ImageExportService;
 import io.leitstand.inventory.service.ImageExport;
+import io.leitstand.inventory.service.ImageExportService;
 
 @WebServlet(urlPatterns="/api/v1/import/images")
 @MultipartConfig()

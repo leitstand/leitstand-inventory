@@ -18,19 +18,23 @@ package io.leitstand.inventory.model;
 import static io.leitstand.inventory.model.ElementGroup.findElementGroupById;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.ElementSettingsMother.element;
+import static io.leitstand.inventory.service.Bandwidth.bandwidth;
 import static io.leitstand.inventory.service.ElementGroupId.randomGroupId;
 import static io.leitstand.inventory.service.ElementGroupName.groupName;
 import static io.leitstand.inventory.service.ElementGroupType.groupType;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.InterfaceName.interfaceName;
 import static io.leitstand.inventory.service.Plane.DATA;
 import static io.leitstand.inventory.service.PlatformId.randomPlatformId;
 import static io.leitstand.inventory.service.PlatformName.platformName;
+import static io.leitstand.inventory.service.PlatformPortMapping.newPlatformPortMapping;
 import static io.leitstand.inventory.service.PlatformSettings.newPlatformSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0900E_PLATFORM_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0902I_PLATFORM_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0903E_PLATFORM_NOT_REMOVABLE;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.hasSizeOf;
 import static io.leitstand.testing.ut.LeitstandCoreMatchers.reason;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,6 +48,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.enterprise.event.Event;
 
@@ -66,6 +71,7 @@ import io.leitstand.inventory.service.ElementSettings;
 import io.leitstand.inventory.service.ElementSettingsService;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
+import io.leitstand.inventory.service.PlatformPortMapping;
 import io.leitstand.inventory.service.PlatformService;
 import io.leitstand.inventory.service.PlatformSettings;
 
@@ -436,6 +442,51 @@ public class PlatformServiceIT extends InventoryIT{
 			service.removePlatform(PLATFORM_ID);
 		});
 		
+	}
+	
+	@Test
+	public void store_port_mapping() {
+	    PlatformPortMapping portA = newPlatformPortMapping()
+	                                .withChassisId("chassis-1")
+	                                .withFace(PlatformPortMapping.Face.FRONT)
+	                                .withPanelBlockId("panel-id")
+	                                .withPortId("port-A")
+	                                .withIfpName(interfaceName("ifp-0/0/1"))
+	                                .withPortAlias("port-alias-A")
+	                                .withBandwidth(bandwidth(100.0f,"GBPS"))
+	                                .build();
+
+	    PlatformPortMapping portB = newPlatformPortMapping()
+                                    .withChassisId("chassis-1")
+                                    .withFace(PlatformPortMapping.Face.FRONT)
+                                    .withPanelBlockId("panel-id")
+                                    .withPortId("port-B")
+                                    .withIfpName(interfaceName("ifp-0/0/2"))
+                                    .withPortAlias("port-alias-B")
+                                    .withBandwidth(bandwidth(100.0f,"GBPS"))
+                                    .build();
+	    
+	    PlatformSettings newPlatform = newPlatformSettings()
+	                                   .withPlatformId(PLATFORM_ID)
+	                                   .withPlatformName(PLATFORM_NAME)
+	                                   .withVendorName(VENDOR)
+	                                   .withModelName("model")
+	                                   .withPortMappings(asList(portA,portB))
+	                                   .build();
+	                                   
+        transaction(() -> {
+            boolean created = service.storePlatform(newPlatform);
+            assertTrue(created);
+        });
+        
+        transaction(() -> {
+            PlatformSettings reloaded = service.getPlatform(PLATFORM_ID);
+            assertNotSame(newPlatform,reloaded);
+            // Collections.unmodifiableSet does not implement equals,
+            // hence compare value object string representations.
+            assertEquals(newPlatform.toString(),reloaded.toString());
+        });	                                   
+	    
 	}
 	
 	

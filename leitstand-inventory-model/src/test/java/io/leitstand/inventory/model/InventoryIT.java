@@ -95,6 +95,7 @@ public class InventoryIT extends JpaIT {
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.service"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.dnszone"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.element"));
+            getDatabase().executeUpdate(prepare("DELETE FROM inventory.platform_port"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.platform"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementrole"));
     	    getDatabase().executeUpdate(prepare("DELETE FROM inventory.elementgroup"));
