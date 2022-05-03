@@ -24,15 +24,19 @@ import static io.leitstand.inventory.service.ImageState.REVOKED;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.persistence.CollectionTable;
@@ -366,6 +370,13 @@ public class Image extends VersionableEntity{
 					 joinColumns=@JoinColumn(name="image_id"))
 	private List<Checksum> checksums = emptyList();
 	
+	@ElementCollection
+	@CollectionTable(schema="inventory",
+					 name="image_tag",
+					 joinColumns=@JoinColumn(name="image_id"))
+	@Column(name="tag")
+	private Set<String> tags;
+	
 	@Convert(converter=PlatformChipsetNameConverter.class)
 	private PlatformChipsetName chipset;
 	
@@ -419,6 +430,7 @@ public class Image extends VersionableEntity{
 		this.prerelease = prerelease(version);
 		this.packages = emptyList();
 		this.applications = emptyList();
+		this.tags = new TreeSet<>();
 	}
 
 
@@ -578,4 +590,15 @@ public class Image extends VersionableEntity{
         return getImageState() == SUPERSEDED;
     }
 
+    public Set<String> getTags(){
+    	return unmodifiableSet(tags);
+    }
+    
+    public void setTags(Set<String> tags) {
+    	this.tags.clear();
+    	if(tags!=null) {
+    		this.tags.addAll(tags);
+    	}
+    }
+    
 }

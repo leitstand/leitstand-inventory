@@ -189,6 +189,7 @@ public class DefaultImageService implements ImageService {
         	   .withPlatformChipset(image.getPlatformChipset())
         	   .withImageVersion(image.getImageVersion())
         	   .withElementRoles(image.getElementRoleNames())
+        	   .withTags(image.getTags())
         	   .build();
     }
 
@@ -266,7 +267,8 @@ public class DefaultImageService implements ImageService {
 				   			   				   .withValue(c.getValue())
 				   			   				   .build())
 				   			   		 .collect(toList()));
-		image.setOrganization(submission.getOrganization());			
+		image.setOrganization(submission.getOrganization());
+		image.setTags(submission.getTags());
 
 		messages.add(createMessage(IVT0202I_IMAGE_STORED, 
 				   				   image.getImageName()));		
@@ -347,6 +349,7 @@ public class DefaultImageService implements ImageService {
 		   	   .withApplications(applications)
 		   	   .withOrganization(image.getOrganization())
 		   	   .withCategory(image.getCategory())
+		   	   .withTags(image.getTags())
 		   	   .withChecksums(image
 		   			   		  .getChecksums()
 		   				 	  .stream()
