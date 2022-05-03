@@ -117,7 +117,6 @@ public class ImageValueObjectsTest {
         assertThat(imageInfo.getCategory(),is(CATEGORY));
         assertThat(imageInfo.getChecksums(),is(checksums));
         assertThat(imageInfo.getDescription(),is(DESCRIPTION));
-        assertNull(imageInfo.getElementName());
         assertThat(imageInfo.getElementRoles(),containsExactly(ELEMENT_ROLE));
         assertThat(imageInfo.getExtension(),is(IMAGE_EXTENSION));
         assertThat(imageInfo.getImageId(),is(IMAGE_ID));

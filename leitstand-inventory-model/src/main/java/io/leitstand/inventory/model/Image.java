@@ -43,7 +43,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -56,7 +55,6 @@ import io.leitstand.inventory.jpa.ImageNameConverter;
 import io.leitstand.inventory.jpa.ImageStateConverter;
 import io.leitstand.inventory.jpa.ImageTypeConverter;
 import io.leitstand.inventory.jpa.PlatformChipsetNameConverter;
-import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageName;
@@ -71,33 +69,6 @@ import io.leitstand.inventory.service.Version;
 		    query="SELECT d FROM Image d WHERE d.uuid=:id")
 @NamedQuery(name="Image.findByImageName", 
             query="SELECT d FROM Image d WHERE d.imageName=:name")
-@NamedQuery(name="Image.markElementImageSuperseded",
-			query="UPDATE Image d "+ 
-			      "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
-			      "WHERE d.chipset=:chipset "+
-			      "AND :role MEMBER OF d.roles "+
-			      "AND d.element=:element "+
-			      "AND d.imageType=:type "+
-			      "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
-			      "AND ("+
-			      "(d.major=:major AND d.minor=:minor AND  d.patch=:patch AND d.prerelease IS NOT NULL AND d.prerelease < :prerelease) OR "+
-			      "(d.major=:major AND d.minor=:minor AND  d.patch<:patch) OR "+
-			      "(d.major=:major AND d.minor<:minor) OR "+
-			      "(d.major<:major))")
-
-@NamedQuery(name="Image.restoreElementImageCandidates",
-		    query="UPDATE Image d "+ 
-		    		  "SET d.imageState=io.leitstand.inventory.service.ImageState.CANDIDATE "+
-		    		  "WHERE d.chipset=:chipset "+
-		    		  "AND :role MEMBER OF d.roles "+
-		    		  "AND d.element=:element "+
-		    		  "AND d.imageType=:type "+
-		    		  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
-		    		  "AND ("+
-		    		  "(d.major=:major AND d.minor=:minor AND d.patch=:patch AND d.prerelease IS NOT NULL and d.prerelease > :prerelease) OR "+
-		    		  "(d.major=:major AND d.minor=:minor AND  d.patch>:patch) OR "+
-		    		  "(d.major=:major AND d.minor>:minor) OR "+
-				      "(d.major>:major))")
 @NamedQuery(name="Image.markRoleImageSuperseded",
 			query="UPDATE Image d "+ 
 				  "SET d.imageState=io.leitstand.inventory.service.ImageState.SUPERSEDED "+
@@ -105,7 +76,6 @@ import io.leitstand.inventory.service.Version;
 				  "JOIN d.roles r "+
 				  "WHERE d.chipset=:chipset "+
 				  "AND r IN :role "+
-				  "AND d.element IS NULL "+
 				  "AND d.imageType=:type "+
 				  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 				  "AND ("+
@@ -120,7 +90,6 @@ import io.leitstand.inventory.service.Version;
 					  "JOIN d.roles r "+
 					  "WHERE d.chipset=:chipset "+
 					  "AND r IN :role "+
-					  "AND d.element IS NULL "+
 					  "AND d.imageType=:type "+
 					  "AND d.imageState<>io.leitstand.inventory.service.ImageState.REVOKED "+
 					  "AND ("+
@@ -136,43 +105,28 @@ import io.leitstand.inventory.service.Version;
 		    	  "AND d.major=:major "+
 				  "AND d.minor=:minor "+
 		    	  "AND d.patch=:patch "+
-				  "AND d.prerelease=:prerelease "+
-				  "AND d.element IS NULL")
+				  "AND d.prerelease=:prerelease")
 @NamedQuery(name="Image.findDefaultImage",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
 				  "AND :role MEMBER OF d.roles "+
 				  "AND d.imageType=:type "+
-				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
-				  "AND d.element is null")
+				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE")
 @NamedQuery(name="Image.findDefaultImages",
 			query="SELECT d FROM Image d "+
 				  "WHERE d.chipset=:chipset "+
 				  "AND :role MEMBER OF d.roles "+
-				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE "+
-				  "AND d.element is null")
+				  "AND d.imageState=io.leitstand.inventory.service.ImageState.RELEASE")
 @NamedQuery(name="Image.findAvailableUpdates",
 			    query="SELECT d FROM Image d "+
 			    	  "WHERE d.chipset=:chipset "+
 			    	  "AND d.imageState <> io.leitstand.inventory.service.ImageState.REVOKED " +
 			    	  "AND :role MEMBER OF d.roles "+
 			    	  "AND d.imageType=:type "+
-			    	  "AND (d.element IS NULL OR d.element=:element) "+
 			   		  "AND ((d.major > :major) "+
 			   		  "OR ( d.major = :major AND d.minor > :minor) "+
 			   		  "OR (d.major=:major AND d.minor=:minor AND d.patch > :patch) "+
 			   		  "OR (d.major=:major AND d.minor=:minor AND d.patch = :patch AND d.prerelease IS NOT NULL AND d.prerelease > :prerelease)) "+
-				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC, d.prerelease DESC")
-@NamedQuery(name="Image.findByElementAndImageTypeAndVersion", 
-			query="SELECT d FROM Image d "+
-				  "WHERE :role MEMBER OF d.roles "+
-				  "AND d.chipset=:chipset "+
-				  "AND d.imageType=:type "+
-				  "AND (d.element is NULL OR d.element=:element) "+
-				  "AND d.major=:major "+
-				  "AND d.minor=:minor "+
-				  "AND d.patch=:patch "+
-				  "AND d.prerelease=:prerelease "+
 				  "ORDER BY d.major DESC, d.minor DESC, d.patch DESC, d.prerelease DESC")
 @NamedQuery(name="Image.countElementReferences",
 			query="SELECT count(ei) FROM Element_Image ei WHERE ei.image=:image")
@@ -195,7 +149,6 @@ public class Image extends VersionableEntity{
 	public static Query<List<Image>> searchImages(ElementRole role, ImageQuery querySpec){
 		
 		return em -> {
-
 		    ImageType type = querySpec.getImageType();
 		    ImageState state = querySpec.getImageState();
 		    Version version = querySpec.getImageVersion();
@@ -272,19 +225,6 @@ public class Image extends VersionableEntity{
 	}
 	
 	public static Update markAllSuperseded(Image image) {
-		
-		if(image.getElement() != null) {
-			return em -> em.createNamedQuery("Image.markElementImageSuperseded",Image.class)
-						   .setParameter("chipset", image.getPlatformChipset())
-						   .setParameter("role", image.getElementRoles())
-						   .setParameter("element", image.getElement())
-						   .setParameter("type", image.getImageType())
-						   .setParameter("major",image.getImageVersion().getMajorLevel())
-						   .setParameter("minor",image.getImageVersion().getMinorLevel())
-						   .setParameter("patch",image.getImageVersion().getPatchLevel())
-						   .setParameter("prerelease", prerelease(image.getImageVersion()))
-						   .executeUpdate();
-		}
 		return em -> em.createNamedQuery("Image.markRoleImageSuperseded",Image.class)
 				   	   .setParameter("chipset", image.getPlatformChipset())
 				   	   .setParameter("role", image.getElementRoles())
@@ -298,18 +238,6 @@ public class Image extends VersionableEntity{
 	}
 
 	public static Update restoreCandidates(Image image) {
-		if(image.getElement() != null) {
-			return em -> em.createNamedQuery("Image.restoreElementImageCandidates",Image.class)
-						   .setParameter("chipset", image.getPlatformChipset())
-						   .setParameter("role", image.getElementRoles())
-						   .setParameter("element", image.getElement())
-						   .setParameter("type", image.getImageType())
-						   .setParameter("major",image.getImageVersion().getMajorLevel())
-						   .setParameter("minor",image.getImageVersion().getMinorLevel())
-						   .setParameter("patch",image.getImageVersion().getPatchLevel())
-						   .setParameter("prerelease", prerelease(image.getImageVersion()))
-						   .executeUpdate();
-		}
 		return em -> em.createNamedQuery("Image.restoreRoleImageCandidates",Image.class)
 					   .setParameter("chipset", image.getPlatformChipset())
 					   .setParameter("role", image.getElementRoles())
@@ -351,8 +279,7 @@ public class Image extends VersionableEntity{
 												 ImageType imageType, 
 												 ImageName imageName,
 	                                             ElementRole role, 
-	                                             Version version, 
-	                                             Element element){
+	                                             Version version){
 		return em -> em.createNamedQuery("Image.findAvailableUpdates",
 										 Image.class)
 					   .setParameter("chipset",platform.getChipset())
@@ -362,7 +289,6 @@ public class Image extends VersionableEntity{
 				       .setParameter("patch",version.getPatchLevel())
 					   .setParameter("prerelease", prerelease(version))
 				       .setParameter("type",imageType)
-				       .setParameter("element", element)
 				       .getResultList();
 	}
 
@@ -380,25 +306,6 @@ public class Image extends VersionableEntity{
                        .getSingleResult();    
     }
 
-	
-	public static Query<Image> findByElementAndImageTypeAndVersion(Element element,
-																   ImageType imageType, 
-																   ImageName imageName,
-	                                                               Version version) {
-		
-		return em -> em.createNamedQuery("Image.findByElementAndImageTypeAndVersion", 
-										 Image.class)
-					   .setParameter("chipset",element.getPlatform().getChipset())
-					   .setParameter("role", element.getElementRole())
-					   .setParameter("element", element)
-					   .setParameter("type",imageType)
-					   .setParameter("major",version.getMajorLevel())
-					   .setParameter("minor", version.getMinorLevel())
-					   .setParameter("patch", version.getPatchLevel())
-					   .setParameter("prerelease", prerelease(version))
-					   .getSingleResult();
-	}
-	
 	public static Query<Long> countElementImageReferences(Image image){
 		return em -> em.createNamedQuery("Image.countElementReferences",Long.class)
 					   .setParameter("image",image)
@@ -437,10 +344,6 @@ public class Image extends VersionableEntity{
 		inverseJoinColumns=@JoinColumn(name="ELEMENTROLE_ID",referencedColumnName="ID")
 	)
 	private List<ElementRole> roles;
-	
-	@ManyToOne
-	@JoinColumn(name="element_id")
-	private Element element;
 	
 	@Column(nullable=false)
 	private int major;
@@ -604,14 +507,6 @@ public class Image extends VersionableEntity{
 		return org;
 	}
 	
-	public void setElement(Element element) {
-		this.element = element;
-	}
-	
-	public Element getElement() {
-		return element;
-	}
-
 	public void setApplications(List<Application> applications) {
 		this.applications = applications;
 	}
@@ -673,13 +568,6 @@ public class Image extends VersionableEntity{
 			   .stream()
 			   .map(ElementRole::getRoleName)
 			   .collect(toList());
-	}
-
-	public ElementName getElementName() {
-		if(element != null) {
-			return element.getElementName();
-		}
-		return null;
 	}
 
     public boolean isCandidate() {

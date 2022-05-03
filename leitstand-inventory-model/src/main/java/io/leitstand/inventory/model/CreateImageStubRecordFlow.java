@@ -15,8 +15,8 @@
  */
 package io.leitstand.inventory.model;
 
-import static io.leitstand.inventory.model.Image.findByElementAndImageTypeAndVersion;
 import static io.leitstand.inventory.model.Image.findImageById;
+import static io.leitstand.inventory.model.Image.findImageByName;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static java.util.Arrays.asList;
 
@@ -54,12 +54,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 		// Merge the existing element entity to this transaction.
 		Element attachedElement = repository.merge(element);
 		Image image = repository.execute(findImageById(installed.getImageId()));
-		
-		ImageName imageName = installed.getImageName();
-		if(imageName == null) {
-			imageName = imageName(element.getElementRoleName()+"_"+element.getPlatformName()+"_"+installed.getImageType()+"_"+installed.getImageVersion());
-		}
-		
+		ImageName imageName = getImageName();
 		if(image == null) {
 			image = new Image(installed.getImageId(), 
 							  installed.getImageType(),
@@ -72,6 +67,14 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 		
 	}
 
+	private ImageName getImageName() {
+		ImageName imageName = installed.getImageName();
+		if(imageName != null) {
+			return imageName;
+		}
+		return imageName(element.getElementRoleName()+"_"+element.getPlatformName()+"_"+installed.getImageType()+"_"+installed.getImageVersion());
+	}
+
 
 	/**
 	 * Fetches the requested image. 
@@ -82,10 +85,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 	 */
 	@Override
 	public Image resume(Repository repository) {
-		return repository.execute(findByElementAndImageTypeAndVersion(element, 
-																	  installed.getImageType(), 
-																	  installed.getImageName(),
-																	  installed.getImageVersion()));
+		return repository.execute(findImageByName(getImageName()));
 		
 		
 	}

@@ -157,7 +157,6 @@ public class ImageServiceIT extends InventoryIT{
 		
 		service = new DefaultImageService(pkgVersions,
 		                                  new ElementGroupProvider(repository),
-		                                  new ElementProvider(repository),
 										  repository,
 										  getDatabase(),
 										  messages,

@@ -191,18 +191,6 @@ public class ImageInfo extends ValueObject{
 		}
 		
 		/**
-		 * Sets the optional element name this image is bind to.
-		 * A bound image can only be installed on the specified element.
-		 * @param elementName the element name.
-		 * @return a reference to this builder to continue object creation.
-		 */
-		public Builder withElementName(ElementName elementName){
-			assertNotInvalidated(getClass(), image);
-			image.elementName = elementName;
-			return this;
-		}
-		
-		/**
 		 * Sets the image file extension.
 		 * @param ext the file extension.
 		 * @return a reference to this builder to continue object creation.
@@ -371,7 +359,6 @@ public class ImageInfo extends ValueObject{
 	
 	private List<ElementRoleName> elementRoles;
 	
-	private ElementName elementName;
 	
 	private String extension;
 	
@@ -426,15 +413,6 @@ public class ImageInfo extends ValueObject{
 	        return emptyList();
 	    }
 		return unmodifiableList(elementRoles);
-	}
-	
-	/**
-	 * Returns the element this image is bound to or <code>null</code> if this image is not bound to an element.
-	 * Bound images can only be installed on the specified element.
-	 * @return the element name of the element this image is bound to or <code>null</code> if the image is not bound to an alement.
-	 */
-	public ElementName getElementName(){
-		return elementName;
 	}
 	
 	/**
