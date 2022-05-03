@@ -30,7 +30,6 @@ import static java.util.stream.Collectors.toList;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -410,6 +409,7 @@ public class Image extends VersionableEntity{
 	
 	public Image(ImageId id){
 		super(id.toString());
+		this.tags = new TreeSet<>();
 	}
 	
 	protected Image(ImageId imageId, 
