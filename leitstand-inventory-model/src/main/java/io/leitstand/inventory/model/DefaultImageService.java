@@ -31,6 +31,7 @@ import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countElementImageReferences;
 import static io.leitstand.inventory.model.Image.countReleaseImageReferences;
 import static io.leitstand.inventory.model.Image.findImageById;
+import static io.leitstand.inventory.model.Image.findImageByName;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
 import static io.leitstand.inventory.model.Image.searchImages;
@@ -651,7 +652,7 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public ImageInfo getImage(ImageName imageName) {
-        Image image = repository.execute(Image.findImageByName(imageName));
+        Image image = repository.execute(findImageByName(imageName));
         if(image == null) {
             throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageName);
         }
@@ -660,8 +661,10 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public void removeImage(@Valid ImageName imageName) {
-        // TODO Auto-generated method stub
-        
+    	Image image = repository.execute(findImageByName(imageName));
+    	if (image != null) {
+    		repository.remove(image);
+    	}
     }
 
 }
