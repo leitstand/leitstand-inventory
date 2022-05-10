@@ -16,9 +16,11 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
+import static io.leitstand.commons.messages.Messages.errors;
 import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.event.ElementEnvironmentRemovedEvent.newElementEnvironmentRemovedEvent;
 import static io.leitstand.inventory.event.ElementEnvironmentStoredEvent.newElementEnvironmentStoredEvent;
+import static io.leitstand.inventory.event.ElementEnvironmentUploadedEvent.newElementEnvironmentUploadedEvent;
 import static io.leitstand.inventory.model.ElementValueObjects.elementValueObject;
 import static io.leitstand.inventory.model.Element_Environment.findEnvironmentById;
 import static io.leitstand.inventory.model.Element_Environment.findEnvironmentByName;
@@ -29,7 +31,9 @@ import static io.leitstand.inventory.service.EnvironmentInfo.newEnvironmentInfo;
 import static io.leitstand.inventory.service.ReasonCode.IVT0390E_ELEMENT_ENVIRONMENT_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0391I_ELEMENT_ENVIRONMENT_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0392I_ELEMENT_ENVIRONMENT_REMOVED;
+import static io.leitstand.inventory.service.ReasonCode.IVT0394E_ELEMENT_ENVIRONMENT_INVALID;
 import static java.lang.String.format;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.toList;
 import static javax.persistence.LockModeType.OPTIMISTIC_FORCE_INCREMENT;
 
@@ -41,9 +45,10 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import io.leitstand.commons.EntityNotFoundException;
+import io.leitstand.commons.UnprocessableEntityException;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.commons.model.Repository;
-import io.leitstand.inventory.event.ElementEvent;
+import io.leitstand.inventory.event.ElementEnvironmentEvent;
 import io.leitstand.inventory.service.ElementEnvironment;
 import io.leitstand.inventory.service.ElementEnvironments;
 import io.leitstand.inventory.service.Environment;
@@ -53,11 +58,11 @@ import io.leitstand.inventory.service.EnvironmentName;
 
 @Dependent
 public class ElementEnvironmentManager {
-	private static final Logger LOG = Logger.getLogger(ElementEnvironmentManager.class.getName());
+	private static final Logger LOG = getLogger(ElementEnvironmentManager.class.getName());
 
 	private Repository repository;
 	private Messages messages;
-	private Event<ElementEvent> event;
+	private Event<ElementEnvironmentEvent<?>> event;
 
 	protected ElementEnvironmentManager() {
 		// CDI
@@ -65,7 +70,7 @@ public class ElementEnvironmentManager {
 	
 	@Inject
 	protected ElementEnvironmentManager(@Inventory Repository repository,
-									    Event<ElementEvent> event,
+										Event<ElementEnvironmentEvent<?>> event,
 									    Messages messages) {
 		this.repository = repository;
 		this.messages = messages;
@@ -132,6 +137,26 @@ public class ElementEnvironmentManager {
 			repository.add(_env);
 			created = true;
 		} 
+		
+		// Notify validators about new environment.
+		event.fire(newElementEnvironmentUploadedEvent()
+				   .withGroupId(element.getGroupId())
+				   .withGroupType(element.getGroupType())
+				   .withGroupName(element.getGroupName())
+				   .withElementRole(element.getElementRoleName())
+				   .withElementId(element.getElementId())
+				   .withElementName(element.getElementName())
+				   .withElementAlias(element.getElementAlias())
+				   .withAdministrativeState(element.getAdministrativeState())
+				   .withOperationalState(element.getOperationalState())
+				   .withDateModified(element.getDateModified())
+				   .withEnvironment(env)
+				   .build());
+		
+		if (messages.contains(errors())) {
+			// Validation failed.
+			throw new UnprocessableEntityException(IVT0394E_ELEMENT_ENVIRONMENT_INVALID, env.getEnvironmentName());
+		}
 		
 		// Update variables first. 
 		// The lazy loading of variables otherwise might replace all other applied property changes!

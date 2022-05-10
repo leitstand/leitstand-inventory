@@ -15,9 +15,11 @@
  */
 package io.leitstand.inventory.event;
 
-public class ElementEnvironmentStoredEvent extends ElementEnvironmentEvent {
+import io.leitstand.inventory.service.EnvironmentInfo;
 
-	public static Builder<ElementEnvironmentStoredEvent> newElementEnvironmentStoredEvent() {
+public class ElementEnvironmentStoredEvent extends ElementEnvironmentEvent<EnvironmentInfo> {
+
+	public static Builder<EnvironmentInfo,ElementEnvironmentStoredEvent> newElementEnvironmentStoredEvent() {
 		return new Builder<>(new ElementEnvironmentStoredEvent());
 	}
 	

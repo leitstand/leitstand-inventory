@@ -15,25 +15,26 @@
  */
 package io.leitstand.inventory.event;
 
-import io.leitstand.commons.model.BuilderUtil;
+import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+
 import io.leitstand.inventory.service.EnvironmentInfo;
 
-public class ElementEnvironmentEvent extends ElementEvent {
+public class ElementEnvironmentEvent<E extends EnvironmentInfo> extends ElementEvent {
 
 	
-	public static class Builder<T extends ElementEnvironmentEvent> extends ElementEventBuilder<T, Builder<T>>{
+	public static class Builder<E extends EnvironmentInfo, T extends ElementEnvironmentEvent<E>> extends ElementEventBuilder<T, Builder<E,T>>{
 		
 		protected Builder(T event) {
 			super(event);
 		}
 		
-		public Builder<T> withEnvironment(EnvironmentInfo.Builder env) {
-			return withEnvironment(env.build());
+		public Builder<E,T> withEnvironment(EnvironmentInfo.Builder env) {
+			return withEnvironment((E)env.build());
 		}
 			
 		
-		public Builder<T> withEnvironment(EnvironmentInfo env) {
-			BuilderUtil.assertNotInvalidated(getClass(), object);
+		public Builder<E,T> withEnvironment(E env) {
+			assertNotInvalidated(getClass(), object);
 			((ElementEnvironmentEvent)object).environment = env;
 			return this;
 		}
@@ -41,10 +42,10 @@ public class ElementEnvironmentEvent extends ElementEvent {
 	}
 	
 	
-	private EnvironmentInfo environment;
+	private E environment;
 	
 	
-	public EnvironmentInfo getEnvironment() {
+	public E getEnvironment() {
 		return environment;
 	}
 	
