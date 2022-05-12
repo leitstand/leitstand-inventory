@@ -22,12 +22,13 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Image utilization statistics.
+ * Image deployment statistics.
  * <p>
  * The image statistics provides information about which releases and element groups use the image.
  */
@@ -37,7 +38,7 @@ public class ImageDeploymentStatistics extends ValueObject {
      * Creates a builder for an immutable <code>ImageStatistics</code> value object.
      * @return a builder for an immutable <code>ImageStatistics</code> value object.
      */
-	public static Builder newImageStatistics() {
+	public static Builder newImageDeploymentStatistics() {
 		return new Builder();
 	}
 	
@@ -142,7 +143,7 @@ public class ImageDeploymentStatistics extends ValueObject {
 	 * @return the image utilization statistics per element group.
 	 */
 	public List<ImageStatisticsElementGroupImageCount> getGroups() {
-        return groups;
+        return unmodifiableList(groups);
     }
 	
 	/**
@@ -150,7 +151,7 @@ public class ImageDeploymentStatistics extends ValueObject {
 	 * @return the releases using the image.
 	 */
 	public List<ReleaseRef> getReleases() {
-        return releases;
+        return unmodifiableList(releases);
     }
 	
 	

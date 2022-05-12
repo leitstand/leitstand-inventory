@@ -21,7 +21,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -77,17 +76,6 @@ public class ImageReference {
 		public Builder withElementRoles(List<ElementRoleName> roles){
 			assertNotInvalidated(getClass(), image);
 			image.elementRoles = roles;
-			return this;
-		}
-		
-		/**
-		 * Sets the element name the image is bound to.
-		 * @param elementName the element name.
-		 * @return a reference to this builder to continue object creation.
-		 */
-		public Builder withElementName(ElementName elementName){
-			assertNotInvalidated(getClass(), image);
-			image.elementName = elementName;
 			return this;
 		}
 		
@@ -189,10 +177,6 @@ public class ImageReference {
 
 	private ImageId imageId;
 	
-	private List<ElementRoleName> elementRoles = emptyList();
-	
-	private ElementName elementName;
-
 	private ImageName imageName;
 	
 	private ImageType imageType;
@@ -202,6 +186,8 @@ public class ImageReference {
 	private Version imageVersion;
 	
 	private Date buildDate;
+	
+	private List<ElementRoleName> elementRoles = emptyList();
 	
 	private PlatformChipsetName platformChipset;
 	
@@ -229,14 +215,6 @@ public class ImageReference {
 	 */
 	public List<ElementRoleName> getElementRoles() {
 		return unmodifiableList(elementRoles);
-	}
-	
-	/**
-	 * Returns the element name this image is bound to or <code>null</code> if this image is not bound to an element.
-	 * @return the element name this image is bound to or <code>null</code> if this image is not bound to an element.
-	 */
-	public ElementName getElementName(){
-		return elementName;
 	}
 	
 	/**

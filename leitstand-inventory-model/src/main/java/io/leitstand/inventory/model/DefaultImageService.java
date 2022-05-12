@@ -23,10 +23,10 @@ import static io.leitstand.inventory.event.ImageAddedEvent.newImageAddedEvent;
 import static io.leitstand.inventory.event.ImageRemovedEvent.newImageRemovedEvent;
 import static io.leitstand.inventory.event.ImageStateChangedEvent.newImageStateChangedEvent;
 import static io.leitstand.inventory.event.ImageStoredEvent.newImageStoredEvent;
-import static io.leitstand.inventory.jpa.ImageStateConverter.toImageState;
 import static io.leitstand.inventory.model.Application.findAll;
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
+import static io.leitstand.inventory.model.DeploymentStatisticAggregator.aggregateImageCounters;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countElementImageReferences;
 import static io.leitstand.inventory.model.Image.countReleaseImageReferences;
@@ -45,8 +45,7 @@ import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
-import static io.leitstand.inventory.service.ImageDeploymentCount.newImageDeploymentCount;
-import static io.leitstand.inventory.service.ImageDeploymentStatistics.newImageStatistics;
+import static io.leitstand.inventory.service.ImageDeploymentStatistics.newImageDeploymentStatistics;
 import static io.leitstand.inventory.service.ImageId.imageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageName.imageName;
@@ -470,23 +469,30 @@ public class DefaultImageService implements ImageService {
 			filter=".*";
 		}
 		
-		return db.executeQuery(prepare(
-							   "SELECT i.uuid, i.name, i.state, count(*) "+
-							   "FROM inventory.image i "+
-							   "JOIN inventory.element_image e "+
-							   "ON i.id = e.image_id "+
-							   "WHERE i.name ~ ? "+
-							   "GROUP BY i.uuid, i.name, i.state "+
-							   "ORDER BY i.name",
-							   filter),
-							rs -> newImageDeploymentCount()
-								  .withImageId(imageId(rs.getString(1)))
-								  .withImageName(imageName(rs.getString(2)))
-								  .withImageState(toImageState(rs.getString(3)))
-								  .withElements(rs.getInt(4))
-								  .build());
+		DeploymentStatisticAggregator aggregator = aggregateImageCounters();
 		
-		
+		db.processQuery(prepare(
+						   "WITH image_stats (id, uuid, name, state, count) AS ("+
+						   "SELECT i.id, i.uuid, i.name, i.state, count(*) "+
+						   "FROM inventory.image i "+
+						   "JOIN inventory.element_image e "+
+						   "ON i.id = e.image_id "+
+						   "WHERE i.name ~ ? "+
+						   "OR i.id IN ("+
+						   "SELECT image_id "+
+						   "FROM inventory.image_tag t "+
+						   "WHERE t.tag ~ ?) "+
+						   "GROUP BY i.id, i.uuid, i.name, i.state) "+
+						   "SELECT s.uuid, s.name, s.state, s.count, t.tag "+
+						   "FROM image_stats s "+
+						   "LEFT OUTER JOIN inventory.image_tag t "+
+						   "ON s.id = t.image_id ",
+						   filter,
+						   filter),
+						aggregator
+				);
+
+		return aggregator.getDeploymentStatistics();
 	}
 	
 
@@ -551,7 +557,7 @@ public class DefaultImageService implements ImageService {
 		                                                  .build());
 		                                                          
 		
-		return newImageStatistics()
+		return newImageDeploymentStatistics()
 		       .withImage(image)
 		       .withElementGroupCounters(groupStats)
 		       .withReleases(releases)

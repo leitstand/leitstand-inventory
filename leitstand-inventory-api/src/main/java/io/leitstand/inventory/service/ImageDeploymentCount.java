@@ -1,6 +1,12 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static io.leitstand.commons.model.ObjectUtil.asSet;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import io.leitstand.commons.model.ValueObject;
 
@@ -69,7 +75,26 @@ public class ImageDeploymentCount extends ValueObject {
 			image.elements = elements;
 			return this;
 		}
+
+		/**
+		 * Sets the tags associated with this image.
+		 * @param tags the tags assigned to this image.
+		 * @return a reference to this builder to continue with object creation.
+		 */
+		public Builder withTags(String... tags) {
+			return withTags(asSet(tags));
+		}
 		
+		/**
+		 * Sets the tags associated with this image.
+		 * @param tags the tags assigned to this image.
+		 * @return a reference to this builder to continue with object creation.
+		 */
+		public Builder withTags(Set<String> tags) {
+			assertNotInvalidated(getClass(), image);
+			image.tags = new TreeSet<>(tags);
+			return this;
+		}
 		
 		/**
 		 * Returns the <code>ImageDeploymentCount</code> object and invalidates this builder.
@@ -84,11 +109,14 @@ public class ImageDeploymentCount extends ValueObject {
 				this.image = null;
 			}
 		}
+
+
 	}
 	
 	private ImageId imageId;
 	private ImageName imageName;
 	private ImageState imageState;
+	private Set<String> tags = emptySet();
 	private int elements;
 	
 	/**
@@ -113,6 +141,14 @@ public class ImageDeploymentCount extends ValueObject {
 	 */
 	public ImageState getImageState() {
 		return imageState;
+	}
+	
+	/**
+	 * Returns the tags assigned to this image.
+	 * @return the image tags.
+	 */
+	public Set<String> getTags() {
+		return unmodifiableSet(tags);
 	}
 	
 	/**

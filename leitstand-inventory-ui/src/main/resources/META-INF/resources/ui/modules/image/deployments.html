@@ -31,6 +31,7 @@
 				<tr>
 					<th class="text">Name</th>
 					<th class="check">State</th>
+					<th class="text">Tags</th>
 					<th>Deployments</th>
 				</tr>
 			</thead>
@@ -39,6 +40,7 @@
 				<tr>
 					<td class="text top"><a href="image-stats.html?image={{image_id}}" title="Show image details">{{image_name}}</a></td>
 					<td class="top"><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="text top"><ui-tags readonly tags="{{tags}}"></ui-tags></td>
 					<td class="top">{{elements}}</td>
 				</tr>
 				<!--  {{/images}}-->
