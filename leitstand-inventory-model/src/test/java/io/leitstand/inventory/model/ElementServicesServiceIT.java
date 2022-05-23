@@ -362,8 +362,11 @@ public class ElementServicesServiceIT extends InventoryIT {
 													  			 .withElementName(ELEMENT_NAME)
 													  			 .withServiceName(CONTAINER_SERVICE))
 											 .build();
-			
-			service.storeElementServices(ELEMENT_NAME, asList(container,daemon));
+			try {
+				service.storeElementServices(ELEMENT_NAME, asList(container,daemon));
+			} catch(Throwable t) {
+				t.printStackTrace();
+			}
 		});
 		
 		transaction(() -> {

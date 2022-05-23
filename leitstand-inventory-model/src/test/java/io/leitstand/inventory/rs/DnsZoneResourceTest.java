@@ -34,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.leitstand.commons.UnprocessableEntityException;
+import io.leitstand.commons.json.SerializableJsonObject;
 import io.leitstand.commons.messages.Messages;
 import io.leitstand.inventory.service.DnsZoneId;
 import io.leitstand.inventory.service.DnsZoneName;
@@ -67,6 +68,12 @@ public class DnsZoneResourceTest {
 		when(zone.getDnsZoneId()).thenReturn(ZONE_ID);
 		
 		resource.storeDnsZoneSettings(randomDnsZoneId(), zone);
+		
+		try {
+			new SerializableJsonObject(null);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 	}
 	
 	@Test

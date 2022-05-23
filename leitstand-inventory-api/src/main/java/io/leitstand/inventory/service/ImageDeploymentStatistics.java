@@ -22,22 +22,23 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import io.leitstand.commons.model.ValueObject;
 
 /**
- * Image utilization statistics.
+ * Image deployment statistics.
  * <p>
  * The image statistics provides information about which releases and element groups use the image.
  */
-public class ImageStatistics extends ValueObject {
+public class ImageDeploymentStatistics extends ValueObject {
 
     /**
      * Creates a builder for an immutable <code>ImageStatistics</code> value object.
      * @return a builder for an immutable <code>ImageStatistics</code> value object.
      */
-	public static Builder newImageStatistics() {
+	public static Builder newImageDeploymentStatistics() {
 		return new Builder();
 	}
 	
@@ -46,7 +47,7 @@ public class ImageStatistics extends ValueObject {
 	 */
 	public static class Builder {
 		
-		private ImageStatistics stats = new ImageStatistics();
+		private ImageDeploymentStatistics stats = new ImageDeploymentStatistics();
 		
 		public Builder withImage(ImageInfo.Builder image) {
 			return withImage(image.build());
@@ -113,7 +114,7 @@ public class ImageStatistics extends ValueObject {
 		 * Subsequent invocations of the <code>build()</code> method raise an exception.
 		 * @return the immutable <code>ImageStatistics</code> value object.
 		 */
-		public ImageStatistics build() {
+		public ImageDeploymentStatistics build() {
 			try {
 				assertNotInvalidated(getClass(), stats);
 				return stats;
@@ -142,7 +143,7 @@ public class ImageStatistics extends ValueObject {
 	 * @return the image utilization statistics per element group.
 	 */
 	public List<ImageStatisticsElementGroupImageCount> getGroups() {
-        return groups;
+        return unmodifiableList(groups);
     }
 	
 	/**
@@ -150,7 +151,7 @@ public class ImageStatistics extends ValueObject {
 	 * @return the releases using the image.
 	 */
 	public List<ReleaseRef> getReleases() {
-        return releases;
+        return unmodifiableList(releases);
     }
 	
 	

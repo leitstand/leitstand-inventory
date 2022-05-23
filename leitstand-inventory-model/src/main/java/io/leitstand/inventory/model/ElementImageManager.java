@@ -92,7 +92,6 @@ public class ElementImageManager {
 
 
 	public ElementImages getElementImages(Element element) {
-		ElementGroup group = element.getGroup();
 		List<ElementImageData> installed = new LinkedList<>();
 		
 		for(Element_Image elementImage : repository.execute(findElementImages(element))){
@@ -108,8 +107,7 @@ public class ElementImageManager {
 															  image.getImageType(), 
 															  image.getImageName(),
 															  element.getElementRole(), 
-															  image.getImageVersion(), 
-															  element))){
+															  image.getImageVersion()))){
 				UpgradeType type = updateType(image, update);
 				
 				updates.add(newElementAvailableUpgrade()
@@ -163,8 +161,6 @@ public class ElementImageManager {
 	}
 
 	public ElementImage getElementImage(Element element, ImageId imageId) {
-		ElementGroup group = element.getGroup();
-		
 		Element_Image elementImage = repository.execute(findElementImage(element,imageId));
 		Image image = elementImage.getImage();
 			
@@ -178,8 +174,7 @@ public class ElementImageManager {
 														  image.getImageType(), 
 														  image.getImageName(),
 														  element.getElementRole(),
-														  image.getImageVersion(),
-														  element))){
+														  image.getImageVersion()))){
 			UpgradeType type = updateType(image, update);
 			
 			updates.add(newElementAvailableUpgrade()

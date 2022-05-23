@@ -16,10 +16,14 @@
 package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An image reference.
@@ -72,17 +76,6 @@ public class ImageReference {
 		public Builder withElementRoles(List<ElementRoleName> roles){
 			assertNotInvalidated(getClass(), image);
 			image.elementRoles = roles;
-			return this;
-		}
-		
-		/**
-		 * Sets the element name the image is bound to.
-		 * @param elementName the element name.
-		 * @return a reference to this builder to continue object creation.
-		 */
-		public Builder withElementName(ElementName elementName){
-			assertNotInvalidated(getClass(), image);
-			image.elementName = elementName;
 			return this;
 		}
 		
@@ -156,6 +149,17 @@ public class ImageReference {
 		}
 		
 		/**
+		 * Sets the image tags.
+		 * @param tags the image tags
+		 * @return a reference to this builder to continue object creation
+		 */
+		public Builder withTags(Set<String> tags) {
+			assertNotInvalidated(getClass(), image);
+			image.tags = tags;
+			return this;
+		}
+		
+		/**
 		 * Creates an immutable <code>ImageReference</code> value object and invalidates this builder.
 		 * Subsequence invocation of the <code>build()</code> method raise an exception.
 		 * @return the immutable <code>ImageReference</code> value object.
@@ -168,14 +172,11 @@ public class ImageReference {
 				this.image = null;
 			}
 		}
+
 	}
 
 	private ImageId imageId;
 	
-	private List<ElementRoleName> elementRoles;
-	
-	private ElementName elementName;
-
 	private ImageName imageName;
 	
 	private ImageType imageType;
@@ -186,7 +187,11 @@ public class ImageReference {
 	
 	private Date buildDate;
 	
+	private List<ElementRoleName> elementRoles = emptyList();
+	
 	private PlatformChipsetName platformChipset;
+	
+	private Set<String> tags = emptySet();
 	
 	/**
 	 * Returns the image ID.
@@ -210,14 +215,6 @@ public class ImageReference {
 	 */
 	public List<ElementRoleName> getElementRoles() {
 		return unmodifiableList(elementRoles);
-	}
-	
-	/**
-	 * Returns the element name this image is bound to or <code>null</code> if this image is not bound to an element.
-	 * @return the element name this image is bound to or <code>null</code> if this image is not bound to an element.
-	 */
-	public ElementName getElementName(){
-		return elementName;
 	}
 	
 	/**
@@ -258,6 +255,10 @@ public class ImageReference {
 	 */
 	public ImageState getImageState() {
 		return imageState;
+	}
+	
+	public Set<String> getTags() {
+		return unmodifiableSet(tags);
 	}
 	
 }

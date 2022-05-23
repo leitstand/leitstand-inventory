@@ -54,13 +54,14 @@ import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.ImageDeploymentCount;
+import io.leitstand.inventory.service.ImageDeploymentStatistics;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
-import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
 import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PlatformChipsetName;
@@ -154,12 +155,19 @@ public class ImageResource {
 		return service.getImage(id);
 	}
 
+
+	@GET
+	@Path("/statistics")
+	@Scopes({IVT, IVT_READ, IVT_IMAGE})
+	public List<ImageDeploymentCount> getDeploymentStatistics(@QueryParam("filter") String filter){
+		return service.getDeploymentStatistics(filter);
+	}
+	
 	@GET
 	@Path("/{image_id:"+UUID_PATTERN+"}/statistics")
 	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-
-	public ImageStatistics getImageStatistics(@PathParam("image_id") ImageId id){
-		return service.getImageStatistics(id);
+	public ImageDeploymentStatistics getDeploymentStatistics(@PathParam("image_id") ImageId id){
+		return service.getDeploymentStatistics(id);
 	}
 
 	@GET

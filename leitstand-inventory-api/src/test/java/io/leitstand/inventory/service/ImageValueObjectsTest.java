@@ -6,18 +6,18 @@ import static io.leitstand.inventory.service.ElementId.randomElementId;
 import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.ImageDeploymentStatistics.newImageDeploymentStatistics;
+import static io.leitstand.inventory.service.ImageExport.newImageExport;
 import static io.leitstand.inventory.service.ImageId.randomImageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageQuery.newQuery;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.CANDIDATE;
-import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState.newElementGroupElementImageState;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
 import static io.leitstand.inventory.service.ImageType.imageType;
-import static io.leitstand.inventory.service.ImageExport.newImageExport;
 import static io.leitstand.inventory.service.PlatformChipsetName.platformChipsetName;
 import static io.leitstand.inventory.service.RoleImage.newRoleImage;
 import static io.leitstand.inventory.service.RoleImages.newRoleImages;
@@ -25,7 +25,6 @@ import static io.leitstand.testing.ut.LeitstandCoreMatchers.containsExactly;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -117,7 +116,6 @@ public class ImageValueObjectsTest {
         assertThat(imageInfo.getCategory(),is(CATEGORY));
         assertThat(imageInfo.getChecksums(),is(checksums));
         assertThat(imageInfo.getDescription(),is(DESCRIPTION));
-        assertNull(imageInfo.getElementName());
         assertThat(imageInfo.getElementRoles(),containsExactly(ELEMENT_ROLE));
         assertThat(imageInfo.getExtension(),is(IMAGE_EXTENSION));
         assertThat(imageInfo.getImageId(),is(IMAGE_ID));
@@ -145,7 +143,6 @@ public class ImageValueObjectsTest {
                                   .build();
                         
         assertThat(imageRef.getBuildDate(),is(BUILD_DATE));
-        assertNull(imageRef.getElementName());
         assertThat(imageRef.getElementRoles(),containsExactly(ELEMENT_ROLE));
         assertThat(imageRef.getImageId(),is(IMAGE_ID));
         assertThat(imageRef.getImageName(),is(IMAGE_NAME));
@@ -181,7 +178,7 @@ public class ImageValueObjectsTest {
         ImageStatisticsElementGroupImageCount groupCount = mock(ImageStatisticsElementGroupImageCount.class);
         ImageInfo image = mock(ImageInfo.class);
         
-        ImageStatistics stats = newImageStatistics()
+        ImageDeploymentStatistics stats = newImageDeploymentStatistics()
                                 .withImage(image)
                                 .withReleases(asList(release))
                                 .withElementGroupCounters(asList(groupCount))

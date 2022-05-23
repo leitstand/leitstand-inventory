@@ -52,11 +52,11 @@
 				<tr>
 					<th class="text">Name</th>
 					<th class="check">State</th>
+					<th class="text">Tags</th>
 					<th class="text">Type</th>
 					<th class="text">Chipset</th>
 					<th class="text">Version</th>
 					<th class="text">Roles</th>
-					<th class="text">Element</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -64,6 +64,7 @@
 				<tr>
 					<td class="text top"><a href="image-meta.html?image={{image_id}}" title="Show image details" style="display:inline-block; overflow: hidden; width: 100%">{{image_name}}</a></td>
 					<td class="top"><span class="{{image_state}}">{{image_state}}</span></td>
+					<td class="text"><ui-tags tags="{{tags}}" readonly></ui-tags></td>
 					<td class="text top">{{image_type}}</td>
 					<td class="text top">{{platform_chipset}}</td>
 					<td class="text top">{{image_version}}</td>
@@ -74,7 +75,6 @@
 					</ul>
 					<!-- {{/element_roles}} -->
 					</td>
-					<td class="text top">{{element_name}}{{^element_name}}*{{/element_name}}</td>
 				</tr>
 				<!--  {{/images}}-->
 			</tbody>

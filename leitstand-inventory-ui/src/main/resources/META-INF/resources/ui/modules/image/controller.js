@@ -149,6 +149,28 @@ const groupImageStatisticsController = function(){
     });
 };
 
+
+const deploymentStatisticsController = function(){
+    const imageStats = new Images({"scope":"statistics"});
+    return new Controller({
+        resource: imageStats,
+        viewModel: function(stats){
+        	return {
+				"images":stats,
+				"filter":this.location.param("filter")
+			};
+        },
+        buttons:{
+			"filter":function(){
+				this.reload({"filter":this.getViewModel("filter")});
+			}
+		
+		}
+        	
+    });
+};
+
+
 const imagesMenu = {
 	"master" : imagesController(),
 	"details"  : {
@@ -165,6 +187,7 @@ const imageStatsMenu = {
 };
 
 export const menu = new Menu({"images.html" : imagesMenu,
+							  "deployments.html": deploymentStatisticsController(),
 							  "image-meta.html" : imageController(),
 							  "image-pkgs.html" : imageController(),
 							  "image-apps.html" : imageController(),

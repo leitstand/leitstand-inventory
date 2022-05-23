@@ -21,15 +21,19 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTypeAdapter;
@@ -191,18 +195,6 @@ public class ImageInfo extends ValueObject{
 		}
 		
 		/**
-		 * Sets the optional element name this image is bind to.
-		 * A bound image can only be installed on the specified element.
-		 * @param elementName the element name.
-		 * @return a reference to this builder to continue object creation.
-		 */
-		public Builder withElementName(ElementName elementName){
-			assertNotInvalidated(getClass(), image);
-			image.elementName = elementName;
-			return this;
-		}
-		
-		/**
 		 * Sets the image file extension.
 		 * @param ext the file extension.
 		 * @return a reference to this builder to continue object creation.
@@ -334,6 +326,17 @@ public class ImageInfo extends ValueObject{
 		}
 		
 		/**
+		 * Sets the image tags.
+		 * @param tags the image tags.
+		 * @return a reference to this builder to continue object creation.
+		 */
+		public Builder withTags(Set<String> tags) {
+			assertNotInvalidated(getClass(), image);
+			image.tags = new TreeSet<>(tags);
+			return this;
+		}
+		
+		/**
 		 * Returns an immutable <code>ImageInfo</code> value object and invalidates this builder.
 		 * Subsequence invocations of the <code>build()</code> method raise an exception.
 		 * @return the immutable <code>ImageInfo</code> value object.
@@ -371,7 +374,6 @@ public class ImageInfo extends ValueObject{
 	
 	private List<ElementRoleName> elementRoles;
 	
-	private ElementName elementName;
 	
 	private String extension;
 	
@@ -400,6 +402,7 @@ public class ImageInfo extends ValueObject{
 	private String description;
 	
 	private Map<String,String> checksums = emptyMap();
+	private Set<String> tags = emptySet();
 	
 	/**
 	 * Returns the image ID.
@@ -426,15 +429,6 @@ public class ImageInfo extends ValueObject{
 	        return emptyList();
 	    }
 		return unmodifiableList(elementRoles);
-	}
-	
-	/**
-	 * Returns the element this image is bound to or <code>null</code> if this image is not bound to an element.
-	 * Bound images can only be installed on the specified element.
-	 * @return the element name of the element this image is bound to or <code>null</code> if the image is not bound to an alement.
-	 */
-	public ElementName getElementName(){
-		return elementName;
 	}
 	
 	/**
@@ -552,5 +546,12 @@ public class ImageInfo extends ValueObject{
 		return unmodifiableList(platforms);
 	}
 	
+	/**
+	 * Returns the image tags.
+	 * @return the image tags.
+	 */
+	public Set<String> getTags(){
+		return unmodifiableSet(tags);
+	}
 	
 }

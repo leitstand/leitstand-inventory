@@ -14,6 +14,9 @@ menus:
   - item: images
     label: Images
     view: images.html
+  - item: stats
+    label: Deployment Statistics
+    view: deployments.html
 - menu: image
   label: Image
   entity: "{{image_name}}"
@@ -45,6 +48,6 @@ menus:
 #     title: View image packages
 #     view: image-pkgs.html
   - item: image-stats
-    label: Usage
-    title: View image usage statistics
+    label: Deployment Statistics
+    title: View image deployment statistics
     view: image-stats.html

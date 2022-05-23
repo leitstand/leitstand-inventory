@@ -17,7 +17,8 @@ package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.db.DatabaseService.prepare;
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
-import static io.leitstand.commons.model.ObjectUtil.optional;
+import static io.leitstand.commons.model.StringUtil.isEmptyString;
+import static io.leitstand.commons.model.StringUtil.trim;
 import static io.leitstand.inventory.event.ImageAddedEvent.newImageAddedEvent;
 import static io.leitstand.inventory.event.ImageRemovedEvent.newImageRemovedEvent;
 import static io.leitstand.inventory.event.ImageStateChangedEvent.newImageStateChangedEvent;
@@ -25,10 +26,12 @@ import static io.leitstand.inventory.event.ImageStoredEvent.newImageStoredEvent;
 import static io.leitstand.inventory.model.Application.findAll;
 import static io.leitstand.inventory.model.Checksum.newChecksum;
 import static io.leitstand.inventory.model.DefaultPackageService.packageVersionInfo;
+import static io.leitstand.inventory.model.DeploymentStatisticAggregator.aggregateImageCounters;
 import static io.leitstand.inventory.model.ElementRole.findRoleByName;
 import static io.leitstand.inventory.model.Image.countElementImageReferences;
 import static io.leitstand.inventory.model.Image.countReleaseImageReferences;
 import static io.leitstand.inventory.model.Image.findImageById;
+import static io.leitstand.inventory.model.Image.findImageByName;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
 import static io.leitstand.inventory.model.Image.searchImages;
@@ -42,13 +45,13 @@ import static io.leitstand.inventory.service.ElementImageState.ACTIVE;
 import static io.leitstand.inventory.service.ElementImageState.PULL;
 import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.ElementRoleName.elementRoleName;
+import static io.leitstand.inventory.service.ImageDeploymentStatistics.newImageDeploymentStatistics;
 import static io.leitstand.inventory.service.ImageId.imageId;
 import static io.leitstand.inventory.service.ImageInfo.newImageInfo;
 import static io.leitstand.inventory.service.ImageName.imageName;
 import static io.leitstand.inventory.service.ImageReference.newImageReference;
 import static io.leitstand.inventory.service.ImageState.RELEASE;
 import static io.leitstand.inventory.service.ImageState.SUPERSEDED;
-import static io.leitstand.inventory.service.ImageStatistics.newImageStatistics;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState.newElementGroupElementImageState;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages.newElementGroupElementImages;
 import static io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount.newElementGroupImageCount;
@@ -94,8 +97,9 @@ import io.leitstand.inventory.service.ElementGroupId;
 import io.leitstand.inventory.service.ElementGroupName;
 import io.leitstand.inventory.service.ElementGroupType;
 import io.leitstand.inventory.service.ElementImageState;
-import io.leitstand.inventory.service.ElementName;
 import io.leitstand.inventory.service.ElementRoleName;
+import io.leitstand.inventory.service.ImageDeploymentCount;
+import io.leitstand.inventory.service.ImageDeploymentStatistics;
 import io.leitstand.inventory.service.ImageId;
 import io.leitstand.inventory.service.ImageInfo;
 import io.leitstand.inventory.service.ImageName;
@@ -103,7 +107,6 @@ import io.leitstand.inventory.service.ImageQuery;
 import io.leitstand.inventory.service.ImageReference;
 import io.leitstand.inventory.service.ImageService;
 import io.leitstand.inventory.service.ImageState;
-import io.leitstand.inventory.service.ImageStatistics;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImageState;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupElementImages;
 import io.leitstand.inventory.service.ImageStatisticsElementGroupImageCount;
@@ -137,9 +140,6 @@ public class DefaultImageService implements ImageService {
 	private PackageVersionService packages;
 	
 	@Inject
-	private ElementProvider elements;
-	
-	@Inject
 	private ElementGroupProvider groups;
 	
 	@Inject
@@ -151,14 +151,12 @@ public class DefaultImageService implements ImageService {
 	
 	DefaultImageService(PackageVersionService packages,
 	                    ElementGroupProvider groups,
-	                    ElementProvider elements,
 						Repository repository,
 						DatabaseService db,
 						Messages messages,
 						Event<ImageEvent> sink){
 		this.packages = packages;
 		this.groups = groups;
-		this.elements = elements;
 		this.repository = repository;
 		this.db = db;
 		this.messages =messages;
@@ -190,8 +188,8 @@ public class DefaultImageService implements ImageService {
         	   .withImageName(image.getImageName())
         	   .withPlatformChipset(image.getPlatformChipset())
         	   .withImageVersion(image.getImageVersion())
-        	   .withElementName(image.getElementName())
         	   .withElementRoles(image.getElementRoleNames())
+        	   .withTags(image.getTags())
         	   .build();
     }
 
@@ -206,12 +204,6 @@ public class DefaultImageService implements ImageService {
 												  roleName);
 			}
 			elementRoles.add(elementRole);
-		}
-		
-		Element element = null;
-		ElementName elementName = submission.getElementName();
-		if(elementName != null){
-			element = elements.fetchElement(elementName);
 		}
 		
 		List<Package_Version> versions = new LinkedList<>();
@@ -275,8 +267,8 @@ public class DefaultImageService implements ImageService {
 				   			   				   .withValue(c.getValue())
 				   			   				   .build())
 				   			   		 .collect(toList()));
-		image.setOrganization(submission.getOrganization());			
-		image.setElement(element);
+		image.setOrganization(submission.getOrganization());
+		image.setTags(submission.getTags());
 
 		messages.add(createMessage(IVT0202I_IMAGE_STORED, 
 				   				   image.getImageName()));		
@@ -349,7 +341,6 @@ public class DefaultImageService implements ImageService {
 		   	   .withElementRoles(image.getElementRoleNames())
 		   	   .withPlatformChipset(image.getPlatformChipset())
 		   	   .withPlatforms(platforms)
-		   	   .withElementName(optional(image.getElement(), Element::getElementName))
 		   	   .withExtension(image.getImageExtension())
 		   	   .withImageVersion(image.getImageVersion())
 		   	   .withBuildDate(image.getBuildDate())
@@ -358,6 +349,7 @@ public class DefaultImageService implements ImageService {
 		   	   .withApplications(applications)
 		   	   .withOrganization(image.getOrganization())
 		   	   .withCategory(image.getCategory())
+		   	   .withTags(image.getTags())
 		   	   .withChecksums(image
 		   			   		  .getChecksums()
 		   				 	  .stream()
@@ -469,9 +461,43 @@ public class DefaultImageService implements ImageService {
 			   .withImages(images)
 			   .build();
 	}
+	
+	@Override
+	public List<ImageDeploymentCount> getDeploymentStatistics(String filter){
+		
+		if (isEmptyString(trim(filter))) {
+			filter=".*";
+		}
+		
+		DeploymentStatisticAggregator aggregator = aggregateImageCounters();
+		
+		db.processQuery(prepare(
+						   "WITH image_stats (id, uuid, name, state, count) AS ("+
+						   "SELECT i.id, i.uuid, i.name, i.state, count(*) "+
+						   "FROM inventory.image i "+
+						   "JOIN inventory.element_image e "+
+						   "ON i.id = e.image_id "+
+						   "WHERE i.name ~ ? "+
+						   "OR i.id IN ("+
+						   "SELECT image_id "+
+						   "FROM inventory.image_tag t "+
+						   "WHERE t.tag ~ ?) "+
+						   "GROUP BY i.id, i.uuid, i.name, i.state) "+
+						   "SELECT s.uuid, s.name, s.state, s.count, t.tag "+
+						   "FROM image_stats s "+
+						   "LEFT OUTER JOIN inventory.image_tag t "+
+						   "ON s.id = t.image_id ",
+						   filter,
+						   filter),
+						aggregator
+				);
+
+		return aggregator.getDeploymentStatistics();
+	}
+	
 
 	@Override
-	public ImageStatistics getImageStatistics(ImageId imageId) {
+	public ImageDeploymentStatistics getDeploymentStatistics(ImageId imageId) {
 		
 		ImageInfo image = getImage(imageId);
 		Map<String,ImageStatisticsElementGroupImageCount.Builder> stats = new TreeMap<>();
@@ -531,7 +557,7 @@ public class DefaultImageService implements ImageService {
 		                                                  .build());
 		                                                          
 		
-		return newImageStatistics()
+		return newImageDeploymentStatistics()
 		       .withImage(image)
 		       .withElementGroupCounters(groupStats)
 		       .withReleases(releases)
@@ -632,7 +658,7 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public ImageInfo getImage(ImageName imageName) {
-        Image image = repository.execute(Image.findImageByName(imageName));
+        Image image = repository.execute(findImageByName(imageName));
         if(image == null) {
             throw new EntityNotFoundException(IVT0200E_IMAGE_NOT_FOUND,imageName);
         }
@@ -641,8 +667,10 @@ public class DefaultImageService implements ImageService {
 
     @Override
     public void removeImage(@Valid ImageName imageName) {
-        // TODO Auto-generated method stub
-        
+    	Image image = repository.execute(findImageByName(imageName));
+    	if (image != null) {
+    		repository.remove(image);
+    	}
     }
 
 }
