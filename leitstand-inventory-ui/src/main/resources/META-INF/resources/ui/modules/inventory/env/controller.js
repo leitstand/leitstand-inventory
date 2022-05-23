@@ -30,7 +30,13 @@ class Editor extends Control {
 	        mode:{name:'javascript', json:true}
 	    });
 		this.form.addEventListener('UIPreExecuteAction',() => {
-			this.viewModel.setProperty(this.binding,JSON.parse(editor.getValue()));
+			const json = editor.getValue()
+			if(json){
+				this.viewModel.setProperty(this.binding,JSON.parse(json));
+			} else {
+				this.viewModel.setProperty(this.binding,null);
+			}
+			 
 		});
 	}
 }
@@ -44,7 +50,7 @@ class EnvironmentSelector extends Select {
     }
     
     options(){
-        const envs = new Json('/api/v1/environments/_forElement?element={{element}}',
+        const envs = new Json('/api/v1/environments?element={{element}}',
                               this.location.params)
         return envs
                .load()
