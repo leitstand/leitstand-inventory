@@ -1,0 +1,46 @@
+provider: leitstand.io
+description: DNS record management views
+controller: controller.js
+extensions:
+# Add main menu item to list all DNS zones.
+- extend: 
+    module: settings
+    menu: main
+    after: dashboards
+  items:
+  - item: dns
+    label: DNS Zones
+    title: Manage DNS zones
+    scopesAllowed:
+    - ivt
+    - ivt.read
+    - ivt.element
+    - ivt.element.read
+    - ivt.element.dns
+    view: zones.html
+# Add menu to manage a DNS zone     
+- extend:
+    module: settings
+    after: main
+  menus:
+  - menu: dns
+    label: DNS Zone
+    title: Manage a DNS Zone
+    scopesAllowed:
+      - ivt
+      - ivt.read
+      - ivt.element
+      - ivt.element.read
+    requires:
+    - dns_zone_id
+    query:
+     zone: "{{dns_zone_id}}"
+    items:
+    - item: zone-settings
+      label: Settings
+      title: Manage DNS zone settings
+      view: zone-settings.html
+    - item: zone-elements
+      label: Elements
+      title: View elements with DNS records bound to this zone
+      view: zone-elements.html          

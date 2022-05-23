@@ -64,7 +64,7 @@ public class ImageModule {
                                      e.getMessage()));
             throw new ModuleDescriptorException(e,
                                                 UIM0002E_CANNOT_PROCESS_MODULE_EXTENSION,
-                                                "topology");
+                                                "release");
         }
     }
 	

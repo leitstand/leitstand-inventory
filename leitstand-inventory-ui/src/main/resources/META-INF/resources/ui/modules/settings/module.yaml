@@ -1,0 +1,5 @@
+module: settings
+menus:
+- menu: main
+  label: Settings
+  title: Manage settings        

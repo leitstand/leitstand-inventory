@@ -3,7 +3,7 @@ controller: controller.js
 description: Role management views.
 extensions:
 - extend:
-    module: inventory
+    module: settings
     menu: main
   items:
   - item: roles

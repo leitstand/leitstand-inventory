@@ -3,9 +3,8 @@ controller: controller.js
 description: Platform management views.
 extensions:
 - extend:
-    module: inventory
+    module: settings
     menu: main
-    after: roles
   items:
   - item: platforms
     label: Platforms

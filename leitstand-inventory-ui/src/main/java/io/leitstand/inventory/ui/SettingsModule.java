@@ -10,7 +10,6 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Logger.getLogger;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -21,19 +20,19 @@ import io.leitstand.ui.model.ModuleDescriptor;
 import io.leitstand.ui.model.ModuleDescriptorException;
 
 /**
- * Inventory UI module loader.
+ * Settings UI module loader.
  * <p>
- * Loads the inventory module descriptor and all default applications.
+ * Loads the settings module descriptor and all default applications.
  */
 @Dependent
-public class InventoryModule  {
-	
-	/** Inventory module path template. */
-	private static final String MODULE_PATH = "/META-INF/resources/ui/modules/inventory/%s";
-	private static final String MODULE_NAME = "inventory";
-	
-	private static final Logger LOG = getLogger(InventoryModule.class.getName());
+public class SettingsModule {
 
+	private static final Logger LOG = getLogger(SettingsModule.class.getName()); 
+	
+	private static final String MODULE_NAME = "settings";
+	private static final String MODULE_PATH = "/META-INF/resources/ui/modules/settings/%s";
+	
+	
 	/**
 	 * Loads a default inventory application.
 	 * @param path the application configuration
@@ -61,38 +60,27 @@ public class InventoryModule  {
 	}
 	
 	/**
-	 * Creates the <code>ModuleDescriptor</code> including all existing default applications.
-	 * @return the inventory module descriptor.
+	 * Loads the settings module descriptor.
+	 * @return the settings module descriptor.
 	 */
 	@Produces
-	public ModuleDescriptor getInventoryModule(){
-		
+	public ModuleDescriptor getSettingsModule() {
 		try {
-			URL moduleDescriptor =  currentThread().getContextClassLoader()
-												   .getResource(format(MODULE_PATH,"module.yaml"));
-			// Load default inventory applications
-			Contribution podContrib 	  = contribution("pod/menu.yaml");
-			Contribution elementContrib   = contribution("element/menu.yaml");
-			Contribution configContrib 	  = contribution("config/menu.yaml");
-			Contribution envContrib		  = contribution("env/menu.yaml");
+			Contribution platformContrib  = contribution("platform/menu.yaml");
+			Contribution roleContrib      = contribution("role/menu.yaml");
 			Contribution dnsContrib 	  = contribution("dns/menu.yaml");
-			Contribution facilityContrib  = contribution("facility/menu.yaml");
-			Contribution racksContrib	  = contribution("rack/menu.yaml");
+
 			
-			return readModuleDescriptor(moduleDescriptor)
-				   .withContributions(podContrib,
-						   			  elementContrib,
-						   			  configContrib,
-						   			  envContrib,
-						   			  dnsContrib,
-						   			  facilityContrib,
-						   			  racksContrib)
-					.build();
+			return readModuleDescriptor(currentThread().getContextClassLoader()
+													   .getResource(format(MODULE_PATH,"module.yaml")))
+				   .withContributions(platformContrib,
+						   			  roleContrib,
+						   			  dnsContrib)
+				   .build();
 		} catch (IOException e) {
-			LOG.severe(format("%s: Cannot process %s module descriptor. Reason: %s",
-					  UIM0001E_CANNOT_PROCESS_MODULE_DESCRIPTOR.getReasonCode(),
-					  MODULE_NAME,
-					  e.getMessage()));
+			LOG.severe(format("%s: Cannot load image module. Reason: %s",
+							  UIM0001E_CANNOT_PROCESS_MODULE_DESCRIPTOR.getReasonCode(),
+							  e.getMessage()));
 			LOG.log(FINE,e.getMessage(),e);
 			throw new ModuleDescriptorException(e,
 												UIM0001E_CANNOT_PROCESS_MODULE_DESCRIPTOR,
