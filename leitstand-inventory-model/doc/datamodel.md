@@ -81,7 +81,7 @@ The modificaton counter is incremented with every resource modification.
 __Convention:__ _The `MODCOUNT` column stores the number of modifications. The column type is `INT4` (`INTEGER`)._
 
 The aggregate root entity contains the modification counter for the entire aggregate. 
-The modification counter needs not be incremented if a concurrent modification of sub-resources is permitted.
+The modification counter must not to be incremented if a concurrent modification of sub-resources is permitted.
 
 #### Optimistic Locking in a Nutshell
 The basic idea of optimistic locking is to increment a modification counter with every record update.
@@ -138,6 +138,29 @@ The `ID` column forms the primary key.
 Unique constraints exist on the following columns:
 - `UUID`, the application ID must be unique for all applications
 - `NAME`, the application name must be unique for all applications
+
+### `content` Table
+The `content` table contains the metadata of stored element configurations. 
+The configuration content is stored in the file system.
+
+| Column 	  | Type 		  | Description 					   			|
+|:------------|:--------------|:----------------------------------------|
+| HASH		 	  | CHARACTER(64) 		  | Content hash value.		|
+| TYPE		  | VARCHAR(32) | Content type. |
+| SIZE   	  | INT8 	  |	Content size in bytes.					|
+| ACTION 	  | VARCHAR(8) 		  | Lifecycle action. 					|
+| TSMODIFIED  | TIMESTAMP 	  | Last-modification timestamp.				|
+| TSCREATED 	  | TIMESTAMP 	  | Creation timestamp.						|
+
+Three lifecycle actions exist:
+
+- `store` indicates that a new content was uploaded and is being stored.
+- `index` indicates that an existing content was uploaded again. Only a new index record is going to be created.
+- `remove` indicates that the content is not referenced by an element configuration history anymore. The content is therefore eligible for being removed.
+
+#### Primary Key
+The `HASH` column forms the primary key.
+
 
 ### `dnszone` Table
 The `dnszone` table contains the configured DNS zones to provision a DNS server.
@@ -219,8 +242,26 @@ This table has three foreign keys:
 - The `ELEMENTROLE_ID` column refers to the `ID` column of the `elementrole` table. 
   This relation assigns the element to its role.
 
+
 ### `element_config` Table
-The `element_config` contains element configurations including the element configuration history.
+The `element_config` contains the element configuration names and their last modification date.
+
+#### Columns
+| Column 			| Type 			| Description 																		|
+|:------------------|:--------------|:----------------------------------------------------------------------------------|
+| ELEMENT_ID     	| INT8			| Reference to the element record.													|
+| NAME 				| VARCHAR(255)	| The configuration name. The configuration name is unique per element.				|
+| TSMODIFIED 		| TIMESTAMP 		| Last-modification timestamp.														|
+
+#### Primary Key
+The `ELEMENT_ID` and `NAME` columns form the primary key.
+
+#### Foreign Keys
+The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
+This relation assigns a configuration to its element.
+
+### `element_config_revision` Table
+The `element_config_revision` contains the configuration history of an element configuration.
 
 #### Columns
 | Column 			| Type 			| Description 																		|
@@ -231,9 +272,7 @@ The `element_config` contains element configurations including the element confi
 | CREATOR			| VARCHAR(255)  	| The creator of the configuration.													|
 | COMMENT 			| VARCHAR(255)	| Optional comment of the configuration change. 										|
 | STATE				| VARCHAR(16)   | Configuration state.																|
-| CONTENTHASH	    | CHARACTER(32)	| MD5 hash of the configuration content												|
-| CONTENTTYPE    	| CHARACTER(32)	| Configuration content-type, which can be any text format (e.g. `application/json`).	|
-| CONFIG				| TEXT			| Configuration content.																|
+| CONTENT_HASH	    | CHARACTER(64)	| Content hash in the content table.										|
 | TSMODIFIED 		| TIMESTAMP 		| Last-modification timestamp.														|
 
 
@@ -250,15 +289,16 @@ The following rules are applied when storing a new configuration:
 - A candidate configuration remains the candidate configuration, if an active configuration is reported that does not match the candidate configuration.
 
 #### Primary Key
-The `ELEMENT_ID`, `NAME` and `TSMODIFIED` columns form the primary key.
+The `UUID` column forms the primary key.
 
 #### Unique Constraints
-The value of the `UUID` column must be unique, 
-i.e. the configuration ID is unique for all configurations.
+The `ELEMENT_ID`, `NAME`, `STATE` and `TSMODIFIED` columns form a unique key.
 
 #### Foreign Keys
-The `ELEMENT_ID` column refers to the `ID` column of the `element` table.
-This relation assigns a configuration to its element.
+The table has three foreign keys: 
+- The `ELEMENT_ID` column refers to the `ID` column of the `element` table. This relation assigns a configuration revision to its element.
+- The `ELEMENT_ID` and `NAME` columns refer the `ELEMENT_ID` and `NAME` columns in the `element_config` table.
+- The `CONTENT_HASH` column refers to the `HASH` column in the `content` table.
 
 ### `element_dns` Table
 The `element_dns` table refers to the DNS records for an element and to the respective DNS zone.
@@ -905,6 +945,35 @@ This table has two unique constraints:
 - `NAME`, the platform name is unique.
 - `VENDOR` and `MODEL` columns form a composite unique key. 
   The combination of vendor and model name is unique.
+
+### `platform_port` Table
+The `platform_port` tables stores information of the platform ports.
+
+#### Columns
+| Column      | Type          | Description 											|
+|:------------|:--------------|:----------------------------------------------------|
+| PLATFORM_ID | INT8          | Platform ID. 					|	
+| FACE  		  | VARCHAR       | Location of the port (FRONT or REAR)                               |
+| CHASSISID   | VARCHAR       | Chassis identifier.									|
+| PANELBLOCKID| VARCHAR       | Panel block identifier.											|
+| PORTID       | VARCHAR  | The port identifier (printed on the chassis).											|
+| IFPNAME | VARCHAR(32) | Physical interface name.								|
+| PORTALIAS   | VARCHAR			  | Optional port alias.						|
+| BWVALUE	  | FLOAT		  | Port speed.	|
+| BWUNIT    | CHAR(4)			  | Port speed unit.								|
+| DESCRIPTION  | VARCHAR	  | Optional port description. |
+
+#### Primary Key
+The primary key is a composed key of the following columns:
+- `PLATFORM_ID`
+- `CHASSISID`
+- `FACE`
+- `PANELBLOCKID`
+- `PORTID`
+
+#### Foreign Keys
+The table has one foreign key.
+- The `PLATFORM_ID` column references the `ID`column in the `platform` table.
 
 ### `rack` Table
 The `rack` describes the racks where the network elements are installed.

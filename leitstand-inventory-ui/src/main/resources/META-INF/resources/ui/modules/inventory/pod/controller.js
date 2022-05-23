@@ -109,9 +109,11 @@ const addElementController = function(){
 									  submission);
 			}
 		},
-		onSuccess:function(){
-			this.navigate({"view":"/ui/views/inventory/pod/pod-elements.html",
-						   "?":this.location.params});
+		onCreated:function(location, context){
+			const params = this.location.params;
+			params['element']=location.split('/')[6];
+			this.navigate({"view":"/ui/views/inventory/element/element.html",
+						   "?":params});
 		}
 	});
 };
