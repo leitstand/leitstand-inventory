@@ -17,6 +17,7 @@ package io.leitstand.inventory.service;
 
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.RackItemData.Face.FRONT;
+import static io.leitstand.inventory.service.RackItemId.randomRackItemId;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -197,11 +198,23 @@ public class RackItemData extends CompositeValue{
 			rack.face = face;
 			return this;
 		}
+
+		/**
+		 * Sets the rack item ID.
+		 * @param id the rack item ID.
+		 * @return a reference to this builder to continue with object creation.
+		 */
+		public Builder withRackItemId(RackItemId id) {
+			assertNotInvalidated(getClass(), rack);
+			rack.rackItemId = id;
+			return this;
+		}
+
 		
 		/**
 		 * Sets the rack item name.
 		 * @param name the rack item name.
-		 * @return the rack item name.
+		 * @return a reference to this builder to continue with object creation.
 		 */
 		public Builder withRackItemName(String name) {
 			assertNotInvalidated(getClass(), rack);
@@ -223,10 +236,11 @@ public class RackItemData extends CompositeValue{
 				this.rack = null;
 			}
 		}
-
-
-		
+	
 	}
+	
+	@Valid
+	private RackItemId rackItemId = randomRackItemId();
 	
 	@Valid
 	private ElementGroupId groupId;
@@ -388,5 +402,13 @@ public class RackItemData extends CompositeValue{
 	 */
 	public Face getFace() {
 		return face;
+	}
+	
+	/**
+	 * Returns the rack item ID.
+	 * @return the rack item ID.
+	 */
+	public RackItemId getRackItemId() {
+		return rackItemId;
 	}
 }

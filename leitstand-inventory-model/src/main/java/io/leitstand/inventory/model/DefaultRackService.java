@@ -1,9 +1,11 @@
 package io.leitstand.inventory.model;
 
 import static io.leitstand.commons.messages.MessageFactory.createMessage;
+import static io.leitstand.commons.model.ObjectUtil.isDifferent;
 import static io.leitstand.inventory.model.Rack.findRacksByFacility;
 import static io.leitstand.inventory.model.Rack.findRacksByName;
 import static io.leitstand.inventory.model.Rack_Item.findRackItem;
+import static io.leitstand.inventory.model.Rack_Item.findRackItemByUnit;
 import static io.leitstand.inventory.service.RackItem.newRackItem;
 import static io.leitstand.inventory.service.RackItemData.newRackItemData;
 import static io.leitstand.inventory.service.RackItems.newRackItems;
@@ -100,6 +102,7 @@ public class DefaultRackService implements RackService{
 			   .withPlatformId(item.getPlatformId())
 			   .withPlatformName(item.getPlatformName())
 			   .withHeight(item.getHeight())
+			   .withRackItemId(item.getRackItemId())
 			   .withRackItemName(item.getName())
 			   .withPosition(item.getPosition())
 			   .withFace(item.getFace())
@@ -217,23 +220,35 @@ public class DefaultRackService implements RackService{
 		if(rackItem.getRackItemName()== null && rackItem.getElementId() == null && rackItem.getElementName() == null) {
 			throw new UnprocessableEntityException(IVT0807E_RACK_ITEM_NAME_OR_ELEMENT_REQUIRED);
 		}
+
+		Rack_Item item = repository.find(Rack_Item.class,rackItem.getRackItemId());
 		
-		Rack_Item item = repository.find(Rack_Item.class,new Rack_ItemPK(rack, rackItem.getPosition()));
+		Rack_Item existing = repository.execute(Rack_Item.findRackItemByUnit(rack, rackItem.getPosition()));
+		if (existing != null && isDifferent(existing.getRackItemId(), rackItem.getRackItemId())) {
+			// Remove existing rack item to avoid unique key constraint violations!
+			rack.removeElement(existing);
+		}
+		
 		if(item == null) {
 			item = new Rack_Item(rack, 
+								 rackItem.getRackItemId(),
 								 rackItem.getPosition(),
 								 rackItem.getFace());
-		}
+		} 
 		Element element = elements.fetchElement(rackItem.getElementId(),
 		                                        rackItem.getElementName());
 		if(element != null) {
-			Rack_Item old = repository.execute(Rack_Item.findRackItem(element));
+			Rack_Item old = repository.execute(findRackItem(element));
 			if(old != null && old.getPosition() != rackItem.getPosition()) {
 				rack.removeElement(old);
 			}
 		}
-		item.setElement(element);
-		
+		if (rackItem.getElementId() == null && rackItem.getElementName() == null) {
+			item.setElement(null);
+		} else {
+			item.setElement(element);
+		}
+		item.setPosition(rackItem.getPosition());
 		item.setName(rackItem.getRackItemName());
 		item.setHeight(rackItem.getHeight());
 		item.setFace(rackItem.getFace());
@@ -255,7 +270,7 @@ public class DefaultRackService implements RackService{
 	@Override
 	public void removeRackItem(RackId rackId, int unit) {
 		Rack rack = racks.fetchRack(rackId);
-		Rack_Item item = repository.find(Rack_Item.class, new Rack_ItemPK(rack, unit));
+		Rack_Item item = repository.execute(findRackItemByUnit(rack, unit));
 		if(item != null) {
 			repository.remove(item);
 			LOG.fine(()->format("%s: Rack item %d of rack %s (%s) removed.",
@@ -274,7 +289,7 @@ public class DefaultRackService implements RackService{
 	@Override
 	public void removeRackItem(RackName rackName, int unit) {
 		Rack rack = racks.fetchRack(rackName);
-		Rack_Item item = repository.find(Rack_Item.class, new Rack_ItemPK(rack, unit));
+		Rack_Item item = repository.execute(findRackItemByUnit(rack, unit));
 		if(item != null) {
 			repository.remove(item);
 			LOG.fine(()->format("%s: Rack item %d of rack %s (%s) removed.",
@@ -364,7 +379,7 @@ public class DefaultRackService implements RackService{
 	}
 
 	private RackItem getRackItem(Rack rack, int unit) {
-		Rack_Item item = repository.find(Rack_Item.class, new Rack_ItemPK(rack, unit));
+		Rack_Item item = repository.execute(findRackItemByUnit(rack, unit));
 		if(item == null) {
 			throw new EntityNotFoundException(IVT0806E_RACK_ITEM_NOT_FOUND, rack.getRackName(),unit);
 		}

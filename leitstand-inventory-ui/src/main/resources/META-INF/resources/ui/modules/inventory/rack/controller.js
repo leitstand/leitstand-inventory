@@ -374,13 +374,6 @@ const addRackItemController = function(){
 					};
 					rack.addRackItem(this.location.params,item);
 				}
-
-			}
-		},
-		selections:{
-			'type':function(type){
-				this.viewModel.setProperty('type',type);
-				this.render();
 			}
 		},
 		onSuccess:function(){
@@ -396,10 +389,13 @@ const rackItemController = function(){
 		resource:item,
 		viewModel: function(item){
 			item.element = function(){
-				return !!item.element_id;
+				return item.type == "element";
 			};
 			item.other = function(){
-				return !item.element_id;
+				return item.type == "other";
+			};
+			if (!item.type){
+				item.type = item.item.rack_item_name ? "other" : "element";
 			}
 			return item;
 		},
@@ -408,26 +404,23 @@ const rackItemController = function(){
 				item.removeRackItem(this.location.params);
 			},
 			'save-rack-item':function(){
-				const type = this.input("type").value();
-				if(type == 'element'){
-					const element = this.input("input[name='element']:checked");
-					const settings = {
-						'position':this.input('position').value(),
-						'face': this.input('face').value(),
-						'element_id': element && element.value() || null,
-						'element_name': element && element.getAttribute('data-name')
-					};
-					item.saveSettings(this.location.params,item);
+				const type = this.getViewModel("type");
+				const settings = this.getViewModel("item");
+				if (type == "other") {
+					delete settings.element_id;
+					delete settings.element_name;
+					delete settings.element_role;
+					delete settings.element_alias;
 				} else {
-					const settings = {
-						'position':this.input('position').value(),
-						'rack_item_name': this.input('rack_item_name').value(),
-						'height': this.input('height').value(),
-						'face': this.input('face').value(),
-					};
-					item.saveSettings(this.location.params,item);
+					delete settings.rack_item_name;
+					const element = this.element("input[name='element']:checked");
+					if (element){
+						settings.element_id = element.value() || null,
+						settings.element_name = element.getAttribute('data-name')
+					}
 				}
-			
+				
+				item.saveSettings(this.location.params,settings);
 			}
 		},
 		onSuccess:function(){

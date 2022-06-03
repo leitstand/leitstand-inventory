@@ -16,6 +16,7 @@ import static io.leitstand.inventory.service.ElementName.elementName;
 import static io.leitstand.inventory.service.FacilityId.facilityId;
 import static io.leitstand.inventory.service.FacilityName.facilityName;
 import static io.leitstand.inventory.service.ReasonCode.IVT0809E_RACK_NAME_ALREADY_IN_USE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0810E_RACK_ITEM_ALREADY_EXISTS;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.util.List;
@@ -45,6 +46,7 @@ import io.leitstand.inventory.service.RackItems;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.RackService;
 import io.leitstand.inventory.service.RackSettings;
+import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.security.auth.Scopes;
 
 @Resource
@@ -134,15 +136,9 @@ public class RackResource {
 	public Response storeRackItem(@Valid @PathParam("rack") RackId rackId,
 								  @PathParam("unit") int unit,
 								  @Valid RackItemData item) {
-		if(isDifferent(unit, item.getPosition())) {
-			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE,
-												   "unit",
-												   unit,
-												   item.getPosition());
-		}
-		
 		service.storeRackItem(rackId,item);
 		return success(messages);
+
 	}
 	
 	@PUT
@@ -150,12 +146,6 @@ public class RackResource {
 	public Response storeRackItem(@Valid @PathParam("rack") RackName rackName,
 							  	  @PathParam("unit") int unit,
 							  	  @Valid RackItemData item) {
-		if(isDifferent(unit, item.getPosition())) {
-			throw new UnprocessableEntityException(VAL0003E_IMMUTABLE_ATTRIBUTE,
-												   "unit",
-												   unit,
-												   item.getPosition());
-		}
 		service.storeRackItem(rackName,item);
 		return success(messages);
 	}

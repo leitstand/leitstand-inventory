@@ -15,8 +15,6 @@
  */
 package io.leitstand.inventory.service;
 
-import javax.ws.rs.core.MediaType;
-
 /**
  * A service for managing element configurations.
  * <p>
