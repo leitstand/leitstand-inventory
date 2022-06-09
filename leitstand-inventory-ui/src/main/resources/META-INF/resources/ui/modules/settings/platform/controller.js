@@ -74,7 +74,7 @@ const platformController = function() {
 				this.renderView();
 			},
 			"remove-port":function(){
-				if(portIndex > 0){
+				if(portIndex >= 0){
 					this.getViewModel("port_mappings").splice(portIndex,1);
 				}	
 				this.updateViewModel({"tmp":{},"edit":false});
