@@ -57,7 +57,7 @@
 	</ui-group>
 	<ui-group>
 		<ui-label>Position</ui-label>
-		<rack-item-position name="position" bind="item.position" readonly disabled>
+		<rack-item-position name="position" bind="item.position">
 			<ui-label>Position</ui-label>
 			<ui-note>Select rack position</ui-note>
 		</rack-item-position>	
@@ -72,7 +72,7 @@
 	</ui-group>
 	
 	<ui-actions>
-		<ui-button primary name="save-settings">Save item</ui-button>
+		<ui-button primary name="save-rack-item">Save item</ui-button>
 		<ui-button href="rack-item.html?rack={{rack_id}}&unit={{item.position}}">Cancel</ui-button>
 	</ui-actions>
 </ui-form>

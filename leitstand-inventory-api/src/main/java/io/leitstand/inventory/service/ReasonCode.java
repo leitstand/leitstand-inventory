@@ -267,6 +267,9 @@ public enum ReasonCode implements Reason{
 	/** Rack name already in use.*/
 	IVT0809E_RACK_NAME_ALREADY_IN_USE,
 	
+	/** Rack item does already exist.*/
+	IVT0810E_RACK_ITEM_ALREADY_EXISTS,
+	
 	/** The platform does not exist.*/
 	IVT0900E_PLATFORM_NOT_FOUND,
 	

@@ -17,6 +17,8 @@ package io.leitstand.inventory.service;
 
 import java.util.List;
 
+import io.leitstand.commons.ConflictException;
+
 /**
  * A transactional service to manage racks and rack items.
  */

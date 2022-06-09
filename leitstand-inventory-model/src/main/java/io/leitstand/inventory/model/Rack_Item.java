@@ -20,16 +20,19 @@ import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import io.leitstand.commons.model.Query;
+import io.leitstand.inventory.jpa.RackItemIdConverter;
 import io.leitstand.inventory.service.AdministrativeState;
 import io.leitstand.inventory.service.ElementAlias;
 import io.leitstand.inventory.service.ElementGroupId;
@@ -41,13 +44,18 @@ import io.leitstand.inventory.service.ElementRoleName;
 import io.leitstand.inventory.service.PlatformId;
 import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackItemData;
+import io.leitstand.inventory.service.RackItemId;
 import io.leitstand.inventory.service.RackName;
 
 @Entity
-@Table(schema="inventory", name="rack_item")
+@Table(schema="inventory", 
+	   name="rack_item", 
+	   uniqueConstraints=@UniqueConstraint(columnNames ={"rack_id","position"}))
 @NamedQuery(name="Rack_Item.findRackItem",
-			query="SELECT r FROM Rack_Item r WHERE r.element=:element")			 
-@IdClass(Rack_ItemPK.class)
+			query="SELECT r FROM Rack_Item r WHERE r.element=:element")			
+@NamedQuery(name="Rack_Item.findByUnit",
+			query="SELECT r FROM Rack_Item r WHERE r.rack=:rack AND r.position=:unit")
+
 public class Rack_Item implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -59,11 +67,21 @@ public class Rack_Item implements Serializable {
 					   .getSingleResult();
 	}
 	
-	@Id
-	@JoinColumn(name="rack_id")
-	private Rack rack;
+	public static Query<Rack_Item> findRackItemByUnit(Rack rack, int unit){
+		return em -> em.createNamedQuery("Rack_Item.findByUnit", 
+										 Rack_Item.class)
+					   .setParameter("rack", rack)
+					   .setParameter("unit", unit)
+					   .getSingleResult();
+	}
 
 	@Id
+	@Convert(converter = RackItemIdConverter.class)
+	@Column(name="uuid")
+	private RackItemId rackItemId;
+	
+	@JoinColumn(name="rack_id")
+	private Rack rack;
 	private int position;
 	
 	@Enumerated(STRING)
@@ -80,9 +98,11 @@ public class Rack_Item implements Serializable {
 	}
 	
 	public Rack_Item(Rack rack,
+					 RackItemId rackItemId,
 					 int position,
 					 RackItemData.Face face) {
 		this.rack = rack;
+		this.rackItemId = rackItemId;
 		this.position = position;
 		this.face = face;
 		this.rack.addElement(this);
@@ -179,6 +199,10 @@ public class Rack_Item implements Serializable {
 
 	public AdministrativeState getAdministrativeState() {
 		return optional(element,Element::getAdministrativeState);
+	}
+
+	public RackItemId getRackItemId() {
+		return rackItemId;
 	}
 	
 }

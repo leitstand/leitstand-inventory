@@ -78,6 +78,7 @@
 		<class>io.leitstand.inventory.jpa.ServiceTypeConverter</class>
 		<class>io.leitstand.inventory.jpa.VlanIDConverter</class>
 		<class>io.leitstand.inventory.jpa.VlanTPIDConverter</class>
+		<class>io.leitstand.inventory.jpa.RackItemIdConverter</class>
 		<class>io.leitstand.inventory.jpa.PeriodConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformNameConverter</class>
 		<class>io.leitstand.inventory.jpa.PlatformChipsetNameConverter</class>
