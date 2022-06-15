@@ -138,8 +138,11 @@ public enum ReasonCode implements Reason{
 	/** Configuration cannot be restored.*/
     IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,
     
-    /** Outdated element configuration removed*/
-    IVT0339E_ELEMENT_OUTDATED_CONFIG_REMOVED,
+    /** The current candidate configuration matches the superseded configuration. No restore needed.*/
+    IVT0339I_SUPERSEDED_CONFIG_MATCHES_EXISTING_CANDIDATE_CONFIG,
+    
+    /** Created a new candidate configuration from a superseded configuration. The candidate configuration can then be applied to the element.*/
+    IVT0335I_CREATED_CANDIDATE_CONFIG_FROM_SUPERESED_CONFIG,
     	
 	/** The service does not exist on the specified element.*/
 	IVT0320E_ELEMENT_SERVICE_NOT_FOUND,

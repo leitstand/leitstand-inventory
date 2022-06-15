@@ -21,7 +21,7 @@ public class StoreElementConfigResult {
 		return new StoreElementConfigResult(configId,true);
 	}
 
-	public static final StoreElementConfigResult configUpdated(ElementConfigId configId) {
+	public static final StoreElementConfigResult seeOther(ElementConfigId configId) {
 		return new StoreElementConfigResult(configId,false);
 	}
 
