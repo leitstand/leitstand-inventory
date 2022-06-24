@@ -32,6 +32,7 @@ import static io.leitstand.inventory.model.Image.countElementImageReferences;
 import static io.leitstand.inventory.model.Image.countReleaseImageReferences;
 import static io.leitstand.inventory.model.Image.findImageById;
 import static io.leitstand.inventory.model.Image.findImageByName;
+import static io.leitstand.inventory.model.Image.findReleaseImage;
 import static io.leitstand.inventory.model.Image.markAllSuperseded;
 import static io.leitstand.inventory.model.Image.restoreCandidates;
 import static io.leitstand.inventory.model.Image.searchImages;
@@ -63,6 +64,7 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0201I_IMAGE_STATE_UPD
 import static io.leitstand.inventory.service.ReasonCode.IVT0202I_IMAGE_STORED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0203I_IMAGE_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0204E_IMAGE_NOT_REMOVABLE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND;
 import static io.leitstand.inventory.service.ReleaseId.releaseId;
 import static io.leitstand.inventory.service.ReleaseName.releaseName;
@@ -586,16 +588,16 @@ public class DefaultImageService implements ImageService {
                                           ImageType imageType) {
         ElementRole role = repository.execute(ElementRole.findRoleByName(roleName));
         if(role == null) {
-            LOG.fine(() -> format("%s: Element role %s not found.", ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND.getReasonCode(),roleName));
-            throw new EntityNotFoundException(ReasonCode.IVT0400E_ELEMENT_ROLE_NOT_FOUND,roleName);
+            LOG.fine(() -> format("%s: Element role %s not found.", IVT0400E_ELEMENT_ROLE_NOT_FOUND.getReasonCode(),roleName));
+            throw new EntityNotFoundException(IVT0400E_ELEMENT_ROLE_NOT_FOUND,roleName);
         }
-        Image image = repository.execute(Image.findReleaseImage(role, chipset,imageType));
+        Image image = repository.execute(findReleaseImage(role, chipset,imageType));
         if(image == null) {
             LOG.fine(() -> format("%s: No default image for role %s with chipset %s found.",
-                                  ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE.getReasonCode(),
+                                  IVT0205E_RELEASE_IMAGE_NOT_FOUND.getReasonCode(),
                                   roleName,
                                   chipset));
-            throw new EntityNotFoundException( ReasonCode.IVT0205E_RELEASE_IMAGE_NOT_REMOVABLE,roleName,chipset);
+            throw new EntityNotFoundException( IVT0205E_RELEASE_IMAGE_NOT_FOUND,roleName,chipset);
         }
         
         return referenceOf(image);
