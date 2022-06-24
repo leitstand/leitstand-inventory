@@ -116,7 +116,6 @@ import io.leitstand.inventory.service.ImageType;
 import io.leitstand.inventory.service.PackageVersionInfo;
 import io.leitstand.inventory.service.PlatformChipsetName;
 import io.leitstand.inventory.service.PlatformSettings;
-import io.leitstand.inventory.service.ReasonCode;
 import io.leitstand.inventory.service.ReleaseRef;
 import io.leitstand.inventory.service.RoleImage;
 import io.leitstand.inventory.service.RoleImages;
@@ -573,15 +572,6 @@ public class DefaultImageService implements ImageService {
 									   rs -> imageType(rs.getString(1)));
 	}
 	
-	@Override
-	public List<Version> getImageVersions(ImageType type) {
-		return db.executeQuery(prepare("SELECT DISTINCT major, minor, patch, prerelease FROM inventory.image WHERE type=? ORDER BY major, minor, patch ASC",type.toString()),
-									   rs -> new Version(rs.getInt(1),
-											   			 rs.getInt(2),
-											   			 rs.getInt(3),
-											   			 rs.getString(4)));
-	}
-
     @Override
     public ImageReference getReleaseImage(ElementRoleName roleName, 
                                           PlatformChipsetName chipset,

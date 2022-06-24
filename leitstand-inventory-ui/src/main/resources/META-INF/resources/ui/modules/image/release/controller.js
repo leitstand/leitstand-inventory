@@ -1,20 +1,7 @@
 import {Images} from '/ui/modules/image/image.js'
 import {Releases,Release} from './release.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select} from '/ui/js/ui-components.js';
-
-
-class ReleaseImageSelector extends Select {
-    
-    options(){
-        const images = new Images({'scope':'_versions'});
-        return images.load({'image_type':'onl-installer'})
-                     .then(versions => [{'value':''}].concat(versions.map(version => ({'value':version})))); 
-    }
-    
-}
-customElements.define('release-image-version',ReleaseImageSelector);
-
+import './components.js';
 
 const releasesController = function(){
     const releases = new Releases();
@@ -54,29 +41,7 @@ const addReleaseController = function(){
         },
         buttons:{
             'add-release':function(){
-                releases.addRelease(this.location.params,this.getViewModel());
-            }
-        },
-        selections:{
-            'image_version':function(version){
-                const images = new Images();
-                if(version){
-                    images.load({'image_version':version,
-                                'image_type':'onl-installer'})
-                          .then(images => {
-                              // Inject images to the view model 
-                              this.updateViewModel({'images':images});
-                              // and render view again.
-                              this.renderView(); 
-                          });                    
-                } else {
-                    // Inject images to the view model 
-                    this.updateViewModel({'images':null});
-                    // and render view again.
-                    this.renderView(); 
-                }
-
-                
+                releases.addRelease(this.location.params, this.getViewModel());
             }
         },
         onSuccess:function(){

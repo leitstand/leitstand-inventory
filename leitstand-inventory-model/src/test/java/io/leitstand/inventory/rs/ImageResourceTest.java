@@ -163,19 +163,6 @@ public class ImageResourceTest {
 	}
 	
 	@Test
-	public void return_empty_versions_list_if_image_type_is_null() {
-	    assertTrue(resource.getImageVersions(null).isEmpty());
-	    verifyZeroInteractions(service);
-	}
-	
-    @Test
-    public void query_image_versions_by_image_type() {
-        resource.getImageVersions(IMAGE_TYPE);
-        verify(service).getImageVersions(IMAGE_TYPE);
-    }	
-	    
-	
-	@Test
 	public void remove_image_by_id() {
 	    resource.removeImage(IMAGE_ID);
 	    verify(service).removeImage(IMAGE_ID);
