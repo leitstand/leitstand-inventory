@@ -3,6 +3,8 @@ import {Releases,Release} from './release.js';
 import {Controller,Menu} from '/ui/js/ui.js';
 import './components.js';
 
+
+
 const releasesController = function(){
     const releases = new Releases();
     return new Controller({
@@ -37,7 +39,12 @@ const addReleaseController = function(){
     return new Controller({
         resource:releases,
         viewModel:function(){
-            return {};
+			// Auto generate release name based on current date
+			const now = new Date();
+			const releaseName = `Release ${(100+now.getUTCMonth()).toString().substring(1)}/${now.getUTCFullYear()}`
+            return {
+				'release_name':releaseName
+			};
         },
         buttons:{
             'add-release':function(){
