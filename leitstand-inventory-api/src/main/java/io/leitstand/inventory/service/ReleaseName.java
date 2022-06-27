@@ -1,10 +1,8 @@
 package io.leitstand.inventory.service;
 
-import static io.leitstand.commons.model.Patterns.UUID_PATTERN;
-
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import io.leitstand.commons.model.Scalar;
 import io.leitstand.inventory.jsonb.ReleaseNameAdapter;
@@ -40,8 +38,8 @@ public class ReleaseName extends Scalar<String> {
         return fromString(releaseName,ReleaseName::new);
     }
     
-    @NotNull(message="{release_id.required}")
-    @Pattern(regexp=UUID_PATTERN, message="{release_id.invalid}")
+    @NotNull(message="{release_name.required}")
+    @Size(min=3, message="{release_name.invalid}")
     private String value;
     
     /**

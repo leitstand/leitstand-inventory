@@ -11,6 +11,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import io.leitstand.commons.model.ValueObject;
 
 /**
@@ -115,11 +119,25 @@ public class ReleaseSettings extends ValueObject {
         }
     }
     
+
+    @Valid
+    @NotNull(message="{release_id.required}")
     private ReleaseId releaseId = randomReleaseId();
+   
+    @Valid
+    @NotNull(message="{release_name.required}")
     private ReleaseName releaseName;
+    
+    @Valid
+    @NotNull(message="{release_state.required}")
     private ReleaseState releaseState = CANDIDATE;
+    
     private String description;
+    
+    @Valid
+    @NotEmpty(message="{images.required}")
     private List<ReleaseImage> images = emptyList();
+    
     
     /**
      * Returns the release ID.
