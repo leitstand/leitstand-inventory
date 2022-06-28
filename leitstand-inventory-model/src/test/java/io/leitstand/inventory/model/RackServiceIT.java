@@ -38,6 +38,7 @@ import static io.leitstand.inventory.service.PlatformName.platformName;
 import static io.leitstand.inventory.service.RackId.randomRackId;
 import static io.leitstand.inventory.service.RackItemData.newRackItemData;
 import static io.leitstand.inventory.service.RackItemData.Face.REAR;
+import static io.leitstand.inventory.service.RackItemId.randomRackItemId;
 import static io.leitstand.inventory.service.RackName.rackName;
 import static io.leitstand.inventory.service.RackSettings.newRackSettings;
 import static io.leitstand.inventory.service.ReasonCode.IVT0300E_ELEMENT_NOT_FOUND;
@@ -87,6 +88,7 @@ import io.leitstand.inventory.service.PlatformName;
 import io.leitstand.inventory.service.RackId;
 import io.leitstand.inventory.service.RackItem;
 import io.leitstand.inventory.service.RackItemData;
+import io.leitstand.inventory.service.RackItemId;
 import io.leitstand.inventory.service.RackItems;
 import io.leitstand.inventory.service.RackName;
 import io.leitstand.inventory.service.RackService;
@@ -96,6 +98,7 @@ public class RackServiceIT extends InventoryIT {
 	
 	private static final RackId 			 RACK_ID 		  = randomRackId();
 	private static final RackName 			 RACK_NAME 		  = rackName("rack");
+	private static final RackItemId			 RACK_ITEM_ID	  = randomRackItemId();
 	private static final ElementId 			 ELEMENT_ID 	  = randomElementId();
 	private static final ElementName 		 ELEMENT_NAME 	  = elementName("element");
 	private static final ElementAlias 		 ELEMENT_ALIAS 	  = elementAlias("alias");
@@ -521,6 +524,7 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 		RackItemData item = newRackItemData()
+							.withRackItemId(RACK_ITEM_ID)
 							.withElementId(ELEMENT_ID)
 							.withElementName(ELEMENT_NAME)
 							.withPosition(1)
@@ -531,6 +535,7 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 		RackItemData update = newRackItemData()
+							  .withRackItemId(RACK_ITEM_ID)
 							  .withRackItemName("Cable Manager")
 							  .withPosition(1)
 							  .build();
@@ -635,6 +640,7 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 		RackItemData item = newRackItemData()
+							.withRackItemId(RACK_ITEM_ID)
 							.withElementId(ELEMENT_ID)
 							.withElementName(ELEMENT_NAME)
 							.withPosition(1)
@@ -645,6 +651,7 @@ public class RackServiceIT extends InventoryIT {
 		});
 		
 		RackItemData moved = newRackItemData()
+							 .withRackItemId(RACK_ITEM_ID)
 							 .withElementId(ELEMENT_ID)
 							 .withElementName(ELEMENT_NAME)
 							 .withPosition(25)

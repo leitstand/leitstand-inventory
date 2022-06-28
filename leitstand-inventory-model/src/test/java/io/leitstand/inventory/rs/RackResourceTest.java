@@ -160,27 +160,6 @@ public class RackResourceTest {
 	}
 	
 	@Test
-	public void cannot_modify_rack_item_unit_by_id() {
-		exception.expect(UnprocessableEntityException.class);
-		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
-		
-		RackItemData item = mock(RackItemData.class);
-		resource.storeRackItem(RACK_ID,10,item);
-		verifyZeroInteractions(service);
-	}
-	
-	
-	@Test
-	public void cannot_modify_rack_item_unit_by_name() {
-		exception.expect(UnprocessableEntityException.class);
-		exception.expect(reason(VAL0003E_IMMUTABLE_ATTRIBUTE));
-		
-		RackItemData item = mock(RackItemData.class);
-		resource.storeRackItem(RACK_NAME,10,item);
-		verifyZeroInteractions(service);	
-	}
-	
-	@Test
 	public void get_rack_item_by_id() {
 		resource.getRackItem(RACK_ID,1);
 		verify(service).getRackItem(RACK_ID,1);

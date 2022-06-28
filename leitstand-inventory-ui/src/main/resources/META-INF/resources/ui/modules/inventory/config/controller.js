@@ -67,6 +67,15 @@ const elementConfigController = function(){
 		buttons: {
 			"confirm-remove":function(){
 				config.remove(this.location.params);
+			},
+			"confirm-restore":function(){
+				const params = this.location.params;
+				params["comment"] = this.input("comment").value();
+				config.restoreConfig(params)
+				      .then(()=>{
+					this.navigate({'view':'element-configs.html',
+								   '?':this.location.params});
+				})
 			}
 		},
 		onCreated: function(location){

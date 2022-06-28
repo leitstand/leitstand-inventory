@@ -1007,6 +1007,7 @@ The `rack_item` table contains the items installed in a rack.
 #### Columns
 | Column 	 		    | Type    	  | Description 		                 		                           |
 |:----------------------|:------------|:-------------------------------------------------------------------|
+| UUID                  | CHAR(36)    | Unique rack item ID.
 | RACK\_ID 				| INT8		  | Reference to the rack record.			                           |
 | POSITION				| INT4 		  | Rack unit where the item is installed.	                           |
 | FACE					| VARCHAR(8)  | The rack face to access the item (FRONT or REAR).                  |
@@ -1018,7 +1019,10 @@ The vertical position of half-rack units is either `LEFT` for left or `RIGHT` fo
 The vertical position is omitted (`null`) for full-width units. 
 
 #### Primary Key
-The `RACK_ID` and `POSITION` columns form the primary key.
+The `UUID` colum forms the primary key.
+
+#### Unique Keys
+The `RACK_ID` and `POSITION` columns forms a unique key.
 
 #### Foreign Keys
 This table has two foreign keys:

@@ -539,6 +539,14 @@ export class Element extends Resource {
 				   .POST(config.content);
 	}
 	
+	restoreConfig(params){
+		return this.json("/api/v1/elements/{{&element}}/configs/{{&config}}/restore?comment={{comment}}",
+						 this._cfg,
+						 params)
+					.POST();
+		
+	}
+	
 	saveEnvironment(params,env){
 		return this.json("/api/v1/elements/{{&element}}/environments",
 				 		 this._cfg,

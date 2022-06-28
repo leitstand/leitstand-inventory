@@ -18,13 +18,14 @@
 	<ui-message>
 		<ui-note>
 			Restoring a configuration makes it the new candidate configuration.
-			An existing candidate configuration will be replaced.
+			An existing candidate configuration gets overwritten by this operation.
+			The candidate configuration can then be applied to the element.
 		</ui-note>
 		<ui-input name="comment">
 			<ui-label>Comment</ui-label>
-			<ui-note>Provide details why the configuration is restored</ui-note>
+			<ui-note>Provide details why the configuration gets restored.</ui-note>
 		</ui-input>
 	</ui-message>
-	<ui-approve name="confirm-edit" scopesAllowed="ivt ivt.element ivt.element.config">Confirm</ui-button>
+	<ui-approve name="confirm-restore" scopesAllowed="ivt ivt.element ivt.element.config">Confirm</ui-approve>
 	<ui-decline href="element-config.html?group={{group_id}}&element={{element_id}}&config={{config_id}}">Cancel</ui-decline>
 </ui-confirm>

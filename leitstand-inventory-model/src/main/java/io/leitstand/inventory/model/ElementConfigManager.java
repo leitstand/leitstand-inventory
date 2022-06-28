@@ -38,9 +38,12 @@ import static io.leitstand.inventory.service.ReasonCode.IVT0331I_ELEMENT_CONFIG_
 import static io.leitstand.inventory.service.ReasonCode.IVT0332E_ELEMENT_CONFIG_REVISION_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0333E_ELEMENT_CONFIG_NOT_FOUND;
 import static io.leitstand.inventory.service.ReasonCode.IVT0334E_ELEMENT_ACTIVE_CONFIG_NOT_FOUND;
+import static io.leitstand.inventory.service.ReasonCode.IVT0335I_CREATED_CANDIDATE_CONFIG_FROM_SUPERESED_CONFIG;
 import static io.leitstand.inventory.service.ReasonCode.IVT0337I_ELEMENT_CONFIG_REMOVED;
 import static io.leitstand.inventory.service.ReasonCode.IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE;
+import static io.leitstand.inventory.service.ReasonCode.IVT0339I_SUPERSEDED_CONFIG_MATCHES_EXISTING_CANDIDATE_CONFIG;
 import static io.leitstand.inventory.service.StoreElementConfigResult.configCreated;
+import static io.leitstand.inventory.service.StoreElementConfigResult.seeOther;
 import static io.leitstand.security.auth.UserName.userName;
 import static java.lang.String.format;
 import static java.util.logging.Logger.getLogger;
@@ -339,12 +342,28 @@ public class ElementConfigManager {
 		                          IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE.getReasonCode(),
 		                          config.getConfigState(),
 		                          config.getName()));
-		    
 		    throw new ConflictException(IVT0338E_ELEMENT_CONFIG_NOT_RESTORABLE,config.getName(),config.getConfigState());
+		}
+		// Remove existing candidate configuration. Only one candidate configuration must exist at a time.
+		Element_Config_Revision latest = repository.execute(findLatestConfig(element, config.getName()));
+		if (latest != null && latest.isCandidateConfig()) {
+			if (latest.getContentHash().equals(config.getContentHash())) {
+				// Configuration matches the current candidate configuration.
+				// No new candidate configuration needed!
+			    LOG.fine(() -> format("%s: The candidate %s configuration and the superseded configuration are equal. No need to create a new candidate configuration.",
+			    				      IVT0339I_SUPERSEDED_CONFIG_MATCHES_EXISTING_CANDIDATE_CONFIG.getReasonCode(),
+			    				      config.getName()));
+			    messages.add(createMessage(IVT0339I_SUPERSEDED_CONFIG_MATCHES_EXISTING_CANDIDATE_CONFIG, config.getName()));
+				return seeOther(latest.getConfigId());
+			}
+			repository.remove(latest);
 		}
 		Element_Config_Revision candidate = new Element_Config_Revision(config,creator.getUserName(),comment);
 		repository.add(candidate);
-		
+	    LOG.fine(() -> format("%s: Created new %s candidate configuration from the superseded configuration.",
+	    					  IVT0335I_CREATED_CANDIDATE_CONFIG_FROM_SUPERESED_CONFIG.getReasonCode(),
+	    					  config.getName()));
+	    messages.add(createMessage(IVT0335I_CREATED_CANDIDATE_CONFIG_FROM_SUPERESED_CONFIG, config.getName()));
 		return configCreated(candidate.getConfigId());
 	}
 
