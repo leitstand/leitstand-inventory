@@ -210,17 +210,5 @@ public class ImageResource {
 	public List<ImageType> getImageTypes() {
 		return service.getImageTypes();
 	}
-	
-	@GET
-	@Path("/_versions")
-	@Scopes({IVT, IVT_READ, IVT_IMAGE})
-	public List<Version> getImageVersions(@QueryParam("image_type") @Valid ImageType imageType) {
-	    if(imageType == null) {
-	        return emptyList();
-	    }
-		return service.getImageVersions(imageType);
-	}
-
-
-	
+		
 }

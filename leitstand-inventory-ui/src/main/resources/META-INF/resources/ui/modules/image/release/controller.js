@@ -1,19 +1,8 @@
 import {Images} from '/ui/modules/image/image.js'
 import {Releases,Release} from './release.js';
 import {Controller,Menu} from '/ui/js/ui.js';
-import {Select} from '/ui/js/ui-components.js';
+import './components.js';
 
-
-class ReleaseImageSelector extends Select {
-    
-    options(){
-        const images = new Images({'scope':'_versions'});
-        return images.load({'image_type':'onl-installer'})
-                     .then(versions => [{'value':''}].concat(versions.map(version => ({'value':version})))); 
-    }
-    
-}
-customElements.define('release-image-version',ReleaseImageSelector);
 
 
 const releasesController = function(){
@@ -50,33 +39,16 @@ const addReleaseController = function(){
     return new Controller({
         resource:releases,
         viewModel:function(){
-            return {};
+			// Auto generate release name based on current date
+			const now = new Date();
+			const releaseName = `Release ${(100+now.getUTCMonth()).toString().substring(1)}/${now.getUTCFullYear()}`
+            return {
+				'release_name':releaseName
+			};
         },
         buttons:{
             'add-release':function(){
-                releases.addRelease(this.location.params,this.getViewModel());
-            }
-        },
-        selections:{
-            'image_version':function(version){
-                const images = new Images();
-                if(version){
-                    images.load({'image_version':version,
-                                'image_type':'onl-installer'})
-                          .then(images => {
-                              // Inject images to the view model 
-                              this.updateViewModel({'images':images});
-                              // and render view again.
-                              this.renderView(); 
-                          });                    
-                } else {
-                    // Inject images to the view model 
-                    this.updateViewModel({'images':null});
-                    // and render view again.
-                    this.renderView(); 
-                }
-
-                
+                releases.addRelease(this.location.params, this.getViewModel());
             }
         },
         onSuccess:function(){

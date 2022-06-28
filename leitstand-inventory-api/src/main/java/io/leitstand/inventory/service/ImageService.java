@@ -100,13 +100,6 @@ public interface ImageService {
 	List<ImageType> getImageTypes();
 	
 	/**
-	 * Returns the list of image version for the specified image type. 
-	 * @param imageType the image type.
-	 * @return the list of image versions for the specified image type.
-	 */
-	List<Version> getImageVersions(ImageType imageType);
-	
-	/**
 	 * Returns the release image for the specified element role and chipset.
 	 * @param elementRole the element role.
 	 * @param platformChipset the platform chipset.
