@@ -72,7 +72,7 @@ class CreateImageStubRecordFlow implements Flow<Image>{
 		if(imageName != null) {
 			return imageName;
 		}
-		return imageName(element.getElementRoleName()+"_"+element.getPlatformName()+"_"+installed.getImageType()+"_"+installed.getImageVersion());
+		return imageName(element.getElementRoleName()+"_"+element.getPlatform().getChipset()+"_"+installed.getImageType()+"_"+installed.getImageVersion());
 	}
 
 
