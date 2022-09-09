@@ -429,7 +429,7 @@ const elementModulesController = function(){
 };
 
 const elementModuleController = function(){
-	const module = new Element({"scope":"modules/{{module}}"});
+	const module = new Element({"scope":"modules/{{&module}}"});
 	return new Controller({resource:module,
 					 buttons:{
 						 "save":function(){
