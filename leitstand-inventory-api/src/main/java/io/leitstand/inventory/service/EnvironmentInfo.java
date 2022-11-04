@@ -130,7 +130,12 @@ public class EnvironmentInfo extends ValueObject{
 		}
 	}
 	
+	@Valid
+	@NotNull(name="environment_id", message="{environment_id.required}")
 	private EnvironmentId environmentId = randomEnvironmentId();
+
+	@Valid
+	@NotNull(name="environment_name", message="{environment_name.required}")
 	private EnvironmentName environmentName;
 	private String category;
 	private String type;
