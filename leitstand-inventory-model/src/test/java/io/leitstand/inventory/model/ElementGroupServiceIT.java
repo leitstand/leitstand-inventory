@@ -169,9 +169,9 @@ public class ElementGroupServiceIT extends InventoryIT {
 		
 		transaction(()->{
 			ElementGroupStatistics stats = service.getGroupStatistics(GROUP_TYPE, null).get(0);
-			assertEquals(1,stats.getActiveElements().get(UP).intValue());
-			assertEquals(1,stats.getActiveElements().get(DOWN).intValue());
-			assertEquals(1,stats.getActiveElements().get(MAINTENANCE).intValue());
+			assertEquals(1,stats.getActiveElements().get(UP.name()).intValue());
+			assertEquals(1,stats.getActiveElements().get(DOWN.name()).intValue());
+			assertEquals(1,stats.getActiveElements().get(MAINTENANCE.name()).intValue());
 			assertEquals(2,stats.getNewElements());
 			assertEquals(1,stats.getRetiredElements());
 		});
