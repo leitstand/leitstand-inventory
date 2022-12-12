@@ -31,10 +31,17 @@ class Editor extends Control {
 	    });
 		this.form.addEventListener('UIPreExecuteAction',() => {
 			const json = editor.getValue()
-			if(json){
-				this.viewModel.setProperty(this.binding,JSON.parse(json));
-			} else {
-				this.viewModel.setProperty(this.binding,null);
+			try{
+				if (json){
+		            this.viewModel.setProperty(this.binding, JSON.parse(json))					
+				} else {
+					this.viewModel.setProperty(this.binding,null);
+				}
+				this.valid=true;		
+			} catch (e) {
+	            this.viewModel.setProperty(this.binding, null);		
+				this.controller.error("Invalid JSON: "+e);
+				this.valid=false;
 			}
 			 
 		});
@@ -103,19 +110,30 @@ const elementEnvironmentController = function(){
 		},
 		buttons: {
 			"save-env":function(){
-			    const upload = this.input('inventory-upload').unwrap().content;
+			    let upload = this.input('inventory-upload').unwrap().content;
+			    if (upload){
+					try {
+						upload = JSON.parse(upload)
+					} catch (e) {
+						this.error("Invalid JSON: "+e);
+						return
+					}
+				}
 			    const envSelector = this.input('env-name');
 			    let category = this.getViewModel("category");
 			    if(envSelector){
 			        category = envSelector.unwrap().category(this.getViewModel("environment_name"));
 			    }
-			    
-				env.saveEnvironment(this.location.params,
+			    const editor = this.element('env-editor');
+			    if (editor.unwrap().valid){
+					env.saveEnvironment(this.location.params,
 								    { "environment_id" : this.getViewModel("environment_id"),
 									  "environment_name" : this.getViewModel("environment_name"),
 									  "category" : category ,
 									  "description" : this.getViewModel("description"),
-									  "variables" : upload ? JSON.parse(upload) : this.getViewModel("variables") });
+									  "variables" : upload ? upload : this.getViewModel("variables") });			
+				}
+		
 			},
 			
 			"confirm-remove":function(){

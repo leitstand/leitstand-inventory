@@ -190,10 +190,17 @@ class Editor extends Control {
         });
         this.form.addEventListener('UIPreExecuteAction',() => {
 			try{
-	            this.viewModel.setProperty(this.binding, JSON.parse(editor.getValue()));		
+				const json = editor.getValue();
+				if (json){
+		            this.viewModel.setProperty(this.binding, JSON.parse(json))					
+				} else {
+					this.viewModel.setProperty(this.binding,null);
+				}
+				this.valid=true;		
 			} catch (e) {
 	            this.viewModel.setProperty(this.binding, null);		
 				this.controller.error("Invalid JSON: "+e);
+				this.valid=false;
 			}
 	    });
     }
