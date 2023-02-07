@@ -30,7 +30,7 @@ public class ElementGroupValueObjectTest {
     private static final FacilityId         FACILITY_ID      = randomFacilityId();  
     private static final FacilityType       FACILITY_TYPE    = facilityType("facility_type");
     private static final FacilityName       FACILITY_NAME    = facilityName("facility");
-    private static final String             DESCRIPTION = "description";
+    private static final String             DESCRIPTION 	 = "description";
     
     
     @Test
@@ -81,8 +81,8 @@ public class ElementGroupValueObjectTest {
         
         assertThat(stats.getNewElements(),is(3));
         assertThat(stats.getRetiredElements(),is(4));
-        assertThat(stats.getActiveElements().get(UP),is(2));
-        assertThat(stats.getActiveElements().get(DOWN),is(1));
+        assertThat(stats.getActiveElements().get(UP.name()),is(2));
+        assertThat(stats.getActiveElements().get(DOWN.name()),is(1));
         
     }
 }

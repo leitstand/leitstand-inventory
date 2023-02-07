@@ -53,7 +53,7 @@ public class ElementGroupStatistics extends BaseElementGroupEnvelope {
 		 * @return a reference to this builder to continue object creation.
 		 */
 		public Builder withCount(OperationalState opState, int count) {
-			object.activeElements.put(opState, count);
+			object.activeElements.put(opState.name(), count);
 			return this;
 		}
 		
@@ -62,7 +62,7 @@ public class ElementGroupStatistics extends BaseElementGroupEnvelope {
 		 * @param counts element counts by operational state.
 		 * @return a reference to this builder to continue object creation
 		 */
-		public Builder withCounts(Map<OperationalState,Integer> counts) {
+		public Builder withCounts(Map<String,Integer> counts) {
 			object.activeElements.putAll(counts);
 			return this;
 		}
@@ -105,14 +105,14 @@ public class ElementGroupStatistics extends BaseElementGroupEnvelope {
 	}
 	
 	private int newElements;
-	private Map<OperationalState,Integer> activeElements;
+	private Map<String,Integer> activeElements;
 	private int retiredElements;
 
 	/**
 	 * Returns the number of active elements in the element group grouped by their operational state.
 	 * @return the number of active elements in the element group grouped by their operational state.
 	 */
-	public Map<OperationalState, Integer> getActiveElements() {
+	public Map<String, Integer> getActiveElements() {
 		return activeElements;
 	}
 	

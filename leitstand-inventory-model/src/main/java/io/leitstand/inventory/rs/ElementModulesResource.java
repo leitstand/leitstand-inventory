@@ -72,7 +72,7 @@ public class ElementModulesResource{
 	}
 
 	@GET
-	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
+	@Path("/{id:"+UUID_PATTERN+"}/modules/{module:.*}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModule getElementModule(@Valid @PathParam("id") ElementId id, 
 										  @PathParam("module") String module){
@@ -91,7 +91,7 @@ public class ElementModulesResource{
 	}
 	
 	@GET
-	@Path("/{name}/modules/{module}")
+	@Path("/{name}/modules/{module:.*}")
 	@Scopes({IVT, IVT_READ, IVT_ELEMENT})
 	public ElementModule getElementModule(@Valid @PathParam("name") ElementName name, 
 										  @PathParam("module") String module){
@@ -103,7 +103,7 @@ public class ElementModulesResource{
 	}
 	
 	@PUT
-	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
+	@Path("/{id:"+UUID_PATTERN+"}/modules/{module:.*}")
 	public Response storeElementModule(@Valid @PathParam("id") ElementId elementId, 
 	                                   @Valid @PathParam("module") ModuleName moduleName,
 	                                   ModuleData module){
@@ -114,7 +114,7 @@ public class ElementModulesResource{
 	}
 
 	@PUT
-	@Path("/{name}/modules/{module}")
+	@Path("/{name}/modules/{module:.*}")
 	public Response storeElementModule(@Valid @PathParam("name") ElementName elementName, 
 									   @Valid @PathParam("module") ModuleName moduleName,
 	                                   @Valid ModuleData module){
@@ -143,7 +143,7 @@ public class ElementModulesResource{
 	}
 
 	@DELETE
-	@Path("/{id:"+UUID_PATTERN+"}/modules/{module}")
+	@Path("/{id:"+UUID_PATTERN+"}/modules/{module:.*}")
 	public Response removeElementModule(@Valid @PathParam("id") ElementId elementId, 
 	                               		@Valid @PathParam("module") ModuleName moduleName){
 		service.removeElementModule(elementId, 

@@ -18,6 +18,9 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 import static io.leitstand.inventory.service.EnvironmentId.randomEnvironmentId;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import io.leitstand.commons.model.ValueObject;
 
 /**
@@ -130,7 +133,12 @@ public class EnvironmentInfo extends ValueObject{
 		}
 	}
 	
+	@Valid
+	@NotNull(message="{environment_id.required}")
 	private EnvironmentId environmentId = randomEnvironmentId();
+
+	@Valid
+	@NotNull(message="{environment_name.required}")
 	private EnvironmentName environmentName;
 	private String category;
 	private String type;

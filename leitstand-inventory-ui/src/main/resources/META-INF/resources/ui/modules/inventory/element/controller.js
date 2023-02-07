@@ -278,6 +278,9 @@ const elementIfpsController = function(){
             ifps.administrative_state=this.location.param("administrative_state");
             ifps.operational_state=this.location.param("operational_state");            
             ifps.filter=this.location.param("ifp_name");
+            ifps.up=function(){
+				return this.administrative_state.toLowerCase()==="up" && this.operational_state.toLowerCase()=="up"
+			}
             return ifps;
         },
         buttons:{
@@ -307,6 +310,7 @@ const elementIfpsController = function(){
             }
         },
         postRender:function(){
+			const view = this;
             const ifps = this.getViewModel();
             const metrics = new TimeSeries({"metric_name":"ifp_byte_counter"});
             metrics.load(ifps)
@@ -351,11 +355,11 @@ const elementIfpsController = function(){
                                     ifp[metric.labels.direction]=parseFloat(metric.value);
                                 });
                                 for( const ifp in ifps ){
-                                    const rate = document.getElementById(ifp);
+                                    const rate = view.element(ifp);
                                     if(rate){
                                         const inRate = scale(parseInt(ifps[ifp]["in"] ? ifps[ifp]["in"] : 0));
                                         const outRate = scale(parseInt(ifps[ifp]["out"] ? ifps[ifp]["out"] : 0));
-                                        rate.innerHTML=`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`;
+                                        rate.html(`${inRate.value} ${inRate.unit} / ${outRate.value} ${outRate.unit}`);
                                     }
                                 }
                             }
@@ -370,8 +374,8 @@ const elementIfpController = function(){
 	return new Controller({
 		resource:ifp,
 		viewModel:function(model){
-		    model.enabled = function(){return this.physical_interface.operational_state == "UP"}
-		    model.disabled = function(){return this.physical_interface.operational_state == "DOWN"}
+		    model.enabled = function(){return this.physical_interface.administrative_state == "UP"}
+		    model.disabled = function(){return this.physical_interface.administrative_state == "DOWN"}
 		    return model
 		},
 		buttons:{
@@ -429,7 +433,7 @@ const elementModulesController = function(){
 };
 
 const elementModuleController = function(){
-	const module = new Element({"scope":"modules/{{module}}"});
+	const module = new Element({"scope":"modules/{{&module}}"});
 	return new Controller({resource:module,
 					 buttons:{
 						 "save":function(){

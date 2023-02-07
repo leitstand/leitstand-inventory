@@ -18,6 +18,7 @@ package io.leitstand.inventory.service;
 import static io.leitstand.commons.model.BuilderUtil.assertNotInvalidated;
 
 import javax.json.JsonStructure;
+import javax.validation.constraints.NotNull;
 
 /**
  * An element environment.
@@ -58,6 +59,7 @@ public class Environment extends EnvironmentInfo {
 	}
 	
 	
+	@NotNull(message="{variables.required}")
 	private JsonStructure variables;
 	
 	/**

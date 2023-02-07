@@ -76,7 +76,7 @@
 		<td><span class="{{administrative_state}}">{{administrative_state}}</span></td>
 		<td><span class="{{operational_state}}">{{operational_state}}</span></td>
 		<td>{{bandwidth}}</td>
-		<td><span id="{{&ifp_name}}"> - / - </span></td>
+		<td><span id="{{&ifp_name}}"> {{#up}}0 bps / 0 bps{{/up}}{{^up}}- / -{{/up}} </span></td>
 		<!--  {{#neighbor}} -->
 		<td class="text">	
 		<a href="element-ifp.html?group={{group_id}}&element={{element_id}}&ifp_name={{&ifp_name}}" title="Show physical interfaces of {{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}">{{element_name}}{{#element_alias}} ({{.}}){{/element_alias}}</a>
